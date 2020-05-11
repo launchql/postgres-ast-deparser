@@ -1,0 +1,6 @@
+*.sw[op]
+*~
+*.DS_Store
+*.log
+.logs
+node_modules

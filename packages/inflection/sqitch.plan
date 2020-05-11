@@ -1,0 +1,9 @@
+%syntax-version=1.0.0
+%project=inflection
+%uri=inflection
+  
+schemas/inflection/schema [skitch-extension-utils:@0.0.7 skitch-extension-verify:@0.0.7] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/schema
+schemas/inflection/procedures/pascal [schemas/inflection/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/pascal
+schemas/inflection/procedures/camel [schemas/inflection/schema schemas/inflection/procedures/pascal] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/camel
+schemas/inflection/procedures/slugify [schemas/inflection/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/slugify
+schemas/inflection/procedures/underscore [schemas/inflection/schema schemas/inflection/procedures/slugify] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/underscore

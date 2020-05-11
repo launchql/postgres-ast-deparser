@@ -1,0 +1,9 @@
+{
+  "name": "webinc",
+  "dependencies": {
+    "skitch-extension-defaults": "latest",
+    "skitch-extension-default-roles": "latest",
+    "skitch-extension-verify": "latest",
+    "skitch-extension-utils": "latest"
+  }
+}
