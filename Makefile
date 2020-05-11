@@ -9,4 +9,5 @@ ssh:
 	docker exec -it postgres /bin/bash
 
 install:
-	docker exec postgres /sql-extensions/install.sh
+	docker exec webinc-postgres /sql-extensions/install.sh
+

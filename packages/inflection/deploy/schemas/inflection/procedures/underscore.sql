@@ -10,7 +10,7 @@ BEGIN;
 CREATE FUNCTION inflection.underscore(
   str text
 ) returns text as $$
-  SELECT lower(regexp_replace(casing.slugify(str), E'([A-Z])', E'\_\\1','g'));
+  SELECT lower(regexp_replace(inflection.slugify(str), E'([A-Z])', E'\_\\1','g'));
 $$
 LANGUAGE 'sql' IMMUTABLE;
 

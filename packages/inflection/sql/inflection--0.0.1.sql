@@ -52,5 +52,5 @@ $EOFCODE$ LANGUAGE sql STRICT IMMUTABLE;
 CREATE FUNCTION inflection.slugify (  text ) RETURNS text AS $EOFCODE$SELECT inflection.slugify($1, false)$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
 
 CREATE FUNCTION inflection.underscore ( str text ) RETURNS text AS $EOFCODE$
-  SELECT lower(regexp_replace(casing.slugify(str), E'([A-Z])', E'\_\\1','g'));
+  SELECT lower(regexp_replace(inflection.slugify(str), E'([A-Z])', E'\_\\1','g'));
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
