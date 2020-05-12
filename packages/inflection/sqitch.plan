@@ -3,7 +3,9 @@
 %uri=inflection
   
 schemas/inflection/schema [skitch-extension-utils:@0.0.7 skitch-extension-verify:@0.0.7] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/schema
-schemas/inflection/procedures/pascal [schemas/inflection/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/pascal
-schemas/inflection/procedures/camel [schemas/inflection/schema schemas/inflection/procedures/pascal] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/camel
+schemas/inflection/procedures/no_consecutive_caps [schemas/inflection/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/no_consecutive_caps
+schemas/inflection/procedures/pg_slugify [schemas/inflection/schema schemas/inflection/procedures/no_consecutive_caps] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/pg_slugify
+schemas/inflection/procedures/underscore [schemas/inflection/schema schemas/inflection/procedures/pg_slugify] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/underscore
+schemas/inflection/procedures/camel [schemas/inflection/schema schemas/inflection/procedures/underscore] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/camel
+schemas/inflection/procedures/pascal [schemas/inflection/schema schemas/inflection/procedures/camel] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/pascal
 schemas/inflection/procedures/slugify [schemas/inflection/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/slugify
-schemas/inflection/procedures/underscore [schemas/inflection/schema schemas/inflection/procedures/slugify] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/underscore
