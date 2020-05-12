@@ -90,4 +90,36 @@ describe('inflection', () => {
     { name: 'MP', result: 'Mp' },
     { name: 'Web_ACL', result: 'Web_Acl' },
   ]);
+  cases('plural', async opts => {
+    const { plural } = await db.one(
+      'SELECT * FROM inflection.plural( $1 )',
+      [opts.name]
+    );
+    expect(plural).toBe(opts.result);
+  }, [
+    { name: 'user_login', result: 'user_logins' },
+    { name: 'user Login', result: 'user Logins' },
+    { name: 'user_logins', result: 'user_logins' },
+    { name: 'user Logins', result: 'user Logins' },
+    { name: 'children', result: 'children' },
+    { name: 'child', result: 'children' },
+    { name: 'man', result: 'men' },
+    { name: 'men', result: 'men' },
+  ]);
+  cases('singular', async opts => {
+    const { singular } = await db.one(
+      'SELECT * FROM inflection.singular( $1 )',
+      [opts.name]
+    );
+    expect(singular).toBe(opts.result);
+  }, [
+    { name: 'user_logins', result: 'user_login' },
+    { name: 'user Logins', result: 'user Login' },
+    { name: 'user_login', result: 'user_login' },
+    { name: 'user Login', result: 'user Login' },
+    { name: 'children', result: 'child' },
+    { name: 'child', result: 'child' },
+    { name: 'man', result: 'man' },
+    { name: 'men', result: 'man' },
+  ]);
 });
