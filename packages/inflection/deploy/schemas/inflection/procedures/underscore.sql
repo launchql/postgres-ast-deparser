@@ -27,11 +27,17 @@ removedups AS (
     regexp_replace(value, E'[_]+', '_', 'gi') AS value
 FROM
   noprefix
+),
+stripedges AS (
+  SELECT
+    regexp_replace(regexp_replace(value, E'([A-Z])_$', E'\\1', 'gi'), E'^_([A-Z])', E'\\1', 'gi') AS value
+FROM
+  removedups
 )
 SELECT
   value
 FROM
-  removedups;
+  stripedges;
 $$
 LANGUAGE 'sql'
 IMMUTABLE;

@@ -92,11 +92,17 @@ removedups AS (
     regexp_replace(value, E'[_]+', '_', 'gi') AS value
 FROM
   noprefix
+),
+stripedges AS (
+  SELECT
+    regexp_replace(regexp_replace(value, E'([A-Z])_$', E'\\1', 'gi'), E'^_([A-Z])', E'\\1', 'gi') AS value
+FROM
+  removedups
 )
 SELECT
   value
 FROM
-  removedups;
+  stripedges;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION inflection.camel ( str text ) RETURNS text AS $EOFCODE$
@@ -112,6 +118,23 @@ BEGIN
   return regexp_replace(substring(str FROM 1 FOR 1) || substring(str FROM 2 FOR length(str)), E'[_]+', '', 'gi');
 END;
 $EOFCODE$ LANGUAGE plpgsql STABLE;
+
+CREATE FUNCTION inflection.dashed ( str text ) RETURNS text AS $EOFCODE$
+  WITH underscored AS (
+    SELECT
+      inflection.underscore(str) AS value
+),
+dashes AS (
+  SELECT
+    regexp_replace(value, '_', '-', 'gi') AS value
+  FROM
+    underscored
+)
+SELECT
+  value
+FROM
+  dashes;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION inflection.pascal ( str text ) RETURNS text AS $EOFCODE$
 DECLARE
