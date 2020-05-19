@@ -1,6 +1,7 @@
 -- Deploy schemas/inflection/procedures/underscore to pg
 -- requires: schemas/inflection/schema
 -- requires: schemas/inflection/procedures/pg_slugify
+-- requires: schemas/inflection/procedures/no_single_underscores
 
 BEGIN;
 CREATE FUNCTION inflection.underscore (str text)
@@ -33,11 +34,17 @@ stripedges AS (
     regexp_replace(regexp_replace(value, E'([A-Z])_$', E'\\1', 'gi'), E'^_([A-Z])', E'\\1', 'gi') AS value
 FROM
   removedups
+),
+nosingles AS (
+  SELECT
+    inflection.no_single_underscores(value) AS value
+FROM
+  stripedges
 )
 SELECT
   value
 FROM
-  stripedges;
+  nosingles;
 $$
 LANGUAGE 'sql'
 IMMUTABLE;

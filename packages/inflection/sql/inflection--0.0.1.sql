@@ -1,13 +1,28 @@
 \echo Use "CREATE EXTENSION inflection" to load this file. \quit
 CREATE SCHEMA inflection;
 
-CREATE FUNCTION inflection.no_consecutive_caps ( str text ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION inflection.no_consecutive_caps_till_end ( str text ) RETURNS text AS $EOFCODE$
 DECLARE
   result text[];
   temp text;
 BEGIN
     FOR result IN
-    SELECT regexp_matches(str, E'([A-Z])([A-Z]+)', 'g')
+    SELECT regexp_matches(str, E'([A-Z])([A-Z]+$)', 'g')
+      LOOP
+        temp = result[1] || lower(result[2]);
+        str = replace(str, result[1] || result[2], temp);
+      END LOOP;
+  return str;
+END;
+$EOFCODE$ LANGUAGE plpgsql STABLE;
+
+CREATE FUNCTION inflection.no_consecutive_caps_till_lower ( str text ) RETURNS text AS $EOFCODE$
+DECLARE
+  result text[];
+  temp text;
+BEGIN
+    FOR result IN
+    SELECT regexp_matches(str, E'([A-Z])([A-Z]+)[A-Z][a-z]', 'g')
       LOOP
         temp = result[1] || lower(result[2]);
         str = replace(str, result[1] || result[2], temp);
@@ -16,6 +31,10 @@ BEGIN
   return str;
 END;
 $EOFCODE$ LANGUAGE plpgsql STABLE;
+
+CREATE FUNCTION inflection.no_consecutive_caps ( str text ) RETURNS text AS $EOFCODE$
+  select inflection.no_consecutive_caps_till_lower(inflection.no_consecutive_caps_till_end(str));
+$EOFCODE$ LANGUAGE sql STABLE;
 
 CREATE FUNCTION inflection.pg_slugify ( value text, allow_unicode boolean ) RETURNS text AS $EOFCODE$
   WITH normalized AS (
@@ -70,6 +89,55 @@ $EOFCODE$ LANGUAGE sql STRICT IMMUTABLE;
 
 CREATE FUNCTION inflection.pg_slugify (  text ) RETURNS text AS $EOFCODE$SELECT inflection.pg_slugify($1, false)$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
 
+CREATE FUNCTION inflection.no_single_underscores_in_beginning ( str text ) RETURNS text AS $EOFCODE$
+DECLARE
+  result text[];
+  temp text;
+BEGIN
+    FOR result IN
+    SELECT regexp_matches(str, E'(^[a-z])(_)', 'g')
+      LOOP
+        str = replace(str, result[1] || result[2], result[1]);
+      END LOOP;
+  return str;
+END;
+$EOFCODE$ LANGUAGE plpgsql STABLE;
+
+CREATE FUNCTION inflection.no_single_underscores_at_end ( str text ) RETURNS text AS $EOFCODE$
+DECLARE
+  result text[];
+  temp text;
+BEGIN
+    FOR result IN
+    SELECT regexp_matches(str, E'(_)([a-z]$)', 'g')
+      LOOP
+        str = replace(str, result[1] || result[2], result[2]);
+      END LOOP;
+
+  return str;
+END;
+$EOFCODE$ LANGUAGE plpgsql STABLE;
+
+CREATE FUNCTION inflection.no_single_underscores_in_middle ( str text ) RETURNS text AS $EOFCODE$
+DECLARE
+  result text[];
+  temp text;
+BEGIN
+    FOR result IN
+    SELECT regexp_matches(str, E'(_)([a-z]_)', 'g')
+      LOOP
+        str = replace(str, result[1] || result[2], result[2]);
+      END LOOP;
+
+  return str;
+END;
+$EOFCODE$ LANGUAGE plpgsql STABLE;
+
+CREATE FUNCTION inflection.no_single_underscores ( str text ) RETURNS text AS $EOFCODE$
+  select 
+    inflection.no_single_underscores_in_middle(inflection.no_single_underscores_at_end(inflection.no_single_underscores_in_beginning(str)));
+$EOFCODE$ LANGUAGE sql STABLE;
+
 CREATE FUNCTION inflection.underscore ( str text ) RETURNS text AS $EOFCODE$
   WITH slugged AS (
     SELECT
@@ -98,11 +166,17 @@ stripedges AS (
     regexp_replace(regexp_replace(value, E'([A-Z])_$', E'\\1', 'gi'), E'^_([A-Z])', E'\\1', 'gi') AS value
 FROM
   removedups
+),
+nosingles AS (
+  SELECT
+    inflection.no_single_underscores(value) AS value
+FROM
+  stripedges
 )
 SELECT
   value
 FROM
-  stripedges;
+  nosingles;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION inflection.camel ( str text ) RETURNS text AS $EOFCODE$

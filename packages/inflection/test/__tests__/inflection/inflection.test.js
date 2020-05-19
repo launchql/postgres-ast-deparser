@@ -43,7 +43,16 @@ describe('inflection', () => {
     { name: 'message_properties', result: 'message_properties' },
     { name: 'User Post', result: 'user_post' },
     { name: 'MP', result: 'mp' },
-    { name: 'WebACL', result: 'web_acl' },
+    { name: 'WebACL', result: 'web_acl' }
+  ]);
+  cases('no_single_underscores', async opts => {
+    const { no_single_underscores } = await db.one(
+      'SELECT * FROM inflection.no_single_underscores( $1 )',
+      [opts.name]
+    );
+    expect(no_single_underscores).toEqual(opts.result);
+  }, [
+    { name: 'w_a_b_cd_efg_h', result: 'wab_cd_efgh' }
   ]);
   cases('pascal', async opts => {
     const { pascal } = await db.one(
@@ -62,6 +71,7 @@ describe('inflection', () => {
     { name: 'web acl', result: 'WebAcl' },
     { name: 'Web Acl', result: 'WebAcl' },
     { name: 'Web ACL', result: 'WebAcl' },
+    { name: 'w_a_b', result: 'Wab' },
   ]);
   cases('camel', async opts => {
     const { camel } = await db.one(
@@ -80,6 +90,8 @@ describe('inflection', () => {
     { name: 'web acl', result: 'webAcl' },
     { name: 'Web Acl', result: 'webAcl' },
     { name: 'Web ACL', result: 'webAcl' },
+    { name: 'w_a_b', result: 'wab' },
+    { name: 'w_a_b_cd_efg_h', result: 'wabCdEfgh' },
   ]);
   cases('no_consecutive_caps', async opts => {
     const { no_consecutive_caps } = await db.one(
@@ -90,6 +102,8 @@ describe('inflection', () => {
   }, [
     { name: 'MP', result: 'Mp' },
     { name: 'Web_ACL', result: 'Web_Acl' },
+    { name: 'MPComplete', result: 'MpComplete' },
+    { name: 'ACLWindow', result: 'AclWindow' },
   ]);
   cases('plural', async opts => {
     const { plural } = await db.one(
