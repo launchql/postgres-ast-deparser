@@ -43,7 +43,10 @@ describe('inflection', () => {
     { name: 'message_properties', result: 'message_properties' },
     { name: 'User Post', result: 'user_post' },
     { name: 'MP', result: 'mp' },
-    { name: 'WebACL', result: 'web_acl' }
+    { name: 'WebACL', result: 'web_acl' },
+    { name: 'wabCdEfgh', result: 'wab_cd_efgh' },
+    { name: 'WabCDEfgH', result: 'wab_cd_efgh' },
+    
   ]);
   cases('no_single_underscores', async opts => {
     const { no_single_underscores } = await db.one(
