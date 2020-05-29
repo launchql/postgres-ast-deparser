@@ -17,7 +17,7 @@ install:
 	$(MAKE) docker-install || $(MAKE) k8-install
 
 docker-install:
-	docker exec postgres /sql-extensions/install.sh
+	docker exec webinc-postgres /sql-extensions/install.sh
 
 k8-install:
 	$(eval POD_NAME := $(shell kubectl get pods -l app=postgres -n webinc -o jsonpath="{.items[*].metadata.name}"))
