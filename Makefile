@@ -31,4 +31,4 @@ dump:
 	skitch dump --deps --project dbs --path $(WEBINC_PATH)/services/packages/graphql-server-service/bootstrap/app.sql
 
 deploy:
-	@echo skitch deploy --recursive --createdb --yes --project dbs --database abcdef
+	@echo skitch deploy --recursive --createdb --yes --project dbs --database webinc-db
