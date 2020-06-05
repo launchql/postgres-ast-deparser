@@ -2,7 +2,7 @@
 comment = 'dbs_rls extension'
 default_version = '0.0.1'
 module_pathname = '$libdir/dbs_rls'
-requires = 'plpgsql,uuid-ossp,pgcrypto,dbs,skitch-extension-default-roles,skitch-extension-defaults,skitch-extension-utils,skitch-extension-verify,webql-projects'
+requires = 'plpgsql,uuid-ossp,pgcrypto,dbs,skitch-extension-default-roles,skitch-extension-defaults,skitch-extension-utils,skitch-extension-verify,webql-projects,webql-roles'
 relocatable = false
 superuser = false
   
