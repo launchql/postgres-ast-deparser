@@ -1,4 +1,4 @@
--- Deploy schemas/collections_public/tables/table/triggers/before_insert_set_project_id to pg
+-- Deploy schemas/collections_public/tables/table/triggers/before_insert_table_set_project_id to pg
 
 -- requires: schemas/collections_public/schema
 -- requires: schemas/collections_public/tables/table/table
@@ -6,7 +6,7 @@
 
 BEGIN;
 
-CREATE FUNCTION collections_private.tg_before_insert_set_project_id()
+CREATE FUNCTION collections_private.tg_before_insert_table_set_project_id()
 RETURNS TRIGGER AS $$
 DECLARE
   proj_id uuid;
@@ -22,9 +22,9 @@ END;
 $$
 LANGUAGE 'plpgsql' VOLATILE;
 
-CREATE TRIGGER before_insert_set_project_id
+CREATE TRIGGER before_insert_table_set_project_id
 BEFORE INSERT ON collections_public.table
 FOR EACH ROW
-EXECUTE PROCEDURE collections_private.tg_before_insert_set_project_id ();
+EXECUTE PROCEDURE collections_private.tg_before_insert_table_set_project_id ();
 
 COMMIT;

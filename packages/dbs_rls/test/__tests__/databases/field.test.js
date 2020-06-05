@@ -22,6 +22,7 @@ describe('custom database fields', () => {
     ({ db, conn } = await getConnections());
     await twoUsersAndProject({ db, conn, objs });
     wrapConn(conn);
+    wrapConn(db);
   });
   afterEach(async () => {
     await closeConnections({ db, conn });
@@ -32,38 +33,51 @@ describe('custom database fields', () => {
         project_id: objs.project1.id,
         name: 'mydb'
       });
-    });
-    describe('fields', () => {
-      beforeEach(async () => {
-        objs.tables.customer = await conn.one(
-          'insert into collections_public.table (database_id, name) values ($1, $2) RETURNING *',
-          [objs.database1.id, 'customers']
-        );
+      objs.tables.customer = await conn.insertOne('collections_public.table', {
+        database_id: objs.database1.id,
+        name: 'customers'
       });
+    });
+    describe('can add fields', () => {
       it('can create a field', async () => {
-        await conn.any(
-          `insert into collections_public.field 
-            (table_id, name, type, is_required, default_value) 
-            values 
-            ($1, $2, $3, $4, $5) RETURNING *`,
-          [objs.tables.customer.id, 'id', 'uuid', true, 'uuid_generate_v4 ()']
-        );
-        const [nameField] = await conn.any(
-          'insert into collections_public.field (table_id, name, type) values ($1, $2, $3) RETURNING *',
-          [objs.tables.customer.id, 'name', 'text']
-        );
+        await conn.insertOne('collections_public.field', {
+          table_id: objs.tables.customer.id,
+          name: 'id',
+          type: 'uuid',
+          is_required: true,
+          default_value: 'uuid_generate_v4 ()'
+        });
+
+        const nameField = await conn.insertOne('collections_public.field', {
+          table_id: objs.tables.customer.id,
+          name: 'name',
+          type: 'text'
+        });
+
         expect(nameField).toBeTruthy();
         expect(nameField.id).toBeTruthy();
-        await conn.any(
-          `INSERT INTO "${
-            objs.database1.schema_name
-          }".customers (name) VALUES ('dan'), ('jobs')`
-        );
-        const customers = await conn.any(
-          `SELECT id, name FROM "${objs.database1.schema_name}".customers`
-        );
-        expect(customers).toBeTruthy();
-        expect(customers.length).toBe(2);
+      });
+    });
+    describe('can NOT add fields', () => {
+      it('can create a field', async () => {
+        let failed = false;
+        conn.setContext({
+          role: 'authenticated',
+          'jwt.claims.role_id': objs.user2.id
+        });
+        try {
+
+          await conn.insertOne('collections_public.field', {
+            table_id: objs.tables.customer.id,
+            name: 'id',
+            type: 'uuid',
+            is_required: true,
+            default_value: 'uuid_generate_v4 ()'
+          });
+        } catch (e) {
+          failed = true;
+        }
+        expect(failed).toBe(true);
       });
     });
   });

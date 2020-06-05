@@ -27,6 +27,11 @@ collections_private.get_schema_name_by_database_id
 TO
 authenticated;
 
+GRANT EXECUTE ON FUNCTION 
+collections_private.is_valid_type
+TO
+authenticated;
+
 
 -- ALTER DEFAULT PRIVILEGES IN SCHEMA permissions_private
 -- GRANT EXECUTE ON FUNCTIONS

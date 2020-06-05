@@ -39,7 +39,7 @@ describe('custom database tables', () => {
     it('can create a database', async () => {
       expect(objs.database1).toBeTruthy();
       expect(objs.database1.id).toBeTruthy();
-      await conn.any('SELECT * FROM verify_schema($1)', objs.database1.schema_name);
+      await db.any('SELECT * FROM verify_schema($1)', objs.database1.schema_name);
     });
     describe('tables', () => {
       it('can create a table', async () => {

@@ -1,0 +1,1 @@
+-- Revert schemas/collections_public/tables/primary_key_constraint/table from pg

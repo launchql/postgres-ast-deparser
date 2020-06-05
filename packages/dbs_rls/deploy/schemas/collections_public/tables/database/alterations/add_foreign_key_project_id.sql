@@ -4,6 +4,7 @@
 -- requires: schemas/projects_public/schema
 -- requires: schemas/collections_public/tables/database/table
 -- requires: schemas/projects_public/tables/project/table
+-- requires: schemas/collections_public/tables/database/alterations/alter_table_add_project_id 
 
 BEGIN;
 
