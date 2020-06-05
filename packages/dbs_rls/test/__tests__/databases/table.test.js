@@ -50,12 +50,12 @@ describe('custom database tables', () => {
         expect(objs.tables.customer).toBeTruthy();
         expect(objs.tables.customer.id).toBeTruthy();
 
-        // WTF??????
+        expect(objs.tables.customer.database_id).toEqual(objs.database1.id);
         
-        // await conn.any(
-        //   'SELECT * FROM verify_table($1)',
-        //   `${objs.database1.schema_name}.customers`
-        // );
+        await db.any(
+          'SELECT * FROM verify_table($1)',
+          `${objs.database1.schema_name}.customers`
+        );
       });
     });
   });
