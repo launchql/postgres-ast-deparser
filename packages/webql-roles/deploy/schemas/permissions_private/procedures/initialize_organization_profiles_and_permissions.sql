@@ -19,26 +19,22 @@ DECLARE
   v_member permissions_public.profile;
   v_subscriber permissions_public.profile;
   perm_id uuid;
+  all_types text[];
 BEGIN
+
+SELECT array_agg(distinct(object_type))
+  FROM permissions_public.permission
+INTO all_types;
+
   --- Owner
   INSERT INTO permissions_public.profile (name, description, organization_id)
   VALUES ('Owner', 'Owners', organization_id)
 RETURNING
   * INTO v_owner;
 
+
     PERFORM permissions_public.add_permissions_to_profile
-      (v_owner.id, ARRAY[
-        'project',
-        'content',
-        'secret',
-        'post',
-        'invite',
-        'user',
-        'team',
-        'role',
-        'role_profile',
-        'role_setting'
-      ], 'all');
+      (v_owner.id, all_types, 'all');
 
   --- Administrator
   INSERT INTO permissions_public.profile (name, description, organization_id)
@@ -47,18 +43,7 @@ RETURNING
   * INTO v_administrator;
 
     PERFORM permissions_public.add_permissions_to_profile
-      (v_administrator.id, ARRAY[
-        'project',
-        'content',
-        'secret',
-        'post',
-        'invite',
-        'user',
-        'team',
-        'role',
-        'role_profile',
-        'role_setting'
-      ], 'all');
+      (v_administrator.id, all_types, 'all');
 
 
   --- Editor
@@ -174,18 +159,7 @@ RETURNING
   * INTO v_member;
 
     PERFORM permissions_public.add_permissions_to_profile
-      (v_member.id, ARRAY[
-        'project',
-        'content',
-        'secret',
-        'post',
-        'user',
-        'team',
-        'role',
-        'role_profile',
-        'role_setting',
-        'invite'
-      ], ARRAY[
+      (v_member.id, all_types, ARRAY[
         'read', 'browse'
       ]);
 

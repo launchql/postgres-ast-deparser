@@ -11,4 +11,6 @@ CREATE TABLE inflection.inflection_rules (
     replacement text
 );
 
+GRANT select on inflection.inflection_rules to PUBLIC;
+
 COMMIT;
