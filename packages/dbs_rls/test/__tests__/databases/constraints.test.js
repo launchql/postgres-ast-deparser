@@ -16,7 +16,6 @@ let db, conn;
 let objs = {
   tables: {},
 };
-
   
 describe('custom database relations', () => {
   beforeEach(async () => {
@@ -36,8 +35,6 @@ describe('custom database relations', () => {
       });
     });
     describe('relations', () => {
-      let user, blog, field1, field2, field3, field4;
-      
       beforeEach(async () => {
         objs.tables.user = await conn.insertOne('collections_public.table', {
           database_id: objs.database1.id,
