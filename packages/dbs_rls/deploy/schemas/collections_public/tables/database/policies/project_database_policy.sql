@@ -3,7 +3,7 @@
 -- requires: schemas/collections_public/schema
 -- requires: schemas/collections_public/tables/database/table
 -- requires: schemas/collections_public/tables/database/policies/enable_row_level_security
-
+-- requires: schemas/collections_public/tables/database/alterations/alter_table_add_project_id
 BEGIN;
 
 -- CREATE FUNCTION collections_private.database_policy_fn(
@@ -21,25 +21,25 @@ BEGIN;
 CREATE POLICY can_select_database ON collections_public.database
   FOR SELECT
   USING (
-    collaboration_private.permitted_on_project ('read', 'project', project_id)
+    collaboration_private.permitted_on_project ('read', 'database', project_id)
   );
 
 CREATE POLICY can_insert_database ON collections_public.database
   FOR INSERT
   WITH CHECK (
-    collaboration_private.permitted_on_project ('add', 'project', project_id)
+    collaboration_private.permitted_on_project ('add', 'database', project_id)
   );
 
 CREATE POLICY can_update_database ON collections_public.database
   FOR UPDATE
   USING (
-    collaboration_private.permitted_on_project ('edit', 'project', project_id)
+    collaboration_private.permitted_on_project ('edit', 'database', project_id)
   );
 
 CREATE POLICY can_delete_database ON collections_public.database
   FOR DELETE
   USING (
-    collaboration_private.permitted_on_project ('destroy', 'project', project_id)
+    collaboration_private.permitted_on_project ('destroy', 'database', project_id)
   );
 
 

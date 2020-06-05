@@ -11,8 +11,19 @@ GRANT EXECUTE ON FUNCTION
 collections_private.get_available_schema_name 
 TO
 authenticated;
+
 GRANT EXECUTE ON FUNCTION 
 collections_private.database_name_hash 
+TO
+authenticated;
+
+GRANT EXECUTE ON FUNCTION 
+collections_private.table_name_hash 
+TO
+authenticated;
+
+GRANT EXECUTE ON FUNCTION 
+collections_private.get_schema_name_by_database_id
 TO
 authenticated;
 

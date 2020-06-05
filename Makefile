@@ -35,3 +35,4 @@ dump:
 
 deploy:
 	@echo skitch deploy --recursive --createdb --yes --project dbs --database webql-db
+	@echo skitch deploy --recursive --createdb --yes --project dbs_rls --database webql-db
