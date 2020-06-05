@@ -1,0 +1,7 @@
+-- Revert schemas/collaboration_private/procedures/collaboration_actor_role_admin_owner_authorized_profiles from pg
+
+BEGIN;
+
+DROP FUNCTION collaboration_private.collaboration_actor_role_admin_owner_authorized_profiles;
+
+COMMIT;

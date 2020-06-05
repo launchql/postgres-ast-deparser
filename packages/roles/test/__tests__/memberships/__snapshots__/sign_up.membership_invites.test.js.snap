@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`signup membership invites sign up with token w same email 1`] = `
+Object {
+  "can admin add team on organization1": true,
+  "can admin browse invite on organization1": true,
+  "can admin destroy invite on organization1": true,
+  "can admin edit invite on organization1": true,
+  "can newUser add team on organization1": false,
+  "can newUser browse invite on organization1": true,
+  "can newUser destroy invite on organization1": true,
+  "can newUser edit invite on organization1": true,
+}
+`;

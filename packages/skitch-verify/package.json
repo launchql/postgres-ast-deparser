@@ -1,0 +1,6 @@
+{
+  "name": "skitch-extension-verify",
+  "version": "0.0.1",
+  "description": "PostgreSQL verification utilities",
+  "author": "Dan Lynch <pyramation@gmail.com>"
+}

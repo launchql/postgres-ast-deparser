@@ -1,0 +1,7 @@
+# webql-projects extension
+comment = 'webql projects'
+default_version = '0.0.1'
+module_pathname = '$libdir/webql-projects'
+requires = 'plpgsql,uuid-ossp,citext,btree_gist,skitch-extension-default-roles,skitch-extension-defaults,skitch-extension-utils,skitch-extension-verify,webql-roles'
+relocatable = false
+superuser = false
