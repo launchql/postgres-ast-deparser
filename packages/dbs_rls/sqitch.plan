@@ -2,7 +2,7 @@
 %project=dbs_rls
 %uri=dbs_rls
   
-schemas/collections_public/schema [dbs:schemas/collections_public/tables/table/triggers/ensure_table_not_reserved_word skitch-extension-default-roles:roles/authenticated/role skitch-extension-defaults:defaults/public skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collections_public/schema
+schemas/collections_public/schema [dbs:schemas/collections_public/tables/table/triggers/ensure_table_not_reserved_word skitch-extension-default-roles:roles/authenticated/role skitch-extension-defaults:defaults/public skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view webql-projects:schemas/projects_public/tables/project/triggers/timestamps] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collections_public/schema
 schemas/collections_public/tables/constraint/table [schemas/collections_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collections_public/tables/constraint/table
 schemas/collections_public/tables/constraint/policies/enable_row_level_security [schemas/collections_public/schema schemas/collections_public/tables/constraint/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collections_public/tables/constraint/policies/enable_row_level_security
 schemas/collections_public/tables/database/table [schemas/collections_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collections_public/tables/database/table
