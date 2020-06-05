@@ -3,26 +3,36 @@ import {
   getConnections,
   closeConnections,
 } from '../../utils';
+  
+import {
+  twoUsersAndProject
+} from '../../utils/projects';
 
-const v4 = require('uuid').v4;
-
-let db, conn, customer, database;
+import {
+  wrapConn
+} from '../../utils/db';
+let db, conn;
+let objs = {
+  tables: {},
+};
 
 // sources: https://www.postgresql.org/docs/9.5/datatype.html
 // postgres.git/src/test/modules/test_ddl_deparse/sql/create_table.sql
 
 describe('database regtype test', () => {
   beforeAll(async () => {
-    ({ db, conn } = await getConnections());
-    [database] = await db.any(
-      'insert into collections_public.database (tenant_id, name) values ($1, \'mydb\') RETURNING *',
-      v4()
-    );
-    [customer] = await db.any(
-      'insert into collections_public.table (database_id, name) values ($1, $2) RETURNING *',
-      [database.id, 'customer']
-    );
-
+    ({db, conn} = await getConnections());
+    await twoUsersAndProject({ db, conn, objs });
+    wrapConn(conn);
+    wrapConn(db);
+    objs.database1 = await conn.insertOne('collections_public.database', {
+      project_id: objs.project1.id,
+      name: 'awesomecrm'
+    });
+    objs.tables.customer = await conn.insertOne('collections_public.table', {
+      database_id: objs.database1.id,
+      name: 'customer'
+    });
   });
   afterAll(async () => {
     await closeConnections({ db, conn });
@@ -32,9 +42,9 @@ describe('database regtype test', () => {
     let failed = false;
     let message = '';
     try {
-      await db.any(
+      await conn.any(
         'insert into collections_public.field (table_id, name, type) values ($1, $2, $3)',
-        [customer.id, opts.name, 'text']
+        [objs.tables.customer.id, opts.name, 'text']
       );
     } catch (e) {
       failed = true;
@@ -50,9 +60,9 @@ describe('database regtype test', () => {
     let failed = false;
     let message = '';
     try {
-      await db.any(
+      await conn.any(
         'insert into collections_public.field (table_id, name, type) values ($1, $2, $3)',
-        [customer.id, opts.name, opts.type]
+        [objs.tables.customer.id, opts.name, opts.type]
       );
     } catch (e) {
       failed = true;
@@ -72,9 +82,9 @@ describe('database regtype test', () => {
     let failed = false;
     try {
 
-      await db.any(
+      await conn.any(
         'insert into collections_public.field (table_id, name, type) values ($1, $2, $3)',
-        [customer.id, opts.name, opts.type]
+        [objs.tables.customer.id, opts.name, opts.type]
       );
     } catch (e) {
       console.log(e);
