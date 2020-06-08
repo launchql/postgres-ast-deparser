@@ -7,9 +7,6 @@ SELECT verify_policy ('can_insert_field', 'collections_public.field');
 SELECT verify_policy ('can_update_field', 'collections_public.field');
 SELECT verify_policy ('can_delete_field', 'collections_public.field');
 
-SELECT verify_function ('collections_private.field_policy_fn');
-
-
 SELECT has_table_privilege('authenticated', 'collections_public.field', 'INSERT');
 SELECT has_table_privilege('authenticated', 'collections_public.field', 'SELECT');
 SELECT has_table_privilege('authenticated', 'collections_public.field', 'UPDATE');

@@ -2,18 +2,14 @@
 
 BEGIN;
 
-
 REVOKE INSERT ON TABLE collections_public.primary_key_constraint FROM authenticated;
 REVOKE SELECT ON TABLE collections_public.primary_key_constraint FROM authenticated;
 REVOKE UPDATE ON TABLE collections_public.primary_key_constraint FROM authenticated;
 REVOKE DELETE ON TABLE collections_public.primary_key_constraint FROM authenticated;
 
-
 DROP POLICY can_select_primary_key_constraint ON collections_public.primary_key_constraint;
 DROP POLICY can_insert_primary_key_constraint ON collections_public.primary_key_constraint;
 DROP POLICY can_update_primary_key_constraint ON collections_public.primary_key_constraint;
 DROP POLICY can_delete_primary_key_constraint ON collections_public.primary_key_constraint;
-
-DROP FUNCTION collections_private.primary_key_constraint_policy_fn;
 
 COMMIT;

@@ -7,18 +7,6 @@
 
 BEGIN;
 
--- CREATE FUNCTION collections_private.unique_constraint_policy_fn(
---   role_id uuid
---   -- TODO other args
--- )
---    RETURNS boolean AS
--- $$
--- BEGIN
---   -- TODO fill out policy function here
--- END;
--- $$
--- LANGUAGE 'plpgsql' STABLE SECURITY DEFINER;
-
 CREATE POLICY can_select_unique_constraint ON collections_public.unique_constraint
   FOR SELECT
   USING (

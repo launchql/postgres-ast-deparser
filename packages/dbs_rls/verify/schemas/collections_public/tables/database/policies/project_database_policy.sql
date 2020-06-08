@@ -7,9 +7,6 @@ SELECT verify_policy ('can_insert_database', 'collections_public.database');
 SELECT verify_policy ('can_update_database', 'collections_public.database');
 SELECT verify_policy ('can_delete_database', 'collections_public.database');
 
-SELECT verify_function ('collections_private.database_policy_fn');
-
-
 SELECT has_table_privilege('authenticated', 'collections_public.database', 'INSERT');
 SELECT has_table_privilege('authenticated', 'collections_public.database', 'SELECT');
 SELECT has_table_privilege('authenticated', 'collections_public.database', 'UPDATE');

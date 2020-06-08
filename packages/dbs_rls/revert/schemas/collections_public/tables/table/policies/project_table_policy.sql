@@ -14,6 +14,4 @@ DROP POLICY can_insert_table ON collections_public.table;
 DROP POLICY can_update_table ON collections_public.table;
 DROP POLICY can_delete_table ON collections_public.table;
 
-DROP FUNCTION collections_private.table_policy_fn;
-
 COMMIT;

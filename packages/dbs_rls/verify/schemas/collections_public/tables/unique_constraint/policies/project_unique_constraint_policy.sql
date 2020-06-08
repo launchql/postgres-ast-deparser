@@ -7,9 +7,6 @@ SELECT verify_policy ('can_insert_unique_constraint', 'collections_public.unique
 SELECT verify_policy ('can_update_unique_constraint', 'collections_public.unique_constraint');
 SELECT verify_policy ('can_delete_unique_constraint', 'collections_public.unique_constraint');
 
-SELECT verify_function ('collections_private.unique_constraint_policy_fn');
-
-
 SELECT has_table_privilege('authenticated', 'collections_public.unique_constraint', 'INSERT');
 SELECT has_table_privilege('authenticated', 'collections_public.unique_constraint', 'SELECT');
 SELECT has_table_privilege('authenticated', 'collections_public.unique_constraint', 'UPDATE');

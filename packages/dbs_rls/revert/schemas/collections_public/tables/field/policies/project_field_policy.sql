@@ -14,6 +14,4 @@ DROP POLICY can_insert_field ON collections_public.field;
 DROP POLICY can_update_field ON collections_public.field;
 DROP POLICY can_delete_field ON collections_public.field;
 
-DROP FUNCTION collections_private.field_policy_fn;
-
 COMMIT;

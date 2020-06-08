@@ -7,9 +7,6 @@ SELECT verify_policy ('can_insert_primary_key_constraint', 'collections_public.p
 SELECT verify_policy ('can_update_primary_key_constraint', 'collections_public.primary_key_constraint');
 SELECT verify_policy ('can_delete_primary_key_constraint', 'collections_public.primary_key_constraint');
 
-SELECT verify_function ('collections_private.primary_key_constraint_policy_fn');
-
-
 SELECT has_table_privilege('authenticated', 'collections_public.primary_key_constraint', 'INSERT');
 SELECT has_table_privilege('authenticated', 'collections_public.primary_key_constraint', 'SELECT');
 SELECT has_table_privilege('authenticated', 'collections_public.primary_key_constraint', 'UPDATE');

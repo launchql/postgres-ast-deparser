@@ -4,19 +4,8 @@
 -- requires: schemas/collections_public/tables/database/table
 -- requires: schemas/collections_public/tables/database/policies/enable_row_level_security
 -- requires: schemas/collections_public/tables/database/alterations/alter_table_add_project_id
-BEGIN;
 
--- CREATE FUNCTION collections_private.database_policy_fn(
---   role_id uuid
---   -- TODO other args
--- )
---    RETURNS boolean AS
--- $$
--- BEGIN
---   -- TODO fill out policy function here
--- END;
--- $$
--- LANGUAGE 'plpgsql' STABLE SECURITY DEFINER;
+BEGIN;
 
 CREATE POLICY can_select_database ON collections_public.database
   FOR SELECT
@@ -42,11 +31,9 @@ CREATE POLICY can_delete_database ON collections_public.database
     collaboration_private.permitted_on_project ('destroy', 'database', project_id)
   );
 
-
 GRANT INSERT ON TABLE collections_public.database TO authenticated;
 GRANT SELECT ON TABLE collections_public.database TO authenticated;
 GRANT UPDATE ON TABLE collections_public.database TO authenticated;
 GRANT DELETE ON TABLE collections_public.database TO authenticated;
-
 
 COMMIT;

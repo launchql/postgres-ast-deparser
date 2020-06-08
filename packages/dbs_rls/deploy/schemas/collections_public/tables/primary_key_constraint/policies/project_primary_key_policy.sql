@@ -7,18 +7,6 @@
 
 BEGIN;
 
--- CREATE FUNCTION collections_private.primary_key_constraint_policy_fn(
---   role_id uuid
---   -- TODO other args
--- )
---    RETURNS boolean AS
--- $$
--- BEGIN
---   -- TODO fill out policy function here
--- END;
--- $$
--- LANGUAGE 'plpgsql' STABLE SECURITY DEFINER;
-
 CREATE POLICY can_select_primary_key_constraint ON collections_public.primary_key_constraint
   FOR SELECT
   USING (
@@ -48,6 +36,5 @@ GRANT INSERT ON TABLE collections_public.primary_key_constraint TO authenticated
 GRANT SELECT ON TABLE collections_public.primary_key_constraint TO authenticated;
 GRANT UPDATE ON TABLE collections_public.primary_key_constraint TO authenticated;
 GRANT DELETE ON TABLE collections_public.primary_key_constraint TO authenticated;
-
 
 COMMIT;

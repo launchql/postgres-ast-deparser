@@ -2,13 +2,9 @@
 
 BEGIN;
 
-
-
 DROP POLICY can_select_foreign_key_constraint ON collections_public.foreign_key_constraint;
 DROP POLICY can_insert_foreign_key_constraint ON collections_public.foreign_key_constraint;
 DROP POLICY can_update_foreign_key_constraint ON collections_public.foreign_key_constraint;
 DROP POLICY can_delete_foreign_key_constraint ON collections_public.foreign_key_constraint;
-
-DROP FUNCTION collections_private.foreign_key_constraint_policy_fn;
 
 COMMIT;
