@@ -11,7 +11,6 @@ import {
   wrapConn
 } from '../../utils/db';
 
-
 let db, conn;
 let objs = {
   tables: {}
