@@ -36,3 +36,9 @@ dump:
 deploy:
 	@echo skitch deploy --recursive --createdb --yes --project dbs --database webql-db
 	@echo skitch deploy --recursive --createdb --yes --project dbs_rls --database webql-db
+
+generate:
+	@cd packages/db_text && ./generate/generate.js
+	@cd packages/db_text && skitch package --version 0.0.1
+	@cd packages/db_utils && skitch package --version 0.0.1
+	$(MAKE) install
