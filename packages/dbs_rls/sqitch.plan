@@ -2,7 +2,7 @@
 %project=dbs_rls
 %uri=dbs_rls
   
-schemas/collections_private/schema [dbs:schemas/collections_public/tables/table/triggers/ensure_table_not_reserved_word skitch-extension-default-roles:roles/authenticated/role skitch-extension-defaults:defaults/public skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view webql-projects:schemas/projects_public/tables/project/triggers/timestamps webql-roles:schemas/status_public/tables/user_task/grants/grant_select_to_authenticated] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collections_private/schema
+schemas/collections_private/schema [dbs:schemas/collections_public/tables/table/triggers/on_use_rls_changed skitch-extension-default-roles:roles/authenticated/role skitch-extension-defaults:defaults/public skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view webql-projects:schemas/projects_public/tables/project/triggers/timestamps webql-roles:schemas/status_public/tables/user_task/grants/grant_select_to_authenticated] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collections_private/schema
 schemas/collections_private/grants/grant_schema_to_authenticated [schemas/collections_private/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collections_private/grants/grant_schema_to_authenticated
 schemas/collections_public/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collections_public/schema
 schemas/collections_public/grants/grant_schema_to_authenticated [schemas/collections_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collections_public/grants/grant_schema_to_authenticated
