@@ -41,4 +41,9 @@ generate:
 	@cd packages/db_text && ./generate/generate.js
 	@cd packages/db_text && skitch package --version 0.0.1
 	@cd packages/db_utils && skitch package --version 0.0.1
+	@cd packages/db_deps && skitch package --version 0.0.1
+	@cd packages/db_migrate && skitch package --version 0.0.1
 	$(MAKE) install
+
+gen:
+	@cd packages/db_text && ./generate/generate.js
