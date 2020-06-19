@@ -8,5 +8,7 @@ GRANT authenticated TO administrator;
 GRANT administrator TO app_user;
 ALTER ROLE administrator BYPASSRLS;
 
+-- ALTER ROLE administrator SUPERUSER;
+
 GRANT anonymous TO app_user;
 GRANT authenticated TO app_user;
