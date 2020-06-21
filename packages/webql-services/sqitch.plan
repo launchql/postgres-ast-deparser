@@ -2,6 +2,6 @@
 %project=webql-services
 %uri=webql-services
   
-schemas/services_private/schema [dbs:schemas/collections_public/tables/table/triggers/update_is_visible_trigger inflection_db:schemas/inflection_db/procedures/get_unique_index_name inflection:schemas/inflection/tables/inflection_rules/indexes/inflection_rules_type_idx skitch-extension-default-roles:roles/authenticated/role skitch-extension-defaults:defaults/public skitch-extension-jobs:schemas/app_jobs/triggers/tg__add_job_for_row skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/services_private/schema
+schemas/services_private/schema [inflection_db:schemas/inflection_db/procedures/get_unique_index_name inflection:schemas/inflection/tables/inflection_rules/indexes/inflection_rules_type_idx skitch-extension-default-roles:roles/authenticated/role skitch-extension-defaults:defaults/public skitch-extension-jobs:schemas/app_jobs/triggers/tg__add_job_for_row skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/services_private/schema
 schemas/services_public/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/services_public/schema
 schemas/services_public/tables/services/table [schemas/services_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/services_public/tables/services/table
