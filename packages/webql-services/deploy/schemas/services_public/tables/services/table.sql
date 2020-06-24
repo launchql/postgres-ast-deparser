@@ -15,8 +15,7 @@ CREATE TABLE services_public.services (
     role_key text,
     schemas text[],
     auth text[],
-    UNIQUE(subdomain),
-    UNIQUE(domain)
+    UNIQUE(subdomain, domain)
 );
 
 
