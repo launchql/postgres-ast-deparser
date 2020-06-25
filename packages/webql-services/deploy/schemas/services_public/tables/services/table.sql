@@ -7,8 +7,8 @@ BEGIN;
 CREATE TABLE services_public.services (
  	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
     name text,
-    subdomain text,
-    domain text,
+    subdomain citext,
+    domain citext,
     dbname text,
     role_name text,
     anon_role text,
