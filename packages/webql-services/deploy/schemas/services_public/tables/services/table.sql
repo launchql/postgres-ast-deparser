@@ -15,6 +15,7 @@ CREATE TABLE services_public.services (
     role_key text,
     schemas text[],
     auth text[],
+    pubkey_challenge text[],
     UNIQUE(subdomain, domain)
 );
 
