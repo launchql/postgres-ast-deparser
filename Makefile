@@ -20,7 +20,7 @@ dinstall:
 	$(MAKE) docker-install
 
 docker-install:
-	docker exec webql-postgres /sql-extensions/install.sh
+	docker exec launchql-postgres /sql-extensions/install.sh
 
 k8-install:
 	$(eval POD_NAME := $(shell kubectl get pods -l app=postgres -n webinc -o jsonpath="{.items[*].metadata.name}"))
@@ -34,8 +34,8 @@ dump:
 	skitch dump --deps --project dbs --path $(WEBINC_PATH)/services/packages/graphql-server-service/bootstrap/app.sql
 
 deploy:
-	@echo skitch deploy --recursive --createdb --yes --project dbs --database webql-db
-	@echo skitch deploy --recursive --createdb --yes --project dbs_rls --database webql-db
+	@echo skitch deploy --recursive --createdb --yes --project dbs --database launchql-db
+	@echo skitch deploy --recursive --createdb --yes --project dbs_rls --database launchql-db
 
 generate:
 	@cd packages/db_text && ./generate/generate.js
