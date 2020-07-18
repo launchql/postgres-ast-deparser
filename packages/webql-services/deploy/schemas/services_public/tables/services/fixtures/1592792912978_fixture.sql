@@ -2,6 +2,8 @@
 
 -- requires: schemas/services_public/schema
 -- requires: schemas/services_public/tables/services/table
+-- requires: schemas/services_public/tables/services/triggers/ensure_domain 
+-- requires: schemas/services_public/tables/config/fixtures/1595032695960_fixture
 
 BEGIN;
 
@@ -9,13 +11,13 @@ BEGIN;
 -- just to help while developing
 
 insert into services_public.services (subdomain, dbname, role_name, anon_role, schemas) VALUES 
-('admin', 'webql-db', 'postgres', 'postgres', ARRAY['collections_public']),
-('services', 'webql-db', 'postgres', 'postgres', ARRAY['services_public'])
+('admin', current_database(), 'administrator', 'administrator', ARRAY['collections_public']),
+('services', current_database(), 'administrator', 'administrator', ARRAY['services_public'])
 ;
 
 -- with auth
 insert into services_public.services (subdomain, dbname, role_name, anon_role, schemas, auth, role_key) VALUES 
-('api', 'webql-db', 'authenticated', 'anonymous', ARRAY['collections_public'], ARRAY['auth_private', 'authenticate'], 'role_id')
+('api', current_database(), 'authenticated', 'anonymous', ARRAY['collections_public'], ARRAY['auth_private', 'authenticate'], 'role_id')
 ;
 
 COMMIT;

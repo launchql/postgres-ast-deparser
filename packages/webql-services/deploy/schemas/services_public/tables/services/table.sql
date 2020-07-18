@@ -6,6 +6,9 @@ BEGIN;
 
 CREATE TABLE services_public.services (
  	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
+    database_id uuid,
+    is_public bool,
+
     name text,
     subdomain citext,
     domain citext,
@@ -18,6 +21,5 @@ CREATE TABLE services_public.services (
     pubkey_challenge text[],
     UNIQUE(subdomain, domain)
 );
-
 
 COMMIT;
