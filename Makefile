@@ -1,7 +1,7 @@
 
 def:
-	./build.sh skitch plan
-	./build.sh skitch package --version 0.0.1
+	./build.sh lql plan
+	./build.sh lql package --version 0.0.1
 	make install
 
 up:
@@ -27,29 +27,29 @@ k8-install:
 	kubectl exec -n webinc -it $(POD_NAME) /sql-extensions/install.sh
 
 all:
-	./build.sh skitch package --version 0.0.1
-	./build.sh skitch plan
+	./build.sh lql package --version 0.0.1
+	./build.sh lql plan
 
 dump:
-	skitch dump --deps --project dbs --path $(WEBINC_PATH)/services/packages/graphql-server-service/bootstrap/app.sql
+	lql dump --deps --project dbs --path $(WEBINC_PATH)/services/packages/graphql-server-service/bootstrap/app.sql
 
 deploy:
-	@echo skitch deploy --recursive --createdb --yes --project dbs --database launchql-db
-	@echo skitch deploy --recursive --createdb --yes --project dbs_rls --database launchql-db
+	@echo lql deploy --recursive --createdb --yes --project dbs --database launchql-db
+	@echo lql deploy --recursive --createdb --yes --project dbs_rls --database launchql-db
 
 generate:
 	@cd packages/db_text && ./generate/generate.js
-	@cd packages/db_text && skitch package --version 0.0.1
-	@cd packages/db_utils && skitch package --version 0.0.1
-	@cd packages/db_deps && skitch package --version 0.0.1
-	@cd packages/db_migrate && skitch package --version 0.0.1
+	@cd packages/db_text && lql package --version 0.0.1
+	@cd packages/db_utils && lql package --version 0.0.1
+	@cd packages/db_deps && lql package --version 0.0.1
+	@cd packages/db_migrate && lql package --version 0.0.1
 	$(MAKE) install
 
 gen:
 	@cd packages/db_text && ./generate/generate.js
 
 migrate:
-	@cd packages/db_migrate && skitch package --version 0.0.1
+	@cd packages/db_migrate && lql package --version 0.0.1
 	$(MAKE) install
 
 
