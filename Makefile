@@ -47,9 +47,3 @@ generate:
 
 gen:
 	@cd packages/db_text && ./generate/generate.js
-
-migrate:
-	@cd packages/db_migrate && lql package --version 0.0.1
-	$(MAKE) install
-
-
