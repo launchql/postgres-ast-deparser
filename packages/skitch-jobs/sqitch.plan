@@ -1,0 +1,20 @@
+%syntax-version=1.0.0
+%project=skitch-extension-jobs
+%uri=skitch-extension-jobs
+  
+schemas/app_jobs/schema [skitch-extension-defaults:defaults/public skitch-extension-verify:procedures/verify_view skitch-extension-utils:procedures/tg_update_timestamps] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/schema
+schemas/app_jobs/tables/jobs/table [schemas/app_jobs/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/tables/jobs/table
+schemas/app_jobs/procedures/add_job [schemas/app_jobs/schema schemas/app_jobs/tables/jobs/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/procedures/add_job
+schemas/app_jobs/tables/job_queues/table [schemas/app_jobs/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/tables/job_queues/table
+schemas/app_jobs/procedures/complete_job [schemas/app_jobs/schema schemas/app_jobs/tables/jobs/table schemas/app_jobs/tables/job_queues/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/procedures/complete_job
+schemas/app_jobs/procedures/do_notify [schemas/app_jobs/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/procedures/do_notify
+schemas/app_jobs/procedures/fail_job [schemas/app_jobs/schema schemas/app_jobs/tables/jobs/table schemas/app_jobs/tables/job_queues/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/procedures/fail_job
+schemas/app_jobs/procedures/get_job [schemas/app_jobs/schema schemas/app_jobs/tables/job_queues/table schemas/app_jobs/tables/jobs/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/procedures/get_job
+schemas/app_jobs/procedures/schedule_job [schemas/app_jobs/schema schemas/app_jobs/tables/jobs/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/procedures/schedule_job
+schemas/app_jobs/tables/job_queues/alterations/enable_row_level_security [schemas/app_jobs/schema schemas/app_jobs/tables/job_queues/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/tables/job_queues/alterations/enable_row_level_security
+schemas/app_jobs/tables/jobs/alterations/enable_row_level_security [schemas/app_jobs/schema schemas/app_jobs/tables/jobs/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/tables/jobs/alterations/enable_row_level_security
+schemas/app_jobs/tables/jobs/triggers/decrease_job_queue_count [schemas/app_jobs/schema schemas/app_jobs/tables/jobs/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/tables/jobs/triggers/decrease_job_queue_count
+schemas/app_jobs/tables/jobs/triggers/increase_job_queue_count [schemas/app_jobs/schema schemas/app_jobs/tables/jobs/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/tables/jobs/triggers/increase_job_queue_count
+schemas/app_jobs/tables/jobs/triggers/notify_worker [schemas/app_jobs/schema schemas/app_jobs/tables/jobs/table schemas/app_jobs/procedures/do_notify schemas/app_jobs/tables/jobs/triggers/increase_job_queue_count] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/tables/jobs/triggers/notify_worker
+schemas/app_jobs/tables/jobs/triggers/timestamps [schemas/app_jobs/schema schemas/app_jobs/tables/jobs/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/tables/jobs/triggers/timestamps
+schemas/app_jobs/triggers/tg__add_job_for_row [schemas/app_jobs/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/app_jobs/triggers/tg__add_job_for_row

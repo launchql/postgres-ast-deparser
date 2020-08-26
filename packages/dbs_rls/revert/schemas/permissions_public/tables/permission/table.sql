@@ -1,0 +1,1 @@
+-- Revert schemas/permissions_public/tables/permission/table from pg

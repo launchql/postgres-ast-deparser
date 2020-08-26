@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`projects testing basic permissions 1`] = `
+Object {
+  "can user1 add database on project1": true,
+  "can user1 read content on project1": true,
+  "can user2 add database on project1": false,
+  "can user2 read content on project1": true,
+  "can user2 read database on project1": true,
+}
+`;

@@ -1,0 +1,7 @@
+# webql-utils extension
+comment = 'PostgreSQL utilities'
+default_version = '0.0.1'
+module_pathname = '$libdir/webql-utils'
+requires = 'plpgsql,citext,pgcrypto,skitch-extension-utils,skitch-extension-default-roles'
+relocatable = false
+superuser = false

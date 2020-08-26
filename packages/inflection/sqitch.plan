@@ -2,7 +2,7 @@
 %project=inflection
 %uri=inflection
   
-schemas/inflection/schema [skitch-extension-utils:@0.0.7 skitch-extension-verify:@0.0.7] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/schema
+schemas/inflection/schema [skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/schema
 schemas/inflection/procedures/no_consecutive_caps [schemas/inflection/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/no_consecutive_caps
 schemas/inflection/procedures/pg_slugify [schemas/inflection/schema schemas/inflection/procedures/no_consecutive_caps] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/pg_slugify
 schemas/inflection/procedures/no_single_underscores [schemas/inflection/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/inflection/procedures/no_single_underscores

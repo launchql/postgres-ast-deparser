@@ -1,6 +1,11 @@
 \echo Use "CREATE EXTENSION inflection" to load this file. \quit
 CREATE SCHEMA inflection;
 
+GRANT USAGE ON SCHEMA inflection TO PUBLIC;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA inflection 
+ GRANT EXECUTE ON FUNCTIONS  TO PUBLIC;
+
 CREATE FUNCTION inflection.no_consecutive_caps_till_end ( str text ) RETURNS text AS $EOFCODE$
 DECLARE
   result text[];
@@ -225,6 +230,8 @@ CREATE TABLE inflection.inflection_rules (
 	test text,
 	replacement text 
 );
+
+GRANT SELECT ON TABLE inflection.inflection_rules TO PUBLIC;
 
 CREATE FUNCTION inflection.plural ( str text ) RETURNS text AS $EOFCODE$
 DECLARE

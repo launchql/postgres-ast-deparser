@@ -1,0 +1,8 @@
+# webql-uuid extension
+comment = 'webql-uuid extension'
+default_version = '0.0.1'
+module_pathname = '$libdir/webql-uuid'
+requires = 'plpgsql,uuid-ossp,pgcrypto,hstore,skitch-extension-default-roles,skitch-extension-defaults,skitch-extension-jobs,skitch-extension-utils,skitch-extension-verify'
+relocatable = false
+superuser = false
+  

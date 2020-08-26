@@ -1,0 +1,9 @@
+%syntax-version=1.0.0
+%project=webql-uuid
+%uri=webql-uuid
+  
+schemas/uuids/schema [skitch-extension-default-roles:roles/authenticated/role skitch-extension-defaults:defaults/public skitch-extension-jobs:schemas/app_jobs/triggers/tg__add_job_for_row skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/uuids/schema
+schemas/uuids/procedures/pseudo_order_seed_uuid [schemas/uuids/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/uuids/procedures/pseudo_order_seed_uuid
+schemas/uuids/procedures/pseudo_order_uuid [schemas/uuids/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/uuids/procedures/pseudo_order_uuid
+schemas/uuids/procedures/trigger_set_uuid_related_field [schemas/uuids/schema schemas/uuids/procedures/pseudo_order_seed_uuid] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/uuids/procedures/trigger_set_uuid_related_field
+schemas/uuids/procedures/trigger_set_uuid_seed [schemas/uuids/schema schemas/uuids/procedures/pseudo_order_seed_uuid] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/uuids/procedures/trigger_set_uuid_seed

@@ -1,0 +1,1 @@
+-- Verify schemas/permissions_public/schema  on pg

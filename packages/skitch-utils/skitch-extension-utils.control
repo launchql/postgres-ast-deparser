@@ -1,0 +1,7 @@
+# skitch-extension-utils extension
+comment = 'PostgreSQL utilities'
+default_version = '0.0.1'
+module_pathname = '$libdir/skitch-extension-utils'
+requires = 'plpgsql'
+relocatable = false
+superuser = false

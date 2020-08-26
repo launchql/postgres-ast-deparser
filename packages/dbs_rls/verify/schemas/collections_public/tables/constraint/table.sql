@@ -1,0 +1,1 @@
+-- Verify schemas/collections_public/tables/constraint/table  on pg

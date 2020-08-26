@@ -1,0 +1,1 @@
+-- Verify schemas/collections_private/schema  on pg

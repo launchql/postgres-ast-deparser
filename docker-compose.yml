@@ -1,8 +1,8 @@
 version: '2'
 services:
   postgres:
-    container_name: webinc-postgres
-    image: pyramation/postgres-plv8
+    container_name: launchql-postgres
+    image: pyramation/postgres
     environment:
       - "POSTGRES_USER=postgres"
       - "POSTGRES_PASSWORD=password"
@@ -12,37 +12,3 @@ services:
       - "5432"
     volumes:
       - ./packages:/sql-extensions
-      - ./node_modules:/sql-modules
-  # prest:
-  #   container_name: webinc-prest
-  #   image: prest/prest
-  #   links:
-  #       - "postgres:webinc-postgres"
-  #   environment:
-  #       - PREST_DEBUG=true # remove comment for enable DEBUG mode (disable JWT)
-  #       - PREST_PG_HOST=postgres
-  #       - PREST_PG_USER=postgres
-  #       - PREST_PG_PASS=password
-  #       - PREST_PG_DATABASE=webinc-db
-  #       - PREST_PG_PORT=5432
-  #       - PREST_JWT_DEFAULT=false # remove if need jwt
-  #   depends_on:
-  #       - postgres
-  #   ports:
-  #       - "3333:3000"
-  # postgrest:
-  #   container_name: webinc-postgrest
-  #   image: postgrest/postgrest:latest
-  #   ports:
-  #     - "4444:3000"
-  #   environment:
-  #     # The standard connection URI format, documented at
-  #     # https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING
-  #     - PGRST_DB_URI=postgres://postgres:password@postgres:5432/webinc-db
-  #     # The name of which database schema to expose to REST clients
-  #     - PGRST_DB_SCHEMA=collections_public
-  #     # The database role to use when no client authentication is provided
-  #     - PGRST_DB_ANON_ROLE=postgres
-  #   depends_on:
-  #     - postgres
-  #   restart: always
