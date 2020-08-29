@@ -1,0 +1,8 @@
+%syntax-version=1.0.0
+%project=launchql-utils
+%uri=launchql-utils
+  
+procedures/make_tsrange [skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-default-roles:roles/authenticated/role] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add procedures/make_tsrange
+schemas/public/grants/procedures/crypt/grant_execute_to_public 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/public/grants/procedures/crypt/grant_execute_to_public
+schemas/public/grants/procedures/gen_salt/grant_execute_to_public 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/public/grants/procedures/gen_salt/grant_execute_to_public
+schemas/public/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/public/schema

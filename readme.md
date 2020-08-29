@@ -1,6 +1,6 @@
 # start the postgres db process
 
-First you'll want to create the postgres-plv8 docker (you can also just use `docker-compose up -d`):
+First you'll want to start the postgres docker (you can also just use `docker-compose up -d`):
 
 ```sh
 make up
@@ -8,7 +8,7 @@ make up
 
 # install modules
 
-If you can, do `skitch install`, otherwise:
+Install modules
 
 ```sh
 yarn install
@@ -37,30 +37,30 @@ yarn test:watch
 Create a new folder in `packages/`
 
 ```sh
-skitch init
+lql init
 ```
 
 Then, run a generator:
 
 ```sh
-skitch generate
+lql generate
 ```
 
 You can also add arguments if you already know what you want to do:
 
 ```sh
-skitch generate schema --schema myschema
-skitch generate table --schema myschema --table mytable
+lql generate schema --schema myschema
+lql generate table --schema myschema --table mytable
 ```
 
 # deploy code as extensions
 
-`cd` into `packages/<module>`, and run `skitch package`. This will make an sql file in `packages/<module>/sql/` used for `CREATE EXTENSION` calls to install your sqitch module as an extension.
+`cd` into `packages/<module>`, and run `lql package`. This will make an sql file in `packages/<module>/sql/` used for `CREATE EXTENSION` calls to install your sqitch module as an extension.
 
 # recursive deploy
 
 You can also deploy all modules utilizing versioning as sqtich modules. Remove `--createdb` if you already created your db:
 
 ```sh
-skitch deploy awesome-db --yes --recursive --createdb
+lql deploy awesome-db --yes --recursive --createdb
 ```

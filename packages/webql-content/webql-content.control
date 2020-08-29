@@ -1,8 +1,0 @@
-# webql-content extension
-comment = 'webql-content extension'
-default_version = '0.0.1'
-module_pathname = '$libdir/webql-content'
-requires = 'plpgsql,uuid-ossp,pgcrypto,citext,webql-projects,webql-roles,webql-utils,skitch-extension-default-roles,skitch-extension-defaults,skitch-extension-jobs,skitch-extension-utils,skitch-extension-verify'
-relocatable = false
-superuser = false
-  

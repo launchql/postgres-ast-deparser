@@ -1,7 +1,0 @@
-# webql-roles extension
-comment = 'webql users'
-default_version = '0.0.1'
-module_pathname = '$libdir/webql-roles'
-requires = 'plpgsql,pgcrypto,citext,uuid-ossp,skitch-extension-defaults,skitch-extension-default-roles,skitch-extension-utils,skitch-extension-verify,skitch-extension-jobs,webql-utils'
-relocatable = false
-superuser = false
