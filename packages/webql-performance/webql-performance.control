@@ -1,8 +1,0 @@
-# webql-performance extension
-comment = 'webql-performance extension'
-default_version = '0.0.1'
-module_pathname = '$libdir/webql-performance'
-requires = 'plpgsql,webql-projects,webql-roles,webql-content,webql-files,webql-website'
-relocatable = false
-superuser = false
-  

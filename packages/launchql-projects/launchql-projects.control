@@ -1,0 +1,7 @@
+# launchql-projects extension
+comment = 'launchql projects'
+default_version = '0.0.1'
+module_pathname = '$libdir/launchql-projects'
+requires = 'plpgsql,uuid-ossp,citext,btree_gist,skitch-extension-default-roles,skitch-extension-defaults,skitch-extension-utils,skitch-extension-verify,launchql-roles,launchql-utils,launchql-types'
+relocatable = false
+superuser = false

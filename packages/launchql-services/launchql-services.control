@@ -1,0 +1,8 @@
+# launchql-services extension
+comment = 'launchql-services extension'
+default_version = '0.0.1'
+module_pathname = '$libdir/launchql-services'
+requires = 'plpgsql,uuid-ossp,citext,inflection_db,inflection,skitch-extension-default-roles,skitch-extension-defaults,skitch-extension-jobs,skitch-extension-utils,skitch-extension-verify'
+relocatable = false
+superuser = false
+  

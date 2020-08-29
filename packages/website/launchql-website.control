@@ -1,0 +1,8 @@
+# launchql-website extension
+comment = 'launchql-website extension'
+default_version = '0.0.1'
+module_pathname = '$libdir/launchql-website'
+requires = 'plpgsql,citext,uuid-ossp,skitch-extension-defaults,skitch-extension-default-roles,skitch-extension-utils,skitch-extension-verify,skitch-extension-jobs,launchql-utils,launchql-types'
+relocatable = false
+superuser = false
+  

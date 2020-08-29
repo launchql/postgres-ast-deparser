@@ -1,0 +1,942 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`permissions roles 1`] = `
+Array [
+  Object {
+    "permission": "Browse Projects",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Read Projects",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Edit Projects",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Add Projects",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Transfer Projects",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Delete Projects",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Browse Secrets",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Read Secrets",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Edit Secrets",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Add Secrets",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Delete Secrets",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Browse Content",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Read Content",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Edit Content",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Upload Content",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Add Content",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Delete Content",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Browse Posts",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Read Posts",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Edit Posts",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Add Posts",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Delete Posts",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Browse Users",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Read Users",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Edit Users",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Add Users",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Delete Users",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Browse Teams",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Read Teams",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Edit Teams",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Add Teams",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Delete Teams",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Browse Roles",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Read Roles",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Edit Roles",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Add Roles",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Delete Roles",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Browse Role Profiles",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Read Role Profiles",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Edit Role Profiles",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Add Role Profiles",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Delete Role Profiles",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Browse Role Settings",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Read Role Settings",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Edit Role Settings",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Add Role Settings",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Delete Role Settings",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Browse Invites",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Read Invites",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Approve Invites",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Edit Invites",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Add Invites",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Delete Invites",
+    "profile": "Owner",
+  },
+  Object {
+    "permission": "Browse Projects",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Read Projects",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Edit Projects",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Add Projects",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Transfer Projects",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Delete Projects",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Browse Secrets",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Read Secrets",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Edit Secrets",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Add Secrets",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Delete Secrets",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Browse Content",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Read Content",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Edit Content",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Upload Content",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Add Content",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Delete Content",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Browse Posts",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Read Posts",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Edit Posts",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Add Posts",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Delete Posts",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Browse Users",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Read Users",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Edit Users",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Add Users",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Delete Users",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Browse Teams",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Read Teams",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Edit Teams",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Add Teams",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Delete Teams",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Browse Roles",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Read Roles",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Edit Roles",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Add Roles",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Delete Roles",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Browse Role Profiles",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Read Role Profiles",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Edit Role Profiles",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Add Role Profiles",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Delete Role Profiles",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Browse Role Settings",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Read Role Settings",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Edit Role Settings",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Add Role Settings",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Delete Role Settings",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Browse Invites",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Read Invites",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Approve Invites",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Edit Invites",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Add Invites",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Delete Invites",
+    "profile": "Administrator",
+  },
+  Object {
+    "permission": "Browse Projects",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Read Projects",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Edit Projects",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Add Projects",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Delete Projects",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Browse Secrets",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Read Secrets",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Edit Secrets",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Add Secrets",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Delete Secrets",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Browse Content",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Read Content",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Edit Content",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Add Content",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Delete Content",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Browse Posts",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Read Posts",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Edit Posts",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Add Posts",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Delete Posts",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Browse Invites",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Read Invites",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Edit Invites",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Add Invites",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Delete Invites",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Browse Users",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Read Users",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Browse Teams",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Read Teams",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Browse Roles",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Read Roles",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Browse Role Profiles",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Read Role Profiles",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Browse Role Settings",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Read Role Settings",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Upload Content",
+    "profile": "Editor",
+  },
+  Object {
+    "permission": "Browse Projects",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Read Projects",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Edit Projects",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Add Projects",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Delete Projects",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Browse Secrets",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Read Secrets",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Edit Secrets",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Add Secrets",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Delete Secrets",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Browse Content",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Read Content",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Edit Content",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Add Content",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Delete Content",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Browse Posts",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Read Posts",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Edit Posts",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Add Posts",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Delete Posts",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Browse Invites",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Read Invites",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Edit Invites",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Add Invites",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Delete Invites",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Browse Users",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Read Users",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Browse Teams",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Read Teams",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Browse Roles",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Read Roles",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Browse Role Profiles",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Read Role Profiles",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Browse Role Settings",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Read Role Settings",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Upload Content",
+    "profile": "Author",
+  },
+  Object {
+    "permission": "Browse Projects",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Read Projects",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Edit Projects",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Add Projects",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Delete Projects",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Browse Secrets",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Read Secrets",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Edit Secrets",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Add Secrets",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Delete Secrets",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Browse Content",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Read Content",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Edit Content",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Add Content",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Delete Content",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Browse Posts",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Read Posts",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Edit Posts",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Add Posts",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Delete Posts",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Browse Invites",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Read Invites",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Edit Invites",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Add Invites",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Delete Invites",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Browse Users",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Read Users",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Browse Teams",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Read Teams",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Browse Roles",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Read Roles",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Browse Role Profiles",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Read Role Profiles",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Browse Role Settings",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Read Role Settings",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Upload Content",
+    "profile": "Contributor",
+  },
+  Object {
+    "permission": "Browse Projects",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Read Projects",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Browse Secrets",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Read Secrets",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Browse Content",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Read Content",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Browse Posts",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Read Posts",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Browse Users",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Read Users",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Browse Teams",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Read Teams",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Browse Roles",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Read Roles",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Browse Role Profiles",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Read Role Profiles",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Browse Role Settings",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Read Role Settings",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Browse Invites",
+    "profile": "Member",
+  },
+  Object {
+    "permission": "Read Invites",
+    "profile": "Member",
+  },
+]
+`;

@@ -1,8 +1,0 @@
-# webql-files extension
-comment = 'webql-files extension'
-default_version = '0.0.1'
-module_pathname = '$libdir/webql-files'
-requires = 'plpgsql,uuid-ossp,webql-projects,webql-content,webql-roles,skitch-extension-verify'
-relocatable = false
-superuser = false
-  
