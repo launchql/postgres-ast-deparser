@@ -2,7 +2,7 @@ version: "2"
 services:
   postgres:
     container_name: launchql-postgres
-    image: pyramation/postgres
+    image: pyramation/postgis
     environment:
       - "POSTGRES_USER=postgres"
       - "POSTGRES_PASSWORD=password"
