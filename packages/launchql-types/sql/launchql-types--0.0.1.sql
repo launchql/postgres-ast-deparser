@@ -15,6 +15,14 @@ CREATE DOMAIN image AS jsonb CHECK ( (((value) ?& (ARRAY['url', 'mime'])) AND ((
 
 COMMENT ON DOMAIN image IS E'@name launchqlInternalTypeImage';
 
+CREATE DOMAIN multiple_select AS jsonb CHECK ( ((value) ?& (ARRAY['value'])) );
+
+COMMENT ON DOMAIN multiple_select IS E'@name launchqlInternalTypeMultipleSelect';
+
+CREATE DOMAIN single_select AS jsonb CHECK ( ((value) ?& (ARRAY['value'])) );
+
+COMMENT ON DOMAIN single_select IS E'@name launchqlInternalTypeSingleSelect';
+
 CREATE DOMAIN upload AS text CHECK ( ((value) ~ ('^(https?)://[^\s/$.?#].[^\s]*$')) );
 
 COMMENT ON DOMAIN upload IS E'@name launchqlInternalTypeUpload';
