@@ -21,7 +21,7 @@ describe('roles_public.sign_in()', () => {
         'jwt.claims.role_id': user.id
       });
       await conn.any(
-        'SELECT * FROM auth_private.set_multi_factor_secret(\'abcdef\')',
+        "SELECT * FROM auth_private.set_multi_factor_secret('abcdef')",
         ['abcdef', user.id]
       );
       conn.setContext({});
@@ -93,9 +93,7 @@ describe('roles_public.sign_in()', () => {
           user.password
         ]);
       } catch (e) {
-        expect(e.message).toEqual(
-          'ACCOUNT_LOCKED_EXCEED_ATTEMPTS'
-        );
+        expect(e.message).toEqual('ACCOUNT_LOCKED_EXCEED_ATTEMPTS');
         failed = true;
       }
       expect(failed).toBe(true);
