@@ -16,9 +16,7 @@
     "@babel/plugin-proposal-object-rest-spread": "7.10.4",
     "@babel/plugin-transform-runtime": "7.10.4",
     "@babel/preset-env": "7.10.4",
-    "@launchql/db-testing": "latest",
-    "json-schema-faker": "^0.5.0-rc15",
-    "uuid": "3.1.0",
+    "@launchql/db-testing": "0.2.3",
     "babel-eslint": "10.1.0",
     "babel-jest": "26.1.0",
     "babel-plugin-macros": "2.8.0",
@@ -26,8 +24,10 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "jest": "26.1.0",
+    "json-schema-faker": "^0.5.0-rc15",
     "prettier": "2.0.5",
-    "regenerator-runtime": "^0.13.2"
+    "regenerator-runtime": "^0.13.2",
+    "uuid": "3.1.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.4.2"

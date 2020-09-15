@@ -1395,10 +1395,10 @@
   resolved "https://registry.npmjs.org/@launchql/db-template/-/db-template-0.1.1.tgz#e066b6a0211bb5dc29364dd1985f05c424ce59f0"
   integrity sha512-339i3ad0s8MBpu/A5cuVdFKILodfd3YNwMr3iyN/w5Oepqg/W3YFNf6Q3K5A0xQFlImyVLx+zzsvyY2TbO6MNQ==
 
-"@launchql/db-testing@^0.1.11", "@launchql/db-testing@latest":
-  version "0.1.11"
-  resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-0.1.11.tgz#860627a37a67f85a5ab15a3d81a47f4cdcd2f2f9"
-  integrity sha512-sUyYktXK7rBW9/J7ASPwMlyLL5xC6v5UCXjed80Z/uufDwCxFseCwnoT4c7dtRX+xGRDzMqqN3YGp2c7T7gRgg==
+"@launchql/db-testing@0.2.3", "@launchql/db-testing@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-0.2.3.tgz#7622828277aa0fe0937fa58735565314f3176d16"
+  integrity sha512-qkvVO3zVaqWfrj+DyzuMr5Ei0jZsTOq/yf68lRPirE3E3Saw4LZnDGa/1qZII5ykKElocoOmmkqmqpVtw92hzQ==
   dependencies:
     "@babel/runtime" "^7.10.4"
     "@launchql/db-utils" "^0.2.2"
@@ -1439,32 +1439,31 @@
     skitch-ext-utilities "0.0.1"
     skitch-ext-verify "0.0.1"
 
-"@launchql/graphql-testing@latest":
-  version "0.1.14"
-  resolved "https://registry.npmjs.org/@launchql/graphql-testing/-/graphql-testing-0.1.14.tgz#429e49a604bb5fef62b25b8c81324a06ba9c840b"
-  integrity sha512-X6PP7mvRO41KHOoJ0xXi66/KoLYntUHm/pil3BG9prmJf0y/vO2agbHsOiDkvdJv5LfQm+JjJyuQViWFnn57Nw==
+"@launchql/graphql-testing@0.1.23":
+  version "0.1.23"
+  resolved "https://registry.npmjs.org/@launchql/graphql-testing/-/graphql-testing-0.1.23.tgz#4147c85932e4f7bedffd5f2844b463122cb903df"
+  integrity sha512-M6eTcUeYbieK1YVTU/m6WA+MiCNgiUAHCkmWJJzOh3OQ5la9uUn1lk1AJGqCZBAOaZSz8UV1w+4o+dGFhtplpg==
   dependencies:
     "@babel/runtime" "^7.10.4"
-    "@launchql/db-testing" "^0.1.11"
-    "@launchql/server" "^0.18.0"
+    "@launchql/db-testing" "^0.2.3"
+    "@launchql/server" "^0.18.4"
     envalid "6.0.2"
     graphql "^14.0.2"
     mock-req "0.2.0"
     postgraphile "4.7.0"
 
-"@launchql/server@^0.18.0":
-  version "0.18.0"
-  resolved "https://registry.npmjs.org/@launchql/server/-/server-0.18.0.tgz#d7cb328ce511116719187746c6783e2fa083c663"
-  integrity sha512-JAlAqQn9UghaH6EBnkmZ/jTUSEzRiUH3bWq8wPTvkB+gN7IhPmXnnUzguS9jtEJOrFLWAN5U5vRRLn9iahcgTQ==
+"@launchql/server@^0.18.4":
+  version "0.18.4"
+  resolved "https://registry.npmjs.org/@launchql/server/-/server-0.18.4.tgz#4c655e54e8f054bf3c11488dd0e9677c157c7c57"
+  integrity sha512-14x+OuHJ+d37c3HOpbJ6KWPzvIN9OyjLV5W7levSADFd9KNqDg6ltfm7zJiZVwQjKDNHb3u8r1VpjsqR+e5clw==
   dependencies:
     "@babel/runtime" "^7.10.4"
     "@pyramation/crypto-keys" "0.1.1"
     "@pyramation/crypto-networks" "0.1.0"
     "@pyramation/pg-query-context" "0.0.1"
     "@pyramation/postgraphile" "4.7.6"
-    "@pyramation/postgraphile-upload-field" "0.0.3"
     "@pyramation/s3-streamer" "0.1.1"
-    "@pyramation/upload-names" "0.0.3"
+    "@pyramation/upload-names" "0.0.4"
     "@pyramation/url-domains" "0.0.4"
     colors "1.4.0"
     cors "2.8.5"
@@ -1477,6 +1476,7 @@
     inflection "1.12.0"
     lru-cache "5.1.1"
     pg "8.3.0"
+    postgraphile-derived-upload-field "0.0.5"
     postgraphile-plugin-connection-filter "2.0.0"
     postgraphile-plugin-fulltext-filter "1.0.0-beta.7"
 
@@ -2355,14 +2355,6 @@
   dependencies:
     "@babel/runtime" "^7.4.2"
 
-"@pyramation/postgraphile-upload-field@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.npmjs.org/@pyramation/postgraphile-upload-field/-/postgraphile-upload-field-0.0.3.tgz#76007cf0c2d63881c68653bf4d8b949e03873244"
-  integrity sha512-eQA78ftV+rX1i23JP95TZGzfGH1ta9+3kALQmiiD3mdsxWFEGWMmuw5lsCSuJV0EjCdpcFPAOFgvp7IAomGrBA==
-  dependencies:
-    "@babel/runtime" "^7.4.2"
-    graphql-upload "11.0.0"
-
 "@pyramation/postgraphile@4.7.6":
   version "4.7.6"
   resolved "https://registry.npmjs.org/@pyramation/postgraphile/-/postgraphile-4.7.6.tgz#e14e7236f23596a59043ab8dd167dcb6d37985de"
@@ -2403,10 +2395,10 @@
     "@pyramation/content-type-stream" "^0.0.4"
     aws-sdk "2.729.0"
 
-"@pyramation/upload-names@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.npmjs.org/@pyramation/upload-names/-/upload-names-0.0.3.tgz#a495a73ef5fdb17cc4024180c29e03c6d3dbea8c"
-  integrity sha512-qBXE2vyLK5WGoYHp9k7saXIfIY+J7OWZxFIKcAxQLe6tAxa1vQWC8v95IMWTHcV1NTsjImPUNZIOX6a5zUVJRg==
+"@pyramation/upload-names@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.npmjs.org/@pyramation/upload-names/-/upload-names-0.0.4.tgz#0ff7e6b672b7a8e3f5c5ed3b6576cfd5f68bf386"
+  integrity sha512-FcTqWfaNUG4KadIB/QzKrD3ZVCKFz5Oyp8RA6AI/kUYQWqdi3KLZgtfbqq7rYorjamLLBiGE1mFSUTyKfpW2EQ==
   dependencies:
     "@babel/runtime" "^7.4.2"
 
@@ -8310,6 +8302,14 @@ postgraphile-core@4.7.0:
   dependencies:
     graphile-build "4.7.0"
     graphile-build-pg "4.7.0"
+
+postgraphile-derived-upload-field@0.0.5:
+  version "0.0.5"
+  resolved "https://registry.npmjs.org/postgraphile-derived-upload-field/-/postgraphile-derived-upload-field-0.0.5.tgz#10e428b3a8855a455367fd70ee7f1d9846edea24"
+  integrity sha512-1RF2g6k5CKZPG4oG6eFwFEUB/FjCsaOiLqYhnXNwyWM4LdNeTCSGPvz6aIsT/QQ79acvcpi3uT466iRROCYk8g==
+  dependencies:
+    "@babel/runtime" "^7.4.2"
+    graphql-upload "11.0.0"
 
 postgraphile-plugin-connection-filter@2.0.0:
   version "2.0.0"
