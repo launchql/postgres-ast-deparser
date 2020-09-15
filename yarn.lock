@@ -1395,10 +1395,10 @@
   resolved "https://registry.npmjs.org/@launchql/db-template/-/db-template-0.1.1.tgz#e066b6a0211bb5dc29364dd1985f05c424ce59f0"
   integrity sha512-339i3ad0s8MBpu/A5cuVdFKILodfd3YNwMr3iyN/w5Oepqg/W3YFNf6Q3K5A0xQFlImyVLx+zzsvyY2TbO6MNQ==
 
-"@launchql/db-testing@0.2.3", "@launchql/db-testing@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-0.2.3.tgz#7622828277aa0fe0937fa58735565314f3176d16"
-  integrity sha512-qkvVO3zVaqWfrj+DyzuMr5Ei0jZsTOq/yf68lRPirE3E3Saw4LZnDGa/1qZII5ykKElocoOmmkqmqpVtw92hzQ==
+"@launchql/db-testing@0.2.5", "@launchql/db-testing@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-0.2.5.tgz#d47cd977c69baf4df74c1d1f182a11f278991d84"
+  integrity sha512-1/wvSUhq1gpEH20JIWDasSnc7ey+HxiE+YLyeSls9AaWDcQ9BVhyYIzcSQmNwYajJgMdmEmXTKexNvvizxzlCg==
   dependencies:
     "@babel/runtime" "^7.10.4"
     "@launchql/db-utils" "^0.2.2"
@@ -1439,13 +1439,13 @@
     skitch-ext-utilities "0.0.1"
     skitch-ext-verify "0.0.1"
 
-"@launchql/graphql-testing@0.1.23":
-  version "0.1.23"
-  resolved "https://registry.npmjs.org/@launchql/graphql-testing/-/graphql-testing-0.1.23.tgz#4147c85932e4f7bedffd5f2844b463122cb903df"
-  integrity sha512-M6eTcUeYbieK1YVTU/m6WA+MiCNgiUAHCkmWJJzOh3OQ5la9uUn1lk1AJGqCZBAOaZSz8UV1w+4o+dGFhtplpg==
+"@launchql/graphql-testing@0.1.25":
+  version "0.1.25"
+  resolved "https://registry.npmjs.org/@launchql/graphql-testing/-/graphql-testing-0.1.25.tgz#5a007372a1b47b16644f95ced3805b5b61e2be9d"
+  integrity sha512-4c2JKJGyYUiUNZhKBvpMkjh/KecQb/PE+7FiqPxfShZ9LL9xdf1khh6TtuCkz8PYYhrLuzz14tzOA0KuMqSHSg==
   dependencies:
     "@babel/runtime" "^7.10.4"
-    "@launchql/db-testing" "^0.2.3"
+    "@launchql/db-testing" "^0.2.5"
     "@launchql/server" "^0.18.4"
     envalid "6.0.2"
     graphql "^14.0.2"
