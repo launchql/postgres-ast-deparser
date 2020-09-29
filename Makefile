@@ -35,7 +35,6 @@ dump:
 
 deploy:
 	@echo lql deploy --recursive --createdb --yes --project dbs --database launchql-db
-	@echo lql deploy --recursive --createdb --yes --project dbs_rls --database launchql-db
 
 generate:
 	@cd packages/db_text && ./generate/generate.js

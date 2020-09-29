@@ -8108,6 +8108,11 @@ pg-connection-string@^2.0.0, pg-connection-string@^2.2.3, pg-connection-string@^
   resolved "https://registry.npmjs.org/pg-connection-string/-/pg-connection-string-2.3.0.tgz#c13fcb84c298d0bfa9ba12b40dd6c23d946f55d6"
   integrity sha512-ukMTJXLI7/hZIwTW7hGMZJ0Lj0S2XQBCJ4Shv4y1zgQ/vqVea+FLhzywvPj0ujSuofu+yA4MYHGZPTsgjBgJ+w==
 
+pg-escape@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/pg-escape/-/pg-escape-0.2.0.tgz#65594c1691659b4ab6e0cbbf9d50744be474998e"
+  integrity sha1-ZVlMFpFlm0q24Mu/nVB0S+R0mY4=
+
 pg-int8@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/pg-int8/-/pg-int8-1.0.1.tgz#943bd463bf5b71b4170115f80f8efc9a0c0eb78c"
@@ -8137,6 +8142,14 @@ pg-protocol@^1.2.5:
   version "1.2.5"
   resolved "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.2.5.tgz#28a1492cde11646ff2d2d06bdee42a3ba05f126c"
   integrity sha512-1uYCckkuTfzz/FCefvavRywkowa6M5FohNMF5OjKrqo9PSR8gYc8poVmwwYQaBxhmQdBjhtP514eXy9/Us2xKg==
+
+pg-query-string@0.1.3:
+  version "0.1.3"
+  resolved "https://registry.npmjs.org/pg-query-string/-/pg-query-string-0.1.3.tgz#b0e363b510c6d201132519ee8f67b063272a5977"
+  integrity sha512-AZYA9oehIZTDGGedSIQ5DsvrgiZQevyr6X0loT/9Swcqa3PT7YCrUO1i1H+D/gFIWh7gvnwxTRbN/2luJP8yrw==
+  dependencies:
+    "@babel/runtime" "^7.4.2"
+    pg-escape "^0.2.0"
 
 pg-sql2@4.7.0:
   version "4.7.0"
