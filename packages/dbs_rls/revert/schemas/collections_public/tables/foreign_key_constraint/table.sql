@@ -1,1 +1,0 @@
--- Revert schemas/collections_public/tables/foreign_key_constraint/table from pg

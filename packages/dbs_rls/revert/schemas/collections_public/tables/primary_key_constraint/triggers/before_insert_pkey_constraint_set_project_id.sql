@@ -1,8 +1,0 @@
--- Revert schemas/collections_public/tables/primary_key_constraint/triggers/before_insert_pkey_constraint_set_project_id from pg
-
-BEGIN;
-
-DROP TRIGGER before_insert_pkey_constraint_set_project_id ON collections_public.primary_key_constraint;
-DROP FUNCTION collections_private.tg_before_insert_pkey_constraint_set_project_id; 
-
-COMMIT;

@@ -1,1 +1,0 @@
--- Verify schemas/projects_public/tables/project/table  on pg
