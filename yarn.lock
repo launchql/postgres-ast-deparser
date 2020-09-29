@@ -8143,10 +8143,10 @@ pg-protocol@^1.2.5:
   resolved "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.2.5.tgz#28a1492cde11646ff2d2d06bdee42a3ba05f126c"
   integrity sha512-1uYCckkuTfzz/FCefvavRywkowa6M5FohNMF5OjKrqo9PSR8gYc8poVmwwYQaBxhmQdBjhtP514eXy9/Us2xKg==
 
-pg-query-string@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.npmjs.org/pg-query-string/-/pg-query-string-0.1.3.tgz#b0e363b510c6d201132519ee8f67b063272a5977"
-  integrity sha512-AZYA9oehIZTDGGedSIQ5DsvrgiZQevyr6X0loT/9Swcqa3PT7YCrUO1i1H+D/gFIWh7gvnwxTRbN/2luJP8yrw==
+pg-query-string@0.1.4:
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/pg-query-string/-/pg-query-string-0.1.4.tgz#9dbcd475773b497f0cb841d79394488088bb3315"
+  integrity sha512-IKXAXlAO6nbrXOPh392K90U976hpbitswoaIidL25Dhpuif7WTj0TI8z35KP7R6H6jqSFvn3KXKjiNSdIXAGHQ==
   dependencies:
     "@babel/runtime" "^7.4.2"
     pg-escape "^0.2.0"
