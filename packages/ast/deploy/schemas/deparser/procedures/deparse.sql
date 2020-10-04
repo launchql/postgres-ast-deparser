@@ -11,6 +11,13 @@ CREATE FUNCTION deparser.reserved (
 $$  
 LANGUAGE 'sql' SECURITY DEFINER;
 
+CREATE FUNCTION deparser.parens (
+  str text
+) returns text as $$
+	select '(' || str || ')';
+$$  
+LANGUAGE 'sql';
+
 CREATE FUNCTION deparser.type_name (
   node jsonb,
   context text default null
@@ -720,6 +727,37 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
+CREATE FUNCTION deparser.access_priv(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'AccessPriv') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AccessPriv';
+    END IF;
+
+    node = node->'AccessPriv';
+
+    IF (node->'priv_name') IS NOT NULL THEN
+      output = array_append(output, upper(node->>'priv_name'));
+    ELSE
+      output = array_append(output, 'ALL');
+    END IF;
+
+    IF (node->'cols') IS NOT NULL THEN
+      output = array_append(output, '(');
+      output = array_append(output, deparser.list(node->'cols', context));
+      output = array_append(output, ')');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+
+END;
+$$
+LANGUAGE 'plpgsql';
+
 CREATE FUNCTION deparser.func_call(
   node jsonb,
   context text default null
@@ -744,6 +782,380 @@ BEGIN
     END IF;
 
     RETURN array_to_string(ARRAY[fn_name, format( '(%s)', fn_args )], ' ');
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION deparser.rule_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  event int;
+BEGIN
+    IF (node->'RuleStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RuleStmt';
+    END IF;
+
+    IF (node->'RuleStmt'->'event') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RuleStmt';
+    END IF;
+
+    IF (node->'RuleStmt'->'relation') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RuleStmt';
+    END IF;
+
+    node = node->'RuleStmt';
+
+    output = array_append(output, 'CREATE');
+    output = array_append(output, 'RULE');
+    IF (node->'rulename' = '_RETURN') THEN
+      -- special rules
+      output = array_append(output, '"_RETURN"');
+    ELSE
+      output = array_append(output, e.rulename);
+    END IF;
+    output = array_append(output, 'AS');
+    output = array_append(output, 'ON');
+
+    -- events
+    event = (node->'event')::int;
+    IF (event = 1) THEN
+      output = array_append(output, 'SELECT');
+    ELSIF (event = 2) THEN 
+      output = array_append(output, 'UPDATE');
+    ELSIF (event = 3) THEN 
+      output = array_append(output, 'INSERT');
+    ELSIF (event = 4) THEN 
+      output = array_append(output, 'DELETE');
+    ELSE
+      RAISE EXCEPTION 'event type not yet implemented for RuleStmt';
+    END IF;
+
+    -- relation
+
+    output = array_append(output, 'TO');
+    output = array_append(output, deparse.expression(node->'relation', context));
+
+    IF (node->'instead') IS NOT NULL THEN 
+      output = array_append(output, 'DO');
+      output = array_append(output, 'INSTEAD');
+    END IF;
+
+    IF (node->'whereClause') IS NOT NULL THEN 
+      output = array_append(output, 'WHERE');
+      output = array_append(output, deparse.expression(node->'whereClause', context));
+      output = array_append(output, 'DO');
+    END IF;
+
+    IF (node->'actions' IS NOT NULL AND jsonb_array_length(node->'actions') > 0) THEN 
+      output = array_append(output, deparse.expression(node->'actions'->0, context));
+    ELSE
+      output = array_append(output, 'NOTHING');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION deparser.create_role_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  event int;
+BEGIN
+    IF (node->'CreateRoleStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
+    END IF;
+
+    -- IF (node->'CreateRoleStmt'->'event') IS NULL THEN
+    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
+    -- END IF;
+
+    -- IF (node->'CreateRoleStmt'->'relation') IS NULL THEN
+    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
+    -- END IF;
+
+    node = node->'CreateRoleStmt';
+
+    output = array_append(output, 'CREATE');
+
+    RAISE EXCEPTION 'TODO %', 'CreateRoleStmt';
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION deparser.transaction_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  kind int;
+BEGIN
+    IF (node->'TransactionStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'TransactionStmt';
+    END IF;
+
+    IF (node->'TransactionStmt'->'kind') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'TransactionStmt';
+    END IF;
+
+    node = node->'TransactionStmt';
+    kind = (node->'kind')::int;
+
+    IF (kind = 0) THEN
+      -- TODO implement other options
+      output = array_append(output, 'BEGIN');
+    ELSIF (kind = 1) THEN
+      -- TODO implement other options
+      output = array_append(output, 'START TRANSACTION');
+    ELSIF (kind = 2) THEN
+      output = array_append(output, 'COMMIT');
+    ELSIF (kind = 3) THEN
+      output = array_append(output, 'ROLLBACK');
+    ELSIF (kind = 4) THEN
+      output = array_append(output, 'SAVEPOINT');
+      output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
+    ELSIF (kind = 5) THEN
+      output = array_append(output, 'RELEASE SAVEPOINT');
+      output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
+    ELSIF (kind = 6) THEN
+      output = array_append(output, 'ROLLBACK TO');
+      output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
+    ELSIF (kind = 7) THEN
+      output = array_append(output, 'PREPARE TRANSACTION');
+      output = array_append(output, '''' || node->>'gid' || '''');
+    ELSIF (kind = 8) THEN
+      output = array_append(output, 'COMMIT PREPARED');
+      output = array_append(output, '''' || node->>'gid' || '''');
+    ELSIF (kind = 9) THEN
+      output = array_append(output, 'ROLLBACK PREPARED');
+      output = array_append(output, '''' || node->>'gid' || '''');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION deparser.view_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  event int;
+BEGIN
+    IF (node->'ViewStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'ViewStmt';
+    END IF;
+
+    IF (node->'ViewStmt'->'view') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'ViewStmt';
+    END IF;
+
+    IF (node->'ViewStmt'->'query') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'ViewStmt';
+    END IF;
+
+    node = node->'ViewStmt';
+    output = array_append(output, 'CREATE VIEW');
+    output = array_append(output, deparser.expression(node->'view', context));
+    output = array_append(output, 'AS');
+    output = array_append(output, deparser.expression(node->'query', context));
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION deparser.select_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  sets text[];
+  values text[];
+  pvalues text[];
+  value text;
+  op int;
+BEGIN
+    IF (node->'SelectStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt';
+    END IF;
+
+    -- IF (node->'SelectStmt'->'view') IS NULL THEN
+    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt';
+    -- END IF;
+
+    -- IF (node->'SelectStmt'->'query') IS NULL THEN
+    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt';
+    -- END IF;
+
+    node = node->'SelectStmt';
+
+    IF (node->'withClause') IS NOT NULL THEN 
+      output = array_append(output, deparser.expression(node->'withClause'), context);
+    END IF;
+
+    op = (node->'op')::int;
+
+    IF (op = 0) THEN 
+       IF (node->'valuesLists') IS NULL THEN 
+        output = array_append(output, 'SELECT');
+       END IF;
+    ELSE 
+        output = array_append(output, '(');
+        output = array_append(output, deparser.expression(node->'larg', context));
+        output = array_append(output, ')');
+        
+        -- sets
+        sets = ARRAY['NONE', 'UNION', 'INTERSECT', 'EXCEPT']::text[];
+        output = array_append(output, sets[op+1]);
+        
+        -- all
+        IF (node->'all') IS NOT NULL THEN
+          output = array_append(output, 'ALL');
+        END IF;        
+
+        -- rarg
+        output = array_append(output, '(');
+        output = array_append(output, deparser.expression(node->'rarg', context));
+        output = array_append(output, ')');
+    END IF;
+
+    -- distinct
+    IF (node->'distinctClause') IS NOT NULL THEN 
+      IF (node->'distinctClause'->0) IS NOT NULL THEN 
+        output = array_append(output, 'DISTINCT ON');
+        output = array_append(output, '(');
+        output = array_append(output, deparser.list(node->'distinctClause', E',\n', context));
+        output = array_append(output, ')');
+      ELSE
+        output = array_append(output, 'DISTINCT');
+      END IF;
+    END IF;
+
+    -- target
+    IF (node->'targetList') IS NOT NULL THEN 
+      output = array_append(output, deparser.list(node->'targetList', E',\n', 'select'));
+    END IF;
+
+    -- into
+    IF (node->'intoClause') IS NOT NULL THEN 
+      output = array_append(output, deparser.expression(node->'intoClause', context));
+    END IF;
+
+    -- from
+    IF (node->'fromClause') IS NOT NULL THEN 
+      output = array_append(output, deparser.list(node->'fromClause', E',\n', 'from'));
+    END IF;
+
+    -- where
+    IF (node->'whereClause') IS NOT NULL THEN 
+      output = array_append(output, 'WHERE');
+      output = array_append(output, deparser.expression(node->'whereClause', context));
+    END IF;
+
+    -- values
+    IF (node->'valuesLists') IS NOT NULL THEN 
+      output = array_append(output, 'VALUES');
+      values = deparser.expressions_array(node->'valuesLists', context);
+      FOREACH value IN array values
+      LOOP
+        pvalues = array_append(pvalues, deparser.parens(value));
+      END LOOP;
+      output = array_append(output, array_to_string(pvalues, ', '));
+    END IF;
+
+    -- groups
+    IF (node->'groupClause') IS NOT NULL THEN 
+      output = array_append(output, 'GROUP BY');
+      output = array_append(output, deparser.list(node->'groupClause', E',\n', 'group'));
+    END IF;
+
+    -- having
+    IF (node->'havingClause') IS NOT NULL THEN 
+      output = array_append(output, 'HAVING');
+      output = array_append(output, deparser.expression(node->'havingClause', context));
+    END IF;
+
+    -- window
+    IF (node->'windowClause') IS NOT NULL THEN 
+      RAISE EXCEPTION 'implement windowClause';
+    END IF;
+
+    -- sort
+    IF (node->'sortClause') IS NOT NULL THEN 
+      output = array_append(output, 'ORDER BY');
+      output = array_append(output, deparser.list(node->'sortClause', E',\n', 'sort'));
+    END IF;
+
+    -- limit
+    IF (node->'limitCount') IS NOT NULL THEN 
+      output = array_append(output, 'LIMIT');
+      output = array_append(output, deparser.expression(node->'limitCount', context));
+    END IF;
+
+    -- offset
+    IF (node->'limitOffset') IS NOT NULL THEN 
+      output = array_append(output, 'OFFSET');
+      output = array_append(output, deparser.expression(node->'limitOffset', context));
+    END IF;
+
+    -- locking
+    IF (node->'lockingClause') IS NOT NULL THEN 
+      output = array_append(output, 'OFFSET');
+      output = array_append(output, deparser.list(node->'lockingClause', ' ', context));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION deparser.grant_role_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  event int;
+BEGIN
+    IF (node->'GrantRoleStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantRoleStmt';
+    END IF;
+
+    IF (node->'GrantRoleStmt'->'granted_roles') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantRoleStmt';
+    END IF;
+
+    node = node->'GrantRoleStmt';
+
+    IF (node->'is_grant' IS NULL OR (node->'is_grant')::bool = FALSE) THEN
+      output = array_append(output, 'REVOKE');
+      output = array_append(output, deparser.list(node->'granted_roles'));
+      output = array_append(output, 'FROM');
+      output = array_append(output, deparser.list(node->'grantee_roles'));
+    ELSE
+      output = array_append(output, 'GRANT');
+      output = array_append(output, deparser.list(node->'granted_roles'));
+      output = array_append(output, 'TO');
+      output = array_append(output, deparser.list(node->'grantee_roles'));
+    END IF;
+
+    IF (node->'admin_opt' IS NOT NULL AND (node->'admin_opt')::bool = TRUE) THEN 
+      output = array_append(output, 'WITH ADMIN OPTION');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
 END;
 $$
 LANGUAGE 'plpgsql';
@@ -963,6 +1375,20 @@ BEGIN
     RETURN deparser.create_policy_stmt(expr, context);
   ELSEIF (expr->>'RoleSpec') IS NOT NULL THEN      
     RETURN deparser.role_spec(expr, context);
+  ELSEIF (expr->>'CreateRoleStmt') IS NOT NULL THEN      
+    RETURN deparser.create_role_stmt(expr, context);
+  ELSEIF (expr->>'AccessPriv') IS NOT NULL THEN      
+    RETURN deparser.access_priv(expr, context);
+  ELSEIF (expr->>'RuleStmt') IS NOT NULL THEN      
+    RETURN deparser.rule_stmt(expr, context);
+  ELSEIF (expr->>'GrantRoleStmt') IS NOT NULL THEN      
+    RETURN deparser.grant_role_stmt(expr, context);
+  ELSEIF (expr->>'ViewStmt') IS NOT NULL THEN      
+    RETURN deparser.view_stmt(expr, context);
+  ELSEIF (expr->>'SelectStmt') IS NOT NULL THEN      
+    RETURN deparser.select_stmt(expr, context);
+  ELSEIF (expr->>'TransactionStmt') IS NOT NULL THEN      
+    RETURN deparser.transaction_stmt(expr, context);
   ELSEIF (expr->>'CreateFunctionStmt') IS NOT NULL THEN      
     RETURN deparser.create_function_stmt(expr, context);
   ELSEIF (expr->>'CreateTrigStmt') IS NOT NULL THEN      

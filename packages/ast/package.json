@@ -25,9 +25,11 @@
     "eslint": "^7.3.1",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "graphql-tag": "2.10.3",
+    "glob": "7.1.6",
     "graphql": "^14.0.2",
+    "graphql-tag": "2.10.3",
     "jest": "26.1.0",
+    "pgsql-parser": "0.7.9",
     "prettier": "2.0.5",
     "regenerator-runtime": "^0.13.2"
   },
