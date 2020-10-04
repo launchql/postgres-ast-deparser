@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`deparse 1`] = `"CREATE POLICY authenticated_can_delete_on_user_secrets ON dashboard_private.user_secrets FOR DELETE TO authenticated USING ( user_id = dashboard_public.get_current_user_id () )"`;
+
+exports[`policy deparse 1`] = `
+Array [
+  Object {
+    "deparse": "CREATE POLICY mypolicy ON schemanamed.mytable FOR INSERT TO authenticated USING ( (responder_id = dbe.get_uid (c, b) OR requester_id = dbe.get_other_uid (c, b)) )",
+  },
+]
+`;

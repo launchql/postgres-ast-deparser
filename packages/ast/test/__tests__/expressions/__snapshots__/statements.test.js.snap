@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`funccal 1`] = `
+Object {
+  "funccall": Object {
+    "FuncCall": Object {
+      "args": Array [],
+      "funcname": Array [
+        Object {
+          "String": Object {
+            "str": "dan",
+          },
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`funccal deparse 1`] = `
+Object {
+  "deparse": "dan ()",
+}
+`;
+
+exports[`set expr 1`] = `
+Object {
+  "deparse": "a = b",
+}
+`;
+
+exports[`typecast 1`] = `
+Object {
+  "deparse": "NULL::text[]",
+}
+`;
+
+exports[`typename 1`] = `
+Object {
+  "deparse": "text",
+}
+`;
