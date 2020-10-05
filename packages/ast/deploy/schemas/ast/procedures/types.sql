@@ -4,13 +4,31 @@
 
 BEGIN;
 
+-- NOTE: we purposesly dont set null values...
+CREATE FUNCTION ast.jsonb_set (
+    result jsonb,
+    path text[],
+    new_value jsonb
+  )
+    RETURNS jsonb
+    AS $$
+BEGIN
+  IF (new_value IS NOT NULL) THEN
+  	RETURN jsonb_set(result, path, new_value);
+  END IF;
+  RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast.a_const (str text default '')
     RETURNS jsonb
     AS $$
 DECLARE
     result jsonb = '{"A_Const":{"val":{"String":{"str":""}}}}'::jsonb;
 BEGIN
-	RETURN jsonb_set(result, '{A_Const, val, String, str}', to_jsonb(str));
+	RETURN ast.jsonb_set(result, '{A_Const, val, String, str}', to_jsonb(str));
 END;
 $$
 LANGUAGE 'plpgsql'
@@ -22,7 +40,7 @@ CREATE FUNCTION ast.a_const (val jsonb)
 DECLARE
     result jsonb = '{"A_Const":{"val":""}}'::jsonb;
 BEGIN
-	RETURN jsonb_set(result, '{A_Const, val}', val);
+	RETURN ast.jsonb_set(result, '{A_Const, val}', val);
 END;
 $$
 LANGUAGE 'plpgsql'
@@ -39,10 +57,10 @@ CREATE FUNCTION ast.range_var (
 DECLARE
     result jsonb = '{"RangeVar":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{RangeVar, schemaname}', to_jsonb(schemaname));
-	result = jsonb_set(result, '{RangeVar, relname}', to_jsonb(relname));
-	result = jsonb_set(result, '{RangeVar, inh}', to_jsonb(inh));
-	result = jsonb_set(result, '{RangeVar, relpersistence}', to_jsonb(relpersistence));
+	result = ast.jsonb_set(result, '{RangeVar, schemaname}', to_jsonb(schemaname));
+	result = ast.jsonb_set(result, '{RangeVar, relname}', to_jsonb(relname));
+	result = ast.jsonb_set(result, '{RangeVar, inh}', to_jsonb(inh));
+	result = ast.jsonb_set(result, '{RangeVar, relpersistence}', to_jsonb(relpersistence));
   return result;
 END;
 $$
@@ -57,7 +75,7 @@ CREATE FUNCTION ast.raw_stmt (
 DECLARE
     result jsonb = '{"RawStmt":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{RawStmt, stmt}', stmt);
+	result = ast.jsonb_set(result, '{RawStmt, stmt}', stmt);
   return result;
 END;
 $$
@@ -76,11 +94,11 @@ CREATE FUNCTION ast.rule_stmt (
 DECLARE
     result jsonb = '{"RuleStmt":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{RuleStmt, rulename}', to_jsonb(rulename));
-	result = jsonb_set(result, '{RuleStmt, event}', to_jsonb(event));
-	result = jsonb_set(result, '{RuleStmt, relation}', relation);
-	result = jsonb_set(result, '{RuleStmt, whereClause}', whereClause);
-	result = jsonb_set(result, '{RuleStmt, actions}', actions);
+	result = ast.jsonb_set(result, '{RuleStmt, rulename}', to_jsonb(rulename));
+	result = ast.jsonb_set(result, '{RuleStmt, event}', to_jsonb(event));
+	result = ast.jsonb_set(result, '{RuleStmt, relation}', relation);
+	result = ast.jsonb_set(result, '{RuleStmt, whereClause}', whereClause);
+	result = ast.jsonb_set(result, '{RuleStmt, actions}', actions);
   return result;
 END;
 $$
@@ -96,8 +114,8 @@ CREATE FUNCTION ast.bool_expr (
 DECLARE
     result jsonb = '{"BoolExpr":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{BoolExpr, boolop}', to_jsonb(boolop));
-	result = jsonb_set(result, '{BoolExpr, args}', args);
+	result = ast.jsonb_set(result, '{BoolExpr, boolop}', to_jsonb(boolop));
+	result = ast.jsonb_set(result, '{BoolExpr, args}', args);
   return result;
 END;
 $$
@@ -110,7 +128,7 @@ CREATE FUNCTION ast.column_ref (fields jsonb)
 DECLARE
     result jsonb = '{"ColumnRef":{"fields":""}}'::jsonb;
 BEGIN
-	RETURN jsonb_set(result, '{ColumnRef, fields}', fields);
+	RETURN ast.jsonb_set(result, '{ColumnRef, fields}', fields);
 END;
 $$
 LANGUAGE 'plpgsql'
@@ -122,8 +140,8 @@ CREATE FUNCTION ast.func_call (name text, args jsonb default '[]'::jsonb)
 DECLARE
     result jsonb = '{"FuncCall":{"funcname":[{"String":{"str":""}}],"args":[]}}'::jsonb;
 BEGIN
-	  result = jsonb_set(result, '{FuncCall, funcname, 0, String, str}', to_jsonb(name));
-	  result = jsonb_set(result, '{FuncCall, args}', args);
+	  result = ast.jsonb_set(result, '{FuncCall, funcname, 0, String, str}', to_jsonb(name));
+	  result = ast.jsonb_set(result, '{FuncCall, args}', args);
 	RETURN result;
 END;
 $$
@@ -136,20 +154,35 @@ CREATE FUNCTION ast.func_call (name jsonb, args jsonb default '[]'::jsonb)
 DECLARE
     result jsonb = '{"FuncCall":{"funcname":[],"args":[]}}'::jsonb;
 BEGIN
-	  result = jsonb_set(result, '{FuncCall, funcname}', name);
-	  result = jsonb_set(result, '{FuncCall, args}', args);
+	  result = ast.jsonb_set(result, '{FuncCall, funcname}', name);
+	  result = ast.jsonb_set(result, '{FuncCall, args}', args);
 	RETURN result;
 END;
 $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-
 CREATE FUNCTION ast.null ()
     RETURNS jsonb
     AS $$
 BEGIN
   RETURN '{"Null":{}}'::jsonb;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.alias (
+  aliasname text,
+  colnames jsonb default null
+)
+RETURNS jsonb AS $$
+DECLARE
+    result jsonb = '{"Alias":{}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{Alias, aliasname}', to_jsonb(aliasname));
+	  result = ast.jsonb_set(result, '{Alias, colnames}', colnames);
+	RETURN result;
 END;
 $$
 LANGUAGE 'plpgsql'
@@ -166,7 +199,7 @@ BEGIN
    ELSE 
      result = '{"TypeName":{"names":[],"typemod":-1}}'::jsonb;
    END IF;
-	result = jsonb_set(result, '{TypeName, names}', names);
+	result = ast.jsonb_set(result, '{TypeName, names}', names);
   RETURN result;
 END;
 $$
@@ -179,8 +212,8 @@ CREATE FUNCTION ast.type_cast (arg jsonb, typename jsonb)
 DECLARE
   result jsonb = '{"TypeCast":{"arg":{},"typeName":{"TypeName":{"names":[{"String":{"str":"text"}}],"typemod":-1,"arrayBounds":[{"Integer":{"ival":-1}}]}}}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{TypeCast, arg}', arg);
-	result = jsonb_set(result, '{TypeCast, typeName}', typename);
+	result = ast.jsonb_set(result, '{TypeCast, arg}', arg);
+	result = ast.jsonb_set(result, '{TypeCast, typeName}', typename);
   RETURN result;
 END;
 $$
@@ -194,7 +227,7 @@ CREATE FUNCTION ast.string (str text)
 DECLARE
     result jsonb = '{"String":{"str":""}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{String, str}', to_jsonb(str));
+	result = ast.jsonb_set(result, '{String, str}', to_jsonb(str));
 	RETURN result;
 END;
 $$
@@ -207,7 +240,7 @@ CREATE FUNCTION ast.integer (ival int)
 DECLARE
     result jsonb = '{"Integer":{"ival":""}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{Integer, ival}', to_jsonb(ival));
+	result = ast.jsonb_set(result, '{Integer, ival}', to_jsonb(ival));
 	RETURN result;
 END;
 $$
@@ -224,9 +257,9 @@ CREATE FUNCTION ast.def_elem (
 DECLARE
     result jsonb = '{"DefElem":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{DefElem, defname}', to_jsonb(defname));
-	result = jsonb_set(result, '{DefElem, arg}', arg);
-	result = jsonb_set(result, '{DefElem, defaction}', to_jsonb(defaction));
+	result = ast.jsonb_set(result, '{DefElem, defname}', to_jsonb(defname));
+	result = ast.jsonb_set(result, '{DefElem, arg}', arg);
+	result = ast.jsonb_set(result, '{DefElem, defaction}', to_jsonb(defaction));
 	RETURN result;
 END;
 $$
@@ -244,10 +277,10 @@ CREATE FUNCTION ast.a_expr (
 DECLARE
     result jsonb = '{"A_Expr":{"kind":0,"lexpr":{},"name":[],"rexpr":{}}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{A_Expr, kind}', to_jsonb(kind));
-	result = jsonb_set(result, '{A_Expr, lexpr}', lexpr);
-	result = jsonb_set(result, '{A_Expr, name, 0}', ast.string(op));
-	result = jsonb_set(result, '{A_Expr, rexpr}', rexpr);
+	result = ast.jsonb_set(result, '{A_Expr, kind}', to_jsonb(kind));
+	result = ast.jsonb_set(result, '{A_Expr, lexpr}', lexpr);
+	result = ast.jsonb_set(result, '{A_Expr, name, 0}', ast.string(op));
+	result = ast.jsonb_set(result, '{A_Expr, rexpr}', rexpr);
 	RETURN result;
 END;
 $$
@@ -265,10 +298,10 @@ CREATE FUNCTION ast.a_expr (
 DECLARE
     result jsonb = '{"A_Expr":{"kind":0,"lexpr":{},"name":[],"rexpr":{}}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{A_Expr, kind}', to_jsonb(kind));
-	result = jsonb_set(result, '{A_Expr, lexpr}', lexpr);
-	result = jsonb_set(result, '{A_Expr, name}', name);
-	result = jsonb_set(result, '{A_Expr, rexpr}', rexpr);
+	result = ast.jsonb_set(result, '{A_Expr, kind}', to_jsonb(kind));
+	result = ast.jsonb_set(result, '{A_Expr, lexpr}', lexpr);
+	result = ast.jsonb_set(result, '{A_Expr, name}', name);
+	result = ast.jsonb_set(result, '{A_Expr, rexpr}', rexpr);
 	RETURN result;
 END;
 $$
@@ -291,13 +324,13 @@ CREATE FUNCTION ast.create_trigger_stmt (
 DECLARE
     result jsonb = '{"CreateTrigStmt":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{CreateTrigStmt, trigname}', to_jsonb(trigname));
-	result = jsonb_set(result, '{CreateTrigStmt, row}', to_jsonb(isrow));
-	result = jsonb_set(result, '{CreateTrigStmt, timing}', to_jsonb(timing));
-	result = jsonb_set(result, '{CreateTrigStmt, events}', to_jsonb(events));
-	result = jsonb_set(result, '{CreateTrigStmt, funcname}', funcname);
-	result = jsonb_set(result, '{CreateTrigStmt, relation}', relation);
-	result = jsonb_set(result, '{CreateTrigStmt, whenClause}', whenClause);
+	result = ast.jsonb_set(result, '{CreateTrigStmt, trigname}', to_jsonb(trigname));
+	result = ast.jsonb_set(result, '{CreateTrigStmt, row}', to_jsonb(isrow));
+	result = ast.jsonb_set(result, '{CreateTrigStmt, timing}', to_jsonb(timing));
+	result = ast.jsonb_set(result, '{CreateTrigStmt, events}', to_jsonb(events));
+	result = ast.jsonb_set(result, '{CreateTrigStmt, funcname}', funcname);
+	result = ast.jsonb_set(result, '{CreateTrigStmt, relation}', relation);
+	result = ast.jsonb_set(result, '{CreateTrigStmt, whenClause}', whenClause);
 	RETURN result;
 END;
 $$
@@ -314,9 +347,9 @@ CREATE FUNCTION ast.function_parameter (
 DECLARE
     result jsonb = '{"FunctionParameter":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{FunctionParameter, name}', to_jsonb(name));
-	result = jsonb_set(result, '{FunctionParameter, argType}', argType);
-	result = jsonb_set(result, '{FunctionParameter, mode}', to_jsonb(mode));
+	result = ast.jsonb_set(result, '{FunctionParameter, name}', to_jsonb(name));
+	result = ast.jsonb_set(result, '{FunctionParameter, argType}', argType);
+	result = ast.jsonb_set(result, '{FunctionParameter, mode}', to_jsonb(mode));
 
 	RETURN result;
 END;
@@ -335,10 +368,10 @@ CREATE FUNCTION ast.function_parameter (
 DECLARE
     result jsonb = '{"FunctionParameter":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{FunctionParameter, name}', to_jsonb(name));
-	result = jsonb_set(result, '{FunctionParameter, argType}', argType);
-	result = jsonb_set(result, '{FunctionParameter, mode}', to_jsonb(mode));
-	result = jsonb_set(result, '{FunctionParameter, defexpr}', defexpr);
+	result = ast.jsonb_set(result, '{FunctionParameter, name}', to_jsonb(name));
+	result = ast.jsonb_set(result, '{FunctionParameter, argType}', argType);
+	result = ast.jsonb_set(result, '{FunctionParameter, mode}', to_jsonb(mode));
+	result = ast.jsonb_set(result, '{FunctionParameter, defexpr}', defexpr);
 
 	RETURN result;
 END;
@@ -357,10 +390,10 @@ CREATE FUNCTION ast.create_function_stmt (
 DECLARE
     result jsonb = '{"CreateFunctionStmt":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{CreateFunctionStmt, funcname}', funcname);
-	result = jsonb_set(result, '{CreateFunctionStmt, parameters}', parameters);
-	result = jsonb_set(result, '{CreateFunctionStmt, returnType}', returnType);
-	result = jsonb_set(result, '{CreateFunctionStmt, options}', options);
+	result = ast.jsonb_set(result, '{CreateFunctionStmt, funcname}', funcname);
+	result = ast.jsonb_set(result, '{CreateFunctionStmt, parameters}', parameters);
+	result = ast.jsonb_set(result, '{CreateFunctionStmt, returnType}', returnType);
+	result = ast.jsonb_set(result, '{CreateFunctionStmt, options}', options);
 	RETURN result;
 END;
 $$
@@ -376,8 +409,8 @@ CREATE FUNCTION ast.role_spec (
 DECLARE
     result jsonb = '{"RoleSpec":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{RoleSpec, roletype}', to_jsonb(roletype));
-	result = jsonb_set(result, '{RoleSpec, rolename}', to_jsonb(rolename));
+	result = ast.jsonb_set(result, '{RoleSpec, roletype}', to_jsonb(roletype));
+	result = ast.jsonb_set(result, '{RoleSpec, rolename}', to_jsonb(rolename));
 	RETURN result;
 END;
 $$
@@ -397,12 +430,12 @@ CREATE FUNCTION ast.create_policy_stmt (
 DECLARE
     result jsonb = '{"CreatePolicyStmt":{}}'::jsonb;
 BEGIN
-	result = jsonb_set(result, '{CreatePolicyStmt, policy_name}', to_jsonb(policy_name));
-	result = jsonb_set(result, '{CreatePolicyStmt, table}', tbl);
-	result = jsonb_set(result, '{CreatePolicyStmt, roles}', roles);
-	result = jsonb_set(result, '{CreatePolicyStmt, qual}', qual);
-	result = jsonb_set(result, '{CreatePolicyStmt, cmd_name}', to_jsonb(cmd_name));
-	result = jsonb_set(result, '{CreatePolicyStmt, permissive}', to_jsonb(permissive));
+	result = ast.jsonb_set(result, '{CreatePolicyStmt, policy_name}', to_jsonb(policy_name));
+	result = ast.jsonb_set(result, '{CreatePolicyStmt, table}', tbl);
+	result = ast.jsonb_set(result, '{CreatePolicyStmt, roles}', roles);
+	result = ast.jsonb_set(result, '{CreatePolicyStmt, qual}', qual);
+	result = ast.jsonb_set(result, '{CreatePolicyStmt, cmd_name}', to_jsonb(cmd_name));
+	result = ast.jsonb_set(result, '{CreatePolicyStmt, permissive}', to_jsonb(permissive));
 	RETURN result;
 END;
 $$

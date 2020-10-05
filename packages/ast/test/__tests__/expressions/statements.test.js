@@ -225,3 +225,26 @@ select deparser.deparse(
     expect(result).toMatchSnapshot();
   }
 });
+
+it('alias', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.alias(
+    'myrule',
+    to_jsonb(ARRAY[ ast.string('namesplaceholder') ])
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('alias', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.alias(
+    'myrule'
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});

@@ -40,6 +40,10 @@ exports[`a_expr 11-12 1`] = `"<lexpr placeholder> BETWEEN arg1 AND arg2"`;
 
 exports[`a_expr 11-12 2`] = `"<lexpr placeholder> NOT BETWEEN arg1 AND arg2"`;
 
+exports[`alias 1`] = `"AS myrule (namesplaceholder)"`;
+
+exports[`alias 2`] = `"AS myrule"`;
+
 exports[`func_call 1`] = `"dan ()"`;
 
 exports[`raw_stmt 1`] = `"NULL::text[]"`;
