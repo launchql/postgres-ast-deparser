@@ -77,7 +77,7 @@ select deparser.deparse(
 it('create_trigger_with_fields', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse( 
-  ast.create_trigger_with_fields(
+  ast_helpers.create_trigger_with_fields(
     'my-trigger',
     'my-schema',
     'my-table',
@@ -93,7 +93,7 @@ select deparser.deparse(
 it('create_trigger_with_fields and names wo quotes', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse( 
-  ast.create_trigger_with_fields(
+  ast_helpers.create_trigger_with_fields(
     'mytrigger',
     'myschema',
     'mytable',

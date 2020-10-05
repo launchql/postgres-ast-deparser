@@ -24,8 +24,8 @@ it('pure psql', async () => {
 select deparser.deparse(
   ast.a_expr(
    0,
-   ast.tsvectorw( ast.tsvector(ast.coalesce('NEW.field1')) , 'A'), '||',
-     ast.tsvectorw( ast.tsvector(ast.coalesce('NEW.field2')) , 'A'))
+   ast_helpers.tsvectorw( ast_helpers.tsvector(ast_helpers.coalesce('NEW.field1')) , 'A'), '||',
+     ast_helpers.tsvectorw( ast_helpers.tsvector(ast_helpers.coalesce('NEW.field2')) , 'A'))
    
    );
   `);
@@ -34,14 +34,14 @@ select deparser.deparse(
 
 it('tsvector', async () => {
   const [result] = await db.any(`
-select deparser.deparse( ast.tsvector(ast.coalesce('NEW.field1') ));
+select deparser.deparse( ast_helpers.tsvector(ast_helpers.coalesce('NEW.field1') ));
   `);
   expect(result).toMatchSnapshot();
 });
 
 it('tsvector with lang', async () => {
   const [result] = await db.any(`
-select deparser.deparse( ast.tsvector('pg_catalog.english', ast.coalesce('NEW.field1') ));
+select deparser.deparse( ast_helpers.tsvector('pg_catalog.english', ast_helpers.coalesce('NEW.field1') ));
   `);
   expect(result).toMatchSnapshot();
 });
@@ -64,7 +64,7 @@ it('tsvector index', async () => {
     }
   ];
   const [result] = await db.any(`
-  select deparser.deparse( ast.tsvector_index('${JSON.stringify(
+  select deparser.deparse( ast_helpers.tsvector_index('${JSON.stringify(
     fields
   )}'::jsonb) );
   `);
@@ -95,7 +95,7 @@ it('trigger tsvector index', async () => {
     }
   ];
   const [result] = await db.any(`
-  select deparser.deparse( ast.tsvector_index('${JSON.stringify(
+  select deparser.deparse( ast_helpers.tsvector_index('${JSON.stringify(
     fields
   )}'::jsonb) );
   `);

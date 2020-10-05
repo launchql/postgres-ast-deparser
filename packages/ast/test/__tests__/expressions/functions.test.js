@@ -121,7 +121,7 @@ select ast.create_function_stmt(
 
 it('create_function', async () => {
   const [{ create_function: result }] = await db.any(`
-SELECT ast.create_function(
+SELECT ast_helpers.create_function(
   'schema',
   'name',
   'text',
@@ -148,30 +148,30 @@ SELECT ast.create_function(
 
 it('create_function deparse', async () => {
   const [{ deparse: result }] = await db.any(`
-SELECT deparser.deparse(ast.create_function(
+SELECT deparser.deparse(ast_helpers.create_function(
   'schema',
   'name',
   'text',
   to_jsonb(ARRAY[
-    ast.simple_param(
+    ast_helpers.simple_param(
       'param1',
       'text'
     ),
-    ast.simple_param(
+    ast_helpers.simple_param(
       'active',
       'bool'
     ),
-    ast.simple_param(
+    ast_helpers.simple_param(
       'sid',
       'uuid',
       'uuid_generate_v4()'
     ),
-    ast.simple_param(
+    ast_helpers.simple_param(
       'description',
       'text',
       'NULL'
     ),
-    ast.simple_param(
+    ast_helpers.simple_param(
       'tags',
       'text[]',
       ast.a_const(ast.null())

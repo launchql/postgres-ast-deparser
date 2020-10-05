@@ -29,7 +29,7 @@ it('deparse', async () => {
 
 it('policy deparse', async () => {
   const result = await db.any(`
-SELECT deparser.deparse(ast.create_policy(
+SELECT deparser.deparse(ast_helpers.create_policy(
   'mypolicy',
   'schemanamed',
   'mytable',
