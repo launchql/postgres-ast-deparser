@@ -4,7 +4,7 @@ exports[`create trig stmt 1`] = `
 "CREATE TRIGGER trigger_name 
  BEFORE UPDATE ON \\"schema-name\\".table_name 
  FOR EACH ROW 
- WHEN ( NEW.field_name IS DISTINCT FROM OLD.field_name ) 
+ WHEN (NEW.field_name IS DISTINCT FROM OLD.field_name) 
  EXECUTE PROCEDURE trigger_function_schema.trigger_function ( )"
 `;
 
@@ -12,7 +12,7 @@ exports[`createtrigger with fields 1`] = `
 "CREATE TRIGGER \\"my-trigger\\" 
  BEFORE INSERT OR UPDATE ON \\"my-schema\\".\\"my-table\\" 
  FOR EACH ROW 
- WHEN ( (OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name) ) 
+ WHEN ((OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name)) 
  EXECUTE PROCEDURE \\"my-tg-fn-schema\\".\\"my-tg-fn\\" ( )"
 `;
 
@@ -20,7 +20,7 @@ exports[`createtrigger with fields and names wo quotes 1`] = `
 "CREATE TRIGGER mytrigger 
  BEFORE INSERT OR UPDATE ON myschema.mytable 
  FOR EACH ROW 
- WHEN ( (OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name) ) 
+ WHEN ((OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name)) 
  EXECUTE PROCEDURE mytgfnschema.mytgfn ( )"
 `;
 
@@ -106,7 +106,7 @@ Object {
   "deparse": "CREATE TRIGGER trigger 
  BEFORE UPDATE ON \\"schema-name\\".mytable 
  FOR EACH ROW 
- WHEN ( OLD.\\"field-a\\" IS DISTINCT FROM NEW.\\"field-a\\" ) 
+ WHEN (OLD.\\"field-a\\" IS DISTINCT FROM NEW.\\"field-a\\") 
  EXECUTE PROCEDURE \\"tg-schema\\".tgname ( )",
 }
 `;

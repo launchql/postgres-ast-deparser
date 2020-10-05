@@ -675,6 +675,11 @@ DECLARE
   txt text;
   output text[];
   events text[];
+  item jsonb;
+  vdeferrable bool;
+  initdeferred bool;
+  args text[];
+  str text;
 BEGIN
 
   IF (node->'CreateTrigStmt') IS NULL THEN
@@ -736,9 +741,56 @@ BEGIN
   output = array_append(output, deparser.expression(node->'relation', context));
   output = array_append(output, chr(10));
 
-  -- TODO handle transitionRels
-  -- TODO handle deferrable
-  -- https://github.com/pyramation/pgsql-parser/blob/master/src/deparser.js
+  -- transitionRels
+  IF (node->'transitionRels' IS NOT NULL) THEN 
+    output = array_append(output, 'REFERENCING');
+    FOR item IN SELECT * FROM jsonb_array_elements(node->'transitionRels')
+    LOOP 
+      IF (
+        item->'TriggerTransition' IS NOT NULL AND
+        item->'TriggerTransition'->'isNew' IS NOT NULL AND
+        (item->'TriggerTransition'->'isNew')::bool IS TRUE AND
+        item->'TriggerTransition'->'isTable' IS NOT NULL AND
+        (item->'TriggerTransition'->'isTable')::bool IS TRUE
+      ) THEN 
+        output = array_append(output, format(
+          'NEW TABLE AS %s',
+          item->'TriggerTransition'->>'name'
+        ));
+      ELSIF (
+        item->'TriggerTransition' IS NOT NULL AND
+        (item->'TriggerTransition'->'isNew' IS NOT NULL OR
+          (item->'TriggerTransition'->'isNew')::bool IS FALSE
+        ) AND
+        item->'TriggerTransition'->'isTable' IS NOT NULL AND
+        (item->'TriggerTransition'->'isTable')::bool IS TRUE
+      ) THEN 
+        output = array_append(output, format(
+          'OLD TABLE AS %s',
+          item->'TriggerTransition'->>'name'
+        ));
+      END IF;
+    END LOOP;
+  END IF;
+
+  -- deferrable
+  vdeferrable = (
+      node->'deferrable' IS NOT NULL AND
+      (node->'deferrable')::bool IS TRUE
+  );
+  -- initdeferred
+  initdeferred = (
+      node->'initdeferred' IS NOT NULL AND
+      (node->'initdeferred')::bool IS TRUE
+  );
+  IF (vdeferrable IS TRUE OR initdeferred IS TRUE) THEN
+    IF (vdeferrable IS TRUE) THEN 
+      output = array_append(output, 'DEFERRABLE');
+    END IF;
+    IF (initdeferred IS TRUE) THEN 
+      output = array_append(output, 'INITIALLY DEFERRED');
+    END IF;
+  END IF;
 
   -- row
   IF (node->'row' IS NOT NULL AND (node->'row')::bool = TRUE) THEN
@@ -751,9 +803,9 @@ BEGIN
   -- when
   IF (node->'whenClause') IS NOT NULL THEN
       output = array_append(output, 'WHEN');
-      output = array_append(output, '(');
-      output = array_append(output, deparser.expression(node->'whenClause', 'trigger'));
-      output = array_append(output, ')');
+      output = array_append(output, deparser.parens(
+        deparser.expression(node->'whenClause', 'trigger')
+      ));
       output = array_append(output, chr(10));
   END IF;
 
@@ -761,8 +813,22 @@ BEGIN
   output = array_append(output, 'EXECUTE PROCEDURE');
   output = array_append(output, deparser.list(node->'funcname', '.', 'identifiers'));
 
+  -- args
   output = array_append(output, '(');
-  -- TODO add args
+  IF (node->'args' IS NOT NULL AND jsonb_array_length(node->'args') > 0) THEN
+    FOR item IN SELECT * FROM jsonb_array_elements(node->'args')
+    LOOP 
+      IF (arg->'String' IS NOT NULL) THEN
+        str = '''' || deparser.expression(arg) || '''';
+      ELSE
+        str = deparser.expression(arg);
+      END IF;
+      IF (character_length(str) > 0) THEN 
+        args = array_append(args, str);
+      END IF;
+    END LOOP;
+    output = array_append(output, array_to_string(args, ', '));
+  END IF;
   output = array_append(output, ')');
 
   RETURN array_to_string(output, ' ');
