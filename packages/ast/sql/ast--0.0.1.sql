@@ -445,6 +445,168 @@ CREATE FUNCTION deparser.reserved ( str text ) RETURNS boolean AS $EOFCODE$
 	select exists( select 1 from pg_get_keywords() where catcode = 'R' AND word=str  );
 $EOFCODE$ LANGUAGE sql SECURITY DEFINER;
 
+CREATE FUNCTION deparser.objtypes (  ) RETURNS text[] AS $EOFCODE$
+	select ARRAY[ 'ACCESS METHOD', 'AGGREGATE', NULL, NULL, NULL, 'CAST', 'COLUMN', 'COLLATION', 'CONVERSION', 'DATABASE', NULL, NULL, 'DOMAIN', 'CONSTRAINT', NULL, 'EXTENSION', 'FOREIGN DATA WRAPPER', 'SERVER', 'FOREIGN TABLE', 'FUNCTION', 'INDEX', 'LANGUAGE', 'LARGE OBJECT', 'MATERIALIZED VIEW', 'OPERATOR CLASS', 'OPERATOR', 'OPERATOR FAMILY', 'POLICY', NULL, NULL, 'ROLE', 'RULE', 'SCHEMA', 'SEQUENCE', NULL, 'STATISTICS', 'CONSTRAINT', 'TABLE', 'TABLESPACE', 'TRANSFORM', 'TRIGGER', 'TEXT SEARCH CONFIGURATION', 'TEXT SEARCH DICTIONARY', 'TEXT SEARCH PARSER', 'TEXT SEARCH TEMPLATE', 'TYPE', NULL, 'VIEW' ]::text[];
+$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+
+CREATE FUNCTION deparser.constrainttype_idxs ( typ text ) RETURNS int AS $EOFCODE$
+  select (CASE
+WHEN (typ = 'CONSTR_NULL') THEN 0
+WHEN (typ = 'CONSTR_NOTNULL') THEN 1
+WHEN (typ = 'CONSTR_DEFAULT') THEN 2
+WHEN (typ = 'CONSTR_IDENTITY') THEN 3
+WHEN (typ = 'CONSTR_CHECK') THEN 4
+WHEN (typ = 'CONSTR_PRIMARY') THEN 5
+WHEN (typ = 'CONSTR_UNIQUE') THEN 6
+WHEN (typ = 'CONSTR_EXCLUSION') THEN 7
+WHEN (typ = 'CONSTR_FOREIGN') THEN 8
+WHEN (typ = 'CONSTR_ATTR_DEFERRABLE') THEN 9
+WHEN (typ = 'CONSTR_ATTR_NOT_DEFERRABLE') THEN 10
+WHEN (typ = 'CONSTR_ATTR_DEFERRED') THEN 11
+WHEN (typ = 'CONSTR_ATTR_IMMEDIATE') THEN 12
+END);
+$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+
+CREATE FUNCTION deparser.constrainttypes ( contype int ) RETURNS text AS $EOFCODE$
+  select (CASE
+WHEN (contype =  0 ) THEN 'NULL'
+WHEN (contype =  1 ) THEN 'NOT NULL'
+WHEN (contype =  2 ) THEN 'DEFAULT'
+WHEN (contype =  4 ) THEN 'CHECK'
+WHEN (contype =  5 ) THEN 'PRIMARY KEY'
+WHEN (contype =  6 ) THEN 'UNIQUE'
+WHEN (contype =  7 ) THEN 'EXCLUDE'
+WHEN (contype =  8 ) THEN 'REFERENCES'
+END);
+$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+
+CREATE FUNCTION deparser.objtypes_idxs ( typ text ) RETURNS int AS $EOFCODE$
+	select (CASE
+WHEN (typ = 'OBJECT_ACCESS_METHOD') THEN 0
+WHEN (typ = 'OBJECT_AGGREGATE') THEN 1
+WHEN (typ = 'OBJECT_AMOP') THEN 2
+WHEN (typ = 'OBJECT_AMPROC') THEN 3
+WHEN (typ = 'OBJECT_ATTRIBUTE') THEN 4
+WHEN (typ = 'OBJECT_CAST') THEN 5
+WHEN (typ = 'OBJECT_COLUMN') THEN 6
+WHEN (typ = 'OBJECT_COLLATION') THEN 7
+WHEN (typ = 'OBJECT_CONVERSION') THEN 8
+WHEN (typ = 'OBJECT_DATABASE') THEN 9
+WHEN (typ = 'OBJECT_DEFAULT') THEN 10
+WHEN (typ = 'OBJECT_DEFACL') THEN 11
+WHEN (typ = 'OBJECT_DOMAIN') THEN 12
+WHEN (typ = 'OBJECT_DOMCONSTRAINT') THEN 13
+WHEN (typ = 'OBJECT_EVENT_TRIGGER') THEN 14
+WHEN (typ = 'OBJECT_EXTENSION') THEN 15
+WHEN (typ = 'OBJECT_FDW') THEN 16
+WHEN (typ = 'OBJECT_FOREIGN_SERVER') THEN 17
+WHEN (typ = 'OBJECT_FOREIGN_TABLE') THEN 18
+WHEN (typ = 'OBJECT_FUNCTION') THEN 19
+WHEN (typ = 'OBJECT_INDEX') THEN 20
+WHEN (typ = 'OBJECT_LANGUAGE') THEN 21
+WHEN (typ = 'OBJECT_LARGEOBJECT') THEN 22
+WHEN (typ = 'OBJECT_MATVIEW') THEN 23
+WHEN (typ = 'OBJECT_OPCLASS') THEN 24
+WHEN (typ = 'OBJECT_OPERATOR') THEN 25
+WHEN (typ = 'OBJECT_OPFAMILY') THEN 26
+WHEN (typ = 'OBJECT_POLICY') THEN 27
+WHEN (typ = 'OBJECT_PUBLICATION') THEN 28
+WHEN (typ = 'OBJECT_PUBLICATION_REL') THEN 29
+WHEN (typ = 'OBJECT_ROLE') THEN 30
+WHEN (typ = 'OBJECT_RULE') THEN 31
+WHEN (typ = 'OBJECT_SCHEMA') THEN 32
+WHEN (typ = 'OBJECT_SEQUENCE') THEN 33
+WHEN (typ = 'OBJECT_SUBSCRIPTION') THEN 34
+WHEN (typ = 'OBJECT_STATISTIC_EXT') THEN 35
+WHEN (typ = 'OBJECT_TABCONSTRAINT') THEN 36
+WHEN (typ = 'OBJECT_TABLE') THEN 37
+WHEN (typ = 'OBJECT_TABLESPACE') THEN 38
+WHEN (typ = 'OBJECT_TRANSFORM') THEN 39
+WHEN (typ = 'OBJECT_TRIGGER') THEN 40
+WHEN (typ = 'OBJECT_TSCONFIGURATION') THEN 41
+WHEN (typ = 'OBJECT_TSDICTIONARY') THEN 42
+WHEN (typ = 'OBJECT_TSPARSER') THEN 43
+WHEN (typ = 'OBJECT_TSTEMPLATE') THEN 44
+WHEN (typ = 'OBJECT_TYPE') THEN 45
+WHEN (typ = 'OBJECT_USER_MAPPING') THEN 46
+WHEN (typ = 'OBJECT_VIEW') THEN 47
+END);
+$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+
+CREATE FUNCTION deparser.getgrantobject ( node jsonb ) RETURNS text AS $EOFCODE$
+DECLARE
+  objtype int;
+  targtype int;
+BEGIN 
+
+  objtype = (node->'objtype')::int;
+  IF (node->'targtype') IS NOT NULL THEN
+    targtype = (node->'targtype')::int;
+  END IF;
+
+  IF (objtype = 0) THEN
+    RETURN 'COLUMN';
+  ELSIF (objtype = 1) THEN
+    IF (targtype = 1) THEN 
+      RETURN 'ALL TABLES IN SCHEMA';
+    ELSIF (targtype = 2) THEN 
+      RETURN 'TABLES';
+    END IF;
+    -- TODO could be a view
+    RETURN 'TABLE';
+  ELSIF (objtype = 2) THEN
+    RETURN 'SEQUENCE';
+  ELSIF (objtype = 3) THEN
+    RETURN 'DATABASE';
+  ELSIF (objtype = 4) THEN
+    RETURN 'DOMAIN';
+  ELSIF (objtype = 5) THEN
+    RETURN 'FOREIGN DATA WRAPPER';
+  ELSIF (objtype = 6) THEN
+    RETURN 'FOREIGN SERVER';
+  ELSIF (objtype = 7) THEN
+    IF (targtype = 1) THEN 
+      RETURN 'ALL FUNCTIONS IN SCHEMA';
+    ELSIF (targtype = 2) THEN 
+      RETURN 'FUNCTIONS';
+    END IF;
+    RETURN 'FUNCTION';
+  ELSIF (objtype = 8) THEN
+    RETURN 'LANGUAGE';
+  ELSIF (objtype = 9) THEN
+    RETURN 'LARGE OBJECT';
+  ELSIF (objtype = 10) THEN
+    RETURN 'SCHEMA';
+  ELSIF (objtype = 11) THEN
+    RETURN 'TABLESPACE';
+  ELSIF (objtype = 12) THEN
+    RETURN 'TYPE';
+  END IF;
+
+  RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantObjectType';
+
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+
+CREATE FUNCTION deparser.parens ( str text ) RETURNS text AS $EOFCODE$
+	select '(' || str || ')';
+$EOFCODE$ LANGUAGE sql;
+
+CREATE FUNCTION deparser.compact ( vvalues text[] ) RETURNS text[] AS $EOFCODE$
+DECLARE
+  value text;
+  filtered text[];
+BEGIN
+  FOREACH value IN array vvalues
+    LOOP
+        IF (value IS NOT NULL AND character_length (trim(value)) > 0) THEN 
+          filtered = array_append(filtered, value);
+        END IF;
+    END LOOP;
+  RETURN filtered;
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
 CREATE FUNCTION deparser.type_name ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
   txa text[] = ARRAY[]::text[];
@@ -834,6 +996,44 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql;
 
+CREATE FUNCTION deparser.column_def ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+
+  IF (node->'ColumnDef') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'ColumnDef';
+  END IF;
+
+  IF (node->'ColumnDef'->'colname') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'ColumnDef';
+  END IF;
+
+  IF (node->'ColumnDef'->'typeName') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'ColumnDef';
+  END IF;
+
+  output = array_append(output, quote_ident(node->>'colname'));
+  output = array_append(output, deparser.expression(node->'typeName', context));
+
+  IF (node->'raw_default') IS NOT NULL THEN
+    output = array_append(output, 'USING');
+    output = array_append(output, deparser.expression(node->'raw_default', context));
+  END IF;
+
+  IF (node->'constraints') IS NOT NULL THEN
+    output = array_append(output, deparser.list(node->'constraints', ' ', context));
+  END IF;
+
+  IF (node->'collClause') IS NOT NULL THEN
+    output = array_append(output, 'COLLATE');
+    output = array_append(output, quote_ident(node->'collClause'->'CollateClause'->'collname'->0->'String'->>'str'));
+  END IF;
+
+  RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
 CREATE FUNCTION deparser.a_const ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
   txt text;
@@ -974,6 +1174,8 @@ BEGIN
     END IF;
   ELSIF (context = 'column') THEN
     RETURN quote_ident(txt);
+  ELSIF (context = 'enum') THEN
+    RETURN '''' || txt || '''';
   ELSIF (context = 'identifiers') THEN
     RETURN quote_ident(txt);
   END IF;
@@ -986,6 +1188,22 @@ DECLARE
   txt text;
 BEGIN
   RETURN array_to_string(deparser.expressions_array(node, context), delimiter);
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.list_quotes ( node jsonb, delimiter text DEFAULT ', ', context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  txt text;
+  unquoted text[];
+  str text;
+  quoted text[];
+BEGIN
+  unquoted = deparser.expressions_array(node, context);
+  FOREACH str in ARRAY unquoted
+  LOOP
+    quoted = array_append(quoted, quote_ident(str));
+  END LOOP;
+  RETURN array_to_string(quoted, delimiter);
 END;
 $EOFCODE$ LANGUAGE plpgsql;
 
@@ -1072,6 +1290,1452 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql;
 
+CREATE FUNCTION deparser.insert_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'InsertStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'InsertStmt';
+    END IF;
+
+    IF (node->'InsertStmt'->'relation') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'InsertStmt';
+    END IF;
+
+    node = node->'InsertStmt';
+
+    output = array_append(output, 'INSERT INTO');
+    output = array_append(output, deparser.expression(node->'relation'));
+
+    IF (node->'cols' IS NOT NULL AND jsonb_array_length(node->'cols') > 0) THEN 
+      output = array_append(output, deparser.parens(deparser.list(node->'cols')));
+    END IF;
+
+    IF (node->'selectStmt') IS NOT NULL THEN
+      output = array_append(output, deparser.expression(node->'selectStmt'));
+    ELSE
+      output = array_append(output, 'DEFAULT VALUES');
+    END IF;
+
+    IF (node->'onConflictClause') IS NOT NULL THEN
+      output = array_append(output, deparser.expression(node->'onConflictClause'));
+    ELSE
+      output = array_append(output, 'DEFAULT VALUES');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.create_schema_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'CreateSchemaStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateSchemaStmt';
+    END IF;
+
+    IF (node->'CreateSchemaStmt'->'schemaname') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateSchemaStmt';
+    END IF;
+
+    node = node->'CreateSchemaStmt';
+
+    output = array_append(output, 'CREATE');
+    IF (node->'replace' IS NOT NULL AND (node->'replace')::bool IS TRUE) THEN 
+      output = array_append(output, 'OR REPLACE');
+    END IF;
+    output = array_append(output, 'SCHEMA');
+
+    IF (node->'if_not_exists' IS NOT NULL AND (node->'if_not_exists')::bool IS TRUE) THEN 
+      output = array_append(output, 'IF NOT EXISTS');
+    END IF;
+
+    -- TODO original source didn't have quote?
+    output = array_append(output, quote_ident(node->>'schemaname'));
+
+    RETURN array_to_string(output, ' ');
+
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.exclusion_constraint ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  exclusion jsonb;
+  a text[];
+  b text[];
+  i int;
+BEGIN
+    
+    IF (node->'exclusions' IS NOT NULL AND node->'access_method' IS NOT NULL) THEN 
+      output = array_append(output, 'USING');
+      output = array_append(output, node->>'access_method');
+      output = array_append(output, '(');
+      FOR exclusion IN SELECT * FROM jsonb_array_elements(node->'exclusions')
+      LOOP
+        IF (exclusion->0 IS NOT NULL) THEN
+          -- a
+          IF (exclusion->0->'IndexElem' IS NOT NULL) THEN
+            IF (exclusion->0->'IndexElem'->'name' IS NOT NULL) THEN
+                a = array_append(a, exclusion->0->'IndexElem'->>'name');
+            ELSIF (exclusion->0->'IndexElem'->'expr' IS NOT NULL) THEN
+                a = array_append(a, deparser.expression(exclusion->0->'IndexElem'->'expr'));
+            ELSE 
+                a = array_append(a, NULL);
+            END IF;
+          END IF;
+          -- b
+          b = array_append(b, deparser.expression(exclusion->1->0));
+        END IF;
+      END LOOP;
+      -- after loop
+
+      FOR i IN
+      SELECT * FROM generate_series(1, a) g (i)
+      LOOP
+        output = array_append(output, format('%s WITH %s', a[i], b[i]));
+        IF ( cardinality(a) = i ) THEN 
+          output = array_append(output, ',');
+        END IF;
+      END LOOP;
+      output = array_append(output, ')');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.reference_constraint ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  has_pk_attrs boolean default false;
+  has_fk_attrs boolean default false;
+BEGIN
+
+    has_fk_attrs = (node->'fk_attrs' IS NOT NULL AND jsonb_array_length(node->'fk_attrs') > 0);
+    has_pk_attrs = (node->'pk_attrs' IS NOT NULL AND jsonb_array_length(node->'pk_attrs') > 0);
+
+    IF (has_pk_attrs AND has_fk_attrs) THEN
+      IF (node->'conname' IS NOT NULL) THEN
+        output = array_append(output, 'CONSTRAINT');
+        -- TODO needs quote?
+        output = array_append(output, node->>'conname');
+      END IF;
+      output = array_append(output, 'FOREIGN KEY');
+      output = array_append(output, deparser.parens(deparser.list_quotes(node->'fk_attrs')));
+      output = array_append(output, 'REFERENCES');
+      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.parens(deparser.list_quotes(node->'pk_attrs')));
+    ELSIF (has_pk_attrs) THEN 
+      output = array_append(output, deparser.constraint_stmt(node));
+      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.parens(deparser.list_quotes(node->'pk_attrs')));
+    ELSIF (has_fk_attrs) THEN 
+      IF (node->'conname' IS NOT NULL) THEN
+        output = array_append(output, 'CONSTRAINT');
+        -- TODO needs quote?
+        output = array_append(output, node->>'conname');
+      END IF;
+      output = array_append(output, 'FOREIGN KEY');
+      output = array_append(output, deparser.parens(deparser.list_quotes(node->'fk_attrs')));
+      output = array_append(output, 'REFERENCES');
+      output = array_append(output, deparser.expression(node->'pktable'));
+    ELSE 
+      output = array_append(output, deparser.constraint_stmt(node));
+      output = array_append(output, deparser.expression(node->'pktable'));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.constraint_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  contype int;
+  constrainttype text;
+BEGIN
+  contype = (node->'contype')::int;
+  constrainttype = deparser.constrainttypes(contype);
+  IF (node->'conname' IS NOT NULL) THEN
+    output = array_append(output, 'CONSTRAINT');
+    output = array_append(output, quote_ident(node->>'conname'));
+    IF (node->'pktable' IS NULL) THEN 
+      output = array_append(output, constrainttype);
+    END IF;
+  ELSE 
+    output = array_append(output, constrainttype);
+  END IF;
+
+  RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.create_seq_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'CreateSeqStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateSeqStmt';
+    END IF;
+
+    IF (node->'CreateSeqStmt'->'sequence') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateSeqStmt';
+    END IF;
+
+    node = node->'CreateSeqStmt';
+
+    output = array_append(output, 'CREATE SEQUENCE');
+    output = array_append(output, deparser.expression(node->'sequence'));
+
+    IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
+      output = array_append(output, deparser.list(node->'options', ' ', 'sequence'));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.constraint ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  contype int;
+BEGIN
+    IF (node->'Constraint') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'Constraint';
+    END IF;
+
+    IF (node->'Constraint'->'contype') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'Constraint';
+    END IF;
+
+    node = node->'Constraint';
+    contype = (node->'contype')::int;
+
+    IF (contype = deparser.constrainttype_idxs('CONSTR_FOREIGN')) THEN 
+      output = array_append(output, deparser.reference_constraint(node));
+    ELSE
+      output = array_append(output, deparser.constraint_stmt(node));
+    END IF;
+
+    IF (node->'keys' IS NOT NULL AND jsonb_array_length(node->'keys') > 0) THEN 
+      output = array_append(output, deparser.parens(deparser.list_quotes(node->'keys')));
+    END IF;
+
+    IF (node->'raw_expr' IS NOT NULL) THEN 
+      output = array_append(output, deparser.parens(deparser.expression(node->'raw_expr')));
+    END IF;
+
+    IF (node->'fk_del_action' IS NOT NULL) THEN 
+      output = array_append(output, (CASE
+          WHEN node->>'fk_del_action' = 'r' THEN 'ON DELETE RESTRICT'
+          WHEN node->>'fk_del_action' = 'c' THEN 'ON DELETE CASCADE'
+          WHEN node->>'fk_del_action' = 'n' THEN 'ON DELETE SET NULL'
+          WHEN node->>'fk_del_action' = 'd' THEN 'ON DELETE SET DEFAULT'
+          WHEN node->>'fk_del_action' = 'a' THEN '' -- 'ON DELETE NO ACTION'
+      END));
+    END IF;
+
+    IF (node->'fk_upd_action' IS NOT NULL) THEN 
+      output = array_append(output, (CASE
+          WHEN node->>'fk_upd_action' = 'r' THEN 'ON UPDATE RESTRICT'
+          WHEN node->>'fk_upd_action' = 'c' THEN 'ON UPDATE CASCADE'
+          WHEN node->>'fk_upd_action' = 'n' THEN 'ON UPDATE SET NULL'
+          WHEN node->>'fk_upd_action' = 'd' THEN 'ON UPDATE SET DEFAULT'
+          WHEN node->>'fk_upd_action' = 'a' THEN '' -- 'ON UPDATE NO ACTION'
+      END));
+    END IF;
+
+    IF (node->'fk_matchtype' IS NOT NULL AND node->>'fk_matchtype' = 'f') THEN 
+      output = array_append(output, 'MATCH FULL');
+    END IF;
+
+    IF (node->'is_no_inherit' IS NOT NULL AND (node->>'is_no_inherit')::bool IS TRUE ) THEN 
+      output = array_append(output, 'NO INHERIT');
+    END IF;
+
+    IF (node->'skip_validation' IS NOT NULL AND (node->>'skip_validation')::bool IS TRUE ) THEN 
+      output = array_append(output, 'NOT VALID');
+    END IF;
+
+    IF (contype = deparser.constrainttype_idxs('CONSTR_EXCLUSION')) THEN 
+      output = array_append(output, deparser.exclusion_constraint(node));
+    END IF;
+
+    IF (node->'deferrable' IS NOT NULL AND (node->>'deferrable')::bool IS TRUE ) THEN 
+      output = array_append(output, 'DEFERRABLE');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.def_elem ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  defname text;
+BEGIN
+    IF (node->'DefElem') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'DefElem';
+    END IF;
+
+    IF (node->'DefElem'->'defname') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'DefElem';
+    END IF;
+
+    node = node->'DefElem';
+    defname = node->>'defname';
+
+    IF (defname = 'transaction_isolation') THEN 
+      RETURN format(
+        'ISOLATION LEVEL %s',
+         upper(deparser.expression(node->'arg'->'A_Const'->'val'))
+      );
+    ELSIF (defname = 'transaction_read_only') THEN
+      IF ( (node->'arg'->'A_Const'->'val'->'Integer'->'ival')::int = 0 ) THEN 
+        RETURN 'READ WRITE';
+      ELSE
+        RETURN 'READ ONLY';
+      END IF;
+    ELSIF (defname = 'transaction_deferrable') THEN
+      IF ( (node->'arg'->'A_Const'->'val'->'Integer'->'ival')::int = 0 ) THEN 
+        RETURN 'NOT DEFERRABLE';
+      ELSE
+        RETURN 'DEFERRABLE';
+      END IF;
+    ELSIF (defname = 'set') THEN
+      RETURN deparser.expression(node->'arg');
+    END IF;
+
+    IF (node->'defnamespace' IS NOT NULL) THEN 
+      -- TODO needs quotes?
+      defname = node->>'defnamespace' || '.' || node->>'defname';
+    END IF;
+
+    IF (context = 'sequence') THEN
+      IF (defname = 'cycle') THEN 
+        IF (trim(deparser.expression(node->'arg')) = '1') THEN
+          RETURN 'CYCLE';
+        ELSE 
+          RETURN 'NO CYCLE';
+        END IF;
+      ELSIF (defname = 'minvalue') THEN 
+        IF (node->'arg' IS NULL) THEN
+          RETURN 'NO MINVALUE';
+        ELSE 
+          RETURN defname || ' ' || deparser.expression(node->'arg', 'simple');
+        END IF;
+      ELSIF (defname = 'maxvalue') THEN 
+        IF (node->'arg' IS NULL) THEN
+          RETURN 'NO MAXVALUE';
+        ELSE 
+          RETURN defname || ' ' || deparser.expression(node->'arg', 'simple');
+        END IF;
+      ELSIF (node->'arg' IS NOT NULL) THEN
+        RETURN defname || ' ' || deparser.expression(node->'arg', 'simple');
+      END IF;
+    ELSE
+        RETURN defname || '=' || deparser.expression(node->'arg');
+    END IF;
+
+    RETURN defname;
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.comment_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  objtype int;
+  objtypes text[];
+BEGIN
+    IF (node->'CommentStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CommentStmt';
+    END IF;
+
+    IF (node->'CommentStmt'->'objtype') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CommentStmt';
+    END IF;
+
+    node = node->'CommentStmt';
+    objtypes = deparser.objtypes();
+    objtype = (node->'objtype')::int;
+    output = array_append(output, 'COMMENT');
+    output = array_append(output, 'ON');
+    output = array_append(output, objtypes[objtype + 1]);
+
+    IF (objtype = deparser.objtypes_idxs('OBJECT_CAST')) THEN
+      output = array_append(output, '(');
+      output = array_append(output, deparser.expression(node->'object'->0));
+      output = array_append(output, 'AS');
+      output = array_append(output, deparser.expression(node->'object'->1));
+      output = array_append(output, ')');
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_DOMCONSTRAINT')) THEN
+      output = array_append(output, deparser.expression(node->'object'->1));
+      output = array_append(output, 'ON');
+      output = array_append(output, 'DOMAIN');
+      output = array_append(output, deparser.expression(node->'object'->0));
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_OPCLASS')) THEN
+      output = array_append(output, deparser.expression(node->'object'->1));
+      output = array_append(output, 'USING');
+      output = array_append(output, deparser.expression(node->'object'->0));
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_OPFAMILY')) THEN
+      output = array_append(output, deparser.expression(node->'object'->1));
+      output = array_append(output, 'USING');
+      output = array_append(output, deparser.expression(node->'object'->0));
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_OPERATOR')) THEN
+      -- TODO lookup noquotes context in pgsql-parser
+      output = array_append(output, deparser.expression(node->'object', 'noquotes'));
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_POLICY')) THEN
+      output = array_append(output, deparser.expression(node->'object'->1));
+      output = array_append(output, 'ON');
+      output = array_append(output, deparser.expression(node->'object'->0));
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_ROLE')) THEN
+      output = array_append(output, deparser.expression(node->'object'));
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_RULE')) THEN
+      output = array_append(output, deparser.expression(node->'object'->1));
+      output = array_append(output, 'ON');
+      output = array_append(output, deparser.expression(node->'object'->0));
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_TABCONSTRAINT')) THEN
+      IF (jsonb_array_length(node->'object') = 3) THEN 
+        output = array_append(output, deparser.expression(node->'object'->2));
+        output = array_append(output, 'ON');
+        -- TODO needs quotes?
+        output = array_append(output, deparser.expression(node->'object'->0));
+        output = array_append(output, '.');
+        output = array_append(output, deparser.expression(node->'object'->1));
+      ELSE 
+        output = array_append(output, deparser.expression(node->'object'->1));
+        output = array_append(output, 'ON');
+        output = array_append(output, deparser.expression(node->'object'->0));
+      END IF;
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_TRANSFORM')) THEN
+      output = array_append(output, 'FOR');
+      output = array_append(output, deparser.expression(node->'object'->0));
+      output = array_append(output, 'LANGUAGE');
+      output = array_append(output, deparser.expression(node->'object'->1));
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_TRIGGER')) THEN
+      output = array_append(output, deparser.expression(node->'object'->1));
+      output = array_append(output, 'ON');
+      output = array_append(output, deparser.expression(node->'object'->0));
+    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_LARGEOBJECT')) THEN
+      output = array_append(output, deparser.expression(node->'object'));
+    ELSE 
+      IF (jsonb_typeof(node->'object') = 'array') THEN 
+        output = array_append(output, deparser.list_quotes(node->'object', '.'));
+      ELSE
+        output = array_append(output, deparser.expression(node->'object'));
+      END IF;
+
+      IF (node->'objargs' IS NOT NULL AND jsonb_array_length(node->'objargs') > 0) THEN 
+        output = array_append(output, deparser.parens(deparser.list(node->'objargs')));
+      END IF;
+    END IF;
+
+    output = array_append(output, 'IS');
+    IF (node->'comment' IS NOT NULL) THEN 
+      output = array_append(output, 'E' || '''' || node->>'comment' || '''');
+    ELSE
+      output = array_append(output, 'NULL');
+    END IF;
+  
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.alter_default_privileges_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  item jsonb;
+  def jsonb;
+BEGIN
+    IF (node->'AlterDefaultPrivilegesStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterDefaultPrivilegesStmt';
+    END IF;
+
+    node = node->'AlterDefaultPrivilegesStmt';
+
+    output = array_append(output, 'ALTER DEFAULT PRIVILEGES');
+
+    IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
+      FOR item IN SELECT * FROM jsonb_array_elements(node->'options')
+      LOOP 
+        IF (item->'DefElem' IS NOT NULL) THEN
+          def = item;
+        END IF;
+      END LOOP;
+      IF ( def IS NOT NULL) THEN
+        IF ( def->'DefElem'->>'defname' = 'schemas') THEN
+          output = array_append(output, 'IN SCHEMA');
+          output = array_append(output, deparser.expression(def->'DefElem'->'arg'->0));
+        ELSIF ( def->'DefElem'->>'defname' = 'schemas') THEN
+          output = array_append(output, 'FOR ROLE');
+          output = array_append(output, deparser.expression(def->'DefElem'->'arg'->0));
+        END IF;
+        output = array_append(output, E'\n');
+      END IF;
+    END IF;
+
+    output = array_append(output, deparser.expression(def->'action'));
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.case_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'CaseExpr') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CaseExpr';
+    END IF;
+
+    node = node->'CaseExpr';
+    output = array_append(output, 'CASE');
+
+    IF (node->'arg') IS NOT NULL THEN 
+      output = array_append(output, deparser.expression(node->'arg'));
+    END IF;
+
+    IF (node->'args' IS NOT NULL AND jsonb_array_length(node->'args') > 0) THEN 
+      output = array_append(output, deparser.list(node->'args', ' '));
+    END IF;
+
+    IF (node->'defresult') IS NOT NULL THEN 
+      output = array_append(output, 'ELSE');
+      output = array_append(output, deparser.expression(node->'defresult'));
+    END IF;
+
+    output = array_append(output, 'END');
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.case_when ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'CaseWhen') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CaseWhen';
+    END IF;
+
+    IF (node->'CaseWhen'->'expr') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CaseWhen';
+    END IF;
+
+    IF (node->'CaseWhen'->'result') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CaseWhen';
+    END IF;
+
+    node = node->'CaseWhen';
+    output = array_append(output, 'WHEN');
+
+    output = array_append(output, deparser.expression(node->'expr'));
+    output = array_append(output, 'THEN');
+    output = array_append(output, deparser.expression(node->'result'));
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.variable_set_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  kind int;
+  local text = '';
+  multi text = '';
+BEGIN
+    IF (node->'VariableSetStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableSetStmt';
+    END IF;
+
+    IF (node->'VariableSetStmt'->'kind') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableSetStmt';
+    END IF;
+
+    node = node->'VariableSetStmt';
+
+    -- NOTE uses ENUM
+    kind = (node->'kind')::int;
+    IF (kind = 0) THEN 
+      IF (node->'is_local' IS NOT NULL AND (node->'is_local')::bool IS TRUE) THEN 
+        local = 'LOCAL ';
+      END IF;
+      output = array_append(output, format('SET %s%s = %s', local, node->>'name', deparser.list(node->'args', ', ', 'simple')));
+    ELSIF (kind = 1) THEN
+      output = array_append(output, format('SET %s TO DEFAULT', node->>'name'));
+    ELSIF (kind = 2) THEN
+      output = array_append(output, format('SET %s FROM CURRENT', node->>'name'));
+    ELSIF (kind = 3) THEN
+      IF (node->>'name' = 'TRANSACTION') THEN
+        multi = 'TRANSACTION';
+      ELSIF (node->>'name' = 'SESSION CHARACTERISTICS') THEN
+        multi = 'SESSION CHARACTERISTICS AS TRANSACTION';
+      END IF;
+      output = array_append(output, format('SET %s %s', multi, deparser.list(node->'args', ', ', 'simple')));
+    ELSIF (kind = 4) THEN
+      output = array_append(output, format('RESET %s', node->>'name'));
+    ELSIF (kind = 5) THEN
+      output = array_append(output, 'RESET ALL');
+    ELSE
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableSetStmt';
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.alias ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'Alias') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'Alias';
+    END IF;
+
+    IF (node->'Alias'->'aliasname') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'Alias';
+    END IF;
+
+    node = node->'Alias';
+
+    output = array_append(output, 'AS');
+    output = array_append(output, quote_ident(node->>'aliasname'));
+    IF (node->'colnames' IS NOT NULL AND jsonb_array_length(node->'colnames') > 0) THEN 
+      output = array_append(output, 
+        deparser.parens(deparser.list_quotes(node->'colnames'))
+      );
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.range_subselect ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'RangeSubselect') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RangeSubselect';
+    END IF;
+
+    IF (node->'RangeSubselect'->'subquery') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RangeSubselect';
+    END IF;
+
+    node = node->'RangeSubselect';
+
+    IF (node->'lateral' IS NOT NULL) THEN 
+      output = array_append(output, 'LATERAL');
+    END IF;
+
+    output = array_append(output, deparser.parens(deparser.expression(node->'subquery')));
+
+    IF (node->'alias' IS NOT NULL) THEN 
+      output = array_append(output, deparser.expression(node->'alias'));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.delete_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'DeleteStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'DeleteStmt';
+    END IF;
+
+    IF (node->'DeleteStmt'->'relation') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'DeleteStmt';
+    END IF;
+
+    node = node->'DeleteStmt';
+
+    output = array_append(output, 'DELETE');
+    output = array_append(output, 'FROM');
+    output = array_append(output, deparser.expression(node->'relation'));
+
+    IF (node->'whereClause' IS NOT NULL) THEN 
+      output = array_append(output, 'WHERE');
+      output = array_append(output, deparser.expression(node->'whereClause'));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.create_domain_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'CreateDomainStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateDomainStmt';
+    END IF;
+
+    IF (node->'CreateDomainStmt'->'domainname') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateDomainStmt';
+    END IF;
+
+    IF (node->'CreateDomainStmt'->'typeName') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateDomainStmt';
+    END IF;
+
+    node = node->'CreateDomainStmt';
+
+    output = array_append(output, 'CREATE');
+    output = array_append(output, 'DOMAIN');
+    -- TODO should this have quotes
+    output = array_append(output, deparser.list(node->'domainname', '.'));
+    output = array_append(output, 'AS');
+    output = array_append(output, deparser.expression(node->'typeName'));
+
+    IF (node->'constraints' IS NOT NULL) THEN 
+      output = array_append(output, deparser.list(node->'constraints'));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.grant_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  objtype int;
+BEGIN
+    IF (node->'GrantStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantStmt';
+    END IF;
+
+    IF (node->'GrantStmt'->'objtype') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantStmt';
+    END IF;
+
+    node = node->'GrantStmt';
+    objtype = (node->'objtype')::int;
+
+    IF (objtype != 0) THEN 
+      IF (node->'is_grant' IS NOT NULL AND (node->'is_grant')::bool IS TRUE) THEN 
+        output = array_append(output, 'REVOKE');
+        IF (node->'grant_option' IS NOT NULL AND (node->'grant_option')::bool IS TRUE) THEN 
+          output = array_append(output, 'GRANT OPTION');
+          output = array_append(output, 'FOR');
+        END IF;
+        IF (node->'privileges' IS NOT NULL AND jsonb_array_length(node->'privileges') > 0) THEN 
+          output = array_append(output, deparser.list(node->'privileges'));
+        ELSE
+          output = array_append(output, 'ALL');
+        END IF;
+        output = array_append(output, 'ON');
+        output = array_append(output, deparser.getgrantobject(node));
+        output = array_append(output, deparser.list(node->'objects'));
+        output = array_append(output, 'FROM');
+        output = array_append(output, deparser.list(node->'grantees'));
+      ELSE
+        output = array_append(output, 'GRANT');
+        IF (node->'privileges' IS NOT NULL AND jsonb_array_length(node->'privileges') > 0) THEN 
+          output = array_append(output, deparser.list(node->'privileges'));
+        ELSE
+          output = array_append(output, 'ALL');
+        END IF;
+        output = array_append(output, 'ON');
+        output = array_append(output, deparser.getgrantobject(node));
+        output = array_append(output, deparser.list(node->'objects'));
+        output = array_append(output, 'TO');
+        output = array_append(output, deparser.list(node->'grantees'));
+        IF (node->'grant_option' IS NOT NULL AND (node->'grant_option')::bool IS TRUE) THEN 
+          output = array_append(output, 'WITH GRANT OPTION');
+        END IF;
+      END IF;
+      
+      IF (node->'behavior' IS NOT NULL AND (node->'behavior')::int = 1) THEN
+        output = array_append(output, 'CASCADE');
+      END IF;
+
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.composite_type_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'CompositeTypeStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CompositeTypeStmt';
+    END IF;
+
+    IF (node->'CompositeTypeStmt'->'typevar') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CompositeTypeStmt';
+    END IF;
+
+    IF (node->'CompositeTypeStmt'->'coldeflist') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CompositeTypeStmt';
+    END IF;
+
+    node = node->'CompositeTypeStmt';
+
+    output = array_append(output, 'CREATE');
+    output = array_append(output, 'TYPE');
+    output = array_append(output, deparser.expression(node->'typevar'));
+    output = array_append(output, 'AS');
+    output = array_append(output, deparser.parens(
+      deparser.list(node->'coldeflist', E',\n')
+    ));
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.index_elem ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+BEGIN
+    IF (node->'IndexElem') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'IndexElem';
+    END IF;
+
+    node = node->'IndexElem';
+
+    IF (node->'name' IS NOT NULL) THEN
+      RETURN node->>'name';
+    END IF;
+
+    IF (node->'expr' IS NOT NULL) THEN
+      RETURN deparser.expression(node->'expr');
+    END IF;
+
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'IndexElem';
+
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.create_enum_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'CreateEnumStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateEnumStmt';
+    END IF;
+
+    IF (node->'CreateEnumStmt'->'vals') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateEnumStmt';
+    END IF;
+
+    IF (node->'CreateEnumStmt'->'typeName') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateEnumStmt';
+    END IF;
+
+    node = node->'CreateEnumStmt';
+
+    output = array_append(output, 'CREATE');
+    output = array_append(output, 'TYPE');
+
+    -- TODO needs quote?
+    output = array_append(output, deparser.list(node->'typeName', '.'));
+    output = array_append(output, 'AS ENUM');
+    output = array_append(output, E'(\n');
+    output = array_append(output, deparser.list(node->'vals', E',\n', 'enum'));
+    output = array_append(output, E'\n)');
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.alter_table_cmd ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  subtype int;
+BEGIN
+    IF (node->'AlterTableCmd') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableCmd';
+    END IF;
+
+    IF (node->'AlterTableCmd'->'subtype') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableCmd';
+    END IF;
+
+    node = node->'AlterTableCmd';
+    subtype = (node->'subtype')::int;
+
+    IF (subtype = 0) THEN 
+      output = array_append(output, 'ADD COLUMN');
+      output = array_append(output, quote_ident(node->>'name'));
+      output = array_append(output, deparser.expression(node->'def'));
+    ELSIF (subtype = 3) THEN
+      output = array_append(output, 'ALTER COLUMN');
+      output = array_append(output, quote_ident(node->>'name'));
+      IF (node->'def' IS NOT NULL) THEN
+        output = array_append(output, 'SET DEFAULT');
+        output = array_append(output, deparser.expression(node->'def'));
+      ELSE
+        output = array_append(output, 'DROP DEFAULT');
+      END IF;
+    ELSIF (subtype = 4) THEN
+      output = array_append(output, 'ALTER COLUMN');
+      output = array_append(output, quote_ident(node->>'name'));
+      output = array_append(output, 'DROP NOT NULL');
+    ELSIF (subtype = 5) THEN
+      output = array_append(output, 'ALTER COLUMN');
+      output = array_append(output, quote_ident(node->>'name'));
+      output = array_append(output, 'SET NOT NULL');
+    ELSIF (subtype = 6) THEN
+      output = array_append(output, 'ALTER');
+      output = array_append(output, quote_ident(node->>'name'));
+      output = array_append(output, 'SET STATISTICS');
+      output = array_append(output, deparser.expression(node->'def'));
+    ELSIF (subtype = 7) THEN
+      output = array_append(output, 'ALTER COLUMN');
+      output = array_append(output, quote_ident(node->>'name'));
+      output = array_append(output, 'SET');
+      output = array_append(output, deparser.parens(deparser.list(node->'def')));
+    ELSIF (subtype = 9) THEN
+      output = array_append(output, 'ALTER');
+      output = array_append(output, quote_ident(node->>'name'));
+      output = array_append(output, 'SET STORAGE');
+      IF (node->'def' IS NOT NULL) THEN
+        output = array_append(output, deparser.expression(node->'def'));
+      ELSE
+        output = array_append(output, 'PLAIN');
+      END IF;
+    ELSIF (subtype = 10) THEN
+      output = array_append(output, 'DROP');
+      IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN
+        output = array_append(output, 'IF EXISTS');
+      END IF;
+      output = array_append(output, quote_ident(node->>'name'));
+    ELSIF (subtype = 14) THEN
+      output = array_append(output, 'ADD');
+      output = array_append(output, deparser.expression(node->'def'));
+    ELSIF (subtype = 18) THEN
+      output = array_append(output, 'VALIDATE CONSTRAINT');
+      output = array_append(output, quote_ident(node->>'name'));
+    ELSIF (subtype = 22) THEN
+      output = array_append(output, 'DROP CONSTRAINT');
+      IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN
+        output = array_append(output, 'IF EXISTS');
+      END IF;
+      output = array_append(output, quote_ident(node->>'name'));
+    ELSIF (subtype = 25) THEN
+      output = array_append(output, 'ALTER COLUMN');
+      output = array_append(output, quote_ident(node->>'name'));
+      output = array_append(output, 'TYPE');
+      output = array_append(output, deparser.expression(node->'def'));
+    ELSIF (subtype = 28) THEN
+      output = array_append(output, 'CLUSTER ON');
+      output = array_append(output, quote_ident(node->>'name'));
+    ELSIF (subtype = 29) THEN
+      output = array_append(output, 'SET WITHOUT CLUSTER');
+    ELSIF (subtype = 32) THEN
+      output = array_append(output, 'SET WITH OIDS');
+    ELSIF (subtype = 34) THEN
+      output = array_append(output, 'SET WITHOUT OIDS');
+    ELSIF (subtype = 36) THEN
+      output = array_append(output, 'SET');
+      output = array_append(output, deparser.parens(deparser.list(node->'def')));
+    ELSIF (subtype = 37) THEN
+      output = array_append(output, 'RESET');
+      output = array_append(output, deparser.parens(deparser.list(node->'def')));
+    ELSIF (subtype = 51) THEN
+      output = array_append(output, 'INHERIT');
+      output = array_append(output, deparser.expression(node->'def'));
+    ELSIF (subtype = 52) THEN
+      output = array_append(output, 'NO INHERIT');
+      output = array_append(output, deparser.expression(node->'def'));
+    ELSIF (subtype = 56) THEN
+      output = array_append(output, 'ENABLE ROW LEVEL SECURITY');
+    ELSIF (subtype = 57) THEN
+      output = array_append(output, 'DISABLE ROW LEVEL SECURITY');
+    ELSIF (subtype = 58) THEN
+      output = array_append(output, 'FORCE ROW SECURITY');
+    ELSIF (subtype = 59) THEN
+      output = array_append(output, 'NO FORCE ROW SECURITY');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.alter_table_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  relkind int;
+BEGIN
+    IF (node->'AlterTableStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableStmt';
+    END IF;
+
+    IF (node->'AlterTableStmt'->'relkind') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableStmt';
+    END IF;
+
+    IF (node->'AlterTableStmt'->'relation') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableStmt';
+    END IF;
+
+    node = node->'AlterTableStmt';
+    relkind = (node->'relkind')::int;
+    output = array_append(output, 'ALTER');
+
+    IF (relkind = 32) THEN 
+      output = array_append(output, 'TABLE');
+    ELSIF (relkind = 42) THEN 
+      output = array_append(output, 'VIEW');
+    ELSIF (relkind = 40) THEN 
+      output = array_append(output, 'TYPE');
+    ELSE
+      output = array_append(output, 'TABLE');
+      IF (
+        node->'relation'->'RangeVar' IS NOT NULL AND
+        node->'relation'->'RangeVar'->'inh' IS NOT NULL AND
+        (node->'relation'->'RangeVar'->'inh')::bool IS FALSE
+      ) THEN 
+        output = array_append(output, 'ONLY');
+      END IF;
+    END IF;
+
+    IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN 
+      output = array_append(output, 'IF EXISTS');
+    END IF;
+
+    output = array_append(output, deparser.expression(node->'relation'));
+    output = array_append(output, deparser.list(node->'cmds'));
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.range_function ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  funcs text[];
+  func jsonb;
+BEGIN
+    IF (node->'RangeFunction') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RangeFunction';
+    END IF;
+
+    node = node->'RangeFunction';
+
+    IF (node->'lateral' IS NOT NULL) THEN 
+      output = array_append(output, 'LATERAL');
+    END IF;
+
+    IF (node->'functions' IS NOT NULL AND jsonb_array_length(node->'functions') > 0) THEN 
+      FOR func in SELECT * FROM jsonb_array_elements(node->'functions')
+      LOOP 
+        funcs = array_append(funcs, deparser.expression(func->0));
+        IF (func->1 IS NOT NULL AND jsonb_array_length(func->1) > 0) THEN 
+          funcs = array_append(funcs, format(
+            'AS (%s)',
+            deparser.list(func->1)
+          ));
+        END IF;
+      END LOOP;
+
+      IF (node->'is_rowsfrom' IS NOT NULL AND (node->'is_rowsfrom')::bool IS TRUE) THEN 
+        output = array_append(output, format('ROWS FROM (%s)', array_to_string(funcs, ', ')));
+      ELSE
+        output = array_append(output, array_to_string(funcs, ', '));
+      END IF;
+    END IF;
+
+    IF (node->'ordinality' IS NOT NULL AND (node->'ordinality')::bool IS TRUE) THEN
+      output = array_append(output, 'WITH ORDINALITY');
+    END IF;
+
+    IF (node->'alias' IS NOT NULL) THEN
+      output = array_append(output, deparser.expression(node->'alias'));
+    END IF;
+
+    IF (node->'coldeflist' IS NOT NULL AND jsonb_array_length(node->'coldeflist') > 0) THEN
+      IF (node->'alias' IS NOT NULL) THEN
+        output = array_append(output, format('(%s)', deparser.list(node->'coldeflist')));
+      ELSE 
+        output = array_append(output, format('AS (%s)', deparser.list(node->'coldeflist')));
+      END IF;
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.index_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'IndexStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'IndexStmt';
+    END IF;
+
+    IF (node->'IndexStmt'->'relation') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'IndexStmt';
+    END IF;
+
+    node = node->'IndexStmt';
+
+    output = array_append(output, 'CREATE');
+    IF (node->'unique' IS NOT NULL) THEN 
+      output = array_append(output, 'UNIQUE');
+    END IF;
+    
+    output = array_append(output, 'INDEX');
+    
+    IF (node->'concurrent' IS NOT NULL) THEN 
+      output = array_append(output, 'CONCURRENTLY');
+    END IF;
+    
+    IF (node->'idxname' IS NOT NULL) THEN 
+      -- TODO needs quote?
+      output = array_append(output, node->>'idxname');
+    END IF;
+
+    output = array_append(output, 'ON');
+    output = array_append(output, deparser.expression(node->'relation'));
+
+    IF (node->'indexParams' IS NOT NULL AND jsonb_array_length(node->'indexParams') > 0) THEN 
+      output = array_append(output, deparser.parens(deparser.list(node->'indexParams')));
+    END IF; 
+
+    IF (node->'whereClause' IS NOT NULL) THEN 
+      output = array_append(output, deparser.expression(node->'whereClause'));
+    END IF; 
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.update_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  targets text[];
+  rets text[];
+  name text;
+  item jsonb;
+BEGIN
+    IF (node->'UpdateStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'UpdateStmt';
+    END IF;
+
+    IF (node->'UpdateStmt'->'relation') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'UpdateStmt';
+    END IF;
+
+    node = node->'UpdateStmt';
+  
+    output = array_append(output, 'UPDATE');
+    output = array_append(output, deparser.expression(node->'relation'));
+    output = array_append(output, 'SET');
+
+    IF (node->'targetList' IS NOT NULL AND jsonb_array_length(node->'targetList') > 0) THEN 
+      IF (
+        node->'targetList'->0->'ResTarget' IS NOT NULL AND 
+        node->'targetList'->0->'ResTarget'->'val' IS NOT NULL AND 
+        node->'targetList'->0->'ResTarget'->'val'->'MultiAssignRef' IS NOT NULL 
+      ) THEN 
+
+        FOR item IN
+        SELECT * FROM jsonb_array_elements(node->'targetList')
+        LOOP 
+          targets = array_append(targets, item->'ResTarget'->>'name');
+        END LOOP;
+        output = array_append(output, deparser.parens(array_to_string(targets, ', ')));
+        output = array_append(output, '=');
+        output = array_append(output, deparser.expression(node->'targetList'->0->'val'));
+      ELSE
+        output = array_append(output, deparser.list(node->'targetList'));
+      END IF;
+    END IF;
+
+    IF (node->'fromClause' IS NOT NULL) THEN 
+      output = array_append(output, 'FROM');
+      output = array_append(output, deparser.list(node->'fromClause', ' '));
+    END IF;
+
+    IF (node->'whereClause' IS NOT NULL) THEN 
+      output = array_append(output, 'WHERE');
+      output = array_append(output, deparser.expression(node->'whereClause'));
+    END IF;
+
+    IF (node->'returningList' IS NOT NULL) THEN 
+      output = array_append(output, 'RETURNING');
+      FOR item IN
+      SELECT * FROM jsonb_array_elements(node->'returningList')
+      LOOP 
+
+        IF (item->'ResTarget'->'name' IS NOT NULL) THEN 
+          name = ' AS ' || quote_ident(item->'ResTarget'->>'name');
+        ELSE 
+          name = '';
+        END IF;
+
+        rets = array_append(rets, 
+          deparser.expression(item->'ResTarget'->'val')
+        ) || name;
+
+      END LOOP;
+
+      output = array_append(output, array_to_string(rets, ', '));
+
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.param_ref ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+BEGIN
+    IF (node->'ParamRef') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'ParamRef';
+    END IF;
+
+    node = node->'ParamRef';
+
+    IF (node->'number' IS NOT NULL AND (node->'number')::int > 0) THEN 
+      RETURN '$' || node->>'number';
+    END IF;
+
+    RETURN '?';
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.join_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  jointype int;
+  jointxt text;
+  wrapped text;
+  is_natural bool = false;
+BEGIN
+    IF (node->'JoinExpr') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
+    END IF;
+
+    IF (node->'JoinExpr'->'larg') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
+    END IF;
+
+    IF (node->'JoinExpr'->'jointype') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
+    END IF;
+
+    node = node->'JoinExpr';
+
+    IF (node->'isNatural' IS NOT NULL AND (node->'isNatural')::bool IS TRUE) THEN 
+      output = array_append(output, 'NATURAL');
+      is_natural = TRUE;
+    END IF;
+
+    jointype = (node->'jointype')::int;
+    IF (jointype = 0) THEN 
+      IF (node->'quals' IS NOT NULL) THEN 
+        jointxt = 'INNER JOIN';
+      ELSIF (
+        NOT is_natural AND
+        node->'quals' IS NULL AND
+        node->'usingClause' IS NULL
+      ) THEN
+        jointxt = 'CROSS JOIN';
+      ELSE
+        jointxt = 'JOIN';
+      END IF;
+    ELSIF (jointype = 1) THEN
+        jointxt = 'LEFT OUTER JOIN';
+    ELSIF (jointype = 2) THEN
+        jointxt = 'FULL OUTER JOIN';
+    ELSIF (jointype = 3) THEN
+        jointxt = 'RIGHT OUTER JOIN';
+    ELSE
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
+    END IF;
+    output = array_append(output, jointxt);
+
+    IF (node->'rarg' IS NOT NULL) THEN 
+      IF (node->'rarg'->'JoinExpr' IS NOT NULL AND node->'rarg'->'JoinExpr'->'alias' IS NULL) THEN 
+        output = array_append(output, deparser.parens(deparser.expression(node->'rarg')));
+      ELSE
+        output = array_append(output, deparser.expression(node->'rarg'));
+      END IF;
+    END IF;
+
+    IF (node->'quals' IS NOT NULL) THEN 
+      output = array_append(output, 'ON');
+      output = array_append(output, deparser.expression(node->'quals'));
+    END IF;
+
+    IF (node->'usingClause' IS NOT NULL) THEN 
+      output = array_append(output, 'USING');
+      -- TODO check this... maybe not correct.
+      output = array_append(output, deparser.list_quotes(node->'usingClause'));
+    END IF;
+
+    IF (node->'rarg' IS NOT NULL OR node->'alias' IS NOT NULL) THEN 
+      wrapped = deparser.parens(array_to_string(output, ' '));
+    ELSE 
+      wrapped = array_to_string(output, ' ');
+    END IF;
+
+    IF (node->'alias' IS NOT NULL) THEN 
+      wrapped = wrapped || ' ' || deparser.expression(node->'alias');
+    END IF;
+
+    RETURN wrapped;
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.a_indirection ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  subnode jsonb;
+BEGIN
+    IF (node->'A_Indirection') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Indirection';
+    END IF;
+
+    node = node->'A_Indirection';
+
+    IF (node->'indirection' IS NOT NULL AND jsonb_array_length(node->'indirection') > 0) THEN 
+      FOR subnode IN SELECT * FROM jsonb_array_elements(node->'indirection')
+      LOOP 
+        IF (subnode->'A_Star' IS NOT NULL) THEN
+          output = array_append(output, '.' || deparser.expression(subnode));
+        ELSIF (subnode->'String' IS NOT NULL) THEN
+          output = array_append(output, '.' || quote_ident(deparser.expression(subnode)));
+        ELSE
+          output = array_append(output, deparser.expression(subnode));
+        END IF;
+      END LOOP;
+    END IF;
+
+    -- NOT A SPACE HERE ON PURPOSE
+    RETURN array_to_string(output, '');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.sub_link ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  subLinkType int;
+BEGIN
+    IF (node->'SubLink') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'SubLink';
+    END IF;
+
+    node = node->'SubLink';
+    subLinkType = (node->'subLinkType')::int;
+    IF (subLinkType = 0) THEN
+      output = array_append(output, format(
+        'EXISTS (%s)', 
+        deparser.expression(node->'subselect')
+      ));
+    ELSIF (subLinkType = 1) THEN
+      output = array_append(output, format(
+        '%s %s ALL (%s)',
+        deparser.expression(node->'testexpr'),
+        deparser.expression(node->'operName'->0),
+        deparser.expression(node->'subselect')
+      ));
+    ELSIF (subLinkType = 2) THEN
+      IF (node->'operName' IS NOT NULL) THEN 
+        output = array_append(output, format(
+          '%s %s ANY (%s)',
+          deparser.expression(node->'testexpr'),
+          deparser.expression(node->'operName'->0),
+          deparser.expression(node->'subselect')
+        ));      
+      ELSE 
+        output = array_append(output, format(
+          '%s IN (%s)',
+          deparser.expression(node->'testexpr'),
+          deparser.expression(node->'subselect')
+        ));
+      END IF;
+    ELSIF (subLinkType = 3) THEN
+      output = array_append(output, format(
+        '%s %s (%s)',
+        deparser.expression(node->'testexpr'),
+        deparser.expression(node->'operName'->0),
+        deparser.expression(node->'subselect')
+      ));
+    ELSIF (subLinkType = 4) THEN
+      output = array_append(output, format(
+        '(%s)',
+        deparser.expression(node->'subselect')
+      ));
+    ELSIF (subLinkType = 5) THEN
+       RAISE EXCEPTION 'BAD_EXPRESSION %', 'unknown kind SubLink';
+    ELSIF (subLinkType = 6) THEN
+      output = array_append(output, format(
+        'ARRAY (%s)',
+        deparser.expression(node->'subselect')
+      ));
+    ELSE
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'SubLink';
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.a_star ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+BEGIN
+    IF (node->'A_Star') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Star';
+    END IF;
+    RETURN '*';
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.integer ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  ival int;
+BEGIN
+    IF (node->'Integer') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'Integer';
+    END IF;
+
+    IF (node->'Integer'->'ival') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'Integer';
+    END IF;
+
+    node = node->'Integer';
+    ival = (node->'ival')::int;
+
+    IF (ival < 0 AND context != 'simple') THEN
+      RETURN deparser.parens(node->>'ival');
+    END IF;
+    
+    RETURN node->>'ival';
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.access_priv ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'AccessPriv') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AccessPriv';
+    END IF;
+
+    node = node->'AccessPriv';
+
+    IF (node->'priv_name') IS NOT NULL THEN
+      output = array_append(output, upper(node->>'priv_name'));
+    ELSE
+      output = array_append(output, 'ALL');
+    END IF;
+
+    IF (node->'cols') IS NOT NULL THEN
+      output = array_append(output, '(');
+      output = array_append(output, deparser.list(node->'cols', context));
+      output = array_append(output, ')');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
 CREATE FUNCTION deparser.func_call ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
   fn_name text;
@@ -1093,6 +2757,582 @@ BEGIN
     END IF;
 
     RETURN array_to_string(ARRAY[fn_name, format( '(%s)', fn_args )], ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.rule_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  event int;
+BEGIN
+    IF (node->'RuleStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RuleStmt';
+    END IF;
+
+    IF (node->'RuleStmt'->'event') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RuleStmt';
+    END IF;
+
+    IF (node->'RuleStmt'->'relation') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RuleStmt';
+    END IF;
+
+    node = node->'RuleStmt';
+
+    output = array_append(output, 'CREATE');
+    output = array_append(output, 'RULE');
+    IF (node->'rulename' = '_RETURN') THEN
+      -- special rules
+      output = array_append(output, '"_RETURN"');
+    ELSE
+      output = array_append(output, e.rulename);
+    END IF;
+    output = array_append(output, 'AS');
+    output = array_append(output, 'ON');
+
+    -- events
+    event = (node->'event')::int;
+    IF (event = 1) THEN
+      output = array_append(output, 'SELECT');
+    ELSIF (event = 2) THEN 
+      output = array_append(output, 'UPDATE');
+    ELSIF (event = 3) THEN 
+      output = array_append(output, 'INSERT');
+    ELSIF (event = 4) THEN 
+      output = array_append(output, 'DELETE');
+    ELSE
+      RAISE EXCEPTION 'event type not yet implemented for RuleStmt';
+    END IF;
+
+    -- relation
+
+    output = array_append(output, 'TO');
+    output = array_append(output, deparse.expression(node->'relation', context));
+
+    IF (node->'instead') IS NOT NULL THEN 
+      output = array_append(output, 'DO');
+      output = array_append(output, 'INSTEAD');
+    END IF;
+
+    IF (node->'whereClause') IS NOT NULL THEN 
+      output = array_append(output, 'WHERE');
+      output = array_append(output, deparse.expression(node->'whereClause', context));
+      output = array_append(output, 'DO');
+    END IF;
+
+    IF (node->'actions' IS NOT NULL AND jsonb_array_length(node->'actions') > 0) THEN 
+      output = array_append(output, deparse.expression(node->'actions'->0, context));
+    ELSE
+      output = array_append(output, 'NOTHING');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.create_role_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  event int;
+BEGIN
+    IF (node->'CreateRoleStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
+    END IF;
+
+    -- IF (node->'CreateRoleStmt'->'event') IS NULL THEN
+    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
+    -- END IF;
+
+    -- IF (node->'CreateRoleStmt'->'relation') IS NULL THEN
+    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
+    -- END IF;
+
+    node = node->'CreateRoleStmt';
+
+    output = array_append(output, 'CREATE');
+
+    RAISE EXCEPTION 'TODO %', 'CreateRoleStmt';
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.create_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  relpersistence text;
+BEGIN
+    IF (node->'CreateStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateStmt';
+    END IF;
+
+    IF (node->'CreateStmt'->'relation') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateStmt';
+    END IF;
+
+    node = node->'CreateStmt';
+
+    IF (
+        node->'relation' IS NOT NULL AND
+        node->'relation'->'RangeVar' IS NOT NULL AND
+        node->'relation'->'RangeVar'->'relpersistence' IS NOT NULL) THEN
+      relpersistence = node->'relation'->'RangeVar'->>'relpersistence';
+    END IF;
+
+    IF (relpersistence = 't') THEN 
+      output = array_append(output, 'CREATE');
+    ELSE
+      output = array_append(output, 'CREATE TABLE');
+    END IF;
+
+    output = array_append(output, deparser.expression(node->'relation', context));
+    output = array_append(output, E'(\n');
+    -- TODO add tabs (see pgsql-parser)
+    output = array_append(output, deparser.list(node->'tableElts', E',\n', context));
+    output = array_append(output, E'\n)');
+
+    IF (relpersistence = 'p' AND node->'inhRelations' IS NOT NULL) THEN 
+      output = array_append(output, 'INHERITS');
+      output = array_append(output, deparser.parens(deparser.list(node->'inhRelations')));
+    END IF;
+
+    IF (node->'options') IS NOT NULL THEN
+      -- TODO with/without OIDs
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.transaction_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  kind int;
+BEGIN
+    IF (node->'TransactionStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'TransactionStmt';
+    END IF;
+
+    IF (node->'TransactionStmt'->'kind') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'TransactionStmt';
+    END IF;
+
+    node = node->'TransactionStmt';
+    kind = (node->'kind')::int;
+
+    IF (kind = 0) THEN
+      -- TODO implement other options
+      output = array_append(output, 'BEGIN');
+    ELSIF (kind = 1) THEN
+      -- TODO implement other options
+      output = array_append(output, 'START TRANSACTION');
+    ELSIF (kind = 2) THEN
+      output = array_append(output, 'COMMIT');
+    ELSIF (kind = 3) THEN
+      output = array_append(output, 'ROLLBACK');
+    ELSIF (kind = 4) THEN
+      output = array_append(output, 'SAVEPOINT');
+      output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
+    ELSIF (kind = 5) THEN
+      output = array_append(output, 'RELEASE SAVEPOINT');
+      output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
+    ELSIF (kind = 6) THEN
+      output = array_append(output, 'ROLLBACK TO');
+      output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
+    ELSIF (kind = 7) THEN
+      output = array_append(output, 'PREPARE TRANSACTION');
+      output = array_append(output, '''' || node->>'gid' || '''');
+    ELSIF (kind = 8) THEN
+      output = array_append(output, 'COMMIT PREPARED');
+      output = array_append(output, '''' || node->>'gid' || '''');
+    ELSIF (kind = 9) THEN
+      output = array_append(output, 'ROLLBACK PREPARED');
+      output = array_append(output, '''' || node->>'gid' || '''');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.view_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  event int;
+BEGIN
+    IF (node->'ViewStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'ViewStmt';
+    END IF;
+
+    IF (node->'ViewStmt'->'view') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'ViewStmt';
+    END IF;
+
+    IF (node->'ViewStmt'->'query') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'ViewStmt';
+    END IF;
+
+    node = node->'ViewStmt';
+    output = array_append(output, 'CREATE VIEW');
+    output = array_append(output, deparser.expression(node->'view', context));
+    output = array_append(output, 'AS');
+    output = array_append(output, deparser.expression(node->'query', context));
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.sort_by ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  dir int;
+  nulls int;
+BEGIN
+    IF (node->'SortBy') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'SortBy';
+    END IF;
+
+    IF (node->'SortBy'->'sortby_dir') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'SortBy';
+    END IF;
+
+    node = node->'SortBy';
+
+    -- NOTE uses ENUMS
+    dir = (node->'sortby_dir')::int;
+    IF (dir = 0) THEN 
+      output = array_append(output, 'ASC');
+    ELSIF (dir = 1) THEN
+      output = array_append(output, 'DESC');
+    ELSIF (dir = 2) THEN
+      output = array_append(output, 'USING');
+      output = array_append(output, deparser.list(node->'useOp'));
+    ELSIF (dir = 3) THEN
+      -- noop
+    ELSE 
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'SortBy (enum)';
+    END IF;
+
+    IF (node->'sortby_nulls' IS NOT NULL) THEN
+      nulls = (node->'sortby_nulls')::int;
+      IF (nulls = 0) THEN 
+        -- noop
+      ELSIF (nulls = 1) THEN
+        output = array_append(output, 'NULLS FIRST');
+      ELSIF (nulls = 2) THEN
+        output = array_append(output, 'NULLS LAST');
+      END IF;
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.res_target ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  event int;
+BEGIN
+    IF (node->'ResTarget') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'ResTarget';
+    END IF;
+
+    node = node->'ResTarget';
+
+    -- NOTE seems like compact is required here, sometimes the name is NOT used!
+    IF (context = 'select') THEN       
+      output = array_append(output, array_to_string(deparser.compact(ARRAY[
+        deparser.expression(node->'val'),
+        quote_ident(node->>'name')
+      ]), ' AS '));
+    ELSIF (context = 'update') THEN 
+      output = array_append(output, array_to_string(deparser.compact(ARRAY[
+        quote_ident(node->>'name'),
+        deparser.expression(node->'val')
+      ]), ' = '));
+    ELSE
+      output = array_append(output, quote_ident(node->>'name'));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.select_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  sets text[];
+  values text[];
+  pvalues text[];
+  value text;
+  op int;
+BEGIN
+    IF (node->'SelectStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt';
+    END IF;
+
+    -- IF (node->'SelectStmt'->'view') IS NULL THEN
+    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt';
+    -- END IF;
+
+    -- IF (node->'SelectStmt'->'query') IS NULL THEN
+    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt';
+    -- END IF;
+
+    node = node->'SelectStmt';
+
+    IF (node->'withClause') IS NOT NULL THEN 
+      output = array_append(output, deparser.expression(node->'withClause'), context);
+    END IF;
+
+    op = (node->'op')::int;
+
+    IF (op = 0) THEN 
+       IF (node->'valuesLists') IS NULL THEN 
+        output = array_append(output, 'SELECT');
+       END IF;
+    ELSE 
+        output = array_append(output, '(');
+        output = array_append(output, deparser.expression(node->'larg', context));
+        output = array_append(output, ')');
+        
+        -- sets
+        sets = ARRAY['NONE', 'UNION', 'INTERSECT', 'EXCEPT']::text[];
+        output = array_append(output, sets[op+1]);
+        
+        -- all
+        IF (node->'all') IS NOT NULL THEN
+          output = array_append(output, 'ALL');
+        END IF;        
+
+        -- rarg
+        output = array_append(output, '(');
+        output = array_append(output, deparser.expression(node->'rarg', context));
+        output = array_append(output, ')');
+    END IF;
+
+    -- distinct
+    IF (node->'distinctClause') IS NOT NULL THEN 
+      IF (node->'distinctClause'->0) IS NOT NULL THEN 
+        output = array_append(output, 'DISTINCT ON');
+        output = array_append(output, '(');
+        output = array_append(output, deparser.list(node->'distinctClause', E',\n', context));
+        output = array_append(output, ')');
+      ELSE
+        output = array_append(output, 'DISTINCT');
+      END IF;
+    END IF;
+
+    -- target
+    IF (node->'targetList') IS NOT NULL THEN 
+      output = array_append(output, deparser.list(node->'targetList', E',\n', 'select'));
+    END IF;
+
+    -- into
+    IF (node->'intoClause') IS NOT NULL THEN 
+      output = array_append(output, deparser.expression(node->'intoClause', context));
+    END IF;
+
+    -- from
+    IF (node->'fromClause') IS NOT NULL THEN 
+      output = array_append(output, deparser.list(node->'fromClause', E',\n', 'from'));
+    END IF;
+
+    -- where
+    IF (node->'whereClause') IS NOT NULL THEN 
+      output = array_append(output, 'WHERE');
+      output = array_append(output, deparser.expression(node->'whereClause', context));
+    END IF;
+
+    -- values
+    IF (node->'valuesLists') IS NOT NULL THEN 
+      output = array_append(output, 'VALUES');
+      values = deparser.expressions_array(node->'valuesLists', context);
+      FOREACH value IN array values
+      LOOP
+        pvalues = array_append(pvalues, deparser.parens(value));
+      END LOOP;
+      output = array_append(output, array_to_string(pvalues, ', '));
+    END IF;
+
+    -- groups
+    IF (node->'groupClause') IS NOT NULL THEN 
+      output = array_append(output, 'GROUP BY');
+      output = array_append(output, deparser.list(node->'groupClause', E',\n', 'group'));
+    END IF;
+
+    -- having
+    IF (node->'havingClause') IS NOT NULL THEN 
+      output = array_append(output, 'HAVING');
+      output = array_append(output, deparser.expression(node->'havingClause', context));
+    END IF;
+
+    -- window
+    IF (node->'windowClause') IS NOT NULL THEN 
+      RAISE EXCEPTION 'implement windowClause';
+    END IF;
+
+    -- sort
+    IF (node->'sortClause') IS NOT NULL THEN 
+      output = array_append(output, 'ORDER BY');
+      output = array_append(output, deparser.list(node->'sortClause', E',\n', 'sort'));
+    END IF;
+
+    -- limit
+    IF (node->'limitCount') IS NOT NULL THEN 
+      output = array_append(output, 'LIMIT');
+      output = array_append(output, deparser.expression(node->'limitCount', context));
+    END IF;
+
+    -- offset
+    IF (node->'limitOffset') IS NOT NULL THEN 
+      output = array_append(output, 'OFFSET');
+      output = array_append(output, deparser.expression(node->'limitOffset', context));
+    END IF;
+
+    -- locking
+    IF (node->'lockingClause') IS NOT NULL THEN 
+      output = array_append(output, 'OFFSET');
+      output = array_append(output, deparser.list(node->'lockingClause', ' ', context));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.grant_role_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  event int;
+BEGIN
+    IF (node->'GrantRoleStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantRoleStmt';
+    END IF;
+
+    IF (node->'GrantRoleStmt'->'granted_roles') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantRoleStmt';
+    END IF;
+
+    node = node->'GrantRoleStmt';
+
+    IF (node->'is_grant' IS NULL OR (node->'is_grant')::bool = FALSE) THEN
+      output = array_append(output, 'REVOKE');
+      output = array_append(output, deparser.list(node->'granted_roles'));
+      output = array_append(output, 'FROM');
+      output = array_append(output, deparser.list(node->'grantee_roles'));
+    ELSE
+      output = array_append(output, 'GRANT');
+      output = array_append(output, deparser.list(node->'granted_roles'));
+      output = array_append(output, 'TO');
+      output = array_append(output, deparser.list(node->'grantee_roles'));
+    END IF;
+
+    IF (node->'admin_opt' IS NOT NULL AND (node->'admin_opt')::bool = TRUE) THEN 
+      output = array_append(output, 'WITH ADMIN OPTION');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.drop_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  objtypes text[];
+  objtype int;
+  objs text[];
+  obj text[];
+  quoted text[];
+BEGIN
+    IF (node->'DropStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'DropStmt';
+    END IF;
+
+    IF (node->'DropStmt'->'objects') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'DropStmt';
+    END IF;
+
+    IF (node->'DropStmt'->'removeType') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'DropStmt';
+    END IF;
+
+    node = node->'DropStmt';
+
+    output = array_append(output, 'DROP');
+    objtypes = deparser.objtypes();
+    objtype = (node->'removeType')::int;
+    output = array_append(output, objtypes[objtype + 1]);
+    
+    IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN 
+      output = array_append(output, 'IF EXISTS');
+    END IF;
+
+    -- TODO verify this quoting is not too much
+    objs = deparser.expressions_array(node->'objects');
+    FOREACH obj IN array objs
+    LOOP
+      quoted = array_append(quoted, quote_ident(obj));
+    END LOOP;
+    output = array_append(output, array_to_string(quoted, ', '));
+
+    -- behavior
+    IF (node->'behavior' IS NOT NULL) THEN 
+      -- TODO this is an integer, what does 1 vs 0 mean?
+      output = array_append(output, 'CASCADE');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.infer_clause ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  action int;
+BEGIN
+    IF (node->'InferClause') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'InferClause';
+    END IF;
+
+    node = node->'InferClause';
+
+    IF (node->'indexElems' IS NOT NULL) THEN
+      output = array_append(output, deparser.parens(deparser.list(node->'indexElems')));
+    ELSIF (node->'conname' IS NOT NULL) THEN 
+      output = array_append(output, 'ON CONSTRAINT');
+      output = array_append(output, node->>'conname');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.on_conflict_clause ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  action int;
+BEGIN
+    IF (node->'OnConflictClause') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'OnConflictClause';
+    END IF;
+
+    IF (node->'OnConflictClause'->'infer') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'OnConflictClause';
+    END IF;
+
+    node = node->'OnConflictClause';
+
+    output = array_append(output, 'ON CONFLICT');
+    output = array_append(output, deparser.expression(node->'infer'));
+
+    action = (node->'action')::int;
+    IF (action = 1) THEN 
+      output = array_append(output, 'DO NOTHING');
+    ELSIF (action = 2) THEN 
+      output = array_append(output, 'DO');
+      -- TODO update statement!
+      -- output = array_append(output, deparser.update_stmt(node));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
 END;
 $EOFCODE$ LANGUAGE plpgsql;
 
@@ -1253,6 +3493,8 @@ BEGIN
     RETURN deparser.func_call(expr, context);
   ELSEIF (expr->>'ColumnRef') IS NOT NULL THEN      
     RETURN deparser.column_ref(expr, context);
+  ELSEIF (expr->>'ColumnDef') IS NOT NULL THEN      
+    RETURN deparser.column_def(expr, context);
   ELSEIF (expr->>'RangeVar') IS NOT NULL THEN      
     RETURN deparser.range_var(expr, context);
   ELSEIF (expr->>'FunctionParameter') IS NOT NULL THEN      
@@ -1261,6 +3503,32 @@ BEGIN
     RETURN deparser.create_policy_stmt(expr, context);
   ELSEIF (expr->>'RoleSpec') IS NOT NULL THEN      
     RETURN deparser.role_spec(expr, context);
+  ELSEIF (expr->>'InsertStmt') IS NOT NULL THEN      
+    RETURN deparser.insert_stmt(expr, context);
+  ELSEIF (expr->>'CreateRoleStmt') IS NOT NULL THEN      
+    RETURN deparser.create_role_stmt(expr, context);
+  ELSEIF (expr->>'CreateStmt') IS NOT NULL THEN      
+    RETURN deparser.create_stmt(expr, context);
+  ELSEIF (expr->>'AccessPriv') IS NOT NULL THEN      
+    RETURN deparser.access_priv(expr, context);
+  ELSEIF (expr->>'RuleStmt') IS NOT NULL THEN      
+    RETURN deparser.rule_stmt(expr, context);
+  ELSEIF (expr->>'GrantRoleStmt') IS NOT NULL THEN      
+    RETURN deparser.grant_role_stmt(expr, context);
+  ELSEIF (expr->>'ViewStmt') IS NOT NULL THEN      
+    RETURN deparser.view_stmt(expr, context);
+  ELSEIF (expr->>'SortBy') IS NOT NULL THEN      
+    RETURN deparser.sort_by(expr, context);
+  ELSEIF (expr->>'SelectStmt') IS NOT NULL THEN      
+    RETURN deparser.select_stmt(expr, context);
+  ELSEIF (expr->>'TransactionStmt') IS NOT NULL THEN      
+    RETURN deparser.transaction_stmt(expr, context);
+  ELSEIF (expr->>'DropStmt') IS NOT NULL THEN      
+    RETURN deparser.drop_stmt(expr, context);
+  ELSEIF (expr->>'OnConflictClause') IS NOT NULL THEN      
+    RETURN deparser.on_conflict_clause(expr, context);
+  ELSEIF (expr->>'InferClause') IS NOT NULL THEN      
+    RETURN deparser.infer_clause(expr, context);
   ELSEIF (expr->>'CreateFunctionStmt') IS NOT NULL THEN      
     RETURN deparser.create_function_stmt(expr, context);
   ELSEIF (expr->>'CreateTrigStmt') IS NOT NULL THEN      
@@ -1269,12 +3537,66 @@ BEGIN
     RETURN deparser.type_cast(expr, context);
   ELSEIF (expr->>'TypeName') IS NOT NULL THEN      
     RETURN deparser.type_name(expr, context);
-  -- ELSEIF (expr->>'RlsColumnRef') IS NOT NULL THEN      
-  --   RETURN deparser.rls_column_ref(expr, context);
-  -- ELSEIF (expr->>'RlsFuncRef') IS NOT NULL THEN      
-  --   RETURN deparser.rls_func_ref(expr, context);
+  ELSEIF (expr->>'DeleteStmt') IS NOT NULL THEN      
+    RETURN deparser.delete_stmt(expr, context);
+  ELSEIF (expr->>'ResTarget') IS NOT NULL THEN      
+    RETURN deparser.res_target(expr, context);
+  ELSEIF (expr->>'CaseExpr') IS NOT NULL THEN      
+    RETURN deparser.case_expr(expr, context);
+  ELSEIF (expr->>'CreateDomainStmt') IS NOT NULL THEN      
+    RETURN deparser.create_domain_stmt(expr, context);
+  ELSEIF (expr->>'CaseWhen') IS NOT NULL THEN      
+    RETURN deparser.case_when(expr, context);
+  ELSEIF (expr->>'AlterDefaultPrivilegesStmt') IS NOT NULL THEN      
+    RETURN deparser.alter_default_privileges_stmt(expr, context);
+  ELSEIF (expr->>'CreateSchemaStmt') IS NOT NULL THEN      
+    RETURN deparser.create_schema_stmt(expr, context);
+  ELSEIF (expr->>'VariableSetStmt') IS NOT NULL THEN      
+    RETURN deparser.variable_set_stmt(expr, context);
+  ELSEIF (expr->>'RangeFunction') IS NOT NULL THEN      
+    RETURN deparser.range_function(expr, context);
+  ELSEIF (expr->>'Alias') IS NOT NULL THEN      
+    RETURN deparser.alias(expr, context);
+  ELSEIF (expr->>'CompositeTypeStmt') IS NOT NULL THEN      
+    RETURN deparser.composite_type_stmt(expr, context);
+  ELSEIF (expr->>'DefElem') IS NOT NULL THEN      
+    RETURN deparser.def_elem(expr, context);
+  ELSEIF (expr->>'CommentStmt') IS NOT NULL THEN      
+    RETURN deparser.comment_stmt(expr, context);
+  ELSEIF (expr->>'Constraint') IS NOT NULL THEN      
+    RETURN deparser.constraint(expr, context);
+  ELSEIF (expr->>'CreateSeqStmt') IS NOT NULL THEN      
+    RETURN deparser.create_seq_stmt(expr, context);
+  ELSEIF (expr->>'GrantStmt') IS NOT NULL THEN      
+    RETURN deparser.grant_stmt(expr, context);
+  ELSEIF (expr->>'Integer') IS NOT NULL THEN      
+    RETURN deparser.integer(expr, context);
+  ELSEIF (expr->>'IndexStmt') IS NOT NULL THEN      
+    RETURN deparser.index_stmt(expr, context);
+  ELSEIF (expr->>'IndexElem') IS NOT NULL THEN      
+    RETURN deparser.index_elem(expr, context);
+  ELSEIF (expr->>'UpdateStmt') IS NOT NULL THEN      
+    RETURN deparser.update_stmt(expr, context);
+  ELSEIF (expr->>'CreateEnumStmt') IS NOT NULL THEN      
+    RETURN deparser.create_enum_stmt(expr, context);
+  ELSEIF (expr->>'AlterTableStmt') IS NOT NULL THEN      
+    RETURN deparser.alter_table_stmt(expr, context);
+  ELSEIF (expr->>'AlterTableCmd') IS NOT NULL THEN      
+    RETURN deparser.alter_table_cmd(expr, context);
+  ELSEIF (expr->>'SubLink') IS NOT NULL THEN      
+    RETURN deparser.sub_link(expr, context);
   ELSEIF (expr->>'String') IS NOT NULL THEN      
     RETURN deparser.str(expr, context);
+  ELSEIF (expr->>'A_Star') IS NOT NULL THEN      
+    RETURN deparser.a_star(expr, context);
+  ELSEIF (expr->>'A_Indirection') IS NOT NULL THEN      
+    RETURN deparser.a_indirection(expr, context);
+  ELSEIF (expr->>'JoinExpr') IS NOT NULL THEN      
+    RETURN deparser.jointype(expr, context);
+  ELSEIF (expr->>'ParamRef') IS NOT NULL THEN      
+    RETURN deparser.param_ref(expr, context);
+  ELSEIF (expr->>'RangeSubselect') IS NOT NULL THEN      
+    RETURN deparser.range_subselect(expr->'RawStmt'->'stmt');
   ELSEIF (expr->>'RawStmt') IS NOT NULL THEN      
     RETURN deparser.expression(expr->'RawStmt'->'stmt');
   ELSEIF (expr->>'Null') IS NOT NULL THEN      
@@ -1305,5 +3627,18 @@ $EOFCODE$ LANGUAGE plpgsql;
 CREATE FUNCTION deparser.deparse ( ast jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
 	RETURN deparser.expression(ast);
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+
+CREATE FUNCTION deparser.deparse_query ( ast jsonb ) RETURNS text AS $EOFCODE$
+DECLARE
+  lines text[];
+  node jsonb;
+BEGIN
+   FOR node IN SELECT * FROM jsonb_array_elements(ast)
+   LOOP 
+    lines = array_append(lines, deparser.deparse(node) || ';' || E'\n');
+   END LOOP;
+   RETURN array_to_string(lines, E'\n');
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
