@@ -106,6 +106,25 @@ select deparser.deparse(
   }
 });
 
+it('a_expr 0-4 name', async () => {
+  for (let i = 0; i < 5; i++) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  ast.a_expr(
+      $1,
+      ast.string('<lexpr placeholder>'),
+      to_jsonb(ARRAY[ast.string('<name1 placeholder>'),ast.string('<name2 placeholder>')]),
+      ast.string('<rexpr placeholder>')
+    )
+);
+  `,
+      [i]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
 it('a_expr 5 ', async () => {
   for (let i = 5; i < 6; i++) {
     const [{ deparse: result }] = await db.any(

@@ -526,22 +526,51 @@ CREATE FUNCTION deparser.a_expr_op(
 DECLARE
   left_expr text;
   operator text;
+  schemaname text;
   right_expr text;
+  output text[];
 BEGIN
   IF (expr->'name') IS NULL THEN
     RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP)', 'A_Expr';
   END IF;
 
-  left_expr = deparser.expression(expr->'lexpr', context);
-  right_expr = deparser.expression(expr->'rexpr', context);
-  operator = deparser.expression(expr->'name'->0);
-
-  IF ((expr->>'kind')::int = 0) THEN
-    -- AEXPR_OP
-    RETURN array_to_string(ARRAY[left_expr, operator, right_expr], ' ');
+  IF (expr->'lexpr' IS NOT NULL) THEN
+    left_expr = deparser.expression(expr->'lexpr', context);
+    output = array_append(output, left_expr);
   END IF;
 
-  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP)', 'A_Expr';
+  IF ((expr->>'kind')::int != 0) THEN
+    -- AEXPR_OP
+    RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP)', 'A_Expr';
+  END IF;
+
+  IF (jsonb_array_length(expr->'name') > 1) THEN 
+    schemaname = deparser.expression(expr->'name'->0);
+    operator = deparser.expression(expr->'name'->1);
+    output = array_append(output, 
+      'OPERATOR' ||
+      '(' ||
+      quote_ident(schemaname) ||
+      '.' ||
+      operator ||
+      ')'
+    );
+  ELSE
+    operator = deparser.expression(expr->'name'->0);
+    output = array_append(output, operator);
+  END IF;
+
+  IF (expr->'rexpr' IS NOT NULL) THEN
+    right_expr = deparser.expression(expr->'rexpr', context);
+    output = array_append(output, right_expr);
+  END IF;
+
+  IF (cardinality(output) = 2) THEN 
+    RETURN deparser.parens(array_to_string(output, ''));
+  END IF;
+
+  RETURN deparser.parens(array_to_string(output, ' '));
+
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -559,16 +588,17 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ANY)', 'A_Expr';
   END IF;
 
+  IF ((expr->>'kind')::int != 1) THEN
+    -- AEXPR_OP_ANY
+    RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ANY)', 'A_Expr';
+  END IF;
+
   left_expr = deparser.expression(expr->'lexpr', context);
   right_expr = deparser.expression(expr->'rexpr', context);
   operator = deparser.expression(expr->'name'->0);
 
-  IF ((expr->>'kind')::int = 1) THEN
-    -- AEXPR_OP_ANY
-    RETURN format('%s %s ANY( %s )', left_expr, operator, right_expr);
-  END IF;
+  RETURN format('%s %s ANY( %s )', left_expr, operator, right_expr);
 
-  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ANY)', 'A_Expr';
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -590,12 +620,13 @@ BEGIN
   right_expr = deparser.expression(expr->'rexpr', context);
   operator = deparser.expression(expr->'name'->0);
 
-  IF ((expr->>'kind')::int = 2) THEN
+  IF ((expr->>'kind')::int != 2) THEN
     -- AEXPR_OP_ALL
-    RETURN format('%s %s ALL( %s )', left_expr, operator, right_expr);
+    RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ALL)', 'A_Expr';
   END IF;
 
-  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ALL)', 'A_Expr';
+  RETURN format('%s %s ALL( %s )', left_expr, operator, right_expr);
+  
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;

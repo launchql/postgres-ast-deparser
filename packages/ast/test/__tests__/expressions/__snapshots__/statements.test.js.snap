@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`a_expr 0-4 1`] = `"<lexpr placeholder> = <rexpr placeholder>"`;
+exports[`a_expr 0-4 1`] = `"(<lexpr placeholder> = <rexpr placeholder>)"`;
 
 exports[`a_expr 0-4 2`] = `"<lexpr placeholder> = ANY( <rexpr placeholder> )"`;
 
@@ -10,9 +10,19 @@ exports[`a_expr 0-4 4`] = `"<lexpr placeholder> IS DISTINCT FROM <rexpr placehol
 
 exports[`a_expr 0-4 5`] = `"NULLIF(<lexpr placeholder>, <rexpr placeholder>)"`;
 
-exports[`a_expr 1`] = `"a = b"`;
+exports[`a_expr 0-4 name 1`] = `"(<lexpr placeholder> OPERATOR(\\"<name1 placeholder>\\".<name2 placeholder>) <rexpr placeholder>)"`;
 
-exports[`a_expr 2`] = `"<lexpr placeholder> = <rexpr placeholder>"`;
+exports[`a_expr 0-4 name 2`] = `"<lexpr placeholder> <name1 placeholder> ANY( <rexpr placeholder> )"`;
+
+exports[`a_expr 0-4 name 3`] = `"<lexpr placeholder> <name1 placeholder> ALL( <rexpr placeholder> )"`;
+
+exports[`a_expr 0-4 name 4`] = `"<lexpr placeholder> IS DISTINCT FROM <rexpr placeholder>"`;
+
+exports[`a_expr 0-4 name 5`] = `"NULLIF(<lexpr placeholder>, <rexpr placeholder>)"`;
+
+exports[`a_expr 1`] = `"(a = b)"`;
+
+exports[`a_expr 2`] = `"(<lexpr placeholder> = <rexpr placeholder>)"`;
 
 exports[`a_expr 5  1`] = `"<lexpr placeholder> IS OF ( <rexpr placeholder> )"`;
 
