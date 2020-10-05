@@ -3643,138 +3643,138 @@ CREATE FUNCTION deparser.expression(
 ) returns text as $$
 BEGIN
 
-  IF (expr->>'A_Expr') IS NOT NULL THEN
+  IF (expr->>'A_Const') IS NOT NULL THEN
+    RETURN deparser.a_const(expr, context);
+  ELSEIF (expr->>'A_Expr') IS NOT NULL THEN
     RETURN deparser.a_expr(expr, context);
+  ELSEIF (expr->>'A_Indices') IS NOT NULL THEN
+    RETURN deparser.a_indices(expr, context);
+  ELSEIF (expr->>'A_Indirection') IS NOT NULL THEN
+    RETURN deparser.a_indirection(expr, context);
+  ELSEIF (expr->>'A_Star') IS NOT NULL THEN
+    RETURN deparser.a_star(expr, context);
+  ELSEIF (expr->>'AccessPriv') IS NOT NULL THEN
+    RETURN deparser.access_priv(expr, context);
+  ELSEIF (expr->>'Alias') IS NOT NULL THEN
+    RETURN deparser.alias(expr, context);
+  ELSEIF (expr->>'AlterDefaultPrivilegesStmt') IS NOT NULL THEN
+    RETURN deparser.alter_default_privileges_stmt(expr, context);
+  ELSEIF (expr->>'AlterDomainStmt') IS NOT NULL THEN
+    RETURN deparser.alter_domain_stmt(expr, context);
+  ELSEIF (expr->>'AlterEnumStmt') IS NOT NULL THEN
+    RETURN deparser.alter_enum_stmt(expr, context);
+  ELSEIF (expr->>'AlterTableCmd') IS NOT NULL THEN
+    RETURN deparser.alter_table_cmd(expr, context);
+  ELSEIF (expr->>'AlterTableStmt') IS NOT NULL THEN
+    RETURN deparser.alter_table_stmt(expr, context);
   ELSEIF (expr->>'BoolExpr') IS NOT NULL THEN
     RETURN deparser.bool_expr(expr, context);
-  ELSEIF (expr->>'A_Const') IS NOT NULL THEN
-    RETURN deparser.a_const(expr, context);
+  ELSEIF (expr->>'CaseExpr') IS NOT NULL THEN
+    RETURN deparser.case_expr(expr, context);
+  ELSEIF (expr->>'CaseWhen') IS NOT NULL THEN
+    RETURN deparser.case_when(expr, context);
+  ELSEIF (expr->>'CoalesceExpr') IS NOT NULL THEN
+    RETURN deparser.coalesce_expr(expr, context);
+  ELSEIF (expr->>'ColumnDef') IS NOT NULL THEN
+    RETURN deparser.column_def(expr, context);
+  ELSEIF (expr->>'ColumnRef') IS NOT NULL THEN
+    RETURN deparser.column_ref(expr, context);
+  ELSEIF (expr->>'CommentStmt') IS NOT NULL THEN
+    RETURN deparser.comment_stmt(expr, context);
+  ELSEIF (expr->>'CompositeTypeStmt') IS NOT NULL THEN
+    RETURN deparser.composite_type_stmt(expr, context);
+  ELSEIF (expr->>'Constraint') IS NOT NULL THEN
+    RETURN deparser.constraint(expr, context);
+  ELSEIF (expr->>'CreateDomainStmt') IS NOT NULL THEN
+    RETURN deparser.create_domain_stmt(expr, context);
+  ELSEIF (expr->>'CreateEnumStmt') IS NOT NULL THEN
+    RETURN deparser.create_enum_stmt(expr, context);
+  ELSEIF (expr->>'CreateFunctionStmt') IS NOT NULL THEN
+    RETURN deparser.create_function_stmt(expr, context);
+  ELSEIF (expr->>'CreatePolicyStmt') IS NOT NULL THEN
+    RETURN deparser.create_policy_stmt(expr, context);
+  ELSEIF (expr->>'CreateRoleStmt') IS NOT NULL THEN
+    RETURN deparser.create_role_stmt(expr, context);
+  ELSEIF (expr->>'CreateSchemaStmt') IS NOT NULL THEN
+    RETURN deparser.create_schema_stmt(expr, context);
+  ELSEIF (expr->>'CreateSeqStmt') IS NOT NULL THEN
+    RETURN deparser.create_seq_stmt(expr, context);
+  ELSEIF (expr->>'CreateStmt') IS NOT NULL THEN
+    RETURN deparser.create_stmt(expr, context);
+  ELSEIF (expr->>'CreateTrigStmt') IS NOT NULL THEN
+    RETURN deparser.create_trigger_stmt(expr, context);
+  ELSEIF (expr->>'DefElem') IS NOT NULL THEN
+    RETURN deparser.def_elem(expr, context);
+  ELSEIF (expr->>'DeleteStmt') IS NOT NULL THEN
+    RETURN deparser.delete_stmt(expr, context);
+  ELSEIF (expr->>'DropStmt') IS NOT NULL THEN
+    RETURN deparser.drop_stmt(expr, context);
+  ELSEIF (expr->>'ExecuteStmt') IS NOT NULL THEN
+    RETURN deparser.execute_stmt(expr, context);
   ELSEIF (expr->>'FuncCall') IS NOT NULL THEN
     RETURN deparser.func_call(expr, context);
-  ELSEIF (expr->>'ColumnRef') IS NOT NULL THEN      
-    RETURN deparser.column_ref(expr, context);
-  ELSEIF (expr->>'ColumnDef') IS NOT NULL THEN      
-    RETURN deparser.column_def(expr, context);
-  ELSEIF (expr->>'RangeVar') IS NOT NULL THEN      
-    RETURN deparser.range_var(expr, context);
-  ELSEIF (expr->>'FunctionParameter') IS NOT NULL THEN      
+  ELSEIF (expr->>'FunctionParameter') IS NOT NULL THEN
     RETURN deparser.function_parameter(expr, context);
-  ELSEIF (expr->>'CreatePolicyStmt') IS NOT NULL THEN      
-    RETURN deparser.create_policy_stmt(expr, context);
-  ELSEIF (expr->>'RoleSpec') IS NOT NULL THEN      
-    RETURN deparser.role_spec(expr, context);
-  ELSEIF (expr->>'InsertStmt') IS NOT NULL THEN      
-    RETURN deparser.insert_stmt(expr, context);
-  ELSEIF (expr->>'CreateRoleStmt') IS NOT NULL THEN      
-    RETURN deparser.create_role_stmt(expr, context);
-  ELSEIF (expr->>'CreateStmt') IS NOT NULL THEN      
-    RETURN deparser.create_stmt(expr, context);
-  ELSEIF (expr->>'AccessPriv') IS NOT NULL THEN      
-    RETURN deparser.access_priv(expr, context);
-  ELSEIF (expr->>'RuleStmt') IS NOT NULL THEN      
-    RETURN deparser.rule_stmt(expr, context);
-  ELSEIF (expr->>'GrantRoleStmt') IS NOT NULL THEN      
+  ELSEIF (expr->>'GrantRoleStmt') IS NOT NULL THEN
     RETURN deparser.grant_role_stmt(expr, context);
-  ELSEIF (expr->>'ViewStmt') IS NOT NULL THEN      
-    RETURN deparser.view_stmt(expr, context);
-  ELSEIF (expr->>'SortBy') IS NOT NULL THEN      
-    RETURN deparser.sort_by(expr, context);
-  ELSEIF (expr->>'SelectStmt') IS NOT NULL THEN      
-    RETURN deparser.select_stmt(expr, context);
-  ELSEIF (expr->>'TransactionStmt') IS NOT NULL THEN      
-    RETURN deparser.transaction_stmt(expr, context);
-  ELSEIF (expr->>'DropStmt') IS NOT NULL THEN      
-    RETURN deparser.drop_stmt(expr, context);
-  ELSEIF (expr->>'OnConflictClause') IS NOT NULL THEN      
-    RETURN deparser.on_conflict_clause(expr, context);
-  ELSEIF (expr->>'InferClause') IS NOT NULL THEN      
-    RETURN deparser.infer_clause(expr, context);
-  ELSEIF (expr->>'CreateFunctionStmt') IS NOT NULL THEN      
-    RETURN deparser.create_function_stmt(expr, context);
-  ELSEIF (expr->>'CreateTrigStmt') IS NOT NULL THEN      
-    RETURN deparser.create_trigger_stmt(expr, context);
-  ELSEIF (expr->>'TypeCast') IS NOT NULL THEN      
-    RETURN deparser.type_cast(expr, context);
-  ELSEIF (expr->>'TypeName') IS NOT NULL THEN      
-    RETURN deparser.type_name(expr, context);
-  ELSEIF (expr->>'DeleteStmt') IS NOT NULL THEN      
-    RETURN deparser.delete_stmt(expr, context);
-  ELSEIF (expr->>'ResTarget') IS NOT NULL THEN      
-    RETURN deparser.res_target(expr, context);
-  ELSEIF (expr->>'CaseExpr') IS NOT NULL THEN      
-    RETURN deparser.case_expr(expr, context);
-  ELSEIF (expr->>'CreateDomainStmt') IS NOT NULL THEN      
-    RETURN deparser.create_domain_stmt(expr, context);
-  ELSEIF (expr->>'CaseWhen') IS NOT NULL THEN      
-    RETURN deparser.case_when(expr, context);
-  ELSEIF (expr->>'AlterDefaultPrivilegesStmt') IS NOT NULL THEN      
-    RETURN deparser.alter_default_privileges_stmt(expr, context);
-  ELSEIF (expr->>'CreateSchemaStmt') IS NOT NULL THEN      
-    RETURN deparser.create_schema_stmt(expr, context);
-  ELSEIF (expr->>'VariableSetStmt') IS NOT NULL THEN      
-    RETURN deparser.variable_set_stmt(expr, context);
-  ELSEIF (expr->>'RangeFunction') IS NOT NULL THEN      
-    RETURN deparser.range_function(expr, context);
-  ELSEIF (expr->>'Alias') IS NOT NULL THEN      
-    RETURN deparser.alias(expr, context);
-  ELSEIF (expr->>'CompositeTypeStmt') IS NOT NULL THEN      
-    RETURN deparser.composite_type_stmt(expr, context);
-  ELSEIF (expr->>'DefElem') IS NOT NULL THEN      
-    RETURN deparser.def_elem(expr, context);
-  ELSEIF (expr->>'CoalesceExpr') IS NOT NULL THEN      
-    RETURN deparser.coalesce_expr(expr, context);
-  ELSEIF (expr->>'CommentStmt') IS NOT NULL THEN      
-    RETURN deparser.comment_stmt(expr, context);
-  ELSEIF (expr->>'Constraint') IS NOT NULL THEN      
-    RETURN deparser.constraint(expr, context);
-  ELSEIF (expr->>'CreateSeqStmt') IS NOT NULL THEN      
-    RETURN deparser.create_seq_stmt(expr, context);
-  ELSEIF (expr->>'GrantStmt') IS NOT NULL THEN      
+  ELSEIF (expr->>'GrantStmt') IS NOT NULL THEN
     RETURN deparser.grant_stmt(expr, context);
-  ELSEIF (expr->>'Integer') IS NOT NULL THEN      
-    RETURN deparser.integer(expr, context);
-  ELSEIF (expr->>'IndexStmt') IS NOT NULL THEN      
-    RETURN deparser.index_stmt(expr, context);
-  ELSEIF (expr->>'RowExpr') IS NOT NULL THEN      
-    RETURN deparser.row_expr(expr, context);
-  ELSEIF (expr->>'A_Indices') IS NOT NULL THEN      
-    RETURN deparser.a_indices(expr, context);
-  ELSEIF (expr->>'ExecuteStmt') IS NOT NULL THEN      
-    RETURN deparser.execute_stmt(expr, context);
-  ELSEIF (expr->>'RenameStmt') IS NOT NULL THEN      
-    RETURN deparser.rename_stmt(expr, context);
-  ELSEIF (expr->>'IndexElem') IS NOT NULL THEN      
+  ELSEIF (expr->>'IndexElem') IS NOT NULL THEN
     RETURN deparser.index_elem(expr, context);
-  ELSEIF (expr->>'UpdateStmt') IS NOT NULL THEN      
-    RETURN deparser.update_stmt(expr, context);
-  ELSEIF (expr->>'CreateEnumStmt') IS NOT NULL THEN      
-    RETURN deparser.create_enum_stmt(expr, context);
-  ELSEIF (expr->>'AlterTableStmt') IS NOT NULL THEN      
-    RETURN deparser.alter_table_stmt(expr, context);
-  ELSEIF (expr->>'AlterDomainStmt') IS NOT NULL THEN      
-    RETURN deparser.alter_domain_stmt(expr, context);
-  ELSEIF (expr->>'AlterEnumStmt') IS NOT NULL THEN      
-    RETURN deparser.alter_enum_stmt(expr, context);
-  ELSEIF (expr->>'AlterTableCmd') IS NOT NULL THEN      
-    RETURN deparser.alter_table_cmd(expr, context);
-  ELSEIF (expr->>'SubLink') IS NOT NULL THEN      
-    RETURN deparser.sub_link(expr, context);
-  ELSEIF (expr->>'String') IS NOT NULL THEN      
-    RETURN deparser.str(expr, context);
-  ELSEIF (expr->>'A_Star') IS NOT NULL THEN      
-    RETURN deparser.a_star(expr, context);
-  ELSEIF (expr->>'A_Indirection') IS NOT NULL THEN      
-    RETURN deparser.a_indirection(expr, context);
-  ELSEIF (expr->>'JoinExpr') IS NOT NULL THEN      
+  ELSEIF (expr->>'IndexStmt') IS NOT NULL THEN
+    RETURN deparser.index_stmt(expr, context);
+  ELSEIF (expr->>'InferClause') IS NOT NULL THEN
+    RETURN deparser.infer_clause(expr, context);
+  ELSEIF (expr->>'InsertStmt') IS NOT NULL THEN
+    RETURN deparser.insert_stmt(expr, context);
+  ELSEIF (expr->>'Integer') IS NOT NULL THEN
+    RETURN deparser.integer(expr, context);
+  ELSEIF (expr->>'JoinExpr') IS NOT NULL THEN
     RETURN deparser.jointype(expr, context);
-  ELSEIF (expr->>'ParamRef') IS NOT NULL THEN      
-    RETURN deparser.param_ref(expr, context);
-  ELSEIF (expr->>'RangeSubselect') IS NOT NULL THEN      
-    RETURN deparser.range_subselect(expr->'RawStmt'->'stmt');
-  ELSEIF (expr->>'RawStmt') IS NOT NULL THEN      
-    RETURN deparser.expression(expr->'RawStmt'->'stmt');
-  ELSEIF (expr->>'Null') IS NOT NULL THEN      
+  ELSEIF (expr->>'Null') IS NOT NULL THEN
     RETURN 'NULL';
+  ELSEIF (expr->>'OnConflictClause') IS NOT NULL THEN
+    RETURN deparser.on_conflict_clause(expr, context);
+  ELSEIF (expr->>'ParamRef') IS NOT NULL THEN
+    RETURN deparser.param_ref(expr, context);
+  ELSEIF (expr->>'RangeFunction') IS NOT NULL THEN
+    RETURN deparser.range_function(expr, context);
+  ELSEIF (expr->>'RangeSubselect') IS NOT NULL THEN
+    RETURN deparser.range_subselect(expr->'RawStmt'->'stmt');
+  ELSEIF (expr->>'RangeVar') IS NOT NULL THEN
+    RETURN deparser.range_var(expr, context);
+  ELSEIF (expr->>'RawStmt') IS NOT NULL THEN
+    RETURN deparser.expression(expr->'RawStmt'->'stmt');
+  ELSEIF (expr->>'RenameStmt') IS NOT NULL THEN
+    RETURN deparser.rename_stmt(expr, context);
+  ELSEIF (expr->>'ResTarget') IS NOT NULL THEN
+    RETURN deparser.res_target(expr, context);
+  ELSEIF (expr->>'RoleSpec') IS NOT NULL THEN
+    RETURN deparser.role_spec(expr, context);
+  ELSEIF (expr->>'RowExpr') IS NOT NULL THEN
+    RETURN deparser.row_expr(expr, context);
+  ELSEIF (expr->>'RuleStmt') IS NOT NULL THEN
+    RETURN deparser.rule_stmt(expr, context);
+  ELSEIF (expr->>'SelectStmt') IS NOT NULL THEN
+    RETURN deparser.select_stmt(expr, context);
+  ELSEIF (expr->>'SortBy') IS NOT NULL THEN
+    RETURN deparser.sort_by(expr, context);
+  ELSEIF (expr->>'String') IS NOT NULL THEN
+    RETURN deparser.str(expr, context);
+  ELSEIF (expr->>'SubLink') IS NOT NULL THEN
+    RETURN deparser.sub_link(expr, context);
+  ELSEIF (expr->>'TransactionStmt') IS NOT NULL THEN
+    RETURN deparser.transaction_stmt(expr, context);
+  ELSEIF (expr->>'TypeCast') IS NOT NULL THEN
+    RETURN deparser.type_cast(expr, context);
+  ELSEIF (expr->>'TypeName') IS NOT NULL THEN
+    RETURN deparser.type_name(expr, context);
+  ELSEIF (expr->>'UpdateStmt') IS NOT NULL THEN
+    RETURN deparser.update_stmt(expr, context);
+  ELSEIF (expr->>'VariableSetStmt') IS NOT NULL THEN
+    RETURN deparser.variable_set_stmt(expr, context);
+  ELSEIF (expr->>'ViewStmt') IS NOT NULL THEN
+    RETURN deparser.view_stmt(expr, context);
   ELSE
     RAISE EXCEPTION 'UNSUPPORTED_EXPRESSION %', expr::text;
   END IF;
