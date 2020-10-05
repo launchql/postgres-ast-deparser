@@ -865,6 +865,33 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.bit_string(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  prefix text;
+  rest text;
+BEGIN
+
+  IF (node->'BitString') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BitString';
+  END IF;
+
+  node = node->'BitString';
+
+  IF (node->'str') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BitString';
+  END IF;
+
+  prefix = LEFT(node->>'str', 1);
+  rest = SUBSTR(node->>'str', 2 );
+  RETURN format('%s''%s''', prefix, rest);
+
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.a_const(
   node jsonb,
   context text default null
@@ -3915,6 +3942,8 @@ BEGIN
     RETURN deparser.alter_table_cmd(expr, context);
   ELSEIF (expr->>'AlterTableStmt') IS NOT NULL THEN
     RETURN deparser.alter_table_stmt(expr, context);
+  ELSEIF (expr->>'BitString') IS NOT NULL THEN
+    RETURN deparser.bit_string(expr, context);
   ELSEIF (expr->>'BoolExpr') IS NOT NULL THEN
     RETURN deparser.bool_expr(expr, context);
   ELSEIF (expr->>'CaseExpr') IS NOT NULL THEN

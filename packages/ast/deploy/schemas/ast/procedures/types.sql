@@ -46,6 +46,65 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast.a_indices (
+  uidx jsonb,
+  lidx jsonb default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"A_Indices":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{A_Indices, uidx}', uidx);
+	result = ast.jsonb_set(result, '{A_Indices, lidx}', lidx);
+  RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.bit_string (
+  str text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"BitString":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{BitString, str}', to_jsonb(str));
+  RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.a_star ()
+    RETURNS jsonb
+    AS $$
+BEGIN
+  RETURN '{"A_Star":{}}'::jsonb;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.a_indirection (
+  arg jsonb,
+  indirection jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"A_Indirection":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{A_Indirection, arg}', arg);
+	result = ast.jsonb_set(result, '{A_Indirection, indirection}', indirection);
+  RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast.range_var (
   schemaname text,
   relname text,

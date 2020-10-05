@@ -295,3 +295,61 @@ select deparser.deparse(
   `);
   expect(result).toMatchSnapshot();
 });
+
+it('a_indices', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.a_indices(
+    ast.integer(2)
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('a_indices', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.a_indices(
+    ast.integer(2),
+    ast.integer(2)
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('a_indirection', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.a_indirection(
+    ast.integer(2),
+    to_jsonb(ARRAY[ 
+      ast.string('namesplaceholder1'),
+      ast.string('namesplaceholder2')
+    ])
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('a_star', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.a_star( )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('bit_string', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.bit_string(
+    'mystring'
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
