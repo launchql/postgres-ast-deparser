@@ -288,18 +288,37 @@ DECLARE
   right_expr text;
   right_expr2 text;
 BEGIN
-
-  -- lexpr
-  SELECT deparser.expression(expr->'lexpr', context) INTO left_expr;
-
-  -- rexpr
-  SELECT deparser.expression(expr->'rexpr'->0, context) INTO right_expr;
-  SELECT deparser.expression(expr->'rexpr'->1, context) INTO right_expr2;
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.expression(expr->'rexpr'->0, context);
+  right_expr2 = deparser.expression(expr->'rexpr'->1, context);
 
   IF ((expr->>'kind')::int = 11) THEN
     RETURN format('%s BETWEEN %s AND %s', left_expr, right_expr, right_expr2);
-  ELSEIF ((expr->>'kind')::int = 12) THEN
+  ELSE 
+    RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_BETWEEN)', 'A_Expr';
+  END IF;
+
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.a_expr_not_between(
+  expr jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  left_expr text;
+  right_expr text;
+  right_expr2 text;
+BEGIN
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.expression(expr->'rexpr'->0, context);
+  right_expr2 = deparser.expression(expr->'rexpr'->1, context);
+
+  IF ((expr->>'kind')::int = 12) THEN
     RETURN format('%s NOT BETWEEN %s AND %s', left_expr, right_expr, right_expr2);
+  ELSE
+    RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_NOT_BETWEEN)', 'A_Expr';
   END IF;
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
@@ -307,7 +326,7 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_func(
+CREATE FUNCTION deparser.a_expr_similar(
   expr jsonb,
   context text default null
 ) returns text as $$
@@ -317,13 +336,11 @@ DECLARE
   right_expr text;
   right_expr2 text;
 BEGIN
-
-  -- lexpr
-  SELECT deparser.expression(expr->'lexpr', context) INTO left_expr;
-
   IF (expr->'name') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
+    RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_SIMILAR)', 'A_Expr';
   END IF;
+
+  left_expr = deparser.expression(expr->'lexpr', context);
   operator = deparser.expression(expr->'name'->0, context);
 
   IF ((expr->>'kind')::int = 10) THEN
@@ -340,7 +357,7 @@ BEGIN
     ELSE
       IF (expr->'rexpr'->'FuncCall'->'args'->1->'Null') IS NOT NULL THEN
         SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
-        RETURN format('%s SIMILARYY TO %s', left_expr, right_expr);
+        RETURN format('%s SIMILAR TO %s', left_expr, right_expr);
       ELSE 
         SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
         SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->1, context) INTO right_expr2;
@@ -349,13 +366,12 @@ BEGIN
     END IF;
   END IF;
 
-  RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
+  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_SIMILAR)', 'A_Expr';
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
-
-CREATE FUNCTION deparser.a_expr_rlist(
+CREATE FUNCTION deparser.a_expr_ilike(
   expr jsonb,
   context text default null
 ) returns text as $$
@@ -364,18 +380,69 @@ DECLARE
   operator text;
   right_expr text;
 BEGIN
-
-  -- lexpr
-  SELECT deparser.expression(expr->'lexpr', context)
-    INTO left_expr;
-
-  -- rexpr
-  SELECT array_to_string(deparser.expressions_array(expr->'rexpr', context), ', ')
-    INTO right_expr;
-
   IF (expr->'name') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
+      RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_ILIKE)', 'A_Expr';
   END IF;
+
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.expression(expr->'rexpr', context);
+  operator = deparser.expression(expr->'name'->0);
+
+  IF ((expr->>'kind')::int = 9) THEN
+    -- AEXPR_ILIKE
+    IF (operator = '!~~*') THEN
+      RETURN format('%s %s ( %s )', left_expr, 'NOT ILIKE', right_expr);
+    ELSE
+      RETURN format('%s %s ( %s )', left_expr, 'ILIKE', right_expr);
+    END IF;
+  END IF;
+
+  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_ILIKE)', 'A_Expr';
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.a_expr_like(
+  expr jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  left_expr text;
+  operator text;
+  right_expr text;
+BEGIN
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.expression(expr->'rexpr', context);
+
+  IF ((expr->>'kind')::int = 8) THEN
+    -- AEXPR_LIKE
+    IF (operator = '!~~') THEN
+      RETURN format('%s %s ( %s )', left_expr, 'NOT LIKE', right_expr);
+    ELSE
+      RETURN format('%s %s ( %s )', left_expr, 'LIKE', right_expr);
+    END IF;
+  END IF;
+
+  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_LIKE)', 'A_Expr';
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.a_expr_of(
+  expr jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  left_expr text;
+  operator text;
+  right_expr text;
+BEGIN
+  IF (expr->'name') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OF)', 'A_Expr';
+  END IF;
+
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.list(expr->'rexpr', ', ', context);
   operator = deparser.expression(expr->'name'->0, context);
 
   IF ((expr->>'kind')::int = 5) THEN
@@ -385,7 +452,31 @@ BEGIN
     ELSE
       RETURN format('%s %s ( %s )', left_expr, 'IS NOT OF', right_expr);
     END IF;
-  ELSEIF ((expr->>'kind')::int = 6) THEN
+  END IF;
+
+  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OF)', 'A_Expr';
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.a_expr_in(
+  expr jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  left_expr text;
+  operator text;
+  right_expr text;
+BEGIN
+  IF (expr->'name') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_IN)', 'A_Expr';
+  END IF;
+
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.list(expr->'rexpr', ', ', context);
+  operator = deparser.expression(expr->'name'->0, context);
+  
+  IF ((expr->>'kind')::int = 6) THEN
     -- AEXPR_IN
     IF (operator = '=') THEN
       RETURN format('%s %s ( %s )', left_expr, 'IN', right_expr);
@@ -401,13 +492,34 @@ BEGIN
     END IF;
   END IF;
 
-  RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
+  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_IN)', 'A_Expr';
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 
-CREATE FUNCTION deparser.a_expr_normal(
+CREATE FUNCTION deparser.a_expr_nullif(
+  expr jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  left_expr text;
+  right_expr text;
+BEGIN
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.expression(expr->'rexpr', context);
+
+  IF ((expr->>'kind')::int = 4) THEN
+    -- AEXPR_NULLIF
+    RETURN format('NULLIF(%s, %s)', left_expr, right_expr);
+  END IF;
+
+  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_NULLIF)', 'A_Expr';
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.a_expr_op(
   expr jsonb,
   context text default null
 ) returns text as $$
@@ -416,51 +528,96 @@ DECLARE
   operator text;
   right_expr text;
 BEGIN
-  -- lexpr
-  SELECT deparser.expression(expr->'lexpr', context) INTO left_expr;
-
-  -- rexpr
-  SELECT deparser.expression(expr->'rexpr', context) INTO right_expr;
-
-  IF ((expr->>'kind')::int = 3) THEN
-    -- AEXPR_DISTINCT
-    RETURN format('%s IS DISTINCT FROM %s', left_expr, right_expr);
-  ELSEIF ((expr->>'kind')::int = 4) THEN
-    -- AEXPR_NULLIF
-    RETURN format('NULLIF(%s, %s)', left_expr, right_expr);
-  END IF;
-
   IF (expr->'name') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
+    RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP)', 'A_Expr';
   END IF;
+
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.expression(expr->'rexpr', context);
   operator = deparser.expression(expr->'name'->0);
 
   IF ((expr->>'kind')::int = 0) THEN
     -- AEXPR_OP
     RETURN array_to_string(ARRAY[left_expr, operator, right_expr], ' ');
-  ELSEIF ((expr->>'kind')::int = 1) THEN
-    -- AEXPR_OP_ANY
-    RETURN format('%s %s ANY( %s )', left_expr, operator, right_expr);
-  ELSEIF ((expr->>'kind')::int = 2) THEN
-    -- AEXPR_OP_ALL
-    RETURN format('%s %s ALL( %s )', left_expr, operator, right_expr);
-  ELSEIF ((expr->>'kind')::int = 8) THEN
-    -- AEXPR_ILIKE
-    IF (operator = '!~~') THEN
-      RETURN format('%s %s ( %s )', left_expr, 'NOT LIKE', right_expr);
-    ELSE
-      RETURN format('%s %s ( %s )', left_expr, 'LIKE', right_expr);
-    END IF;
-  ELSEIF ((expr->>'kind')::int = 9) THEN
-    -- AEXPR_OP_ALL
-    IF (operator = '!~~*') THEN
-      RETURN format('%s %s ( %s )', left_expr, 'NOT ILIKE', right_expr);
-    ELSE
-      RETURN format('%s %s ( %s )', left_expr, 'ILIKE', right_expr);
-    END IF;
   END IF;
 
-  RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
+  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP)', 'A_Expr';
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.a_expr_op_any(
+  expr jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  left_expr text;
+  operator text;
+  right_expr text;
+BEGIN
+  IF (expr->'name') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ANY)', 'A_Expr';
+  END IF;
+
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.expression(expr->'rexpr', context);
+  operator = deparser.expression(expr->'name'->0);
+
+  IF ((expr->>'kind')::int = 1) THEN
+    -- AEXPR_OP_ANY
+    RETURN format('%s %s ANY( %s )', left_expr, operator, right_expr);
+  END IF;
+
+  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ANY)', 'A_Expr';
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.a_expr_op_all(
+  expr jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  left_expr text;
+  operator text;
+  right_expr text;
+BEGIN
+  IF (expr->'name') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
+  END IF;
+
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.expression(expr->'rexpr', context);
+  operator = deparser.expression(expr->'name'->0);
+
+  IF ((expr->>'kind')::int = 2) THEN
+    -- AEXPR_OP_ALL
+    RETURN format('%s %s ALL( %s )', left_expr, operator, right_expr);
+  END IF;
+
+  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ALL)', 'A_Expr';
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.a_expr_distinct(
+  expr jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  left_expr text;
+  operator text;
+  right_expr text;
+BEGIN
+  left_expr = deparser.expression(expr->'lexpr', context);
+  right_expr = deparser.expression(expr->'rexpr', context);
+
+  IF ((expr->>'kind')::int = 3) THEN
+    -- AEXPR_DISTINCT
+    RETURN format('%s IS DISTINCT FROM %s', left_expr, right_expr);
+  END IF;
+
+  RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_DISTINCT)', 'A_Expr';
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -469,6 +626,8 @@ CREATE FUNCTION deparser.a_expr(
   expr jsonb,
   context text default null
 ) returns text as $$
+DECLARE
+  kind int;
 BEGIN
 
   IF (expr->>'A_Expr') IS NULL THEN  
@@ -483,46 +642,51 @@ BEGIN
   IF (expr->'rexpr') IS NULL THEN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
   END IF;
+  IF (expr->'kind') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
+  END IF;
 
-  IF ((expr->>'kind')::int = 0) THEN
+  kind = (expr->>'kind')::int;
+
+  IF (kind = 0) THEN
     -- AEXPR_OP
-    RETURN deparser.a_expr_normal(expr, context);
-  ELSEIF ((expr->>'kind')::int = 1) THEN
+    RETURN deparser.a_expr_op(expr, context);
+  ELSEIF (kind = 1) THEN
     -- AEXPR_OP_ANY
-    RETURN deparser.a_expr_normal(expr, context);
-  ELSEIF ((expr->>'kind')::int = 2) THEN
+    RETURN deparser.a_expr_op_any(expr, context);
+  ELSEIF (kind = 2) THEN
     -- AEXPR_OP_ALL
-    RETURN deparser.a_expr_normal(expr, context);
-  ELSEIF ((expr->>'kind')::int = 3) THEN
+    RETURN deparser.a_expr_op_all(expr, context);
+  ELSEIF (kind = 3) THEN
     -- AEXPR_DISTINCT
-    RETURN deparser.a_expr_normal(expr, context);
-  ELSEIF ((expr->>'kind')::int = 4) THEN
-    -- AEXPR_OP_ALL
-    RETURN deparser.a_expr_normal(expr, context);
-  ELSEIF ((expr->>'kind')::int = 5) THEN
+    RETURN deparser.a_expr_distinct(expr, context);
+  ELSEIF (kind = 4) THEN
+    -- AEXPR_NULLIF
+    RETURN deparser.a_expr_nullif(expr, context);
+  ELSEIF (kind = 5) THEN
     -- AEXPR_OF
-    RETURN deparser.a_expr_rlist(expr, context);
-  ELSEIF ((expr->>'kind')::int = 6) THEN
+    RETURN deparser.a_expr_of(expr, context);
+  ELSEIF (kind = 6) THEN
     -- AEXPR_IN
-    RETURN deparser.a_expr_rlist(expr, context);
-  ELSEIF ((expr->>'kind')::int = 7) THEN
+    RETURN deparser.a_expr_in(expr, context);
+  ELSEIF (kind = 7) THEN
     -- AEXPR_IN
-    RETURN deparser.a_expr_rlist(expr, context);
-  ELSEIF ((expr->>'kind')::int = 8) THEN
+    RETURN deparser.a_expr_in(expr, context);
+  ELSEIF (kind = 8) THEN
     -- AEXPR_LIKE
-    RETURN deparser.a_expr_normal(expr, context);
-  ELSEIF ((expr->>'kind')::int = 9) THEN
+    RETURN deparser.a_expr_like(expr, context);
+  ELSEIF (kind = 9) THEN
     -- AEXPR_ILIKE
-    RETURN deparser.a_expr_normal(expr, context);
-  ELSEIF ((expr->>'kind')::int = 10) THEN
+    RETURN deparser.a_expr_ilike(expr, context);
+  ELSEIF (kind = 10) THEN
     -- AEXPR_SIMILAR
-    RETURN deparser.a_expr_func(expr, context);
-  ELSEIF ((expr->>'kind')::int = 11) THEN
+    RETURN deparser.a_expr_similar(expr, context);
+  ELSEIF (kind = 11) THEN
     -- AEXPR_BETWEEN
     RETURN deparser.a_expr_between(expr, context);
-  ELSEIF ((expr->>'kind')::int = 12) THEN
+  ELSEIF (kind = 12) THEN
     -- AEXPR_NOT_BETWEEN
-    RETURN deparser.a_expr_between(expr, context);
+    RETURN deparser.a_expr_not_between(expr, context);
   END IF;
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
@@ -2671,11 +2835,11 @@ BEGIN
 
     output = array_append(output, 'CREATE');
     output = array_append(output, 'RULE');
-    IF (node->'rulename' = '_RETURN') THEN
+    IF (node->>'rulename' = '_RETURN') THEN
       -- special rules
       output = array_append(output, '"_RETURN"');
     ELSE
-      output = array_append(output, e.rulename);
+      output = array_append(output, quote_ident(node->>'rulename'));
     END IF;
     output = array_append(output, 'AS');
     output = array_append(output, 'ON');
@@ -2697,7 +2861,7 @@ BEGIN
     -- relation
 
     output = array_append(output, 'TO');
-    output = array_append(output, deparse.expression(node->'relation', context));
+    output = array_append(output, deparser.expression(node->'relation', context));
 
     IF (node->'instead') IS NOT NULL THEN 
       output = array_append(output, 'DO');
@@ -2706,12 +2870,15 @@ BEGIN
 
     IF (node->'whereClause') IS NOT NULL THEN 
       output = array_append(output, 'WHERE');
-      output = array_append(output, deparse.expression(node->'whereClause', context));
+      output = array_append(output, deparser.expression(node->'whereClause', context));
       output = array_append(output, 'DO');
     END IF;
 
-    IF (node->'actions' IS NOT NULL AND jsonb_array_length(node->'actions') > 0) THEN 
-      output = array_append(output, deparse.expression(node->'actions'->0, context));
+    IF (
+      node->'actions' IS NOT NULL AND
+      jsonb_array_length(node->'actions') > 0
+    ) THEN 
+      output = array_append(output, deparser.expression(node->'actions'->0, context));
     ELSE
       output = array_append(output, 'NOTHING');
     END IF;

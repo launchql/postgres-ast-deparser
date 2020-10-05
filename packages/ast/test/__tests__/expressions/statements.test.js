@@ -20,36 +20,189 @@ afterAll(async () => {
 });
 
 it('func_call', async () => {
-  const [result] = await db.any(`
-select ast.func_call( 'dan' );
-  `);
-  expect(result).toMatchSnapshot();
-});
-
-it('func_call deparse', async () => {
-  const [result] = await db.any(`
+  const [{ deparse: result }] = await db.any(`
 select deparser.deparse( ast.func_call( 'dan' ));
   `);
   expect(result).toMatchSnapshot();
 });
 
 it('a_expr', async () => {
-  const [result] = await db.any(`
+  const [{ deparse: result }] = await db.any(`
 select deparser.deparse( ast.a_expr(0, ast.string('a'), '=', ast.string('b')) );
   `);
   expect(result).toMatchSnapshot();
 });
 
 it('type_name', async () => {
-  const [result] = await db.any(`
+  const [{ deparse: result }] = await db.any(`
 select deparser.deparse( ast.type_name( to_jsonb(ARRAY[ast.string('text')]) ) );
   `);
   expect(result).toMatchSnapshot();
 });
 
 it('type_cast', async () => {
-  const [result] = await db.any(`
+  const [{ deparse: result }] = await db.any(`
 select deparser.deparse( ast.type_cast(ast.a_const(ast.null()), ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true )) );
   `);
   expect(result).toMatchSnapshot();
+});
+
+it('raw_stmt', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.raw_stmt(
+    ast.type_cast(ast.a_const(ast.null()), ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true ))
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('rule_stmt', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.rule_stmt(
+    'my-rule',
+    3,
+    ast.string('<relation placeholder>'),
+    ast.string('<whereClause placeholder>'),
+    to_jsonb(ARRAY[ ast.string('<actions placeholder>') ])
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('a_expr', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.a_expr(
+      0,
+      ast.string('<lexpr placeholder>'),
+      '=',
+      ast.string('<rexpr placeholder>')
+    )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('a_expr 0-4', async () => {
+  for (let i = 0; i < 5; i++) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  ast.a_expr(
+      $1,
+      ast.string('<lexpr placeholder>'),
+      '=',
+      ast.string('<rexpr placeholder>')
+    )
+);
+  `,
+      [i]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('a_expr 5 ', async () => {
+  for (let i = 5; i < 6; i++) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  ast.a_expr(
+      $1,
+      ast.string('<lexpr placeholder>'),
+      '=',
+      to_jsonb(ARRAY[ast.string('<rexpr placeholder>')])
+    )
+);
+  `,
+      [i]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('a_expr 6-7 ', async () => {
+  for (let i = 6; i < 8; i++) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  ast.a_expr(
+      $1,
+      ast.string('<lexpr placeholder>'),
+      '=',
+      to_jsonb(ARRAY[ast.string('<rexpr placeholder>')])
+    )
+);
+  `,
+      [i]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('a_expr 8-9', async () => {
+  for (let i = 8; i < 10; i++) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  ast.a_expr(
+      $1,
+      ast.string('<lexpr placeholder>'),
+      '=',
+      ast.string('<rexpr placeholder>')
+    )
+);
+  `,
+      [i]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('a_expr 10', async () => {
+  for (let i = 10; i < 11; i++) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  ast.a_expr(
+      $1,
+      ast.string('<lexpr placeholder>'),
+      '=',
+      ast.func_call('func', to_jsonb(ARRAY[
+        ast.string('arg1'),
+        ast.string('arg2')
+      ]))
+    )
+);
+  `,
+      [i]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('a_expr 11-12', async () => {
+  for (let i = 11; i < 13; i++) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  ast.a_expr(
+      $1,
+      ast.string('<lexpr placeholder>'),
+      '=',
+      to_jsonb(ARRAY[
+        ast.string('arg1'),
+        ast.string('arg2')
+      ])
+    )
+);
+  `,
+      [i]
+    );
+    expect(result).toMatchSnapshot();
+  }
 });

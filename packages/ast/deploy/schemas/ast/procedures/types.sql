@@ -49,6 +49,44 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast.raw_stmt (
+  stmt jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"RawStmt":{}}'::jsonb;
+BEGIN
+	result = jsonb_set(result, '{RawStmt, stmt}', stmt);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.rule_stmt (
+  rulename text,
+  event int,
+  relation jsonb,
+  whereClause jsonb,
+  actions jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"RuleStmt":{}}'::jsonb;
+BEGIN
+	result = jsonb_set(result, '{RuleStmt, rulename}', to_jsonb(rulename));
+	result = jsonb_set(result, '{RuleStmt, event}', to_jsonb(event));
+	result = jsonb_set(result, '{RuleStmt, relation}', relation);
+	result = jsonb_set(result, '{RuleStmt, whereClause}', whereClause);
+	result = jsonb_set(result, '{RuleStmt, actions}', actions);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast.bool_expr (
   boolop int,
   args jsonb
@@ -195,7 +233,12 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.a_expr (kind int, lexpr jsonb, op text, rexpr jsonb)
+CREATE FUNCTION ast.a_expr (
+  kind int,
+  lexpr jsonb,
+  op text,
+  rexpr jsonb
+)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -204,6 +247,27 @@ BEGIN
 	result = jsonb_set(result, '{A_Expr, kind}', to_jsonb(kind));
 	result = jsonb_set(result, '{A_Expr, lexpr}', lexpr);
 	result = jsonb_set(result, '{A_Expr, name, 0}', ast.string(op));
+	result = jsonb_set(result, '{A_Expr, rexpr}', rexpr);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.a_expr (
+  kind int,
+  lexpr jsonb,
+  name jsonb,
+  rexpr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"A_Expr":{"kind":0,"lexpr":{},"name":[],"rexpr":{}}}'::jsonb;
+BEGIN
+	result = jsonb_set(result, '{A_Expr, kind}', to_jsonb(kind));
+	result = jsonb_set(result, '{A_Expr, lexpr}', lexpr);
+	result = jsonb_set(result, '{A_Expr, name}', name);
 	result = jsonb_set(result, '{A_Expr, rexpr}', rexpr);
 	RETURN result;
 END;
