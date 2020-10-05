@@ -1,7 +1,6 @@
 -- Deploy schemas/deparser/procedures/deparse to pg
 
 -- requires: schemas/deparser/schema
--- requires: schemas/ast/procedures/utils 
 -- requires: schemas/ast_utils/procedures/utils
 
 BEGIN;
