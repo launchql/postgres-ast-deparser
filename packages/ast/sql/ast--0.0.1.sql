@@ -1,4 +1,172 @@
 \echo Use "CREATE EXTENSION ast" to load this file. \quit
+CREATE SCHEMA ast_utils;
+
+CREATE FUNCTION ast_utils.interval ( n int ) RETURNS text[] AS $EOFCODE$
+	select (CASE 
+WHEN ( n = 2 ) THEN ARRAY[ 'month' ]
+WHEN ( n = 4 ) THEN ARRAY[ 'year' ]
+WHEN ( n = 6 ) THEN ARRAY[ 'year', 'month' ]
+WHEN ( n = 8 ) THEN ARRAY[ 'day' ]
+WHEN ( n = 1024 ) THEN ARRAY[ 'hour' ]
+WHEN ( n = 1032 ) THEN ARRAY[ 'day', 'hour' ]
+WHEN ( n = 2048 ) THEN ARRAY[ 'minute' ]
+WHEN ( n = 3072 ) THEN ARRAY[ 'hour', 'minute' ]
+WHEN ( n = 3080 ) THEN ARRAY[ 'day', 'minute' ]
+WHEN ( n = 4096 ) THEN ARRAY[ 'second' ]
+WHEN ( n = 6144 ) THEN ARRAY[ 'minute', 'second' ]
+WHEN ( n = 7168 ) THEN ARRAY[ 'hour', 'second' ]
+WHEN ( n = 7176 ) THEN ARRAY[ 'day', 'second' ]
+WHEN ( n = 32767 ) THEN ARRAY[]::text[]
+END);
+$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+
+CREATE FUNCTION ast_utils.reserved ( str text ) RETURNS boolean AS $EOFCODE$
+	select exists( select 1 from pg_get_keywords() where catcode = 'R' AND word=str  );
+$EOFCODE$ LANGUAGE sql SECURITY DEFINER;
+
+CREATE FUNCTION ast_utils.objtypes (  ) RETURNS text[] AS $EOFCODE$
+	select ARRAY[ 'ACCESS METHOD', 'AGGREGATE', NULL, NULL, NULL, 'CAST', 'COLUMN', 'COLLATION', 'CONVERSION', 'DATABASE', NULL, NULL, 'DOMAIN', 'CONSTRAINT', NULL, 'EXTENSION', 'FOREIGN DATA WRAPPER', 'SERVER', 'FOREIGN TABLE', 'FUNCTION', 'INDEX', 'LANGUAGE', 'LARGE OBJECT', 'MATERIALIZED VIEW', 'OPERATOR CLASS', 'OPERATOR', 'OPERATOR FAMILY', 'POLICY', NULL, NULL, 'ROLE', 'RULE', 'SCHEMA', 'SEQUENCE', NULL, 'STATISTICS', 'CONSTRAINT', 'TABLE', 'TABLESPACE', 'TRANSFORM', 'TRIGGER', 'TEXT SEARCH CONFIGURATION', 'TEXT SEARCH DICTIONARY', 'TEXT SEARCH PARSER', 'TEXT SEARCH TEMPLATE', 'TYPE', NULL, 'VIEW' ]::text[];
+$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+
+CREATE FUNCTION ast_utils.constrainttype_idxs ( typ text ) RETURNS int AS $EOFCODE$
+  select (CASE
+WHEN (typ = 'CONSTR_NULL') THEN 0
+WHEN (typ = 'CONSTR_NOTNULL') THEN 1
+WHEN (typ = 'CONSTR_DEFAULT') THEN 2
+WHEN (typ = 'CONSTR_IDENTITY') THEN 3
+WHEN (typ = 'CONSTR_CHECK') THEN 4
+WHEN (typ = 'CONSTR_PRIMARY') THEN 5
+WHEN (typ = 'CONSTR_UNIQUE') THEN 6
+WHEN (typ = 'CONSTR_EXCLUSION') THEN 7
+WHEN (typ = 'CONSTR_FOREIGN') THEN 8
+WHEN (typ = 'CONSTR_ATTR_DEFERRABLE') THEN 9
+WHEN (typ = 'CONSTR_ATTR_NOT_DEFERRABLE') THEN 10
+WHEN (typ = 'CONSTR_ATTR_DEFERRED') THEN 11
+WHEN (typ = 'CONSTR_ATTR_IMMEDIATE') THEN 12
+END);
+$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+
+CREATE FUNCTION ast_utils.constrainttypes ( contype int ) RETURNS text AS $EOFCODE$
+  select (CASE
+WHEN (contype =  0 ) THEN 'NULL'
+WHEN (contype =  1 ) THEN 'NOT NULL'
+WHEN (contype =  2 ) THEN 'DEFAULT'
+WHEN (contype =  4 ) THEN 'CHECK'
+WHEN (contype =  5 ) THEN 'PRIMARY KEY'
+WHEN (contype =  6 ) THEN 'UNIQUE'
+WHEN (contype =  7 ) THEN 'EXCLUDE'
+WHEN (contype =  8 ) THEN 'REFERENCES'
+END);
+$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+
+CREATE FUNCTION ast_utils.objtypes_idxs ( typ text ) RETURNS int AS $EOFCODE$
+	select (CASE
+WHEN (typ = 'OBJECT_ACCESS_METHOD') THEN 0
+WHEN (typ = 'OBJECT_AGGREGATE') THEN 1
+WHEN (typ = 'OBJECT_AMOP') THEN 2
+WHEN (typ = 'OBJECT_AMPROC') THEN 3
+WHEN (typ = 'OBJECT_ATTRIBUTE') THEN 4
+WHEN (typ = 'OBJECT_CAST') THEN 5
+WHEN (typ = 'OBJECT_COLUMN') THEN 6
+WHEN (typ = 'OBJECT_COLLATION') THEN 7
+WHEN (typ = 'OBJECT_CONVERSION') THEN 8
+WHEN (typ = 'OBJECT_DATABASE') THEN 9
+WHEN (typ = 'OBJECT_DEFAULT') THEN 10
+WHEN (typ = 'OBJECT_DEFACL') THEN 11
+WHEN (typ = 'OBJECT_DOMAIN') THEN 12
+WHEN (typ = 'OBJECT_DOMCONSTRAINT') THEN 13
+WHEN (typ = 'OBJECT_EVENT_TRIGGER') THEN 14
+WHEN (typ = 'OBJECT_EXTENSION') THEN 15
+WHEN (typ = 'OBJECT_FDW') THEN 16
+WHEN (typ = 'OBJECT_FOREIGN_SERVER') THEN 17
+WHEN (typ = 'OBJECT_FOREIGN_TABLE') THEN 18
+WHEN (typ = 'OBJECT_FUNCTION') THEN 19
+WHEN (typ = 'OBJECT_INDEX') THEN 20
+WHEN (typ = 'OBJECT_LANGUAGE') THEN 21
+WHEN (typ = 'OBJECT_LARGEOBJECT') THEN 22
+WHEN (typ = 'OBJECT_MATVIEW') THEN 23
+WHEN (typ = 'OBJECT_OPCLASS') THEN 24
+WHEN (typ = 'OBJECT_OPERATOR') THEN 25
+WHEN (typ = 'OBJECT_OPFAMILY') THEN 26
+WHEN (typ = 'OBJECT_POLICY') THEN 27
+WHEN (typ = 'OBJECT_PUBLICATION') THEN 28
+WHEN (typ = 'OBJECT_PUBLICATION_REL') THEN 29
+WHEN (typ = 'OBJECT_ROLE') THEN 30
+WHEN (typ = 'OBJECT_RULE') THEN 31
+WHEN (typ = 'OBJECT_SCHEMA') THEN 32
+WHEN (typ = 'OBJECT_SEQUENCE') THEN 33
+WHEN (typ = 'OBJECT_SUBSCRIPTION') THEN 34
+WHEN (typ = 'OBJECT_STATISTIC_EXT') THEN 35
+WHEN (typ = 'OBJECT_TABCONSTRAINT') THEN 36
+WHEN (typ = 'OBJECT_TABLE') THEN 37
+WHEN (typ = 'OBJECT_TABLESPACE') THEN 38
+WHEN (typ = 'OBJECT_TRANSFORM') THEN 39
+WHEN (typ = 'OBJECT_TRIGGER') THEN 40
+WHEN (typ = 'OBJECT_TSCONFIGURATION') THEN 41
+WHEN (typ = 'OBJECT_TSDICTIONARY') THEN 42
+WHEN (typ = 'OBJECT_TSPARSER') THEN 43
+WHEN (typ = 'OBJECT_TSTEMPLATE') THEN 44
+WHEN (typ = 'OBJECT_TYPE') THEN 45
+WHEN (typ = 'OBJECT_USER_MAPPING') THEN 46
+WHEN (typ = 'OBJECT_VIEW') THEN 47
+END);
+$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+
+CREATE FUNCTION ast_utils.getgrantobject ( node jsonb ) RETURNS text AS $EOFCODE$
+DECLARE
+  objtype int;
+  targtype int;
+BEGIN 
+
+  objtype = (node->'objtype')::int;
+  IF (node->'targtype') IS NOT NULL THEN
+    targtype = (node->'targtype')::int;
+  END IF;
+
+  IF (objtype = 0) THEN
+    RETURN 'COLUMN';
+  ELSIF (objtype = 1) THEN
+    IF (targtype = 1) THEN 
+      RETURN 'ALL TABLES IN SCHEMA';
+    ELSIF (targtype = 2) THEN 
+      RETURN 'TABLES';
+    END IF;
+    -- TODO could be a view
+    RETURN 'TABLE';
+  ELSIF (objtype = 2) THEN
+    RETURN 'SEQUENCE';
+  ELSIF (objtype = 3) THEN
+    RETURN 'DATABASE';
+  ELSIF (objtype = 4) THEN
+    RETURN 'DOMAIN';
+  ELSIF (objtype = 5) THEN
+    RETURN 'FOREIGN DATA WRAPPER';
+  ELSIF (objtype = 6) THEN
+    RETURN 'FOREIGN SERVER';
+  ELSIF (objtype = 7) THEN
+    IF (targtype = 1) THEN 
+      RETURN 'ALL FUNCTIONS IN SCHEMA';
+    ELSIF (targtype = 2) THEN 
+      RETURN 'FUNCTIONS';
+    END IF;
+    RETURN 'FUNCTION';
+  ELSIF (objtype = 8) THEN
+    RETURN 'LANGUAGE';
+  ELSIF (objtype = 9) THEN
+    RETURN 'LARGE OBJECT';
+  ELSIF (objtype = 10) THEN
+    RETURN 'SCHEMA';
+  ELSIF (objtype = 11) THEN
+    RETURN 'TABLESPACE';
+  ELSIF (objtype = 12) THEN
+    RETURN 'TYPE';
+  END IF;
+
+  RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantObjectType';
+
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+
 CREATE SCHEMA ast;
 
 CREATE FUNCTION ast.aconst ( str text DEFAULT '' ) RETURNS jsonb AS $EOFCODE$
@@ -441,153 +609,6 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
 
 CREATE SCHEMA deparser;
 
-CREATE FUNCTION deparser.reserved ( str text ) RETURNS boolean AS $EOFCODE$
-	select exists( select 1 from pg_get_keywords() where catcode = 'R' AND word=str  );
-$EOFCODE$ LANGUAGE sql SECURITY DEFINER;
-
-CREATE FUNCTION deparser.objtypes (  ) RETURNS text[] AS $EOFCODE$
-	select ARRAY[ 'ACCESS METHOD', 'AGGREGATE', NULL, NULL, NULL, 'CAST', 'COLUMN', 'COLLATION', 'CONVERSION', 'DATABASE', NULL, NULL, 'DOMAIN', 'CONSTRAINT', NULL, 'EXTENSION', 'FOREIGN DATA WRAPPER', 'SERVER', 'FOREIGN TABLE', 'FUNCTION', 'INDEX', 'LANGUAGE', 'LARGE OBJECT', 'MATERIALIZED VIEW', 'OPERATOR CLASS', 'OPERATOR', 'OPERATOR FAMILY', 'POLICY', NULL, NULL, 'ROLE', 'RULE', 'SCHEMA', 'SEQUENCE', NULL, 'STATISTICS', 'CONSTRAINT', 'TABLE', 'TABLESPACE', 'TRANSFORM', 'TRIGGER', 'TEXT SEARCH CONFIGURATION', 'TEXT SEARCH DICTIONARY', 'TEXT SEARCH PARSER', 'TEXT SEARCH TEMPLATE', 'TYPE', NULL, 'VIEW' ]::text[];
-$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
-
-CREATE FUNCTION deparser.constrainttype_idxs ( typ text ) RETURNS int AS $EOFCODE$
-  select (CASE
-WHEN (typ = 'CONSTR_NULL') THEN 0
-WHEN (typ = 'CONSTR_NOTNULL') THEN 1
-WHEN (typ = 'CONSTR_DEFAULT') THEN 2
-WHEN (typ = 'CONSTR_IDENTITY') THEN 3
-WHEN (typ = 'CONSTR_CHECK') THEN 4
-WHEN (typ = 'CONSTR_PRIMARY') THEN 5
-WHEN (typ = 'CONSTR_UNIQUE') THEN 6
-WHEN (typ = 'CONSTR_EXCLUSION') THEN 7
-WHEN (typ = 'CONSTR_FOREIGN') THEN 8
-WHEN (typ = 'CONSTR_ATTR_DEFERRABLE') THEN 9
-WHEN (typ = 'CONSTR_ATTR_NOT_DEFERRABLE') THEN 10
-WHEN (typ = 'CONSTR_ATTR_DEFERRED') THEN 11
-WHEN (typ = 'CONSTR_ATTR_IMMEDIATE') THEN 12
-END);
-$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
-
-CREATE FUNCTION deparser.constrainttypes ( contype int ) RETURNS text AS $EOFCODE$
-  select (CASE
-WHEN (contype =  0 ) THEN 'NULL'
-WHEN (contype =  1 ) THEN 'NOT NULL'
-WHEN (contype =  2 ) THEN 'DEFAULT'
-WHEN (contype =  4 ) THEN 'CHECK'
-WHEN (contype =  5 ) THEN 'PRIMARY KEY'
-WHEN (contype =  6 ) THEN 'UNIQUE'
-WHEN (contype =  7 ) THEN 'EXCLUDE'
-WHEN (contype =  8 ) THEN 'REFERENCES'
-END);
-$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
-
-CREATE FUNCTION deparser.objtypes_idxs ( typ text ) RETURNS int AS $EOFCODE$
-	select (CASE
-WHEN (typ = 'OBJECT_ACCESS_METHOD') THEN 0
-WHEN (typ = 'OBJECT_AGGREGATE') THEN 1
-WHEN (typ = 'OBJECT_AMOP') THEN 2
-WHEN (typ = 'OBJECT_AMPROC') THEN 3
-WHEN (typ = 'OBJECT_ATTRIBUTE') THEN 4
-WHEN (typ = 'OBJECT_CAST') THEN 5
-WHEN (typ = 'OBJECT_COLUMN') THEN 6
-WHEN (typ = 'OBJECT_COLLATION') THEN 7
-WHEN (typ = 'OBJECT_CONVERSION') THEN 8
-WHEN (typ = 'OBJECT_DATABASE') THEN 9
-WHEN (typ = 'OBJECT_DEFAULT') THEN 10
-WHEN (typ = 'OBJECT_DEFACL') THEN 11
-WHEN (typ = 'OBJECT_DOMAIN') THEN 12
-WHEN (typ = 'OBJECT_DOMCONSTRAINT') THEN 13
-WHEN (typ = 'OBJECT_EVENT_TRIGGER') THEN 14
-WHEN (typ = 'OBJECT_EXTENSION') THEN 15
-WHEN (typ = 'OBJECT_FDW') THEN 16
-WHEN (typ = 'OBJECT_FOREIGN_SERVER') THEN 17
-WHEN (typ = 'OBJECT_FOREIGN_TABLE') THEN 18
-WHEN (typ = 'OBJECT_FUNCTION') THEN 19
-WHEN (typ = 'OBJECT_INDEX') THEN 20
-WHEN (typ = 'OBJECT_LANGUAGE') THEN 21
-WHEN (typ = 'OBJECT_LARGEOBJECT') THEN 22
-WHEN (typ = 'OBJECT_MATVIEW') THEN 23
-WHEN (typ = 'OBJECT_OPCLASS') THEN 24
-WHEN (typ = 'OBJECT_OPERATOR') THEN 25
-WHEN (typ = 'OBJECT_OPFAMILY') THEN 26
-WHEN (typ = 'OBJECT_POLICY') THEN 27
-WHEN (typ = 'OBJECT_PUBLICATION') THEN 28
-WHEN (typ = 'OBJECT_PUBLICATION_REL') THEN 29
-WHEN (typ = 'OBJECT_ROLE') THEN 30
-WHEN (typ = 'OBJECT_RULE') THEN 31
-WHEN (typ = 'OBJECT_SCHEMA') THEN 32
-WHEN (typ = 'OBJECT_SEQUENCE') THEN 33
-WHEN (typ = 'OBJECT_SUBSCRIPTION') THEN 34
-WHEN (typ = 'OBJECT_STATISTIC_EXT') THEN 35
-WHEN (typ = 'OBJECT_TABCONSTRAINT') THEN 36
-WHEN (typ = 'OBJECT_TABLE') THEN 37
-WHEN (typ = 'OBJECT_TABLESPACE') THEN 38
-WHEN (typ = 'OBJECT_TRANSFORM') THEN 39
-WHEN (typ = 'OBJECT_TRIGGER') THEN 40
-WHEN (typ = 'OBJECT_TSCONFIGURATION') THEN 41
-WHEN (typ = 'OBJECT_TSDICTIONARY') THEN 42
-WHEN (typ = 'OBJECT_TSPARSER') THEN 43
-WHEN (typ = 'OBJECT_TSTEMPLATE') THEN 44
-WHEN (typ = 'OBJECT_TYPE') THEN 45
-WHEN (typ = 'OBJECT_USER_MAPPING') THEN 46
-WHEN (typ = 'OBJECT_VIEW') THEN 47
-END);
-$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
-
-CREATE FUNCTION deparser.getgrantobject ( node jsonb ) RETURNS text AS $EOFCODE$
-DECLARE
-  objtype int;
-  targtype int;
-BEGIN 
-
-  objtype = (node->'objtype')::int;
-  IF (node->'targtype') IS NOT NULL THEN
-    targtype = (node->'targtype')::int;
-  END IF;
-
-  IF (objtype = 0) THEN
-    RETURN 'COLUMN';
-  ELSIF (objtype = 1) THEN
-    IF (targtype = 1) THEN 
-      RETURN 'ALL TABLES IN SCHEMA';
-    ELSIF (targtype = 2) THEN 
-      RETURN 'TABLES';
-    END IF;
-    -- TODO could be a view
-    RETURN 'TABLE';
-  ELSIF (objtype = 2) THEN
-    RETURN 'SEQUENCE';
-  ELSIF (objtype = 3) THEN
-    RETURN 'DATABASE';
-  ELSIF (objtype = 4) THEN
-    RETURN 'DOMAIN';
-  ELSIF (objtype = 5) THEN
-    RETURN 'FOREIGN DATA WRAPPER';
-  ELSIF (objtype = 6) THEN
-    RETURN 'FOREIGN SERVER';
-  ELSIF (objtype = 7) THEN
-    IF (targtype = 1) THEN 
-      RETURN 'ALL FUNCTIONS IN SCHEMA';
-    ELSIF (targtype = 2) THEN 
-      RETURN 'FUNCTIONS';
-    END IF;
-    RETURN 'FUNCTION';
-  ELSIF (objtype = 8) THEN
-    RETURN 'LANGUAGE';
-  ELSIF (objtype = 9) THEN
-    RETURN 'LARGE OBJECT';
-  ELSIF (objtype = 10) THEN
-    RETURN 'SCHEMA';
-  ELSIF (objtype = 11) THEN
-    RETURN 'TABLESPACE';
-  ELSIF (objtype = 12) THEN
-    RETURN 'TYPE';
-  END IF;
-
-  RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantObjectType';
-
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
-
 CREATE FUNCTION deparser.parens ( str text ) RETURNS text AS $EOFCODE$
 	select '(' || str || ')';
 $EOFCODE$ LANGUAGE sql;
@@ -607,10 +628,120 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql;
 
+CREATE FUNCTION deparser.deparse_interval ( node jsonb ) RETURNS text AS $EOFCODE$
+DECLARE
+  typ text[];
+  typmods text[];
+  intervals text[];
+  out text[];
+  invl text;
+BEGIN
+  typ = array_append(typ, 'interval');
+
+  IF (node->'arrayBounds' IS NOT NULL) THEN 
+    typ = array_append(typ, '[]');
+  END IF;
+
+  IF (node->'typmods' IS NOT NULL) THEN 
+    typmods = deparser.expressions_array(node->'typmods');
+    intervals = ast_utils.interval(typmods[1]::int);
+
+    IF (
+      node->'typmods'->0 IS NOT NULL AND
+      node->'typmods'->0->'A_Const' IS NOT NULL AND
+      node->'typmods'->0->'A_Const'->'val'->'Integer'->'ival' IS NOT NULL AND
+      (node->'typmods'->0->'A_Const'->'val'->'Integer'->'ival')::int = 32767 AND
+      node->'typmods'->1 IS NOT NULL AND
+      node->'typmods'->1->'A_Const' IS NOT NULL 
+    ) THEN 
+      intervals = ARRAY[
+        deparser.parens(node->'typmods'->1->'A_Const'->'val'->'Integer'->>'ival')
+      ]::text[];
+      typ = array_append(typ, array_to_string(intervals, ' to '));
+    ELSE 
+      FOREACH invl IN ARRAY intervals 
+      LOOP
+        out = array_append(out, (
+          CASE 
+            WHEN (invl = 'second' AND cardinality(typmods) = 2) THEN 'second(' || typemods[2] || ')'
+            ELSE invl
+          END
+        ));
+      END LOOP;
+      typ = array_append(typ, array_to_string(out, ' to '));
+    END IF;
+  END IF;
+
+  RETURN array_to_string(typ, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
+CREATE FUNCTION deparser.get_pgtype ( typ text, typemods text ) RETURNS text AS $EOFCODE$
+SELECT (CASE
+WHEN (typ = 'bpchar') THEN
+        (CASE
+            WHEN (typemods IS NOT NULL) THEN 'char'
+            ELSE 'pg_catalog.bpchar'
+        END)
+WHEN (typ = 'varchar') THEN 'varchar'
+WHEN (typ = 'numeric') THEN 'numeric'
+WHEN (typ = 'bool') THEN 'boolean'
+WHEN (typ = 'int2') THEN 'smallint'
+WHEN (typ = 'int4') THEN 'int'
+WHEN (typ = 'int8') THEN 'bigint'
+WHEN (typ = 'real') THEN 'real'
+WHEN (typ = 'float4') THEN 'real'
+WHEN (typ = 'float8') THEN 'pg_catalog.float8'
+WHEN (typ = 'text') THEN 'text'
+WHEN (typ = 'date') THEN 'pg_catalog.date'
+WHEN (typ = 'time') THEN 'time'
+WHEN (typ = 'timetz') THEN 'pg_catalog.timetz'
+WHEN (typ = 'timestamp') THEN 'timestamp'
+WHEN (typ = 'timestamptz') THEN 'pg_catalog.timestamptz'
+WHEN (typ = 'interval') THEN 'interval'
+WHEN (typ = 'bit') THEN 'bit'
+ELSE typ
+END);
+$EOFCODE$ LANGUAGE sql;
+
+CREATE FUNCTION deparser.parse_type ( names jsonb, typemods text ) RETURNS text AS $EOFCODE$
+DECLARE
+  parsed text[];
+  catalog text;
+  typ text;
+BEGIN
+  parsed = deparser.expressions_array(names);
+  catalog = parsed[1];
+  typ = parsed[2];
+
+  IF (names->0->'String'->>'str' = 'char' ) THEN 
+    	names = jsonb_set(names, '{0, String, str}', '"char"');
+  END IF;
+
+  IF (catalog != 'pg_catalog') THEN 
+    IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
+      RETURN deparser.list(names, '.') || deparser.parens(typemods);
+    ELSE
+      RETURN deparser.list(names, '.');
+    END IF;
+  END IF;
+
+  typ = deparser.get_pgtype(typ, typemods);
+  IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
+    RETURN typ || deparser.parens(typemods);
+  ELSE
+    RETURN typ;
+  END IF;
+
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
 CREATE FUNCTION deparser.type_name ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
-  txa text[] = ARRAY[]::text[];
-  -- args text[] = ARRAY[]::text[];
+  output text[] = ARRAY[]::text[];
+  typemods text;
+  lastname jsonb;
+  typ text[];
 BEGIN
     IF (node->'TypeName') IS NULL THEN  
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeName';
@@ -622,22 +753,32 @@ BEGIN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeName';
     END IF;
 
-    -- TODO look deeper in pgsql-parser
-    -- I greatly simplified this at risk of losing function
+    lastname = node->'names'->>-1;
 
-    -- IF (node->'setof') IS NOT NULL 
-    --   txa = array_append(txa, 'SETOF');
-    -- END IF;
-    -- IF (node->'typmods') IS NOT NULL 
-    --   args = deparser.expressions_array(node->'typmods');
-    -- END IF;
-
-    IF (node->'arrayBounds') IS NOT NULL THEN
-      RETURN deparser.expression(node->'names'->0, context) || '[]';
+    IF (deparser.expression(lastname) = 'interval') THEN 
+      RETURN deparser.deparse_interval(node);
     END IF;
 
-    RETURN deparser.expression(node->'names'->0, context);
+    IF (node->'setof') IS NOT NULL THEN
+      output = array_append(output, 'SETOF');
+    END IF;
 
+    IF (node->'typmods') IS NOT NULL THEN
+      typemods = deparser.list(node->'typmods');
+    END IF;
+
+    typ = array_append(typ, deparser.parse_type(
+      node->'names',
+      typemods
+    ));
+
+    IF (node->'arrayBounds') IS NOT NULL THEN
+      typ = array_append(typ, '[]');
+    END IF;
+
+    output = array_append(output, array_to_string(typ, ''));
+
+    RETURN array_to_string(output, ' ');
 END;
 $EOFCODE$ LANGUAGE plpgsql;
 
@@ -1458,7 +1599,7 @@ DECLARE
   constrainttype text;
 BEGIN
   contype = (node->'contype')::int;
-  constrainttype = deparser.constrainttypes(contype);
+  constrainttype = ast_utils.constrainttypes(contype);
   IF (node->'conname' IS NOT NULL) THEN
     output = array_append(output, 'CONSTRAINT');
     output = array_append(output, quote_ident(node->>'conname'));
@@ -1514,7 +1655,7 @@ BEGIN
     node = node->'Constraint';
     contype = (node->'contype')::int;
 
-    IF (contype = deparser.constrainttype_idxs('CONSTR_FOREIGN')) THEN 
+    IF (contype = ast_utils.constrainttype_idxs('CONSTR_FOREIGN')) THEN 
       output = array_append(output, deparser.reference_constraint(node));
     ELSE
       output = array_append(output, deparser.constraint_stmt(node));
@@ -1560,7 +1701,7 @@ BEGIN
       output = array_append(output, 'NOT VALID');
     END IF;
 
-    IF (contype = deparser.constrainttype_idxs('CONSTR_EXCLUSION')) THEN 
+    IF (contype = ast_utils.constrainttype_idxs('CONSTR_EXCLUSION')) THEN 
       output = array_append(output, deparser.exclusion_constraint(node));
     END IF;
 
@@ -1658,45 +1799,45 @@ BEGIN
     END IF;
 
     node = node->'CommentStmt';
-    objtypes = deparser.objtypes();
+    objtypes = ast_utils.objtypes();
     objtype = (node->'objtype')::int;
     output = array_append(output, 'COMMENT');
     output = array_append(output, 'ON');
     output = array_append(output, objtypes[objtype + 1]);
 
-    IF (objtype = deparser.objtypes_idxs('OBJECT_CAST')) THEN
+    IF (objtype = ast_utils.objtypes_idxs('OBJECT_CAST')) THEN
       output = array_append(output, '(');
       output = array_append(output, deparser.expression(node->'object'->0));
       output = array_append(output, 'AS');
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, ')');
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_DOMCONSTRAINT')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_DOMCONSTRAINT')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, 'DOMAIN');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_OPCLASS')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_OPCLASS')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'USING');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_OPFAMILY')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_OPFAMILY')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'USING');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_OPERATOR')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_OPERATOR')) THEN
       -- TODO lookup noquotes context in pgsql-parser
       output = array_append(output, deparser.expression(node->'object', 'noquotes'));
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_POLICY')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_POLICY')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_ROLE')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_ROLE')) THEN
       output = array_append(output, deparser.expression(node->'object'));
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_RULE')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_RULE')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_TABCONSTRAINT')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_TABCONSTRAINT')) THEN
       IF (jsonb_array_length(node->'object') = 3) THEN 
         output = array_append(output, deparser.expression(node->'object'->2));
         output = array_append(output, 'ON');
@@ -1709,16 +1850,16 @@ BEGIN
         output = array_append(output, 'ON');
         output = array_append(output, deparser.expression(node->'object'->0));
       END IF;
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_TRANSFORM')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_TRANSFORM')) THEN
       output = array_append(output, 'FOR');
       output = array_append(output, deparser.expression(node->'object'->0));
       output = array_append(output, 'LANGUAGE');
       output = array_append(output, deparser.expression(node->'object'->1));
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_TRIGGER')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_TRIGGER')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = deparser.objtypes_idxs('OBJECT_LARGEOBJECT')) THEN
+    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_LARGEOBJECT')) THEN
       output = array_append(output, deparser.expression(node->'object'));
     ELSE 
       IF (jsonb_typeof(node->'object') = 'array') THEN 
@@ -2028,7 +2169,7 @@ BEGIN
           output = array_append(output, 'ALL');
         END IF;
         output = array_append(output, 'ON');
-        output = array_append(output, deparser.getgrantobject(node));
+        output = array_append(output, ast_utils.getgrantobject(node));
         output = array_append(output, deparser.list(node->'objects'));
         output = array_append(output, 'FROM');
         output = array_append(output, deparser.list(node->'grantees'));
@@ -2040,7 +2181,7 @@ BEGIN
           output = array_append(output, 'ALL');
         END IF;
         output = array_append(output, 'ON');
-        output = array_append(output, deparser.getgrantobject(node));
+        output = array_append(output, ast_utils.getgrantobject(node));
         output = array_append(output, deparser.list(node->'objects'));
         output = array_append(output, 'TO');
         output = array_append(output, deparser.list(node->'grantees'));
@@ -3257,7 +3398,7 @@ BEGIN
     node = node->'DropStmt';
 
     output = array_append(output, 'DROP');
-    objtypes = deparser.objtypes();
+    objtypes = ast_utils.objtypes();
     objtype = (node->'removeType')::int;
     output = array_append(output, objtypes[objtype + 1]);
     
