@@ -73,21 +73,21 @@ col5 dcheck CHECK (col5 IN ( 'c', 'd' ))
 )"
 `;
 
-exports[`deparse 30`] = `"INSERT INTO nulltest DEFAULT VALUES DEFAULT VALUES"`;
+exports[`deparse 30`] = `"INSERT INTO nulltest DEFAULT VALUES"`;
 
-exports[`deparse 31`] = `"INSERT INTO nulltest VALUES ('a'), ('b'), ('c'), ('d'), ('c') DEFAULT VALUES"`;
+exports[`deparse 31`] = `"INSERT INTO nulltest VALUES ('a', 'b', 'c', 'd', 'c')"`;
 
-exports[`deparse 32`] = `"INSERT INTO nulltest VALUES ('a'), ('b'), ('c'), ('d'), (NULL) DEFAULT VALUES"`;
+exports[`deparse 32`] = `"INSERT INTO nulltest VALUES ('a', 'b', 'c', 'd', NULL)"`;
 
-exports[`deparse 33`] = `"INSERT INTO nulltest VALUES ('a'), ('b'), ('c'), ('d'), ('a') DEFAULT VALUES"`;
+exports[`deparse 33`] = `"INSERT INTO nulltest VALUES ('a', 'b', 'c', 'd', 'a')"`;
 
-exports[`deparse 34`] = `"INSERT INTO nulltest VALUES (NULL), ('b'), ('c'), ('d'), ('d') DEFAULT VALUES"`;
+exports[`deparse 34`] = `"INSERT INTO nulltest VALUES (NULL, 'b', 'c', 'd', 'd')"`;
 
-exports[`deparse 35`] = `"INSERT INTO nulltest VALUES ('a'), (NULL), ('c'), ('d'), ('c') DEFAULT VALUES"`;
+exports[`deparse 35`] = `"INSERT INTO nulltest VALUES ('a', NULL, 'c', 'd', 'c')"`;
 
-exports[`deparse 36`] = `"INSERT INTO nulltest VALUES ('a'), ('b'), (NULL), ('d'), ('c') DEFAULT VALUES"`;
+exports[`deparse 36`] = `"INSERT INTO nulltest VALUES ('a', 'b', NULL, 'd', 'c')"`;
 
-exports[`deparse 37`] = `"INSERT INTO nulltest VALUES ('a'), ('b'), ('c'), (NULL), ('d') DEFAULT VALUES"`;
+exports[`deparse 37`] = `"INSERT INTO nulltest VALUES ('a', 'b', 'c', NULL, 'd')"`;
 
 exports[`deparse 38`] = `"SELECT * nulltest"`;
 
@@ -132,21 +132,21 @@ col8 ddef5
 )"
 `;
 
-exports[`deparse 54`] = `"INSERT INTO defaulttest (col4) VALUES (0) DEFAULT VALUES"`;
+exports[`deparse 54`] = `"INSERT INTO defaulttest (col4) VALUES (0)"`;
 
 exports[`deparse 55`] = `"ALTER TABLE defaulttest ALTER COLUMN col5 DROP DEFAULT"`;
 
-exports[`deparse 56`] = `"INSERT INTO defaulttest DEFAULT VALUES DEFAULT VALUES"`;
+exports[`deparse 56`] = `"INSERT INTO defaulttest DEFAULT VALUES"`;
 
 exports[`deparse 57`] = `"ALTER TABLE defaulttest ALTER COLUMN col5 SET DEFAULT NULL"`;
 
-exports[`deparse 58`] = `"INSERT INTO defaulttest (col4) VALUES (0) DEFAULT VALUES"`;
+exports[`deparse 58`] = `"INSERT INTO defaulttest (col4) VALUES (0)"`;
 
 exports[`deparse 59`] = `"ALTER TABLE defaulttest ALTER COLUMN col5 DROP DEFAULT"`;
 
-exports[`deparse 60`] = `"INSERT INTO defaulttest DEFAULT VALUES DEFAULT VALUES"`;
+exports[`deparse 60`] = `"INSERT INTO defaulttest DEFAULT VALUES"`;
 
-exports[`deparse 61`] = `"INSERT INTO defaulttest DEFAULT VALUES DEFAULT VALUES"`;
+exports[`deparse 61`] = `"INSERT INTO defaulttest DEFAULT VALUES"`;
 
 exports[`deparse 62`] = `"SELECT * defaulttest"`;
 
@@ -161,7 +161,7 @@ col2 dnotnulltest
 )"
 `;
 
-exports[`deparse 66`] = `"INSERT INTO domnotnull DEFAULT VALUES DEFAULT VALUES"`;
+exports[`deparse 66`] = `"INSERT INTO domnotnull DEFAULT VALUES"`;
 
 exports[`deparse 67`] = `"ALTER DOMAIN dnotnulltest CASCADE"`;
 
@@ -187,19 +187,19 @@ exports[`deparse 76`] = `
 )"
 `;
 
-exports[`deparse 77`] = `"INSERT INTO domdeftest DEFAULT VALUES DEFAULT VALUES"`;
+exports[`deparse 77`] = `"INSERT INTO domdeftest DEFAULT VALUES"`;
 
 exports[`deparse 78`] = `"SELECT * domdeftest"`;
 
 exports[`deparse 79`] = `"ALTER DOMAIN ddef1 CASCADE"`;
 
-exports[`deparse 80`] = `"INSERT INTO domdeftest DEFAULT VALUES DEFAULT VALUES"`;
+exports[`deparse 80`] = `"INSERT INTO domdeftest DEFAULT VALUES"`;
 
 exports[`deparse 81`] = `"SELECT * domdeftest"`;
 
 exports[`deparse 82`] = `"ALTER DOMAIN ddef1 CASCADE"`;
 
-exports[`deparse 83`] = `"INSERT INTO domdeftest DEFAULT VALUES DEFAULT VALUES"`;
+exports[`deparse 83`] = `"INSERT INTO domdeftest DEFAULT VALUES"`;
 
 exports[`deparse 84`] = `"SELECT * domdeftest"`;
 
@@ -213,9 +213,9 @@ exports[`deparse 87`] = `
 )"
 `;
 
-exports[`deparse 88`] = `"INSERT INTO domcontest VALUES (1) DEFAULT VALUES"`;
+exports[`deparse 88`] = `"INSERT INTO domcontest VALUES (1)"`;
 
-exports[`deparse 89`] = `"INSERT INTO domcontest VALUES (2) DEFAULT VALUES"`;
+exports[`deparse 89`] = `"INSERT INTO domcontest VALUES (2)"`;
 
 exports[`deparse 90`] = `"ALTER DOMAIN con CASCADE"`;
 
@@ -223,17 +223,17 @@ exports[`deparse 91`] = `"ALTER DOMAIN con CASCADE"`;
 
 exports[`deparse 92`] = `"ALTER DOMAIN con CASCADE"`;
 
-exports[`deparse 93`] = `"INSERT INTO domcontest VALUES (-5) DEFAULT VALUES"`;
+exports[`deparse 93`] = `"INSERT INTO domcontest VALUES (-5)"`;
 
-exports[`deparse 94`] = `"INSERT INTO domcontest VALUES (42) DEFAULT VALUES"`;
+exports[`deparse 94`] = `"INSERT INTO domcontest VALUES (42)"`;
 
-exports[`deparse 95`] = `"INSERT INTO domcontest VALUES (5) DEFAULT VALUES"`;
+exports[`deparse 95`] = `"INSERT INTO domcontest VALUES (5)"`;
 
 exports[`deparse 96`] = `"ALTER DOMAIN con CASCADE"`;
 
-exports[`deparse 97`] = `"INSERT INTO domcontest VALUES (-5) DEFAULT VALUES"`;
+exports[`deparse 97`] = `"INSERT INTO domcontest VALUES (-5)"`;
 
-exports[`deparse 98`] = `"INSERT INTO domcontest VALUES (42) DEFAULT VALUES"`;
+exports[`deparse 98`] = `"INSERT INTO domcontest VALUES (42)"`;
 
 exports[`deparse 99`] = `"ALTER DOMAIN con CASCADE"`;
 
@@ -247,7 +247,7 @@ exports[`deparse 102`] = `
 )"
 `;
 
-exports[`deparse 103`] = `"INSERT INTO thethings (stuff) VALUES (55) DEFAULT VALUES"`;
+exports[`deparse 103`] = `"INSERT INTO thethings (stuff) VALUES (55)"`;
 
 exports[`deparse 104`] = `"ALTER DOMAIN things CASCADE"`;
 
@@ -269,9 +269,9 @@ exports[`deparse 110`] = `"CREATE DOMAIN dom AS int"`;
 
 exports[`deparse 111`] = `"CREATE VIEW domview AS SELECT col1::dom domtab"`;
 
-exports[`deparse 112`] = `"INSERT INTO domtab (col1) VALUES (NULL) DEFAULT VALUES"`;
+exports[`deparse 112`] = `"INSERT INTO domtab (col1) VALUES (NULL)"`;
 
-exports[`deparse 113`] = `"INSERT INTO domtab (col1) VALUES (5) DEFAULT VALUES"`;
+exports[`deparse 113`] = `"INSERT INTO domtab (col1) VALUES (5)"`;
 
 exports[`deparse 114`] = `"SELECT * domview"`;
 
@@ -327,17 +327,17 @@ exports[`deparse 138`] = `
 )"
 `;
 
-exports[`deparse 139`] = `"INSERT INTO dtest VALUES ('x123') DEFAULT VALUES"`;
+exports[`deparse 139`] = `"INSERT INTO dtest VALUES ('x123')"`;
 
-exports[`deparse 140`] = `"INSERT INTO dtest VALUES ('x1234') DEFAULT VALUES"`;
+exports[`deparse 140`] = `"INSERT INTO dtest VALUES ('x1234')"`;
 
-exports[`deparse 141`] = `"INSERT INTO dtest VALUES ('y1234') DEFAULT VALUES"`;
+exports[`deparse 141`] = `"INSERT INTO dtest VALUES ('y1234')"`;
 
-exports[`deparse 142`] = `"INSERT INTO dtest VALUES ('y123') DEFAULT VALUES"`;
+exports[`deparse 142`] = `"INSERT INTO dtest VALUES ('y123')"`;
 
-exports[`deparse 143`] = `"INSERT INTO dtest VALUES ('yz23') DEFAULT VALUES"`;
+exports[`deparse 143`] = `"INSERT INTO dtest VALUES ('yz23')"`;
 
-exports[`deparse 144`] = `"INSERT INTO dtest VALUES ('xz23') DEFAULT VALUES"`;
+exports[`deparse 144`] = `"INSERT INTO dtest VALUES ('xz23')"`;
 
 exports[`deparse 145`] = `"DROP TABLE dtest CASCADE"`;
 
@@ -352,9 +352,9 @@ b int
 )"
 `;
 
-exports[`deparse 149`] = `"INSERT INTO domain_test VALUES (1), (2) DEFAULT VALUES"`;
+exports[`deparse 149`] = `"INSERT INTO domain_test VALUES (1, 2)"`;
 
-exports[`deparse 150`] = `"INSERT INTO domain_test VALUES (1), (2) DEFAULT VALUES"`;
+exports[`deparse 150`] = `"INSERT INTO domain_test VALUES (1, 2)"`;
 
 exports[`deparse 151`] = `"ALTER TABLE domain_test ADD COLUMN c str_domain"`;
 
@@ -425,7 +425,7 @@ exports[`deparse 170`] = `
 )"
 `;
 
-exports[`deparse 171`] = `"INSERT INTO ddtest2 VALUES (ROW(-1)) DEFAULT VALUES"`;
+exports[`deparse 171`] = `"INSERT INTO ddtest2 VALUES (ROW(-1))"`;
 
 exports[`deparse 172`] = `"ALTER DOMAIN posint CASCADE"`;
 
@@ -437,7 +437,7 @@ exports[`deparse 174`] = `
 )"
 `;
 
-exports[`deparse 175`] = `"INSERT INTO ddtest2 VALUES ('{(-1)}') DEFAULT VALUES"`;
+exports[`deparse 175`] = `"INSERT INTO ddtest2 VALUES ('{(-1)}')"`;
 
 exports[`deparse 176`] = `"ALTER DOMAIN posint CASCADE"`;
 

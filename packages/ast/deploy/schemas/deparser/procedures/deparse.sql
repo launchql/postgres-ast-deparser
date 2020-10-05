@@ -133,9 +133,9 @@ BEGIN
 
   IF (catalog != 'pg_catalog') THEN 
     IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
-      RETURN deparser.quoted_name(names) || deparser.parens(typemods);
+      RETURN deparser.quoted_name(names, 'type') || deparser.parens(typemods);
     ELSE
-      RETURN deparser.quoted_name(names);
+      RETURN deparser.quoted_name(names, 'type');
     END IF;
   END IF;
 
@@ -1758,10 +1758,28 @@ DECLARE
   item text;
 BEGIN
     -- NOTE: assumes array of names passed in 
-    FOREACH item IN array deparser.expressions_array(node)
-    LOOP
-      output = array_append(output, quote_ident(item));
-    END LOOP;
+
+    IF (context = 'type') THEN 
+
+
+      FOREACH item IN array deparser.expressions_array(node)
+      LOOP
+        -- strip off the [] if it exists at the end, and set is_array prop
+        IF (ARRAY_LENGTH(REGEXP_MATCHES(trim(item), '(.*)\s*(\[\s*?\])$', 'i'), 1) > 0) THEN
+          item = REGEXP_REPLACE(trim(item), '(.*)\s*(\[\s*?\])$', '\1', 'i');
+          output = array_append(output, quote_ident(item) || '[]');
+        ELSE
+          output = array_append(output, quote_ident(item));
+        END IF;
+
+      END LOOP;
+
+    ELSE
+      FOREACH item IN array deparser.expressions_array(node)
+      LOOP
+        output = array_append(output, quote_ident(item));
+      END LOOP;
+    END IF;
     RETURN array_to_string(output, '.');
 END;
 $$
