@@ -34,25 +34,25 @@ SELECT deparser.deparse(ast.create_policy(
   'schemanamed',
   'mytable',
   'authenticated',
-  ast.boolexpr(1, to_jsonb(ARRAY[
-    ast.aexpr(0,
-      ast.columnref(
-        to_jsonb(ARRAY[ ast.str('responder_id') ])
+  ast.bool_expr(1, to_jsonb(ARRAY[
+    ast.a_expr(0,
+      ast.column_ref(
+        to_jsonb(ARRAY[ ast.string('responder_id') ])
       ),
       '=',
-      ast.funccall(
-        to_jsonb(ARRAY[ ast.str('dbe'), ast.str('get_uid') ]),
-        to_jsonb(ARRAY[ ast.str('c'), ast.str('b') ])
+      ast.func_call(
+        to_jsonb(ARRAY[ ast.string('dbe'), ast.string('get_uid') ]),
+        to_jsonb(ARRAY[ ast.string('c'), ast.string('b') ])
       )  
     ),
-    ast.aexpr(0,
-      ast.columnref(
-        to_jsonb(ARRAY[ ast.str('requester_id') ])
+    ast.a_expr(0,
+      ast.column_ref(
+        to_jsonb(ARRAY[ ast.string('requester_id') ])
       ),
       '=',
-      ast.funccall(
-        to_jsonb(ARRAY[ ast.str('dbe'), ast.str('get_other_uid') ]),
-        to_jsonb(ARRAY[ ast.str('c'), ast.str('b') ])
+      ast.func_call(
+        to_jsonb(ARRAY[ ast.string('dbe'), ast.string('get_other_uid') ]),
+        to_jsonb(ARRAY[ ast.string('c'), ast.string('b') ])
       )  
     )
   ])),

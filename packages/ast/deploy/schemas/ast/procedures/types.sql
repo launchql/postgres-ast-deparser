@@ -4,7 +4,7 @@
 
 BEGIN;
 
-CREATE FUNCTION ast.aconst (str text default '')
+CREATE FUNCTION ast.a_const (str text default '')
     RETURNS jsonb
     AS $$
 DECLARE
@@ -16,7 +16,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.aconst (val jsonb)
+CREATE FUNCTION ast.a_const (val jsonb)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -28,7 +28,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.rangevar (
+CREATE FUNCTION ast.range_var (
   schemaname text,
   relname text,
   inh bool,
@@ -49,7 +49,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.boolexpr (
+CREATE FUNCTION ast.bool_expr (
   boolop int,
   args jsonb
 )
@@ -66,7 +66,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.columnref (fields jsonb)
+CREATE FUNCTION ast.column_ref (fields jsonb)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -78,7 +78,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.funccall (name text, args jsonb default '[]'::jsonb)
+CREATE FUNCTION ast.func_call (name text, args jsonb default '[]'::jsonb)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -92,7 +92,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.funccall (name jsonb, args jsonb default '[]'::jsonb)
+CREATE FUNCTION ast.func_call (name jsonb, args jsonb default '[]'::jsonb)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -117,7 +117,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.typename (names jsonb, isarray boolean default false)
+CREATE FUNCTION ast.type_name (names jsonb, isarray boolean default false)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -135,7 +135,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.typecast (arg jsonb, typename jsonb)
+CREATE FUNCTION ast.type_cast (arg jsonb, typename jsonb)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -150,7 +150,7 @@ LANGUAGE 'plpgsql'
 IMMUTABLE;
 
 
-CREATE FUNCTION ast.str (str text)
+CREATE FUNCTION ast.string (str text)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -163,7 +163,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.int (ival int)
+CREATE FUNCTION ast.integer (ival int)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -176,7 +176,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.defelem (
+CREATE FUNCTION ast.def_elem (
   defname text,
   arg jsonb,
   defaction int default 0
@@ -195,7 +195,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.aexpr (kind int, lexpr jsonb, op text, rexpr jsonb)
+CREATE FUNCTION ast.a_expr (kind int, lexpr jsonb, op text, rexpr jsonb)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -203,7 +203,7 @@ DECLARE
 BEGIN
 	result = jsonb_set(result, '{A_Expr, kind}', to_jsonb(kind));
 	result = jsonb_set(result, '{A_Expr, lexpr}', lexpr);
-	result = jsonb_set(result, '{A_Expr, name, 0}', ast.str(op));
+	result = jsonb_set(result, '{A_Expr, name, 0}', ast.string(op));
 	result = jsonb_set(result, '{A_Expr, rexpr}', rexpr);
 	RETURN result;
 END;
@@ -213,7 +213,7 @@ IMMUTABLE;
 
 -- SQL OBJECTS 
 
-CREATE FUNCTION ast.createtriggerstmt (
+CREATE FUNCTION ast.create_trigger_stmt (
   trigname text,
   relation jsonb,
   funcname jsonb,
@@ -240,7 +240,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.functionparameter (
+CREATE FUNCTION ast.function_parameter (
   name text,
   argType jsonb,
   mode int
@@ -260,7 +260,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.functionparameter (
+CREATE FUNCTION ast.function_parameter (
   name text,
   argType jsonb,
   mode int,
@@ -282,7 +282,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.createfunctionstmt (
+CREATE FUNCTION ast.create_function_stmt (
   funcname jsonb,
   parameters jsonb,
   returnType jsonb,
@@ -303,7 +303,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.rolespec (
+CREATE FUNCTION ast.role_spec (
   rolename text,
   roletype int
 )
@@ -320,7 +320,7 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.createpolicystmt (
+CREATE FUNCTION ast.create_policy_stmt (
   policy_name text,
   tbl jsonb,
   roles jsonb,
@@ -351,7 +351,7 @@ CREATE FUNCTION ast.coalesce (field text, value text default '')
     RETURNS jsonb
     AS $$
 DECLARE
-    result jsonb = ast.funccall('coalesce', to_jsonb(ARRAY[ ast.str(''), ast.aconst('') ]));
+    result jsonb = ast.func_call('coalesce', to_jsonb(ARRAY[ ast.string(''), ast.a_const('') ]));
 BEGIN
 	result = jsonb_set(result, '{FuncCall, args, 0, String, str}', to_jsonb(field));
 	result = jsonb_set(result, '{FuncCall, args, 1, A_Const, String, str}', to_jsonb(value));
@@ -365,7 +365,7 @@ CREATE FUNCTION ast.coalesce (field jsonb, value text default '')
     RETURNS jsonb
     AS $$
 DECLARE
-    result jsonb = ast.funccall('coalesce', to_jsonb(ARRAY[ ast.str(''), ast.aconst('') ]));
+    result jsonb = ast.func_call('coalesce', to_jsonb(ARRAY[ ast.string(''), ast.a_const('') ]));
 BEGIN
 	result = jsonb_set(result, '{FuncCall, args, 0}', field);
 	result = jsonb_set(result, '{FuncCall, args, 1, A_Const, String, str}', to_jsonb(value));
@@ -379,7 +379,7 @@ CREATE FUNCTION ast.tsvectorw (input jsonb, weight text='A')
     RETURNS jsonb
     AS $$
 BEGIN
-	RETURN ast.funccall('setweight', to_jsonb(ARRAY[input, ast.aconst(weight)]));
+	RETURN ast.func_call('setweight', to_jsonb(ARRAY[input, ast.a_const(weight)]));
 END;
 $$
 LANGUAGE 'plpgsql'
@@ -389,7 +389,7 @@ CREATE FUNCTION ast.tsvector (input jsonb)
     RETURNS jsonb
     AS $$
 BEGIN
-	RETURN ast.funccall('to_tsvector', to_jsonb(ARRAY[input]));
+	RETURN ast.func_call('to_tsvector', to_jsonb(ARRAY[input]));
 END;
 $$
 LANGUAGE 'plpgsql'
@@ -402,9 +402,9 @@ CREATE FUNCTION ast.simple_param (
     RETURNS jsonb
     AS $$
 BEGIN
-	RETURN ast.functionparameter(
+	RETURN ast.function_parameter(
       name,
-      ast.typename( to_jsonb(ARRAY[ast.str(type)]), false ),
+      ast.type_name( to_jsonb(ARRAY[ast.string(type)]), false ),
       105
     );
 END;
@@ -420,11 +420,11 @@ CREATE FUNCTION ast.simple_param (
     RETURNS jsonb
     AS $$
 BEGIN
-	RETURN ast.functionparameter(
+	RETURN ast.function_parameter(
       name,
-      ast.typename( to_jsonb(ARRAY[ast.str(type)]), false ),
+      ast.type_name( to_jsonb(ARRAY[ast.string(type)]), false ),
       105,
-      ast.str(default_value)
+      ast.string(default_value)
     );
 END;
 $$
@@ -439,9 +439,9 @@ CREATE FUNCTION ast.simple_param (
     RETURNS jsonb
     AS $$
 BEGIN
-	RETURN ast.functionparameter(
+	RETURN ast.function_parameter(
       name,
-      ast.typename( to_jsonb(ARRAY[ast.str(type)]), false ),
+      ast.type_name( to_jsonb(ARRAY[ast.string(type)]), false ),
       105,
       default_value
     );
@@ -454,23 +454,23 @@ CREATE FUNCTION ast.tsvector (lang text, input jsonb)
     RETURNS jsonb
     AS $$
 BEGIN
-	RETURN ast.funccall('to_tsvector', to_jsonb(ARRAY[ast.aconst(lang), input]));
+	RETURN ast.func_call('to_tsvector', to_jsonb(ARRAY[ast.a_const(lang), input]));
 END;
 $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.aexpr_distinct_tg_field (field text)
+CREATE FUNCTION ast.a_expr_distinct_tg_field (field text)
     RETURNS jsonb
     AS $$
 BEGIN
-	RETURN ast.aexpr(3, 
-        ast.columnref(
-          to_jsonb(ARRAY[ ast.str('old'),ast.str(field) ])
+	RETURN ast.a_expr(3, 
+        ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('old'),ast.string(field) ])
         ),
         '=',
-        ast.columnref(
-          to_jsonb(ARRAY[ ast.str('new'),ast.str(field) ])
+        ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('new'),ast.string(field) ])
         ) 
     );
 END;
@@ -502,11 +502,11 @@ BEGIN
         -- handle array
         results = array_append(results, ast.tsvectorw( ast.tsvector(r->>'lang',
           -- start the string
-          ast.coalesce(ast.funccall('array_to_string', to_jsonb(ARRAY[
+          ast.coalesce(ast.func_call('array_to_string', to_jsonb(ARRAY[
           -- type cast null to text[] array
-        ast.typecast(ast.str(r->>'field'), ast.typename( to_jsonb(ARRAY[ast.str('text')]), true ))
+        ast.type_cast(ast.string(r->>'field'), ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true ))
           --
-        , ast.aconst(' ')])))
+        , ast.a_const(' ')])))
         -- end array to string function call here
       ) , r->>'weight') );
       ELSE
@@ -525,7 +525,7 @@ BEGIN
       IF (i = 1) THEN
         result = results[i];
       ELSE
-        result = ast.aexpr( 0, results[i], '||', result );
+        result = ast.a_expr( 0, results[i], '||', result );
       END IF;
     END LOOP;
 
@@ -560,15 +560,15 @@ BEGIN
     LOOP
       field = fields[i];
       IF (i = 1) THEN
-        whenClause = ast.aexpr_distinct_tg_field(field);
+        whenClause = ast.a_expr_distinct_tg_field(field);
       ELSE
-        whenClause = ast.boolexpr( 1, to_jsonb(ARRAY[ast.aexpr_distinct_tg_field(field), whenClause]) );
+        whenClause = ast.bool_expr( 1, to_jsonb(ARRAY[ast.a_expr_distinct_tg_field(field), whenClause]) );
       END IF;
     END LOOP;
 
-  result = ast.createtriggerstmt(trigger_name,
-    ast.rangevar(schema_name, table_name, true, 'p'),
-    to_jsonb(ARRAY[ ast.str(trigger_fn_schema),ast.str(trigger_fn_name) ]),
+  result = ast.create_trigger_stmt(trigger_name,
+    ast.range_var(schema_name, table_name, true, 'p'),
+    to_jsonb(ARRAY[ ast.string(trigger_fn_schema),ast.string(trigger_fn_name) ]),
     true,
     timing,
     events,
@@ -599,30 +599,30 @@ DECLARE
   ast jsonb;
 BEGIN
 
-  select * FROM ast.createfunctionstmt(
+  select * FROM ast.create_function_stmt(
     -- name
-    to_jsonb(ARRAY[ ast.str(schema),ast.str(name) ]),
+    to_jsonb(ARRAY[ ast.string(schema),ast.string(name) ]),
     -- params
     parameters,
     -- return type
-    ast.typename( to_jsonb(ARRAY[ast.str(type)]), false ),
+    ast.type_name( to_jsonb(ARRAY[ast.string(type)]), false ),
     -- options 
     to_jsonb(ARRAY[
-      ast.defelem(
+      ast.def_elem(
         'as',
-        to_jsonb(ARRAY[ast.str(body)])
+        to_jsonb(ARRAY[ast.string(body)])
       ),
-      ast.defelem(
+      ast.def_elem(
         'volatility',
-        ast.str(vol)
+        ast.string(vol)
       ),
-      ast.defelem(
+      ast.def_elem(
         'language',
-        ast.str(lan)
+        ast.string(lan)
       ),
-      ast.defelem(
+      ast.def_elem(
         'security',
-        ast.int(sec)
+        ast.integer(sec)
       )
     ]::jsonb[])
   ) INTO ast;
@@ -650,11 +650,11 @@ CREATE FUNCTION ast.create_policy (
 DECLARE
   ast jsonb;
 BEGIN
-  select * FROM ast.createpolicystmt(
+  select * FROM ast.create_policy_stmt(
     name,
-    ast.rangevar(vschema, vtable, true, 'p'),
+    ast.range_var(vschema, vtable, true, 'p'),
     to_jsonb(ARRAY[
-        ast.rolespec(vrole, 0)
+        ast.role_spec(vrole, 0)
     ]),
     qual,
     cmd,

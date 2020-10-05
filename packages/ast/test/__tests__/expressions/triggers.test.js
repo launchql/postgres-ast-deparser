@@ -1,7 +1,5 @@
 import { getConnections } from '../../utils';
-import { policies } from './__fixtures__/policies';
 import { triggers } from './__fixtures__/triggers';
-import { functions } from './__fixtures__/functions';
 
 let db, teardown;
 const objs = {
@@ -30,21 +28,21 @@ select deparser.deparse( '${JSON.stringify(json)}'::jsonb );
   expect(result).toMatchSnapshot();
 });
 
-it('createtriggerstmt', async () => {
+it('create_trigger_stmt', async () => {
   const [result] = await db.any(`
-select ast.createtriggerstmt('trigger',
-    ast.rangevar('schema-name', 'mytable', true, 'p'),
-    to_jsonb(ARRAY[ ast.str('tg-schema'),ast.str('tgname') ]),
+select ast.create_trigger_stmt('trigger',
+    ast.range_var('schema-name', 'mytable', true, 'p'),
+    to_jsonb(ARRAY[ ast.string('tg-schema'),ast.string('tgname') ]),
     true,
     2,
     16,
-    ast.aexpr(3, 
-        ast.columnref(
-          to_jsonb(ARRAY[ ast.str('old'),ast.str('field-a') ])
+    ast.a_expr(3, 
+        ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('old'),ast.string('field-a') ])
         ),
         '=',
-        ast.columnref(
-          to_jsonb(ARRAY[ ast.str('new'),ast.str('field-a') ])
+        ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('new'),ast.string('field-a') ])
         ) 
     )
 );
@@ -52,22 +50,22 @@ select ast.createtriggerstmt('trigger',
   expect(result).toMatchSnapshot();
 });
 
-it('createtriggerstmt deparse', async () => {
+it('create_trigger_stmt deparse', async () => {
   const [result] = await db.any(`
 select deparser.deparse( 
-  ast.createtriggerstmt('trigger',
-    ast.rangevar('schema-name', 'mytable', true, 'p'),
-    to_jsonb(ARRAY[ ast.str('tg-schema'),ast.str('tgname') ]),
+  ast.create_trigger_stmt('trigger',
+    ast.range_var('schema-name', 'mytable', true, 'p'),
+    to_jsonb(ARRAY[ ast.string('tg-schema'),ast.string('tgname') ]),
     true,
     2,
     16,
-    ast.aexpr(3, 
-        ast.columnref(
-          to_jsonb(ARRAY[ ast.str('old'),ast.str('field-a') ])
+    ast.a_expr(3, 
+        ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('old'),ast.string('field-a') ])
         ),
         '=',
-        ast.columnref(
-          to_jsonb(ARRAY[ ast.str('new'),ast.str('field-a') ])
+        ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('new'),ast.string('field-a') ])
         ) 
     )
   )
@@ -76,7 +74,7 @@ select deparser.deparse(
   expect(result).toMatchSnapshot();
 });
 
-it('createtrigger with fields', async () => {
+it('create_trigger_with_fields', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse( 
   ast.create_trigger_with_fields(
@@ -92,7 +90,7 @@ select deparser.deparse(
   expect(result).toMatchSnapshot();
 });
 
-it('createtrigger with fields and names wo quotes', async () => {
+it('create_trigger_with_fields and names wo quotes', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse( 
   ast.create_trigger_with_fields(

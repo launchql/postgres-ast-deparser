@@ -22,7 +22,7 @@ afterAll(async () => {
 it('pure psql', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse(
-  ast.aexpr(
+  ast.a_expr(
    0,
    ast.tsvectorw( ast.tsvector(ast.coalesce('NEW.field1')) , 'A'), '||',
      ast.tsvectorw( ast.tsvector(ast.coalesce('NEW.field2')) , 'A'))

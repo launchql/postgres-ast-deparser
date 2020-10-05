@@ -243,6 +243,119 @@ exports[`create_function deparse 1`] = `
  $LQLCODEZ$ VOLATILE LANGUAGE plpgsql SECURITY DEFINER"
 `;
 
+exports[`create_function_stmt 1`] = `"CREATE FUNCTION schemer.funker ( param0 text, param1 text, param2 text[] DEFAULT NULL, param3 text[] DEFAULT NULL ) RETURNS text VOLATILE LANGUAGE plpgsql SECURITY DEFINER"`;
+
+exports[`create_function_stmt ast 1`] = `
+Object {
+  "CreateFunctionStmt": Object {
+    "funcname": Array [
+      Object {
+        "String": Object {
+          "str": "schemer",
+        },
+      },
+      Object {
+        "String": Object {
+          "str": "funker",
+        },
+      },
+    ],
+    "options": Array [
+      Object {
+        "DefElem": Object {
+          "arg": Object {
+            "String": Object {
+              "str": "volatile",
+            },
+          },
+          "defaction": 0,
+          "defname": "volatility",
+        },
+      },
+      Object {
+        "DefElem": Object {
+          "arg": Object {
+            "String": Object {
+              "str": "plpgsql",
+            },
+          },
+          "defaction": 0,
+          "defname": "language",
+        },
+      },
+      Object {
+        "DefElem": Object {
+          "arg": Object {
+            "Integer": Object {
+              "ival": 1,
+            },
+          },
+          "defaction": 0,
+          "defname": "security",
+        },
+      },
+    ],
+    "parameters": Array [
+      Object {
+        "FunctionParameter": Object {
+          "argType": Object {
+            "TypeName": Object {
+              "names": Array [
+                Object {
+                  "String": Object {
+                    "str": "text",
+                  },
+                },
+              ],
+              "typemod": -1,
+            },
+          },
+          "mode": 105,
+          "name": "param1",
+        },
+      },
+      Object {
+        "FunctionParameter": Object {
+          "argType": Object {
+            "TypeName": Object {
+              "arrayBounds": Array [
+                Object {
+                  "Integer": Object {
+                    "ival": -1,
+                  },
+                },
+              ],
+              "names": Array [
+                Object {
+                  "String": Object {
+                    "str": "text",
+                  },
+                },
+              ],
+              "typemod": -1,
+            },
+          },
+          "mode": 105,
+          "name": "param2",
+        },
+      },
+    ],
+    "returnType": Object {
+      "TypeName": Object {
+        "names": Array [
+          Object {
+            "String": Object {
+              "str": "text",
+            },
+          },
+        ],
+        "typemod": -1,
+      },
+    },
+  },
+}
+`;
+
 exports[`createfunction stmt from json 1`] = `
 "CREATE FUNCTION \\"collections-private\\".\\"deparse_a-const\\" ( \\"node-a\\" jsonb, context text DEFAULT NULL ) RETURNS text AS $LQLCODEZ$ 
  some string 

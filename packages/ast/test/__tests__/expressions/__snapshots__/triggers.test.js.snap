@@ -8,6 +8,109 @@ exports[`create trig stmt 1`] = `
  EXECUTE PROCEDURE trigger_function_schema.trigger_function ( )"
 `;
 
+exports[`create_trigger_stmt 1`] = `
+Object {
+  "create_trigger_stmt": Object {
+    "CreateTrigStmt": Object {
+      "events": 16,
+      "funcname": Array [
+        Object {
+          "String": Object {
+            "str": "tg-schema",
+          },
+        },
+        Object {
+          "String": Object {
+            "str": "tgname",
+          },
+        },
+      ],
+      "relation": Object {
+        "RangeVar": Object {
+          "inh": true,
+          "relname": "mytable",
+          "relpersistence": "p",
+          "schemaname": "schema-name",
+        },
+      },
+      "row": true,
+      "timing": 2,
+      "trigname": "trigger",
+      "whenClause": Object {
+        "A_Expr": Object {
+          "kind": 3,
+          "lexpr": Object {
+            "ColumnRef": Object {
+              "fields": Array [
+                Object {
+                  "String": Object {
+                    "str": "old",
+                  },
+                },
+                Object {
+                  "String": Object {
+                    "str": "field-a",
+                  },
+                },
+              ],
+            },
+          },
+          "name": Array [
+            Object {
+              "String": Object {
+                "str": "=",
+              },
+            },
+          ],
+          "rexpr": Object {
+            "ColumnRef": Object {
+              "fields": Array [
+                Object {
+                  "String": Object {
+                    "str": "new",
+                  },
+                },
+                Object {
+                  "String": Object {
+                    "str": "field-a",
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`create_trigger_stmt deparse 1`] = `
+Object {
+  "deparse": "CREATE TRIGGER trigger 
+ BEFORE UPDATE ON \\"schema-name\\".mytable 
+ FOR EACH ROW 
+ WHEN (OLD.\\"field-a\\" IS DISTINCT FROM NEW.\\"field-a\\") 
+ EXECUTE PROCEDURE \\"tg-schema\\".tgname ( )",
+}
+`;
+
+exports[`create_trigger_with_fields 1`] = `
+"CREATE TRIGGER \\"my-trigger\\" 
+ BEFORE INSERT OR UPDATE ON \\"my-schema\\".\\"my-table\\" 
+ FOR EACH ROW 
+ WHEN ((OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name)) 
+ EXECUTE PROCEDURE \\"my-tg-fn-schema\\".\\"my-tg-fn\\" ( )"
+`;
+
+exports[`create_trigger_with_fields and names wo quotes 1`] = `
+"CREATE TRIGGER mytrigger 
+ BEFORE INSERT OR UPDATE ON myschema.mytable 
+ FOR EACH ROW 
+ WHEN ((OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name)) 
+ EXECUTE PROCEDURE mytgfnschema.mytgfn ( )"
+`;
+
 exports[`createtrigger with fields 1`] = `
 "CREATE TRIGGER \\"my-trigger\\" 
  BEFORE INSERT OR UPDATE ON \\"my-schema\\".\\"my-table\\" 

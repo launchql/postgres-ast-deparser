@@ -28,91 +28,91 @@ select deparser.deparse( '${JSON.stringify(json)}'::jsonb );
   expect(result).toMatchSnapshot();
 });
 
-it('create function stmt', async () => {
+it('create_function_stmt', async () => {
   const [{ deparse: result }] = await db.any(`
-select deparser.deparse( ast.createfunctionstmt(
+select deparser.deparse( ast.create_function_stmt(
   -- name
-  to_jsonb(ARRAY[ ast.str('schemer'),ast.str('funker') ]),
+  to_jsonb(ARRAY[ ast.string('schemer'),ast.string('funker') ]),
   -- params
   to_jsonb(ARRAY[
-    ast.functionparameter(
+    ast.function_parameter(
       'param0',
-      ast.typename( to_jsonb(ARRAY[ast.str('text')]), false ),
+      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
       105
     ),
-    ast.functionparameter(
+    ast.function_parameter(
       'param1',
-      ast.typename( to_jsonb(ARRAY[ast.str('text')]), false ),
+      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
       105
     ),
-    ast.functionparameter(
+    ast.function_parameter(
       'param2',
-      ast.typename( to_jsonb(ARRAY[ast.str('text')]), true ),
+      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true ),
       105,
-      ast.aconst(ast.null())
+      ast.a_const(ast.null())
     ),
-    ast.functionparameter(
+    ast.function_parameter(
       'param3',
-      ast.typename( to_jsonb(ARRAY[ast.str('text')]), true ),
+      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true ),
       105,
-      ast.aconst(ast.null())
+      ast.a_const(ast.null())
     )
   ]::jsonb[]),
   -- return type
-  ast.typename( to_jsonb(ARRAY[ast.str('text')]), false ),
+  ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
   -- options 
   to_jsonb(ARRAY[
-    ast.defelem(
+    ast.def_elem(
       'volatility',
-      ast.str('volatile')
+      ast.string('volatile')
     ),
-    ast.defelem(
+    ast.def_elem(
       'language',
-      ast.str('plpgsql')
+      ast.string('plpgsql')
     ),
-    ast.defelem(
+    ast.def_elem(
       'security',
-      ast.int(1)
+      ast.integer(1)
     )
   ]::jsonb[])
 ))`);
   expect(result).toMatchSnapshot();
 });
 
-it('create function ast', async () => {
-  const [{ createfunctionstmt: result }] = await db.any(`
-select ast.createfunctionstmt(
+it('create_function_stmt ast', async () => {
+  const [{ create_function_stmt: result }] = await db.any(`
+select ast.create_function_stmt(
   -- name
-  to_jsonb(ARRAY[ ast.str('schemer'),ast.str('funker') ]),
+  to_jsonb(ARRAY[ ast.string('schemer'),ast.string('funker') ]),
   -- params
   to_jsonb(ARRAY[
-    ast.functionparameter(
+    ast.function_parameter(
       'param1',
-      ast.typename( to_jsonb(ARRAY[ast.str('text')]), false ),
+      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
       105
     ),
-    ast.functionparameter(
+    ast.function_parameter(
       'param2',
-      ast.typename( to_jsonb(ARRAY[ast.str('text')]), true ),
+      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true ),
       105
-      --ast.aconst(ast.null())
+      --ast.a_const(ast.null())
     )
   ]::jsonb[]),
   -- return type
-  ast.typename( to_jsonb(ARRAY[ast.str('text')]), false ),
+  ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
   -- options 
   to_jsonb(ARRAY[
-    ast.defelem(
+    ast.def_elem(
       'volatility',
-      ast.str('volatile')
+      ast.string('volatile')
     ),
-    ast.defelem(
+    ast.def_elem(
       'language',
-      ast.str('plpgsql')
+      ast.string('plpgsql')
     ),
-    ast.defelem(
+    ast.def_elem(
       'security',
-      ast.int(1)
+      ast.integer(1)
     )
   ]::jsonb[])
 )`);
@@ -126,16 +126,16 @@ SELECT ast.create_function(
   'name',
   'text',
   to_jsonb(ARRAY[
-    ast.functionparameter(
+    ast.function_parameter(
       'param1',
-      ast.typename( to_jsonb(ARRAY[ast.str('text')]), false ),
+      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
       105
     ),
-    ast.functionparameter(
+    ast.function_parameter(
       'param2',
-      ast.typename( to_jsonb(ARRAY[ast.str('text')]), true ),
+      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true ),
       105
-      --ast.aconst(ast.null())
+      --ast.a_const(ast.null())
     )
   ]::jsonb[]),
   'code here',
@@ -174,7 +174,7 @@ SELECT deparser.deparse(ast.create_function(
     ast.simple_param(
       'tags',
       'text[]',
-      ast.aconst(ast.null())
+      ast.a_const(ast.null())
     )
   ]::jsonb[]),
   'code here',
