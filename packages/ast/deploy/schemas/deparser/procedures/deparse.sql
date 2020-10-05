@@ -31,22 +31,15 @@ END;
 $$  
 LANGUAGE 'plpgsql';
 
-CREATE FUNCTION deparser.interval (
-  node jsonb
-) returns text as $$
-DECLARE
-BEGIN
-  RETURN 'something';
-END;
-$$
-LANGUAGE 'plpgsql';
-
 CREATE FUNCTION deparser.deparse_interval (
   node jsonb
 ) returns text as $$
 DECLARE
   typ text[];
   typmods text[];
+  intervals text[];
+  out text[];
+  invl text;
 BEGIN
   typ = array_append(typ, 'interval');
 
@@ -55,10 +48,36 @@ BEGIN
   END IF;
 
   IF (node->'typmods' IS NOT NULL) THEN 
-    -- typ = array_append(typ, '[]');
     typmods = deparser.expressions_array(node->'typmods');
+    intervals = ast_utils.interval(typmods[1]::int);
+
+    IF (
+      node->'typmods'->0 IS NOT NULL AND
+      node->'typmods'->0->'A_Const' IS NOT NULL AND
+      node->'typmods'->0->'A_Const'->'val'->'Integer'->'ival' IS NOT NULL AND
+      (node->'typmods'->0->'A_Const'->'val'->'Integer'->'ival')::int = 32767 AND
+      node->'typmods'->1 IS NOT NULL AND
+      node->'typmods'->1->'A_Const' IS NOT NULL 
+    ) THEN 
+      intervals = ARRAY[
+        deparser.parens(node->'typmods'->1->'A_Const'->'val'->'Integer'->>'ival')
+      ]::text[];
+      typ = array_append(typ, array_to_string(intervals, ' to '));
+    ELSE 
+      FOREACH invl IN ARRAY intervals 
+      LOOP
+        out = array_append(out, (
+          CASE 
+            WHEN (invl = 'second' AND cardinality(typmods) = 2) THEN 'second(' || typemods[2] || ')'
+            ELSE invl
+          END
+        ));
+      END LOOP;
+      typ = array_append(typ, array_to_string(out, ' to '));
+    END IF;
   END IF;
 
+  RETURN array_to_string(typ, ' ');
 END;
 $$
 LANGUAGE 'plpgsql';
