@@ -53,7 +53,7 @@ CREATE FUNCTION inflection.slugify (text)
   RETURNS text
   AS 'SELECT inflection.slugify($1, false)'
   LANGUAGE SQL
-  IMMUTABLE STRICT;
+  IMMUTABLE;
 
 
 COMMIT;

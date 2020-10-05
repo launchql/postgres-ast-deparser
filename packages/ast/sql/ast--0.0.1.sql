@@ -18,7 +18,7 @@ WHEN ( n = 7168 ) THEN ARRAY[ 'hour', 'second' ]
 WHEN ( n = 7176 ) THEN ARRAY[ 'day', 'second' ]
 WHEN ( n = 32767 ) THEN ARRAY[]::text[]
 END);
-$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_utils.reserved ( str text ) RETURNS boolean AS $EOFCODE$
 	select exists( select 1 from pg_get_keywords() where catcode = 'R' AND word=str  );
@@ -26,7 +26,7 @@ $EOFCODE$ LANGUAGE sql SECURITY DEFINER;
 
 CREATE FUNCTION ast_utils.objtypes (  ) RETURNS text[] AS $EOFCODE$
 	select ARRAY[ 'ACCESS METHOD', 'AGGREGATE', NULL, NULL, NULL, 'CAST', 'COLUMN', 'COLLATION', 'CONVERSION', 'DATABASE', NULL, NULL, 'DOMAIN', 'CONSTRAINT', NULL, 'EXTENSION', 'FOREIGN DATA WRAPPER', 'SERVER', 'FOREIGN TABLE', 'FUNCTION', 'INDEX', 'LANGUAGE', 'LARGE OBJECT', 'MATERIALIZED VIEW', 'OPERATOR CLASS', 'OPERATOR', 'OPERATOR FAMILY', 'POLICY', NULL, NULL, 'ROLE', 'RULE', 'SCHEMA', 'SEQUENCE', NULL, 'STATISTICS', 'CONSTRAINT', 'TABLE', 'TABLESPACE', 'TRANSFORM', 'TRIGGER', 'TEXT SEARCH CONFIGURATION', 'TEXT SEARCH DICTIONARY', 'TEXT SEARCH PARSER', 'TEXT SEARCH TEMPLATE', 'TYPE', NULL, 'VIEW' ]::text[];
-$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_utils.constrainttype_idxs ( typ text ) RETURNS int AS $EOFCODE$
   select (CASE
@@ -44,7 +44,7 @@ WHEN (typ = 'CONSTR_ATTR_NOT_DEFERRABLE') THEN 10
 WHEN (typ = 'CONSTR_ATTR_DEFERRED') THEN 11
 WHEN (typ = 'CONSTR_ATTR_IMMEDIATE') THEN 12
 END);
-$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_utils.constrainttypes ( contype int ) RETURNS text AS $EOFCODE$
   select (CASE
@@ -57,7 +57,7 @@ WHEN (contype =  6 ) THEN 'UNIQUE'
 WHEN (contype =  7 ) THEN 'EXCLUDE'
 WHEN (contype =  8 ) THEN 'REFERENCES'
 END);
-$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_utils.objtypes_idxs ( typ text ) RETURNS int AS $EOFCODE$
 	select (CASE
@@ -110,7 +110,7 @@ WHEN (typ = 'OBJECT_TYPE') THEN 45
 WHEN (typ = 'OBJECT_USER_MAPPING') THEN 46
 WHEN (typ = 'OBJECT_VIEW') THEN 47
 END);
-$EOFCODE$ LANGUAGE sql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_utils.getgrantobject ( node jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -165,7 +165,7 @@ BEGIN
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantObjectType';
 
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE SCHEMA ast;
 
@@ -175,7 +175,7 @@ DECLARE
 BEGIN
 	RETURN jsonb_set(result, '{A_Const, val, String, str}', to_jsonb(str));
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.aconst ( val jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -183,7 +183,7 @@ DECLARE
 BEGIN
 	RETURN jsonb_set(result, '{A_Const, val}', val);
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.rangevar ( schemaname text, relname text, inh bool, relpersistence text ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -195,7 +195,7 @@ BEGIN
 	result = jsonb_set(result, '{RangeVar, relpersistence}', to_jsonb(relpersistence));
   return result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.boolexpr ( boolop int, args jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -205,7 +205,7 @@ BEGIN
 	result = jsonb_set(result, '{BoolExpr, args}', args);
   return result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.columnref ( fields jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -213,7 +213,7 @@ DECLARE
 BEGIN
 	RETURN jsonb_set(result, '{ColumnRef, fields}', fields);
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.funccall ( name text, args jsonb DEFAULT '[]'::jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -223,7 +223,7 @@ BEGIN
 	  result = jsonb_set(result, '{FuncCall, args}', args);
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.funccall ( name jsonb, args jsonb DEFAULT '[]'::jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -233,13 +233,13 @@ BEGIN
 	  result = jsonb_set(result, '{FuncCall, args}', args);
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.null (  ) RETURNS jsonb AS $EOFCODE$
 BEGIN
   RETURN '{"Null":{}}'::jsonb;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.typename ( names jsonb, isarray boolean DEFAULT (FALSE) ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -253,7 +253,7 @@ BEGIN
 	result = jsonb_set(result, '{TypeName, names}', names);
   RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.typecast ( arg jsonb, typename jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -263,7 +263,7 @@ BEGIN
 	result = jsonb_set(result, '{TypeCast, typeName}', typename);
   RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.str ( str text ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -272,7 +272,7 @@ BEGIN
 	result = jsonb_set(result, '{String, str}', to_jsonb(str));
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.int ( ival int ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -281,7 +281,7 @@ BEGIN
 	result = jsonb_set(result, '{Integer, ival}', to_jsonb(ival));
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.defelem ( defname text, arg jsonb, defaction int DEFAULT 0 ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -292,7 +292,7 @@ BEGIN
 	result = jsonb_set(result, '{DefElem, defaction}', to_jsonb(defaction));
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.aexpr ( kind int, lexpr jsonb, op text, rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -304,7 +304,7 @@ BEGIN
 	result = jsonb_set(result, '{A_Expr, rexpr}', rexpr);
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.createtriggerstmt ( trigname text, relation jsonb, funcname jsonb, isrow bool, timing int, events int, whenclause jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -319,7 +319,7 @@ BEGIN
 	result = jsonb_set(result, '{CreateTrigStmt, whenClause}', whenClause);
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.functionparameter ( name text, argtype jsonb, mode int ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -331,7 +331,7 @@ BEGIN
 
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.functionparameter ( name text, argtype jsonb, mode int, defexpr jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -344,7 +344,7 @@ BEGIN
 
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.createfunctionstmt ( funcname jsonb, parameters jsonb, returntype jsonb, options jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -356,7 +356,7 @@ BEGIN
 	result = jsonb_set(result, '{CreateFunctionStmt, options}', options);
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.rolespec ( rolename text, roletype int ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -366,7 +366,7 @@ BEGIN
 	result = jsonb_set(result, '{RoleSpec, rolename}', to_jsonb(rolename));
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.createpolicystmt ( policy_name text, tbl jsonb, roles jsonb, qual jsonb, cmd_name text, permissive boolean ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -380,7 +380,7 @@ BEGIN
 	result = jsonb_set(result, '{CreatePolicyStmt, permissive}', to_jsonb(permissive));
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.coalesce ( field text, value text DEFAULT '' ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -390,7 +390,7 @@ BEGIN
 	result = jsonb_set(result, '{FuncCall, args, 1, A_Const, String, str}', to_jsonb(value));
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.coalesce ( field jsonb, value text DEFAULT '' ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -400,19 +400,19 @@ BEGIN
 	result = jsonb_set(result, '{FuncCall, args, 1, A_Const, String, str}', to_jsonb(value));
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.tsvectorw ( input jsonb, weight text DEFAULT 'A' ) RETURNS jsonb AS $EOFCODE$
 BEGIN
 	RETURN ast.funccall('setweight', to_jsonb(ARRAY[input, ast.aconst(weight)]));
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.tsvector ( input jsonb ) RETURNS jsonb AS $EOFCODE$
 BEGIN
 	RETURN ast.funccall('to_tsvector', to_jsonb(ARRAY[input]));
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.simple_param ( name text, type text ) RETURNS jsonb AS $EOFCODE$
 BEGIN
@@ -422,7 +422,7 @@ BEGIN
       105
     );
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.simple_param ( name text, type text, default_value text ) RETURNS jsonb AS $EOFCODE$
 BEGIN
@@ -433,7 +433,7 @@ BEGIN
       ast.str(default_value)
     );
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.simple_param ( name text, type text, default_value jsonb ) RETURNS jsonb AS $EOFCODE$
 BEGIN
@@ -444,13 +444,13 @@ BEGIN
       default_value
     );
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.tsvector ( lang text, input jsonb ) RETURNS jsonb AS $EOFCODE$
 BEGIN
 	RETURN ast.funccall('to_tsvector', to_jsonb(ARRAY[ast.aconst(lang), input]));
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.aexpr_distinct_tg_field ( field text ) RETURNS jsonb AS $EOFCODE$
 BEGIN
@@ -464,7 +464,7 @@ BEGIN
         ) 
     );
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.tsvector_index ( fields jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -515,7 +515,7 @@ BEGIN
 
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.create_trigger_with_fields ( trigger_name text, schema_name text, table_name text, trigger_fn_schema text, trigger_fn_name text, fields text[], timing int DEFAULT 2, events int DEFAULT ((4) | (16)) ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -549,7 +549,7 @@ BEGIN
 
 	RETURN result;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.create_function ( schema text, name text, type text, parameters jsonb, body text, vol text, lan text, sec int ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -587,7 +587,7 @@ BEGIN
   RETURN ast;
 
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.create_policy ( name text, vschema text, vtable text, vrole text, qual jsonb, cmd text, permissive boolean ) RETURNS jsonb AS $EOFCODE$
 DECLARE
@@ -605,7 +605,7 @@ BEGIN
   ) INTO ast;
   RETURN ast;
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE SCHEMA deparser;
 
@@ -626,7 +626,7 @@ BEGIN
     END LOOP;
   RETURN filtered;
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.deparse_interval ( node jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -674,7 +674,7 @@ BEGIN
 
   RETURN array_to_string(typ, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.get_pgtype ( typ text, typemods text ) RETURNS text AS $EOFCODE$
 SELECT (CASE
@@ -720,9 +720,9 @@ BEGIN
 
   IF (catalog != 'pg_catalog') THEN 
     IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
-      RETURN deparser.quoted_name(names) || deparser.parens(typemods);
+      RETURN deparser.quoted_name(names, 'type') || deparser.parens(typemods);
     ELSE
-      RETURN deparser.quoted_name(names);
+      RETURN deparser.quoted_name(names, 'type');
     END IF;
   END IF;
 
@@ -734,7 +734,7 @@ BEGIN
   END IF;
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.type_name ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -781,7 +781,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.type_cast ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -810,7 +810,7 @@ BEGIN
 
     RETURN format('%s::%s', arg, type);    
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.range_var ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -851,7 +851,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_between ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -875,7 +875,7 @@ BEGIN
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_func ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -918,7 +918,7 @@ BEGIN
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_rlist ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -965,7 +965,7 @@ BEGIN
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_normal ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1019,7 +1019,7 @@ BEGIN
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 BEGIN
@@ -1080,7 +1080,7 @@ BEGIN
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.bool_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1115,7 +1115,7 @@ BEGIN
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.column_ref ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1136,7 +1136,7 @@ BEGIN
 
   RETURN deparser.list(node->'ColumnRef'->'fields', '.', context);
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.column_def ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1176,7 +1176,7 @@ BEGIN
 
   RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.a_const ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1203,7 +1203,7 @@ BEGIN
   RETURN txt;
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.create_trigger_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1368,7 +1368,7 @@ BEGIN
 
   RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.str ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1391,7 +1391,7 @@ BEGIN
   END IF;
   RETURN txt;
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.list ( node jsonb, delimiter text DEFAULT ', ', context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1399,7 +1399,7 @@ DECLARE
 BEGIN
   RETURN array_to_string(deparser.expressions_array(node, context), delimiter);
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.list_quotes ( node jsonb, delimiter text DEFAULT ', ', context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1415,7 +1415,7 @@ BEGIN
   END LOOP;
   RETURN array_to_string(quoted, delimiter);
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.create_policy_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1465,7 +1465,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.role_spec ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1498,7 +1498,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.insert_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1534,7 +1534,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.create_schema_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1565,7 +1565,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.exclusion_constraint ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1612,7 +1612,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.reference_constraint ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1656,7 +1656,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.constraint_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1678,7 +1678,7 @@ BEGIN
 
   RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.create_seq_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1703,7 +1703,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.constraint ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1778,7 +1778,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.def_elem ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1849,7 +1849,7 @@ BEGIN
 
     RETURN defname;
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.comment_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1955,7 +1955,7 @@ BEGIN
   
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_default_privileges_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -1994,7 +1994,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.case_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2023,7 +2023,7 @@ BEGIN
     output = array_append(output, 'END');
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.case_when ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2050,7 +2050,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.variable_set_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2097,7 +2097,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.alias ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2123,7 +2123,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.range_subselect ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2151,7 +2151,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.delete_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2178,7 +2178,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.quoted_name ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2186,13 +2186,31 @@ DECLARE
   item text;
 BEGIN
     -- NOTE: assumes array of names passed in 
-    FOREACH item IN array deparser.expressions_array(node)
-    LOOP
-      output = array_append(output, quote_ident(item));
-    END LOOP;
+
+    IF (context = 'type') THEN 
+
+
+      FOREACH item IN array deparser.expressions_array(node)
+      LOOP
+        -- strip off the [] if it exists at the end, and set is_array prop
+        IF (ARRAY_LENGTH(REGEXP_MATCHES(trim(item), '(.*)\s*(\[\s*?\])$', 'i'), 1) > 0) THEN
+          item = REGEXP_REPLACE(trim(item), '(.*)\s*(\[\s*?\])$', '\1', 'i');
+          output = array_append(output, quote_ident(item) || '[]');
+        ELSE
+          output = array_append(output, quote_ident(item));
+        END IF;
+
+      END LOOP;
+
+    ELSE
+      FOREACH item IN array deparser.expressions_array(node)
+      LOOP
+        output = array_append(output, quote_ident(item));
+      END LOOP;
+    END IF;
     RETURN array_to_string(output, '.');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.create_domain_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2225,7 +2243,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.grant_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2285,7 +2303,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.composite_type_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2315,7 +2333,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.index_elem ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 BEGIN
@@ -2336,7 +2354,7 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'IndexElem';
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.create_enum_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2364,7 +2382,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_table_cmd ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2478,7 +2496,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_table_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2527,7 +2545,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.range_function ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2582,7 +2600,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.index_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2627,7 +2645,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.update_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2705,7 +2723,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.param_ref ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 BEGIN
@@ -2721,7 +2739,7 @@ BEGIN
 
     RETURN '?';
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.join_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2805,7 +2823,7 @@ BEGIN
 
     RETURN wrapped;
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.a_indirection ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2834,7 +2852,7 @@ BEGIN
     -- NOT A SPACE HERE ON PURPOSE
     RETURN array_to_string(output, '');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.sub_link ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2899,7 +2917,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.a_star ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 BEGIN
@@ -2908,7 +2926,7 @@ BEGIN
     END IF;
     RETURN '*';
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.integer ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2931,7 +2949,7 @@ BEGIN
     
     RETURN node->>'ival';
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.access_priv ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2958,7 +2976,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.func_call ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -2982,7 +3000,7 @@ BEGIN
 
     RETURN array_to_string(ARRAY[fn_name, format( '(%s)', fn_args )], ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.rule_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3052,7 +3070,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.create_role_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3079,7 +3097,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.create_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3126,7 +3144,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.transaction_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3176,7 +3194,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.view_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3202,7 +3220,7 @@ BEGIN
     output = array_append(output, deparser.expression(node->'query', context));
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.sort_by ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3248,7 +3266,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.res_target ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3278,7 +3296,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_domain_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3306,7 +3324,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_enum_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3333,7 +3351,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.execute_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3358,7 +3376,7 @@ BEGIN
 
     RETURN array_to_string(ARRAY[fn_name, format( '(%s)', fn_args )], ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.row_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3376,7 +3394,7 @@ BEGIN
 
     RETURN format('ROW(%s)', deparser.list(node->'args'));
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.a_indices ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 BEGIN
@@ -3395,7 +3413,7 @@ BEGIN
     
     RETURN format('[%s]', deparser.expression(node->'uidx'));
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.rename_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3422,7 +3440,7 @@ BEGIN
     END IF;
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.select_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3562,7 +3580,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.grant_role_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3597,7 +3615,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.coalesce_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 BEGIN
@@ -3613,7 +3631,7 @@ BEGIN
 
     RETURN format('COALESCE(%s)', deparser.list(node->'args'));
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.drop_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3666,7 +3684,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.infer_clause ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3688,7 +3706,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.on_conflict_clause ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3718,7 +3736,7 @@ BEGIN
 
     RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.create_function_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3828,7 +3846,7 @@ BEGIN
 
   RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.function_parameter ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -3862,7 +3880,7 @@ BEGIN
 
   RETURN array_to_string(output, ' ');
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.expression ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 BEGIN
@@ -4004,7 +4022,7 @@ BEGIN
   END IF;
 
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.expressions_array ( node jsonb, context text DEFAULT NULL ) RETURNS text[] AS $EOFCODE$
 DECLARE
@@ -4020,13 +4038,13 @@ BEGIN
 
   return els;
 END;
-$EOFCODE$ LANGUAGE plpgsql;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.deparse ( ast jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
 	RETURN deparser.expression(ast);
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.deparse_query ( ast jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
@@ -4039,4 +4057,4 @@ BEGIN
    END LOOP;
    RETURN array_to_string(lines, E'\n');
 END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE STRICT;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;

@@ -63,6 +63,6 @@ CREATE FUNCTION inflection.pg_slugify (text)
   RETURNS text
   AS 'SELECT inflection.pg_slugify($1, false)'
   LANGUAGE SQL
-  IMMUTABLE STRICT;
+  IMMUTABLE;
 COMMIT;
 

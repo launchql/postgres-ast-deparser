@@ -28,7 +28,7 @@ BEGIN
   RETURN filtered;
 END;
 $$  
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.deparse_interval (
   node jsonb
@@ -79,7 +79,7 @@ BEGIN
   RETURN array_to_string(typ, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 -- TODO improve this
 CREATE FUNCTION deparser.get_pgtype (
@@ -148,7 +148,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.type_name (
   node jsonb,
@@ -199,7 +199,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.type_cast (
   node jsonb,
@@ -232,7 +232,7 @@ BEGIN
     RETURN format('%s::%s', arg, type);    
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.range_var (
   node jsonb,
@@ -277,7 +277,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_between(
   expr jsonb,
@@ -305,7 +305,7 @@ BEGIN
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_func(
   expr jsonb,
@@ -352,7 +352,7 @@ BEGIN
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 
 CREATE FUNCTION deparser.a_expr_rlist(
@@ -404,7 +404,7 @@ BEGIN
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 
 CREATE FUNCTION deparser.a_expr_normal(
@@ -463,7 +463,7 @@ BEGIN
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr(
   expr jsonb,
@@ -528,7 +528,7 @@ BEGIN
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.bool_expr(
   node jsonb,
@@ -567,7 +567,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.column_ref(
   node jsonb,
@@ -592,7 +592,7 @@ BEGIN
   RETURN deparser.list(node->'ColumnRef'->'fields', '.', context);
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.column_def(
   node jsonb,
@@ -636,7 +636,7 @@ BEGIN
   RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_const(
   node jsonb,
@@ -667,7 +667,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_trigger_stmt(
   node jsonb,
@@ -836,7 +836,7 @@ BEGIN
   RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.str(
   expr jsonb,
@@ -863,7 +863,7 @@ BEGIN
   RETURN txt;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.list(
   node jsonb,
@@ -876,7 +876,7 @@ BEGIN
   RETURN array_to_string(deparser.expressions_array(node, context), delimiter);
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.list_quotes(
   node jsonb,
@@ -897,7 +897,7 @@ BEGIN
   RETURN array_to_string(quoted, delimiter);
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 -- CREATE FUNCTION deparser.rls_column_ref(
 --   node jsonb,
@@ -912,7 +912,7 @@ LANGUAGE 'plpgsql';
 --   RETURN txt;
 -- END;
 -- $$
--- LANGUAGE 'plpgsql';
+-- LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_policy_stmt(
   node jsonb,
@@ -966,7 +966,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.role_spec(
   node jsonb,
@@ -1003,7 +1003,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.insert_stmt(
   node jsonb,
@@ -1043,7 +1043,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_schema_stmt(
   node jsonb,
@@ -1078,7 +1078,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.exclusion_constraint(
   node jsonb,
@@ -1129,7 +1129,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.reference_constraint(
   node jsonb,
@@ -1177,7 +1177,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.constraint_stmt(
   node jsonb,
@@ -1203,7 +1203,7 @@ BEGIN
   RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_seq_stmt(
   node jsonb,
@@ -1232,7 +1232,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.constraint(
   node jsonb,
@@ -1311,7 +1311,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.def_elem(
   node jsonb,
@@ -1386,7 +1386,7 @@ BEGIN
     RETURN defname;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.comment_stmt(
   node jsonb,
@@ -1496,7 +1496,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_default_privileges_stmt(
   node jsonb,
@@ -1539,7 +1539,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.case_expr(
   node jsonb,
@@ -1572,7 +1572,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.case_when(
   node jsonb,
@@ -1603,7 +1603,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.variable_set_stmt(
   node jsonb,
@@ -1654,7 +1654,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.alias(
   node jsonb,
@@ -1684,7 +1684,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.range_subselect(
   node jsonb,
@@ -1716,7 +1716,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.delete_stmt(
   node jsonb,
@@ -1747,7 +1747,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.quoted_name(
   node jsonb,
@@ -1783,7 +1783,7 @@ BEGIN
     RETURN array_to_string(output, '.');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_domain_stmt(
   node jsonb,
@@ -1820,7 +1820,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.grant_stmt(
   node jsonb,
@@ -1884,7 +1884,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.composite_type_stmt(
   node jsonb,
@@ -1918,7 +1918,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.index_elem(
   node jsonb,
@@ -1943,7 +1943,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_enum_stmt(
   node jsonb,
@@ -1975,7 +1975,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_table_cmd(
   node jsonb,
@@ -2093,7 +2093,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_table_stmt(
   node jsonb,
@@ -2146,7 +2146,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.range_function(
   node jsonb,
@@ -2205,7 +2205,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.index_stmt(
   node jsonb,
@@ -2254,7 +2254,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.update_stmt(
   node jsonb,
@@ -2336,7 +2336,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.param_ref(
   node jsonb,
@@ -2356,7 +2356,7 @@ BEGIN
     RETURN '?';
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.join_expr(
   node jsonb,
@@ -2444,7 +2444,7 @@ BEGIN
     RETURN wrapped;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_indirection(
   node jsonb,
@@ -2477,7 +2477,7 @@ BEGIN
     RETURN array_to_string(output, '');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.sub_link(
   node jsonb,
@@ -2546,7 +2546,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_star(
   node jsonb,
@@ -2559,7 +2559,7 @@ BEGIN
     RETURN '*';
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.integer(
   node jsonb,
@@ -2586,7 +2586,7 @@ BEGIN
     RETURN node->>'ival';
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.access_priv(
   node jsonb,
@@ -2617,7 +2617,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.func_call(
   node jsonb,
@@ -2645,7 +2645,7 @@ BEGIN
     RETURN array_to_string(ARRAY[fn_name, format( '(%s)', fn_args )], ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.rule_stmt(
   node jsonb,
@@ -2719,7 +2719,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_role_stmt(
   node jsonb,
@@ -2750,7 +2750,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_stmt(
   node jsonb,
@@ -2801,7 +2801,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.transaction_stmt(
   node jsonb,
@@ -2855,7 +2855,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.view_stmt(
   node jsonb,
@@ -2885,7 +2885,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.sort_by(
   node jsonb,
@@ -2935,7 +2935,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.res_target(
   node jsonb,
@@ -2969,7 +2969,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 -- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.alter_domain_stmt(
@@ -3002,7 +3002,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 -- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.alter_enum_stmt(
@@ -3034,7 +3034,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 -- TODO never FULLY TESTED
 CREATE FUNCTION deparser.execute_stmt(
@@ -3064,7 +3064,7 @@ BEGIN
     RETURN array_to_string(ARRAY[fn_name, format( '(%s)', fn_args )], ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.row_expr(
   node jsonb,
@@ -3086,7 +3086,7 @@ BEGIN
     RETURN format('ROW(%s)', deparser.list(node->'args'));
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_indices(
   node jsonb,
@@ -3109,7 +3109,7 @@ BEGIN
     RETURN format('[%s]', deparser.expression(node->'uidx'));
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 -- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.rename_stmt(
@@ -3141,7 +3141,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.select_stmt(
   node jsonb,
@@ -3285,7 +3285,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.grant_role_stmt(
   node jsonb,
@@ -3324,7 +3324,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.coalesce_expr(
   node jsonb,
@@ -3344,7 +3344,7 @@ BEGIN
     RETURN format('COALESCE(%s)', deparser.list(node->'args'));
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.drop_stmt(
   node jsonb,
@@ -3401,7 +3401,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.infer_clause(
   node jsonb,
@@ -3427,7 +3427,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.on_conflict_clause(
   node jsonb,
@@ -3461,7 +3461,7 @@ BEGIN
     RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_function_stmt(
   node jsonb,
@@ -3575,7 +3575,7 @@ BEGIN
   RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.function_parameter(
   node jsonb,
@@ -3613,7 +3613,7 @@ BEGIN
   RETURN array_to_string(output, ' ');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 -- CREATE FUNCTION deparser.rls_func_ref(
 --   node jsonb,
@@ -3652,7 +3652,7 @@ LANGUAGE 'plpgsql';
 --   RETURN txt;
 -- END;
 -- $$
--- LANGUAGE 'plpgsql';
+-- LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.expression(
   expr jsonb,
@@ -3798,7 +3798,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.expressions_array(
   node jsonb,
@@ -3818,7 +3818,7 @@ BEGIN
   return els;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.deparse (ast jsonb)
     RETURNS text
@@ -3828,7 +3828,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION deparser.deparse_query (ast jsonb)
     RETURNS text
@@ -3845,6 +3845,6 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 COMMIT;

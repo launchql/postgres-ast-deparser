@@ -14,7 +14,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.aconst (val jsonb)
     RETURNS jsonb
@@ -26,7 +26,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.rangevar (
   schemaname text,
@@ -47,7 +47,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.boolexpr (
   boolop int,
@@ -64,7 +64,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.columnref (fields jsonb)
     RETURNS jsonb
@@ -76,7 +76,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.funccall (name text, args jsonb default '[]'::jsonb)
     RETURNS jsonb
@@ -90,7 +90,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.funccall (name jsonb, args jsonb default '[]'::jsonb)
     RETURNS jsonb
@@ -104,7 +104,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 
 CREATE FUNCTION ast.null ()
@@ -115,7 +115,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.typename (names jsonb, isarray boolean default false)
     RETURNS jsonb
@@ -133,7 +133,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.typecast (arg jsonb, typename jsonb)
     RETURNS jsonb
@@ -147,7 +147,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 
 CREATE FUNCTION ast.str (str text)
@@ -161,7 +161,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.int (ival int)
     RETURNS jsonb
@@ -174,7 +174,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.defelem (
   defname text,
@@ -193,7 +193,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.aexpr (kind int, lexpr jsonb, op text, rexpr jsonb)
     RETURNS jsonb
@@ -209,7 +209,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 -- SQL OBJECTS 
 
@@ -238,7 +238,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.functionparameter (
   name text,
@@ -258,7 +258,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.functionparameter (
   name text,
@@ -280,7 +280,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.createfunctionstmt (
   funcname jsonb,
@@ -301,7 +301,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.rolespec (
   rolename text,
@@ -318,7 +318,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.createpolicystmt (
   policy_name text,
@@ -343,7 +343,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 -- HELPER OBJECTS 
 
@@ -359,7 +359,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.coalesce (field jsonb, value text default '')
     RETURNS jsonb
@@ -373,7 +373,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.tsvectorw (input jsonb, weight text='A')
     RETURNS jsonb
@@ -383,7 +383,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.tsvector (input jsonb)
     RETURNS jsonb
@@ -393,7 +393,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.simple_param (
   name text,
@@ -410,7 +410,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.simple_param (
   name text,
@@ -429,7 +429,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.simple_param (
   name text,
@@ -448,7 +448,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.tsvector (lang text, input jsonb)
     RETURNS jsonb
@@ -458,7 +458,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.aexpr_distinct_tg_field (field text)
     RETURNS jsonb
@@ -476,7 +476,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 -- HIGHER LEVEL OBJECTS
 
@@ -533,7 +533,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 CREATE FUNCTION ast.create_trigger_with_fields (
   trigger_name text,
@@ -580,7 +580,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 
 CREATE FUNCTION ast.create_function (
@@ -632,7 +632,7 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 
 CREATE FUNCTION ast.create_policy (
@@ -664,6 +664,6 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql'
-IMMUTABLE STRICT;
+IMMUTABLE;
 
 COMMIT;

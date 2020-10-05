@@ -24,7 +24,7 @@ WHEN ( n = 7176 ) THEN ARRAY[ 'day', 'second' ]
 WHEN ( n = 32767 ) THEN ARRAY[]::text[]
 END);
 $$  
-LANGUAGE 'sql' IMMUTABLE STRICT;
+LANGUAGE 'sql' IMMUTABLE;
 
 -- CREATE FUNCTION ast_utils.interval_mask (
 --   typ text
@@ -61,7 +61,7 @@ LANGUAGE 'sql' IMMUTABLE STRICT;
 --     WHEN (typ ='DTZMOD') THEN 28
 -- END);
 -- $$  
--- LANGUAGE 'sql' IMMUTABLE STRICT;
+-- LANGUAGE 'sql' IMMUTABLE;
 
 -- CREATE FUNCTION ast_utils.interval_mask (
 --   typ int
@@ -98,7 +98,7 @@ LANGUAGE 'sql' IMMUTABLE STRICT;
 --     WHEN (typ = 28) THEN 'DTZMOD'
 -- END);
 -- $$  
--- LANGUAGE 'sql' IMMUTABLE STRICT;
+-- LANGUAGE 'sql' IMMUTABLE;
 
 CREATE FUNCTION ast_utils.reserved (
   str text
@@ -111,7 +111,7 @@ CREATE FUNCTION ast_utils.objtypes ()
 returns text[] as $$
 	select ARRAY[ 'ACCESS METHOD', 'AGGREGATE', NULL, NULL, NULL, 'CAST', 'COLUMN', 'COLLATION', 'CONVERSION', 'DATABASE', NULL, NULL, 'DOMAIN', 'CONSTRAINT', NULL, 'EXTENSION', 'FOREIGN DATA WRAPPER', 'SERVER', 'FOREIGN TABLE', 'FUNCTION', 'INDEX', 'LANGUAGE', 'LARGE OBJECT', 'MATERIALIZED VIEW', 'OPERATOR CLASS', 'OPERATOR', 'OPERATOR FAMILY', 'POLICY', NULL, NULL, 'ROLE', 'RULE', 'SCHEMA', 'SEQUENCE', NULL, 'STATISTICS', 'CONSTRAINT', 'TABLE', 'TABLESPACE', 'TRANSFORM', 'TRIGGER', 'TEXT SEARCH CONFIGURATION', 'TEXT SEARCH DICTIONARY', 'TEXT SEARCH PARSER', 'TEXT SEARCH TEMPLATE', 'TYPE', NULL, 'VIEW' ]::text[];
 $$  
-LANGUAGE 'sql' IMMUTABLE STRICT;
+LANGUAGE 'sql' IMMUTABLE;
 
 CREATE FUNCTION ast_utils.constrainttype_idxs (typ text)
 returns int as $$
@@ -131,7 +131,7 @@ WHEN (typ = 'CONSTR_ATTR_DEFERRED') THEN 11
 WHEN (typ = 'CONSTR_ATTR_IMMEDIATE') THEN 12
 END);
 $$
-LANGUAGE 'sql' IMMUTABLE STRICT;
+LANGUAGE 'sql' IMMUTABLE;
 
 CREATE FUNCTION ast_utils.constrainttypes (contype int)
 returns text as $$
@@ -146,7 +146,7 @@ WHEN (contype =  7 ) THEN 'EXCLUDE'
 WHEN (contype =  8 ) THEN 'REFERENCES'
 END);
 $$
-LANGUAGE 'sql' IMMUTABLE STRICT;
+LANGUAGE 'sql' IMMUTABLE;
 
 CREATE FUNCTION ast_utils.objtypes_idxs (typ text)
 returns int as $$
@@ -201,7 +201,7 @@ WHEN (typ = 'OBJECT_USER_MAPPING') THEN 46
 WHEN (typ = 'OBJECT_VIEW') THEN 47
 END);
 $$  
-LANGUAGE 'sql' IMMUTABLE STRICT;
+LANGUAGE 'sql' IMMUTABLE;
 
 CREATE FUNCTION ast_utils.getgrantobject (node jsonb)
 returns text as $$
@@ -258,6 +258,6 @@ BEGIN
 
 END;
 $$  
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 COMMIT;
