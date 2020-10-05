@@ -189,13 +189,93 @@ END;
 $$  
 LANGUAGE 'plpgsql';
 
+CREATE FUNCTION deparser.parse_interval (
+  node jsonb
+) returns text as $$
+BEGIN
+  RETURN 'something';
+END;
+$$
+LANGUAGE 'plpgsql';
+
+-- TODO improve this
+CREATE FUNCTION deparser.get_pgtype (
+  typ text,
+  typemods text
+) returns text as $$
+SELECT (CASE
+WHEN (typ = 'bpchar') THEN
+        (CASE
+            WHEN (typemods IS NOT NULL) THEN 'char'
+            ELSE 'pg_catalog.bpchar'
+        END)
+WHEN (typ = 'varchar') THEN 'varchar'
+WHEN (typ = 'numeric') THEN 'numeric'
+WHEN (typ = 'bool') THEN 'boolean'
+WHEN (typ = 'int2') THEN 'smallint'
+WHEN (typ = 'int4') THEN 'int'
+WHEN (typ = 'int8') THEN 'bigint'
+WHEN (typ = 'real') THEN 'real'
+WHEN (typ = 'float4') THEN 'real'
+WHEN (typ = 'float8') THEN 'pg_catalog.float8'
+WHEN (typ = 'text') THEN 'text'
+WHEN (typ = 'date') THEN 'pg_catalog.date'
+WHEN (typ = 'time') THEN 'time'
+WHEN (typ = 'timetz') THEN 'pg_catalog.timetz'
+WHEN (typ = 'timestamp') THEN 'timestamp'
+WHEN (typ = 'timestamptz') THEN 'pg_catalog.timestamptz'
+WHEN (typ = 'interval') THEN 'interval'
+WHEN (typ = 'bit') THEN 'bit'
+ELSE typ
+END);
+$$
+LANGUAGE 'sql';
+
+CREATE FUNCTION deparser.parse_type (
+  names jsonb,
+  typemods text
+) returns text as $$
+DECLARE
+  parsed text[];
+  catalog text;
+  typ text;
+BEGIN
+  parsed = deparser.expressions_array(names);
+  catalog = parsed[1];
+  typ = parsed[2];
+
+  IF (names->0->'String'->>'str' = 'char' ) THEN 
+    	names = jsonb_set(names, '{0, String, str}', '"char"');
+  END IF;
+
+  IF (catalog != 'pg_catalog') THEN 
+    IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
+      RETURN deparser.list(names, '.') || deparser.parens(typemods);
+    ELSE
+      RETURN deparser.list(names, '.');
+    END IF;
+  END IF;
+
+  typ = deparser.get_pgtype(typ, typemods);
+  IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
+    RETURN typ || deparser.parens(typemods);
+  ELSE
+    RETURN typ;
+  END IF;
+
+END;
+$$
+LANGUAGE 'plpgsql';
+
 CREATE FUNCTION deparser.type_name (
   node jsonb,
   context text default null
 ) returns text as $$
 DECLARE
-  txa text[] = ARRAY[]::text[];
-  -- args text[] = ARRAY[]::text[];
+  output text[] = ARRAY[]::text[];
+  typemods text;
+  lastname jsonb;
+  typ text[];
 BEGIN
     IF (node->'TypeName') IS NULL THEN  
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeName';
@@ -207,22 +287,32 @@ BEGIN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeName';
     END IF;
 
-    -- TODO look deeper in pgsql-parser
-    -- I greatly simplified this at risk of losing function
+    lastname = node->'names'->>-1;
 
-    -- IF (node->'setof') IS NOT NULL 
-    --   txa = array_append(txa, 'SETOF');
-    -- END IF;
-    -- IF (node->'typmods') IS NOT NULL 
-    --   args = deparser.expressions_array(node->'typmods');
-    -- END IF;
-
-    IF (node->'arrayBounds') IS NOT NULL THEN
-      RETURN deparser.expression(node->'names'->0, context) || '[]';
+    IF (deparser.expression(lastname) = 'interval') THEN 
+      RETURN deparser.parse_interval(node);
     END IF;
 
-    RETURN deparser.expression(node->'names'->0, context);
+    IF (node->'setof') IS NOT NULL THEN
+      output = array_append(output, 'SETOF');
+    END IF;
 
+    IF (node->'typmods') IS NOT NULL THEN
+      typemods = deparser.list(node->'typmods');
+    END IF;
+
+    typ = array_append(typ, deparser.parse_type(
+      node->'names',
+      typemods
+    ));
+
+    IF (node->'arrayBounds') IS NOT NULL THEN
+      typ = array_append(typ, '[]');
+    END IF;
+
+    output = array_append(output, array_to_string(typ, ''));
+
+    RETURN array_to_string(output, ' ');
 END;
 $$
 LANGUAGE 'plpgsql';
