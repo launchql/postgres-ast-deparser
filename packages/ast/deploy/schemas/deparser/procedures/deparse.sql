@@ -37,6 +37,21 @@ END);
 $$
 LANGUAGE 'sql' IMMUTABLE STRICT;
 
+CREATE FUNCTION deparser.constrainttypes (contype int)
+returns text as $$
+  select (CASE
+WHEN (contype =  0 ) THEN 'NULL'
+WHEN (contype =  1 ) THEN 'NOT NULL'
+WHEN (contype =  2 ) THEN 'DEFAULT'
+WHEN (contype =  4 ) THEN 'CHECK'
+WHEN (contype =  5 ) THEN 'PRIMARY KEY'
+WHEN (contype =  6 ) THEN 'UNIQUE'
+WHEN (contype =  7 ) THEN 'EXCLUDE'
+WHEN (contype =  8 ) THEN 'REFERENCES'
+END);
+$$
+LANGUAGE 'sql' IMMUTABLE STRICT;
+
 CREATE FUNCTION deparser.objtypes_idxs (typ text)
 returns int as $$
 	select (CASE
@@ -1032,23 +1047,45 @@ CREATE FUNCTION deparser.exclusion_constraint(
 ) returns text as $$
 DECLARE
   output text[];
+  exclusion jsonb;
+  a text[];
+  b text[];
+  i int;
 BEGIN
-    -- IF (node->'CreateSeqStmt') IS NULL THEN
-    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateSeqStmt';
-    -- END IF;
+    
+    IF (node->'exclusions' IS NOT NULL AND node->'access_method' IS NOT NULL) THEN 
+      output = array_append(output, 'USING');
+      output = array_append(output, node->>'access_method');
+      output = array_append(output, '(');
+      FOR exclusion IN SELECT * FROM jsonb_array_elements(node->'exclusions')
+      LOOP
+        IF (exclusion->0 IS NOT NULL) THEN
+          -- a
+          IF (exclusion->0->'IndexElem' IS NOT NULL) THEN
+            IF (exclusion->0->'IndexElem'->'name' IS NOT NULL) THEN
+                a = array_append(a, exclusion->0->'IndexElem'->>'name');
+            ELSIF (exclusion->0->'IndexElem'->'expr' IS NOT NULL) THEN
+                a = array_append(a, deparser.expression(exclusion->0->'IndexElem'->'expr'));
+            ELSE 
+                a = array_append(a, NULL);
+            END IF;
+          END IF;
+          -- b
+          b = array_append(b, deparser.expression(exclusion->1->0));
+        END IF;
+      END LOOP;
+      -- after loop
 
-    -- IF (node->'CreateSeqStmt'->'sequence') IS NULL THEN
-    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateSeqStmt';
-    -- END IF;
-
-    -- node = node->'CreateSeqStmt';
-
-    -- output = array_append(output, 'CREATE SEQUENCE');
-    -- output = array_append(output, deparser.expression(node->'sequence'));
-
-    -- IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
-    --   output = array_append(output, deparser.list(node->'options', ' ', 'sequence'));
-    -- END IF;
+      FOR i IN
+      SELECT * FROM generate_series(1, a) g (i)
+      LOOP
+        output = array_append(output, format('%s WITH %s', a[i], b[i]));
+        IF ( cardinality(a) = i ) THEN 
+          output = array_append(output, ',');
+        END IF;
+      END LOOP;
+      output = array_append(output, ')');
+    END IF;
 
     RETURN array_to_string(output, ' ');
 END;
@@ -1061,23 +1098,42 @@ CREATE FUNCTION deparser.reference_constraint(
 ) returns text as $$
 DECLARE
   output text[];
+  has_pk_attrs boolean default false;
+  has_fk_attrs boolean default false;
 BEGIN
-    -- IF (node->'CreateSeqStmt') IS NULL THEN
-    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateSeqStmt';
-    -- END IF;
 
-    -- IF (node->'CreateSeqStmt'->'sequence') IS NULL THEN
-    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateSeqStmt';
-    -- END IF;
+    has_fk_attrs = (node->'fk_attrs' IS NOT NULL AND jsonb_array_length(node->'fk_attrs') > 0);
+    has_pk_attrs = (node->'pk_attrs' IS NOT NULL AND jsonb_array_length(node->'pk_attrs') > 0);
 
-    -- node = node->'CreateSeqStmt';
-
-    -- output = array_append(output, 'CREATE SEQUENCE');
-    -- output = array_append(output, deparser.expression(node->'sequence'));
-
-    -- IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
-    --   output = array_append(output, deparser.list(node->'options', ' ', 'sequence'));
-    -- END IF;
+    IF (has_pk_attrs AND has_fk_attrs) THEN
+      IF (node->'conname' IS NOT NULL) THEN
+        output = array_append(output, 'CONSTRAINT');
+        -- TODO needs quote?
+        output = array_append(output, node->>'conname');
+      END IF;
+      output = array_append(output, 'FOREIGN KEY');
+      output = array_append(output, deparser.parens(deparser.list_quotes(node->'fk_attrs')));
+      output = array_append(output, 'REFERENCES');
+      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.parens(deparser.list_quotes(node->'pk_attrs')));
+    ELSIF (has_pk_attrs) THEN 
+      output = array_append(output, deparser.constraint_stmt(node));
+      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.parens(deparser.list_quotes(node->'pk_attrs')));
+    ELSIF (has_fk_attrs) THEN 
+      IF (node->'conname' IS NOT NULL) THEN
+        output = array_append(output, 'CONSTRAINT');
+        -- TODO needs quote?
+        output = array_append(output, node->>'conname');
+      END IF;
+      output = array_append(output, 'FOREIGN KEY');
+      output = array_append(output, deparser.parens(deparser.list_quotes(node->'fk_attrs')));
+      output = array_append(output, 'REFERENCES');
+      output = array_append(output, deparser.expression(node->'pktable'));
+    ELSE 
+      output = array_append(output, deparser.constraint_stmt(node));
+      output = array_append(output, deparser.expression(node->'pktable'));
+    END IF;
 
     RETURN array_to_string(output, ' ');
 END;
@@ -1090,25 +1146,22 @@ CREATE FUNCTION deparser.constraint_stmt(
 ) returns text as $$
 DECLARE
   output text[];
+  contype int;
+  constrainttype text;
 BEGIN
-    -- IF (node->'CreateSeqStmt') IS NULL THEN
-    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateSeqStmt';
-    -- END IF;
+  contype = (node->'contype')::int;
+  constrainttype = deparser.constrainttypes(contype);
+  IF (node->'conname' IS NOT NULL) THEN
+    output = array_append(output, 'CONSTRAINT');
+    output = array_append(output, quote_ident(node->>'conname'));
+    IF (node->'pktable' IS NULL) THEN 
+      output = array_append(output, constrainttype);
+    END IF;
+  ELSE 
+    output = array_append(output, constrainttype);
+  END IF;
 
-    -- IF (node->'CreateSeqStmt'->'sequence') IS NULL THEN
-    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateSeqStmt';
-    -- END IF;
-
-    -- node = node->'CreateSeqStmt';
-
-    -- output = array_append(output, 'CREATE SEQUENCE');
-    -- output = array_append(output, deparser.expression(node->'sequence'));
-
-    -- IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
-    --   output = array_append(output, deparser.list(node->'options', ' ', 'sequence'));
-    -- END IF;
-
-    RETURN array_to_string(output, ' ');
+  RETURN array_to_string(output, ' ');
 END;
 $$
 LANGUAGE 'plpgsql';
@@ -3488,6 +3541,23 @@ CREATE FUNCTION deparser.deparse (ast jsonb)
     AS $$
 BEGIN
 	RETURN deparser.expression(ast);
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE STRICT;
+
+CREATE FUNCTION deparser.deparse_query (ast jsonb)
+    RETURNS text
+    AS $$
+DECLARE
+  lines text[];
+  node jsonb;
+BEGIN
+   FOR node IN SELECT * FROM jsonb_array_elements(ast)
+   LOOP 
+    lines = array_append(lines, deparser.deparse(node) || ';' || E'\n');
+   END LOOP;
+   RETURN array_to_string(lines, E'\n');
 END;
 $$
 LANGUAGE 'plpgsql'

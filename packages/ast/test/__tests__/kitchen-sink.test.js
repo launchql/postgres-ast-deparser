@@ -40,17 +40,18 @@ export const check = async (file) => {
     readFileSync(f).toString()
   )[0];
   const tree = parser.parse(testsql);
-  expect(tree).toMatchSnapshot();
+  // expect(tree).toMatchSnapshot();
   const sql = parser.deparse(tree);
 
   const name = slugify(file);
   await db.savepoint(name);
   try {
-    const [{ deparse: result }] = await db.any(
-      `select deparser.deparse( $1::jsonb );`,
+    const [{ deparse_query: result }] = await db.any(
+      `select deparser.deparse_queries( $1::jsonb );`,
       tree
     );
-    // expect(result).toMatchSnapshot();
+
+    expect(result).toMatchSnapshot();
     // console.log(result);
   } catch (e) {
     console.log(file);
@@ -58,7 +59,7 @@ export const check = async (file) => {
   }
   await db.rollback(name);
 
-  expect(cleanLines(sql)).toMatchSnapshot();
+  // expect(cleanLines(sql)).toMatchSnapshot();
   expect(cleanTree(parser.parse(sql))).toEqual(cleanTree(tree));
 };
 
@@ -101,12 +102,27 @@ describe('kitchen sink', () => {
       resolve(__dirname + '/../__fixtures__/do/custom.sql')
     ).toString();
     const tree = parser.parse(dosql);
-    expect(tree).toMatchSnapshot();
-    const sql = parser.deparse(tree);
-    expect(cleanLines(sql)).toMatchSnapshot();
-    expect(cleanTree(parser.parse(cleanLines(sql)))).toEqual(
-      cleanTree(parser.parse(cleanLines(dosql)))
-    );
+    // expect(tree).toMatchSnapshot();
+    // const sql = parser.deparse(tree);
+    // expect(cleanLines(sql)).toMatchSnapshot();
+    // expect(cleanTree(parser.parse(cleanLines(sql)))).toEqual(
+    //   cleanTree(parser.parse(cleanLines(dosql)))
+    // );
+
+    await db.savepoint('dostatement');
+    try {
+      const [{ deparse: result }] = await db.any(
+        `select deparser.deparse( $1::jsonb );`,
+        tree
+      );
+
+      expect(result).toMatchSnapshot();
+      // console.log(result);
+    } catch (e) {
+      console.log('dostatement');
+      console.log(e.message);
+    }
+    await db.rollback('dostatement');
   });
   it('insert', async () => {
     await check('statements/insert.sql');
