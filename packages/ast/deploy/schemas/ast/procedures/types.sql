@@ -105,6 +105,21 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast.a_array_expr (
+  elements jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"A_ArrayExpr":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{A_ArrayExpr, elements}', elements);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast.bool_expr (
   boolop int,
   args jsonb

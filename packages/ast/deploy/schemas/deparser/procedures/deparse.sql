@@ -626,7 +626,7 @@ BEGIN
   END IF;
 
   RETURN format('%s %s ALL( %s )', left_expr, operator, right_expr);
-  
+
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -789,6 +789,27 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.a_array_expr(
+  node jsonb,
+  context text default null
+) returns text as $$
+BEGIN
+
+  IF (node->'A_ArrayExpr') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_ArrayExpr';
+  END IF;
+
+  IF (node->'A_ArrayExpr'->'elements') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_ArrayExpr';
+  END IF;
+
+  node = node->'A_ArrayExpr';
+
+  RETURN format('ARRAY[%s]', deparser.list(node->'elements'));
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.column_def(
   node jsonb,
   context text default null
@@ -833,6 +854,17 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.escape(
+  txt text
+) returns text as $$
+BEGIN
+  -- TODO isn't there a native function for this?
+  txt = REPLACE(txt, '''', '''''' );
+  return format('''%s''', txt);
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.a_const(
   node jsonb,
   context text default null
@@ -854,8 +886,7 @@ BEGIN
   txt = deparser.expression(node->'val', context);
 
   IF (node->'val'->'String') IS NOT NULL THEN
-    txt = REPLACE(txt, '''', '''''' );
-    return format('''%s''', txt);
+    RETURN deparser.escape(txt);
   END IF;
 
   RETURN txt;
@@ -3860,6 +3891,8 @@ BEGIN
 
   IF (expr->>'A_Const') IS NOT NULL THEN
     RETURN deparser.a_const(expr, context);
+  ELSEIF (expr->>'A_ArrayExpr') IS NOT NULL THEN
+    RETURN deparser.a_array_expr(expr, context);
   ELSEIF (expr->>'A_Expr') IS NOT NULL THEN
     RETURN deparser.a_expr(expr, context);
   ELSEIF (expr->>'A_Indices') IS NOT NULL THEN

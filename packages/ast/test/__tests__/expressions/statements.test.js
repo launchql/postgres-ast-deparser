@@ -248,3 +248,50 @@ select deparser.deparse(
   `);
   expect(result).toMatchSnapshot();
 });
+
+it('a_array_expr', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.a_array_expr(
+    to_jsonb(ARRAY[ 
+      ast.string('namesplaceholder1'),
+      ast.string('namesplaceholder2')
+    ])
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('a_const', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.a_const(
+    'aconst'
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('a_const str', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.a_const(
+    ast.string('astring')
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('a_const int', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.a_const(
+    ast.integer(2)
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});

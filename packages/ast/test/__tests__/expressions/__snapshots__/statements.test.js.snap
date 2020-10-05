@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`a_array_expr 1`] = `"ARRAY[namesplaceholder1, namesplaceholder2]"`;
+
+exports[`a_const 1`] = `"'aconst'"`;
+
+exports[`a_const int 1`] = `"2"`;
+
+exports[`a_const str 1`] = `"'astring'"`;
+
 exports[`a_expr 0-4 1`] = `"(<lexpr placeholder> = <rexpr placeholder>)"`;
 
 exports[`a_expr 0-4 2`] = `"<lexpr placeholder> = ANY( <rexpr placeholder> )"`;
