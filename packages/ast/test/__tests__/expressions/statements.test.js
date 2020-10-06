@@ -1,5 +1,6 @@
 import { getConnections } from '../../utils';
 import { inserts } from './__fixtures__/inserts';
+import { selects } from './__fixtures__/selects';
 let db, teardown;
 const objs = {
   tables: {}
@@ -989,4 +990,325 @@ select deparser.deparse(
     );
     expect(result).toMatchSnapshot();
   }
+});
+
+it('delete_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.delete_stmt(
+    ast.string('<relation>'),
+    ast.string('<whereClause>')
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('join_expr', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.join_expr(
+    ast.string('<larg>'),
+    2,
+    ast.string('<rarg>'),
+    true
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('into_clause', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.into_clause(
+    ast.string('<larg>')
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('locking_clause', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.locking_clause(
+    0,
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('min_max_expr', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.min_max_expr(
+    0,
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('min_max_expr', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.min_max_expr(
+    1,
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('named_arg_expr', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.named_arg_expr(
+    'mything',
+    ast.string('id')
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('null_test', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.null_test(
+      0
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('param_ref', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.param_ref(
+      0
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('param_ref', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.param_ref(
+      1
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('range_function', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.range_function(
+      true,
+      NULL,
+      true,
+      true,
+      null,
+      null
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('range_subselect', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.range_subselect(
+      true,
+      ast.string('id'),
+      NULL
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('range_var', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.range_var(
+      'schemaname',
+      'relname',
+      TRUE,
+      'p',
+      null
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('row_expr', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.row_expr(
+     2,
+     to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('row_expr', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.row_expr(
+     0,
+     to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('res_target', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.res_target(
+    'hello',
+    ast.string('id')
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('explain_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.explain_stmt(
+    ast.string('id')
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('select_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.select_stmt(
+    0,
+    ast.string('id')
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('select_stmt', async () => {
+  for (const select of selects) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  $1::jsonb
+);
+  `,
+      [select]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('sort_by', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.sort_by(
+    0,
+    0,
+    ast.string('id'),
+    ast.string('id')
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('drop_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.drop_stmt(
+    0,
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb,
+    TRUE,
+    1
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
 });

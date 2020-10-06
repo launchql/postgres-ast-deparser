@@ -292,6 +292,9 @@ BEGIN
 
     node = node->'RangeVar';
 
+    -- TODO why have both inhOpt AND inh?
+    -- seems like it's worth researching
+
     IF ((node->'inhOpt')::int = 0) THEN
       output = array_append(output, 'ONLY');
     END IF;
@@ -829,6 +832,25 @@ BEGIN
   END IF;
 
   RETURN deparser.list(node->'ColumnRef'->'fields', '.', context);
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.explain_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+BEGIN
+
+  IF (node->'ExplainStmt') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'ExplainStmt';
+  END IF;
+
+  IF (node->'ExplainStmt'->'query') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'ExplainStmt';
+  END IF;
+
+  RETURN 'EXPLAIN' || ' ' || deparser.expression(node->'ExplainStmt'->'query');
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -2836,10 +2858,38 @@ BEGIN
     node = node->'ParamRef';
 
     IF (node->'number' IS NOT NULL AND (node->'number')::int > 0) THEN 
-      RETURN '$' || node->>'number';
+      RETURN '$' || (node->>'number');
     END IF;
 
     RETURN '?';
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.set_to_default(
+  node jsonb,
+  context text default null
+) returns text as $$
+BEGIN
+    IF (node->'SetToDefault') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'SetToDefault';
+    END IF;
+
+    RETURN 'DEFAULT';
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.multi_assign_ref(
+  node jsonb,
+  context text default null
+) returns text as $$
+BEGIN
+    IF (node->'MultiAssignRef') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'MultiAssignRef';
+    END IF;
+
+    RETURN deparser.expression(node->'source');
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -3504,17 +3554,22 @@ BEGIN
 
     node = node->'SortBy';
 
+    IF (node->'node' IS NOT NULL) THEN 
+      output = array_append(output, deparser.expression(node->'node'));
+    END IF;
+
+
     -- NOTE uses ENUMS
     dir = (node->'sortby_dir')::int;
     IF (dir = 0) THEN 
-      output = array_append(output, 'ASC');
+      -- noop
     ELSIF (dir = 1) THEN
-      output = array_append(output, 'DESC');
+      output = array_append(output, 'ASC');
     ELSIF (dir = 2) THEN
+      output = array_append(output, 'DESC');
+    ELSIF (dir = 3) THEN
       output = array_append(output, 'USING');
       output = array_append(output, deparser.list(node->'useOp'));
-    ELSIF (dir = 3) THEN
-      -- noop
     ELSE 
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'SortBy (enum)';
     END IF;
@@ -3562,6 +3617,47 @@ BEGIN
       ]), ' = '));
     ELSE
       output = array_append(output, quote_ident(node->>'name'));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.object_with_args(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  rets text[];
+  item jsonb;
+BEGIN
+    IF (node->'ObjectWithArgs') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'ObjectWithArgs';
+    END IF;
+
+    node = node->'ObjectWithArgs';
+
+    IF (context = 'noquotes') THEN 
+      output = array_append(output, deparser.list(node->'objname'));
+    ELSE
+      -- TODO why no '.' for the case above?
+      output = array_append(output, deparser.list_quotes(node->'objname', '.'));
+    END IF;
+
+    IF (node->'objargs' IS NOT NULL AND jsonb_array_length(node->'objargs') > 0) THEN 
+      output = array_append(output, '(');
+      FOR item in SELECT * FROM jsonb_array_elements(node->'objargs')
+      LOOP 
+        IF (item IS NULL) THEN
+          rets = array_append(rets, 'NONE');
+        ELSE
+          rets = array_append(rets, deparser.expression(item));
+        END IF;
+      END LOOP;
+      output = array_append(output, array_to_string(rets, ', '));
+      output = array_append(output, ')');
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -3709,6 +3805,20 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.into_clause(
+  node jsonb,
+  context text default null
+) returns text as $$
+BEGIN
+    IF (node->'IntoClause') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'IntoClause';
+    END IF;
+    node = node->'IntoClause';
+    RETURN deparser.expression(node->'rel');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 -- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.rename_stmt(
   node jsonb,
@@ -3736,6 +3846,27 @@ BEGIN
     ELSE
       RAISE EXCEPTION 'BAD_EXPRESSION % type(%)', 'RenameStmt', node->>'renameType';
     END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+-- TODO never FULLY IMPLEMENTED
+CREATE FUNCTION deparser.vacuum_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  objtype int;
+BEGIN
+    IF (node->'VacuumStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'VacuumStmt';
+    END IF;
+
+    node = node->'VacuumStmt';
+
 
     RETURN array_to_string(output, ' ');
 END;
@@ -3925,6 +4056,46 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.locking_clause(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  strength int;
+BEGIN
+    IF (node->'LockingClause') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'LockingClause';
+    END IF;
+
+    IF (node->'LockingClause'->'strength') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'LockingClause';
+    END IF;
+
+    node = node->'LockingClause';
+    strength = (node->'strength')::int;
+    IF (strength = 0) THEN 
+      output = array_append(output, 'NONE');
+    ELSIF (strength = 1) THEN
+      output = array_append(output, 'FOR KEY SHARE');
+    ELSIF (strength = 2) THEN
+      output = array_append(output, 'FOR SHARE');
+    ELSIF (strength = 3) THEN
+      output = array_append(output, 'FOR NO KEY UPDATE');
+    ELSIF (strength = 4) THEN
+      output = array_append(output, 'FOR UPDATE');
+    END IF;
+
+    IF (node->'lockedRels' IS NOT NULL) THEN 
+      output = array_append(output, 'OF');
+      output = array_append(output, deparser.list(node->'lockedRels'));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.coalesce_expr(
   node jsonb,
   context text default null
@@ -3941,6 +4112,96 @@ BEGIN
     node = node->'CoalesceExpr';
 
     RETURN format('COALESCE(%s)', deparser.list(node->'args'));
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.min_max_expr(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  op int;
+  output text[];
+BEGIN
+    IF (node->'MinMaxExpr') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'MinMaxExpr';
+    END IF;
+
+    IF (node->'MinMaxExpr'->'op') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'MinMaxExpr';
+    END IF;
+
+    node = node->'MinMaxExpr';
+    op = (node->'op')::int;
+    IF (op = 0) THEN 
+      output = array_append(output, 'GREATEST');
+    ELSE 
+      output = array_append(output, 'LEAST');
+    END IF;
+
+    output = array_append(output, deparser.parens(deparser.list(node->'args')));
+
+    RETURN array_to_string(output, '');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.null_test(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  nulltesttype int;
+  output text[];
+BEGIN
+    IF (node->'NullTest') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'NullTest';
+    END IF;
+
+    IF (node->'NullTest'->'nulltesttype') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'NullTest';
+    END IF;
+
+    node = node->'NullTest';
+    nulltesttype = (node->'nulltesttype')::int;
+    IF (nulltesttype = 0) THEN 
+      output = array_append(output, 'IS NULL');
+    ELSE 
+      output = array_append(output, 'IS NOT NULL');
+    END IF;
+
+    RETURN array_to_string(output, '');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.named_arg_expr(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'NamedArgExpr') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'NamedArgExpr';
+    END IF;
+
+    IF (node->'NamedArgExpr'->'name') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'NamedArgExpr';
+    END IF;
+
+    IF (node->'NamedArgExpr'->'arg') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'NamedArgExpr';
+    END IF;
+
+    node = node->'NamedArgExpr';
+
+    output = array_append(output, node->>'name');
+    output = array_append(output, ':=');
+    output = array_append(output, deparser.expression(node->'arg'));
+
+    RETURN array_to_string(output, '');
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -3983,17 +4244,20 @@ BEGIN
     FOR obj IN SELECT * FROM jsonb_array_elements(node->'objects')
     LOOP
       IF (jsonb_typeof(obj) = 'array') THEN
-        quoted = array_append(quoted, deparser.quoted_name(obj));
+        -- quoted = array_append(quoted, deparser.quoted_name(obj));
+        quoted = array_append(quoted, deparser.list(obj, '.'));
       ELSE
-        quoted = array_append(quoted, quote_ident(deparser.expression(obj)));
+        -- TODO if you quote this, then you end up with:
+        -- DROP FUNCTION "sillysrf (int)"
+        -- quoted = array_append(quoted, quote_ident(deparser.expression(obj)));
+        quoted = array_append(quoted, deparser.expression(obj));
       END IF;
     END LOOP;
 
     output = array_append(output, array_to_string(quoted, ', '));
 
     -- behavior
-    IF (node->'behavior' IS NOT NULL) THEN 
-      -- TODO this is an integer, what does 1 vs 0 mean?
+    IF (node->'behavior' IS NOT NULL AND (node->'behavior')::int = 1) THEN 
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -4337,6 +4601,8 @@ BEGIN
     RETURN deparser.drop_stmt(expr, context);
   ELSEIF (expr->>'DoStmt') IS NOT NULL THEN
     RETURN deparser.do_stmt(expr, context);
+  ELSEIF (expr->>'ExplainStmt') IS NOT NULL THEN
+    RETURN deparser.explain_stmt(expr, context);
   ELSEIF (expr->>'ExecuteStmt') IS NOT NULL THEN
     RETURN deparser.execute_stmt(expr, context);
   ELSEIF (expr->>'Float') IS NOT NULL THEN
@@ -4363,18 +4629,32 @@ BEGIN
     RETURN deparser.insert_stmt(expr, context);
   ELSEIF (expr->>'Integer') IS NOT NULL THEN
     RETURN deparser.integer(expr, context);
+  ELSEIF (expr->>'IntoClause') IS NOT NULL THEN
+    RETURN deparser.into_clause(expr, context);
   ELSEIF (expr->>'JoinExpr') IS NOT NULL THEN
-    RETURN deparser.jointype(expr, context);
+    RETURN deparser.join_expr(expr, context);
+  ELSEIF (expr->>'LockingClause') IS NOT NULL THEN
+    RETURN deparser.locking_clause(expr, context);
+  ELSEIF (expr->>'MinMaxExpr') IS NOT NULL THEN
+    RETURN deparser.min_max_expr(expr, context);
+  ELSEIF (expr->>'MultiAssignRef') IS NOT NULL THEN
+    RETURN deparser.multi_assign_ref(expr, context);
+  ELSEIF (expr->>'NamedArgExpr') IS NOT NULL THEN
+    RETURN deparser.named_arg_expr(expr, context);
   ELSEIF (expr->>'Null') IS NOT NULL THEN
     RETURN 'NULL';
+  ELSEIF (expr->>'NullTest') IS NOT NULL THEN
+    RETURN deparser.null_test(expr, context);
   ELSEIF (expr->>'OnConflictClause') IS NOT NULL THEN
     RETURN deparser.on_conflict_clause(expr, context);
+  ELSEIF (expr->>'ObjectWithArgs') IS NOT NULL THEN
+    RETURN deparser.object_with_args(expr, context);
   ELSEIF (expr->>'ParamRef') IS NOT NULL THEN
     RETURN deparser.param_ref(expr, context);
   ELSEIF (expr->>'RangeFunction') IS NOT NULL THEN
     RETURN deparser.range_function(expr, context);
   ELSEIF (expr->>'RangeSubselect') IS NOT NULL THEN
-    RETURN deparser.range_subselect(expr->'RawStmt'->'stmt');
+    RETURN deparser.range_subselect(expr, context);
   ELSEIF (expr->>'RangeVar') IS NOT NULL THEN
     RETURN deparser.range_var(expr, context);
   ELSEIF (expr->>'RawStmt') IS NOT NULL THEN
@@ -4389,6 +4669,8 @@ BEGIN
     RETURN deparser.row_expr(expr, context);
   ELSEIF (expr->>'RuleStmt') IS NOT NULL THEN
     RETURN deparser.rule_stmt(expr, context);
+  ELSEIF (expr->>'SetToDefault') IS NOT NULL THEN
+    RETURN deparser.set_to_default(expr, context);
   ELSEIF (expr->>'SelectStmt') IS NOT NULL THEN
     RETURN deparser.select_stmt(expr, context);
   ELSEIF (expr->>'SortBy') IS NOT NULL THEN
@@ -4407,6 +4689,8 @@ BEGIN
     RETURN deparser.type_name(expr, context);
   ELSEIF (expr->>'UpdateStmt') IS NOT NULL THEN
     RETURN deparser.update_stmt(expr, context);
+  ELSEIF (expr->>'VacuumStmt') IS NOT NULL THEN
+    RETURN deparser.vacuum_stmt(expr, context);
   ELSEIF (expr->>'VariableSetStmt') IS NOT NULL THEN
     RETURN deparser.variable_set_stmt(expr, context);
   ELSEIF (expr->>'ViewStmt') IS NOT NULL THEN

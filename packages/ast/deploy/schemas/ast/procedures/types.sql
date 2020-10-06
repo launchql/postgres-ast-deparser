@@ -109,7 +109,8 @@ CREATE FUNCTION ast.range_var (
   schemaname text,
   relname text,
   inh bool,
-  relpersistence text
+  relpersistence text,
+  alias jsonb default null
 )
     RETURNS jsonb
     AS $$
@@ -120,6 +121,301 @@ BEGIN
 	result = ast.jsonb_set(result, '{RangeVar, relname}', to_jsonb(relname));
 	result = ast.jsonb_set(result, '{RangeVar, inh}', to_jsonb(inh));
 	result = ast.jsonb_set(result, '{RangeVar, relpersistence}', to_jsonb(relpersistence));
+	result = ast.jsonb_set(result, '{RangeVar, alias}', alias);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.res_target (
+  name text,
+  val jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"ResTarget":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{ResTarget, val}', val);
+	result = ast.jsonb_set(result, '{ResTarget, name}', to_jsonb(name));
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.explain_stmt (
+  query jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"ExplainStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{ExplainStmt, query}', query);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.sort_by (
+  sortby_dir int,
+  sortby_nulls int,
+  useOp jsonb,
+  node jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"SortBy":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{SortBy, sortby_dir}', to_jsonb(sortby_dir));
+	result = ast.jsonb_set(result, '{SortBy, sortby_nulls}', to_jsonb(sortby_nulls));
+	result = ast.jsonb_set(result, '{SortBy, useOp}', useOp);
+	result = ast.jsonb_set(result, '{SortBy, node}', node);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.drop_stmt (
+  removeType int,
+  objects jsonb,
+  missing_ok boolean,
+  behavior int
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"DropStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{DropStmt, objects}', objects);
+	result = ast.jsonb_set(result, '{DropStmt, removeType}', to_jsonb(removeType));
+	result = ast.jsonb_set(result, '{DropStmt, behavior}', to_jsonb(behavior));
+	result = ast.jsonb_set(result, '{DropStmt, missing_ok}', to_jsonb(missing_ok));
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.row_expr (
+  row_format int,
+  args jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"RowExpr":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{RowExpr, row_format}', to_jsonb(row_format));
+	result = ast.jsonb_set(result, '{RowExpr, args}', args);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.delete_stmt (
+  relation jsonb,
+  whereClause jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"DeleteStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{DeleteStmt, relation}', relation);
+	result = ast.jsonb_set(result, '{DeleteStmt, whereClause}', whereClause);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.select_stmt (
+  op int,
+  relation jsonb,
+  valuesList jsonb default null,
+  targetList jsonb default null,
+  larg jsonb default null,
+  rarg jsonb default null,
+  vall boolean default null,
+  distinctClause jsonb default null,
+  intoClause jsonb default null,
+  fromClause jsonb default null,
+  groupClause jsonb default null,
+  whereClause jsonb default null,
+  sortClause jsonb default null,
+  limitCount jsonb default null,
+  limitOffset jsonb default null,
+  lockingClause jsonb default null,
+  windowClause jsonb default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"SelectStmt":{}}'::jsonb;
+BEGIN
+  result = ast.jsonb_set(result, '{SelectStmt, op}', to_jsonb(op)); 
+  result = ast.jsonb_set(result, '{SelectStmt, relation}', relation); 
+  result = ast.jsonb_set(result, '{SelectStmt, valuesList}', valuesList); 
+  result = ast.jsonb_set(result, '{SelectStmt, targetList}', targetList); 
+  result = ast.jsonb_set(result, '{SelectStmt, larg}', larg); 
+  result = ast.jsonb_set(result, '{SelectStmt, rarg}', rarg); 
+  result = ast.jsonb_set(result, '{SelectStmt, all}', to_jsonb(vall)); 
+  result = ast.jsonb_set(result, '{SelectStmt, distinctClause}', distinctClause); 
+  result = ast.jsonb_set(result, '{SelectStmt, intoClause}', intoClause); 
+  result = ast.jsonb_set(result, '{SelectStmt, fromClause}', fromClause); 
+  result = ast.jsonb_set(result, '{SelectStmt, groupClause}', groupClause); 
+  result = ast.jsonb_set(result, '{SelectStmt, whereClause}', whereClause); 
+  result = ast.jsonb_set(result, '{SelectStmt, sortClause}', sortClause); 
+  result = ast.jsonb_set(result, '{SelectStmt, limitCount}', limitCount); 
+  result = ast.jsonb_set(result, '{SelectStmt, limitOffset}', limitOffset); 
+  result = ast.jsonb_set(result, '{SelectStmt, lockingClause}', lockingClause); 
+  result = ast.jsonb_set(result, '{SelectStmt, windowClause}', windowClause); 
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.insert_stmt (
+  relation jsonb,
+  cols jsonb default null,
+  selectStmt jsonb default null,
+  onConflictClause jsonb default null,
+  returningList jsonb default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"InsertStmt":{}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{InsertStmt, relation}', relation);
+	  result = ast.jsonb_set(result, '{InsertStmt, cols}', cols);
+	  result = ast.jsonb_set(result, '{InsertStmt, selectStmt}', selectStmt);
+	  result = ast.jsonb_set(result, '{InsertStmt, onConflictClause}', onConflictClause);
+	  result = ast.jsonb_set(result, '{InsertStmt, returningList}', returningList);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.update_stmt (
+  relation jsonb,
+  targetList jsonb,
+  fromClause jsonb,
+  whereClause jsonb,
+  returningList jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"UpdateStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{UpdateStmt, relation}', relation);
+	result = ast.jsonb_set(result, '{UpdateStmt, targetList}', targetList);
+	result = ast.jsonb_set(result, '{UpdateStmt, fromClause}', fromClause);
+	result = ast.jsonb_set(result, '{UpdateStmt, whereClause}', whereClause);
+	result = ast.jsonb_set(result, '{UpdateStmt, returningList}', returningList);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.join_expr (
+  larg jsonb,
+  jointype int,
+  rarg jsonb default null,
+  isNatural boolean default null,
+  quals jsonb default null,
+  usingClause jsonb default null,
+  alias jsonb default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"JoinExpr":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{JoinExpr, larg}', larg);
+	result = ast.jsonb_set(result, '{JoinExpr, rarg}', rarg);
+	result = ast.jsonb_set(result, '{JoinExpr, isNatural}', to_jsonb(isNatural));
+	result = ast.jsonb_set(result, '{JoinExpr, jointype}', to_jsonb(jointype));
+	result = ast.jsonb_set(result, '{JoinExpr, quals}', quals);
+	result = ast.jsonb_set(result, '{JoinExpr, usingClause}', usingClause);
+	result = ast.jsonb_set(result, '{JoinExpr, alias}', alias);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.locking_clause (
+  strength int,
+  lockedRels jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"LockingClause":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{LockingClause, strength}', to_jsonb(strength));
+	result = ast.jsonb_set(result, '{LockingClause, lockedRels}', lockedRels);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.named_arg_expr (
+  name text,
+  arg jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"NamedArgExpr":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{NamedArgExpr, name}', to_jsonb(name));
+	result = ast.jsonb_set(result, '{NamedArgExpr, arg}', arg);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.min_max_expr (
+  op int,
+  args jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"MinMaxExpr":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{MinMaxExpr, op}', to_jsonb(op));
+	result = ast.jsonb_set(result, '{MinMaxExpr, args}', args);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.into_clause (
+  rel jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"IntoClause":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{IntoClause, rel}', rel);
   return result;
 END;
 $$
@@ -471,27 +767,6 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.insert_stmt (
-  relation jsonb,
-  cols jsonb default null,
-  selectStmt jsonb default null,
-  onConflictClause jsonb default null
-)
-    RETURNS jsonb
-    AS $$
-DECLARE
-    result jsonb = '{"InsertStmt":{}}'::jsonb;
-BEGIN
-	  result = ast.jsonb_set(result, '{InsertStmt, relation}', relation);
-	  result = ast.jsonb_set(result, '{InsertStmt, cols}', cols);
-	  result = ast.jsonb_set(result, '{InsertStmt, selectStmt}', selectStmt);
-	  result = ast.jsonb_set(result, '{InsertStmt, onConflictClause}', onConflictClause);
-	RETURN result;
-END;
-$$
-LANGUAGE 'plpgsql'
-IMMUTABLE;
-
 CREATE FUNCTION ast.func_call (name text, args jsonb default '[]'::jsonb)
     RETURNS jsonb
     AS $$
@@ -542,6 +817,75 @@ CREATE FUNCTION ast.null ()
     AS $$
 BEGIN
   RETURN '{"Null":{}}'::jsonb;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.null_test (
+  nulltesttype int
+)
+RETURNS jsonb AS $$
+DECLARE
+    result jsonb = '{"NullTest":{}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{NullTest, nulltesttype}', to_jsonb(nulltesttype));
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.range_function (
+  vlateral boolean,
+  functions jsonb,
+  is_rowsfrom boolean,
+  ordinality boolean,
+  alias jsonb,
+  coldeflist jsonb
+)
+RETURNS jsonb AS $$
+DECLARE
+    result jsonb = '{"RangeFunction":{}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{RangeFunction, lateral}', to_jsonb(vlateral));
+	  result = ast.jsonb_set(result, '{RangeFunction, is_rowsfrom}', to_jsonb(is_rowsfrom));
+	  result = ast.jsonb_set(result, '{RangeFunction, ordinality}', to_jsonb(ordinality));
+	  result = ast.jsonb_set(result, '{RangeFunction, coldeflist}', coldeflist);
+	  result = ast.jsonb_set(result, '{RangeFunction, functions}', functions);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.range_subselect (
+  vlateral boolean,
+  subquery jsonb,
+  alias jsonb
+)
+RETURNS jsonb AS $$
+DECLARE
+    result jsonb = '{"RangeFunction":{}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{RangeFunction, lateral}', to_jsonb(vlateral));
+	  result = ast.jsonb_set(result, '{RangeFunction, subquery}', subquery);
+	  result = ast.jsonb_set(result, '{RangeFunction, alias}', alias);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.param_ref (
+  num int
+)
+RETURNS jsonb AS $$
+DECLARE
+    result jsonb = '{"ParamRef":{}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{ParamRef, number}', to_jsonb(num));
+	RETURN result;
 END;
 $$
 LANGUAGE 'plpgsql'
@@ -829,6 +1173,7 @@ CREATE FUNCTION ast.create_policy_stmt (
   roles jsonb,
   qual jsonb,
   cmd_name text,
+  with_check jsonb,
   permissive boolean
 )
     RETURNS jsonb
@@ -840,6 +1185,7 @@ BEGIN
 	result = ast.jsonb_set(result, '{CreatePolicyStmt, table}', tbl);
 	result = ast.jsonb_set(result, '{CreatePolicyStmt, roles}', roles);
 	result = ast.jsonb_set(result, '{CreatePolicyStmt, qual}', qual);
+	result = ast.jsonb_set(result, '{CreatePolicyStmt, with_check}', with_check);
 	result = ast.jsonb_set(result, '{CreatePolicyStmt, cmd_name}', to_jsonb(cmd_name));
 	result = ast.jsonb_set(result, '{CreatePolicyStmt, permissive}', to_jsonb(permissive));
 	RETURN result;

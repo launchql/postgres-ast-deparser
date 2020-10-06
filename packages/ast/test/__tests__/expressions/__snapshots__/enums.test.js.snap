@@ -25,7 +25,7 @@ exports[`deparse 4`] = `"ALTER TYPE planets ADD VALUE 'mercury' BEFORE 'venus'"`
 
 exports[`deparse 5`] = `"ALTER TYPE planets ADD VALUE 'neptune' AFTER 'uranus'"`;
 
-exports[`deparse 6`] = `"SELECT enum_last (NULL::planets)"`;
+exports[`deparse 6`] = `"SELECT enum_last(NULL::planets)"`;
 
 exports[`deparse 7`] = `
 "CREATE TYPE insenum AS ENUM (
@@ -44,14 +44,14 @@ exports[`deparse 10`] = `
 )"
 `;
 
-exports[`deparse 11`] = `"DROP TABLE enumtest_child CASCADE"`;
+exports[`deparse 11`] = `"DROP TABLE enumtest_child"`;
 
-exports[`deparse 12`] = `"DROP TABLE enumtest_parent CASCADE"`;
+exports[`deparse 12`] = `"DROP TABLE enumtest_parent"`;
 
-exports[`deparse 13`] = `"DROP TABLE enumtest CASCADE"`;
+exports[`deparse 13`] = `"DROP TABLE enumtest"`;
 
-exports[`deparse 14`] = `"DROP TYPE rainbow CASCADE"`;
+exports[`deparse 14`] = `"DROP TYPE rainbow"`;
 
-exports[`deparse 15`] = `"SELECT count () pg_type WHERE typname = 'rainbow'"`;
+exports[`deparse 15`] = `"SELECT count(*) pg_type WHERE (typname = 'rainbow')"`;
 
-exports[`deparse 16`] = `"SELECT * pg_enum WHERE NOT IN (EXISTS (SELECT 1 pg_type WHERE pg_type.oid = enumtypid))"`;
+exports[`deparse 16`] = `"SELECT * pg_enum WHERE NOT IN (EXISTS (SELECT 1 pg_type WHERE (pg_type.oid = enumtypid)))"`;

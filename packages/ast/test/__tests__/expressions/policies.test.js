@@ -57,6 +57,7 @@ SELECT deparser.deparse(ast_helpers.create_policy(
     )
   ])),
   'INSERT',
+  NULL,
   true
 ))`);
   expect(result).toMatchSnapshot();

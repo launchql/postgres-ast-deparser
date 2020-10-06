@@ -6,9 +6,9 @@ exports[`expressions 2`] = `"last_name LIKE ( '%''test''%' )"`;
 
 exports[`expressions 3`] = `"last_name ILIKE ( '%''test''%' )"`;
 
-exports[`expressions 4`] = `"'abc' SIMILAR TO test ('test') ESCAPE 't'"`;
+exports[`expressions 4`] = `"'abc' SIMILAR TO test('test') ESCAPE 't'"`;
 
-exports[`expressions 5`] = `"'abc' SIMILAR TO test ('test') ESCAPE NULL"`;
+exports[`expressions 5`] = `"'abc' SIMILAR TO test('test') ESCAPE NULL"`;
 
 exports[`expressions 6`] = `"d BETWEEN '2010-01-01'::date AND '2010-12-31'::date"`;
 

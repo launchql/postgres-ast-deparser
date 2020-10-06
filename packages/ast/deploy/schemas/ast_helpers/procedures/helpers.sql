@@ -299,6 +299,7 @@ CREATE FUNCTION ast_helpers.create_policy (
   vrole text,
   qual jsonb,
   cmd text,
+  with_check jsonb,
   permissive boolean
 
 )
@@ -315,6 +316,7 @@ BEGIN
     ]),
     qual,
     cmd,
+    with_check,
     permissive
   ) INTO ast;
   RETURN ast;

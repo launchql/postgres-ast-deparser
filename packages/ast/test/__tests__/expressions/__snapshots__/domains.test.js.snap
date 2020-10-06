@@ -6,7 +6,7 @@ exports[`deparse 2`] = `"COMMENT ON DOMAIN domaindoptest IS E'About to drop this
 
 exports[`deparse 3`] = `"CREATE DOMAIN dependenttypetest AS domaindroptest"`;
 
-exports[`deparse 4`] = `"DROP DOMAIN domaindroptest CASCADE"`;
+exports[`deparse 4`] = `"DROP DOMAIN domaindroptest"`;
 
 exports[`deparse 5`] = `"DROP DOMAIN domaindroptest CASCADE"`;
 
@@ -35,33 +35,33 @@ exports[`deparse 13`] = `"SELECT COALESCE(4::domainint4, 7) IN ( domainint4 ) AS
 
 exports[`deparse 14`] = `"SELECT COALESCE(4::domainint4, 7::domainint4) IN ( domainint4 ) AS t"`;
 
-exports[`deparse 15`] = `"DROP TABLE basictest CASCADE"`;
+exports[`deparse 15`] = `"DROP TABLE basictest"`;
 
-exports[`deparse 16`] = `"DROP DOMAIN domainvarchar CASCADE"`;
+exports[`deparse 16`] = `"DROP DOMAIN domainvarchar"`;
 
-exports[`deparse 17`] = `"DROP DOMAIN domainnumeric CASCADE"`;
+exports[`deparse 17`] = `"DROP DOMAIN domainnumeric"`;
 
-exports[`deparse 18`] = `"DROP DOMAIN domainint4 CASCADE"`;
+exports[`deparse 18`] = `"DROP DOMAIN domainint4"`;
 
-exports[`deparse 19`] = `"DROP DOMAIN domaintext CASCADE"`;
+exports[`deparse 19`] = `"DROP DOMAIN domaintext"`;
 
 exports[`deparse 20`] = `"CREATE DOMAIN domainint4arr AS int4[]"`;
 
 exports[`deparse 21`] = `"CREATE DOMAIN domainchar4arr AS varchar(4)[]"`;
 
-exports[`deparse 22`] = `"DROP DOMAIN domainint4arr CASCADE"`;
+exports[`deparse 22`] = `"DROP DOMAIN domainint4arr"`;
 
-exports[`deparse 23`] = `"DROP DOMAIN domainchar4arr CASCADE"`;
+exports[`deparse 23`] = `"DROP DOMAIN domainchar4arr"`;
 
 exports[`deparse 24`] = `"CREATE DOMAIN dia AS int[]"`;
 
-exports[`deparse 25`] = `"DROP DOMAIN dia CASCADE"`;
+exports[`deparse 25`] = `"DROP DOMAIN dia"`;
 
 exports[`deparse 26`] = `"CREATE DOMAIN dnotnull AS varchar(15) NOT NULL"`;
 
 exports[`deparse 27`] = `"CREATE DOMAIN dnull AS varchar(15)"`;
 
-exports[`deparse 28`] = `"CREATE DOMAIN dcheck AS varchar(15) NOT NULL, CHECK ((value = 'a' OR value = 'c' OR value = 'd'))"`;
+exports[`deparse 28`] = `"CREATE DOMAIN dcheck AS varchar(15) NOT NULL, CHECK (((value = 'a') OR (value = 'c') OR (value = 'd')))"`;
 
 exports[`deparse 29`] = `
 "CREATE TABLE nulltest (
@@ -99,13 +99,13 @@ exports[`deparse 41`] = `"SELECT NULL::dnull::dnotnull"`;
 
 exports[`deparse 42`] = `"SELECT col4::dnotnull nulltest"`;
 
-exports[`deparse 43`] = `"DROP TABLE nulltest CASCADE"`;
+exports[`deparse 43`] = `"DROP TABLE nulltest"`;
 
-exports[`deparse 44`] = `"DROP DOMAIN dnotnull CASCADE"`;
+exports[`deparse 44`] = `"DROP DOMAIN dnotnull"`;
 
-exports[`deparse 45`] = `"DROP DOMAIN dnull CASCADE"`;
+exports[`deparse 45`] = `"DROP DOMAIN dnull"`;
 
-exports[`deparse 46`] = `"DROP DOMAIN dcheck CASCADE"`;
+exports[`deparse 46`] = `"DROP DOMAIN dcheck"`;
 
 exports[`deparse 47`] = `"CREATE DOMAIN ddef1 AS int4 DEFAULT (3)"`;
 
@@ -115,7 +115,7 @@ exports[`deparse 49`] = `"CREATE DOMAIN ddef3 AS text DEFAULT (5)"`;
 
 exports[`deparse 50`] = `"CREATE SEQUENCE ddef4_seq"`;
 
-exports[`deparse 51`] = `"CREATE DOMAIN ddef4 AS int4 DEFAULT (nextval ('ddef4_seq'))"`;
+exports[`deparse 51`] = `"CREATE DOMAIN ddef4 AS int4 DEFAULT (nextval('ddef4_seq'))"`;
 
 exports[`deparse 52`] = `"CREATE DOMAIN ddef5 AS numeric(8, 2) NOT NULL, DEFAULT ('12.12')"`;
 
@@ -165,19 +165,19 @@ exports[`deparse 66`] = `"INSERT INTO domnotnull DEFAULT VALUES"`;
 
 exports[`deparse 67`] = `"ALTER DOMAIN dnotnulltest CASCADE"`;
 
-exports[`deparse 68`] = `"UPDATE domnotnull SET col1"`;
+exports[`deparse 68`] = `"UPDATE domnotnull SET col1 = 5"`;
 
 exports[`deparse 69`] = `"ALTER DOMAIN dnotnulltest CASCADE"`;
 
-exports[`deparse 70`] = `"UPDATE domnotnull SET col2"`;
+exports[`deparse 70`] = `"UPDATE domnotnull SET col2 = 6"`;
 
 exports[`deparse 71`] = `"ALTER DOMAIN dnotnulltest CASCADE"`;
 
-exports[`deparse 72`] = `"UPDATE domnotnull SET col1"`;
+exports[`deparse 72`] = `"UPDATE domnotnull SET col1 = NULL"`;
 
 exports[`deparse 73`] = `"ALTER DOMAIN dnotnulltest CASCADE"`;
 
-exports[`deparse 74`] = `"UPDATE domnotnull SET col1"`;
+exports[`deparse 74`] = `"UPDATE domnotnull SET col1 = NULL"`;
 
 exports[`deparse 75`] = `"DROP DOMAIN dnotnulltest CASCADE"`;
 
@@ -203,7 +203,7 @@ exports[`deparse 83`] = `"INSERT INTO domdeftest DEFAULT VALUES"`;
 
 exports[`deparse 84`] = `"SELECT * domdeftest"`;
 
-exports[`deparse 85`] = `"DROP TABLE domdeftest CASCADE"`;
+exports[`deparse 85`] = `"DROP TABLE domdeftest"`;
 
 exports[`deparse 86`] = `"CREATE DOMAIN con AS int"`;
 
@@ -255,7 +255,7 @@ exports[`deparse 105`] = `"ALTER DOMAIN things CASCADE"`;
 
 exports[`deparse 106`] = `"ALTER DOMAIN things CASCADE"`;
 
-exports[`deparse 107`] = `"UPDATE thethings SET stuff"`;
+exports[`deparse 107`] = `"UPDATE thethings SET stuff = 10"`;
 
 exports[`deparse 108`] = `"ALTER DOMAIN things CASCADE"`;
 
@@ -291,23 +291,23 @@ exports[`deparse 121`] = `"ALTER DOMAIN dom CASCADE"`;
 
 exports[`deparse 122`] = `"SELECT * domview"`;
 
-exports[`deparse 123`] = `"DROP DOMAIN ddef1 CASCADE"`;
+exports[`deparse 123`] = `"DROP DOMAIN ddef1"`;
 
-exports[`deparse 124`] = `"DROP DOMAIN ddef2 CASCADE"`;
+exports[`deparse 124`] = `"DROP DOMAIN ddef2"`;
 
-exports[`deparse 125`] = `"DROP DOMAIN ddef3 CASCADE"`;
+exports[`deparse 125`] = `"DROP DOMAIN ddef3"`;
 
-exports[`deparse 126`] = `"DROP DOMAIN ddef4 CASCADE"`;
+exports[`deparse 126`] = `"DROP DOMAIN ddef4"`;
 
-exports[`deparse 127`] = `"DROP DOMAIN ddef5 CASCADE"`;
+exports[`deparse 127`] = `"DROP DOMAIN ddef5"`;
 
-exports[`deparse 128`] = `"DROP SEQUENCE ddef4_seq CASCADE"`;
+exports[`deparse 128`] = `"DROP SEQUENCE ddef4_seq"`;
 
 exports[`deparse 129`] = `"CREATE DOMAIN vchar4 AS varchar(4)"`;
 
-exports[`deparse 130`] = `"CREATE DOMAIN dinter AS vchar4 CHECK (pg_catalog.substring (value, 1, 1) = 'x')"`;
+exports[`deparse 130`] = `"CREATE DOMAIN dinter AS vchar4 CHECK ((pg_catalog.\\"substring\\"(value, 1, 1) = 'x'))"`;
 
-exports[`deparse 131`] = `"CREATE DOMAIN dtop AS dinter CHECK (pg_catalog.substring (value, 2, 1) = '1')"`;
+exports[`deparse 131`] = `"CREATE DOMAIN dtop AS dinter CHECK ((pg_catalog.\\"substring\\"(value, 2, 1) = '1'))"`;
 
 exports[`deparse 132`] = `"SELECT 'x123'::dtop"`;
 
@@ -339,7 +339,7 @@ exports[`deparse 143`] = `"INSERT INTO dtest VALUES ('yz23')"`;
 
 exports[`deparse 144`] = `"INSERT INTO dtest VALUES ('xz23')"`;
 
-exports[`deparse 145`] = `"DROP TABLE dtest CASCADE"`;
+exports[`deparse 145`] = `"DROP TABLE dtest"`;
 
 exports[`deparse 146`] = `"DROP DOMAIN vchar4 CASCADE"`;
 
@@ -358,11 +358,11 @@ exports[`deparse 150`] = `"INSERT INTO domain_test VALUES (1, 2)"`;
 
 exports[`deparse 151`] = `"ALTER TABLE domain_test ADD COLUMN c str_domain"`;
 
-exports[`deparse 152`] = `"CREATE DOMAIN str_domain2 AS text CHECK (value <> 'foo'), DEFAULT ('foo')"`;
+exports[`deparse 152`] = `"CREATE DOMAIN str_domain2 AS text CHECK ((value <> 'foo')), DEFAULT ('foo')"`;
 
 exports[`deparse 153`] = `"ALTER TABLE domain_test ADD COLUMN d str_domain2"`;
 
-exports[`deparse 154`] = `"CREATE DOMAIN pos_int AS int4 CHECK (value > 0), NOT NULL"`;
+exports[`deparse 154`] = `"CREATE DOMAIN pos_int AS int4 CHECK ((value > 0)), NOT NULL"`;
 
 exports[`deparse 155`] = `"s1 (10)"`;
 
@@ -380,7 +380,7 @@ end
  $LQLCODEZ$ LANGUAGE plpgsql"
 `;
 
-exports[`deparse 159`] = `"SELECT doubledecrement (3)"`;
+exports[`deparse 159`] = `"SELECT doubledecrement(3)"`;
 
 exports[`deparse 160`] = `
 "CREATE OR REPLACE FUNCTION doubledecrement ( p1 pos_int ) RETURNS pos_int AS $LQLCODEZ$ 
@@ -392,7 +392,7 @@ end
  $LQLCODEZ$ LANGUAGE plpgsql"
 `;
 
-exports[`deparse 161`] = `"SELECT doubledecrement (3)"`;
+exports[`deparse 161`] = `"SELECT doubledecrement(3)"`;
 
 exports[`deparse 162`] = `
 "CREATE OR REPLACE FUNCTION doubledecrement ( p1 pos_int ) RETURNS pos_int AS $LQLCODEZ$ 
@@ -405,15 +405,15 @@ end
  $LQLCODEZ$ LANGUAGE plpgsql"
 `;
 
-exports[`deparse 163`] = `"SELECT doubledecrement (NULL)"`;
+exports[`deparse 163`] = `"SELECT doubledecrement(NULL)"`;
 
-exports[`deparse 164`] = `"SELECT doubledecrement (0)"`;
+exports[`deparse 164`] = `"SELECT doubledecrement(0)"`;
 
-exports[`deparse 165`] = `"SELECT doubledecrement (1)"`;
+exports[`deparse 165`] = `"SELECT doubledecrement(1)"`;
 
-exports[`deparse 166`] = `"SELECT doubledecrement (2)"`;
+exports[`deparse 166`] = `"SELECT doubledecrement(2)"`;
 
-exports[`deparse 167`] = `"SELECT doubledecrement (3)"`;
+exports[`deparse 167`] = `"SELECT doubledecrement(3)"`;
 
 exports[`deparse 168`] = `"CREATE DOMAIN posint AS int4"`;
 
@@ -429,7 +429,7 @@ exports[`deparse 171`] = `"INSERT INTO ddtest2 VALUES (ROW(-1))"`;
 
 exports[`deparse 172`] = `"ALTER DOMAIN posint CASCADE"`;
 
-exports[`deparse 173`] = `"DROP TABLE ddtest2 CASCADE"`;
+exports[`deparse 173`] = `"DROP TABLE ddtest2"`;
 
 exports[`deparse 174`] = `
 "CREATE TABLE ddtest2 (
@@ -443,15 +443,15 @@ exports[`deparse 176`] = `"ALTER DOMAIN posint CASCADE"`;
 
 exports[`deparse 177`] = `"ALTER DOMAIN posint CASCADE"`;
 
-exports[`deparse 178`] = `"CREATE DOMAIN posint2 AS posint CHECK (value % 2 = 0)"`;
+exports[`deparse 178`] = `"CREATE DOMAIN posint2 AS posint CHECK (((value % 2) = 0))"`;
 
 exports[`deparse 179`] = `"ALTER DOMAIN posint CASCADE"`;
 
 exports[`deparse 180`] = `"ALTER DOMAIN posint CASCADE"`;
 
-exports[`deparse 181`] = `"DROP TABLE ddtest2 CASCADE"`;
+exports[`deparse 181`] = `"DROP TABLE ddtest2"`;
 
-exports[`deparse 182`] = `"DROP TYPE ddtest1 CASCADE"`;
+exports[`deparse 182`] = `"DROP TYPE ddtest1"`;
 
 exports[`deparse 183`] = `"DROP DOMAIN posint CASCADE"`;
 
@@ -459,15 +459,15 @@ exports[`deparse 184`] = `"CREATE DOMAIN mynums AS numeric(4, 2)[]"`;
 
 exports[`deparse 185`] = `"CREATE DOMAIN mynums2 AS mynums"`;
 
-exports[`deparse 186`] = `"CREATE DOMAIN orderedpair AS int[] CHECK ([1] < [2])"`;
+exports[`deparse 186`] = `"CREATE DOMAIN orderedpair AS int[] CHECK (([1] < [2]))"`;
 
 exports[`deparse 187`] = `"CREATE DOMAIN di AS int"`;
 
 exports[`deparse 188`] = `"ALTER DOMAIN di CASCADE"`;
 
-exports[`deparse 189`] = `"CREATE DOMAIN inotnull AS int CHECK (sql_is_distinct_from (value, NULL))"`;
+exports[`deparse 189`] = `"CREATE DOMAIN inotnull AS int CHECK (sql_is_distinct_from(value, NULL))"`;
 
-exports[`deparse 190`] = `"DROP DOMAIN inotnull CASCADE"`;
+exports[`deparse 190`] = `"DROP DOMAIN inotnull"`;
 
 exports[`deparse 191`] = `"CREATE DOMAIN testdomain1 AS int"`;
 
