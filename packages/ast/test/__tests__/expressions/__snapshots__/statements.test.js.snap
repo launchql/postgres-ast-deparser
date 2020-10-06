@@ -62,9 +62,45 @@ exports[`alias 2`] = `"AS myrule"`;
 
 exports[`bit_string 1`] = `"m'ystring'"`;
 
+exports[`bool_expr 1`] = `"(namesplaceholder1 AND namesplaceholder2)"`;
+
+exports[`bool_expr 2`] = `"(namesplaceholder1 OR namesplaceholder2)"`;
+
+exports[`bool_expr 3`] = `"NOT IN (namesplaceholder1)"`;
+
+exports[`boolean_test 1`] = `"<booltest placeholder> IS TRUE"`;
+
+exports[`boolean_test 2`] = `"<booltest placeholder> IS NOT TRUE"`;
+
+exports[`boolean_test 3`] = `"<booltest placeholder> IS FALSE"`;
+
+exports[`boolean_test 4`] = `"<booltest placeholder> IS NOT FALSE"`;
+
+exports[`boolean_test 5`] = `"<booltest placeholder> IS UNKNOWN"`;
+
+exports[`boolean_test 6`] = `"<booltest placeholder> IS NOT UNKNOWN"`;
+
+exports[`case_expr 1`] = `"CASE <arg placeholder> <arg1> <arg2> ELSE <defresult placeholder> END"`;
+
+exports[`case_expr 2`] = `"CASE <arg placeholder> ELSE <defresult placeholder> END"`;
+
+exports[`coalesce_expr 1`] = `"COALESCE(<arg1>, <arg2>)"`;
+
+exports[`collate_clause 1`] = `"<arg1> COLLATE \\"<arg1>\\", \\"<arg2>\\""`;
+
+exports[`column_def 1`] = `"mycol text USING <arg3> <arg1> <arg2> COLLATE"`;
+
+exports[`column_def 2`] = `"mycol text <arg1> <arg2>"`;
+
+exports[`column_def 3`] = `"\\"my-col\\" text"`;
+
+exports[`composite_type_stmt 1`] = `"CREATE TYPE <arg1> AS (<arg1>,<arg2>)"`;
+
 exports[`func_call 1`] = `"dan ()"`;
 
 exports[`raw_stmt 1`] = `"NULL::text[]"`;
+
+exports[`rename_stmt 1`] = `"ALTER TABLE <arg1> RENAME COLUMN subname TO newname"`;
 
 exports[`rule_stmt 1`] = `"CREATE RULE \\"my-rule\\" AS ON INSERT TO <relation placeholder> WHERE <whereClause placeholder> DO <actions placeholder>"`;
 

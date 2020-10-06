@@ -353,3 +353,225 @@ select deparser.deparse(
   `);
   expect(result).toMatchSnapshot();
 });
+
+it('bool_expr', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.bool_expr(
+    0,
+    to_jsonb(ARRAY[ 
+      ast.string('namesplaceholder1'),
+      ast.string('namesplaceholder2')
+    ])
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('bool_expr', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.bool_expr(
+    1,
+    to_jsonb(ARRAY[ 
+      ast.string('namesplaceholder1'),
+      ast.string('namesplaceholder2')
+    ])
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('bool_expr', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse(
+  ast.bool_expr(
+    2,
+    to_jsonb(ARRAY[ 
+      ast.string('namesplaceholder1'),
+      ast.string('namesplaceholder2')
+    ])
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('boolean_test', async () => {
+  for (let i = 0; i < 6; i++) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  ast.boolean_test(
+    $1,
+    ast.string('<booltest placeholder>')
+  )
+);
+  `,
+      [i]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('case_expr', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.case_expr(
+    ast.string('<arg placeholder>'),
+    to_jsonb(ARRAY[ 
+      ast.string('<arg1>'),
+      ast.string('<arg2>')
+    ]),
+    ast.string('<defresult placeholder>')
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('case_expr', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.case_expr(
+    ast.string('<arg placeholder>'),
+    NULL,
+    ast.string('<defresult placeholder>')
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('coalesce_expr', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.coalesce_expr(
+    to_jsonb(ARRAY[ 
+      ast.string('<arg1>'),
+      ast.string('<arg2>')
+    ])
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('collate_clause', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.collate_clause(
+    ast.string('<arg1>'),
+    to_jsonb(ARRAY[ 
+      ast.string('<arg1>'),
+      ast.string('<arg2>')
+    ])
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('composite_type_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.composite_type_stmt(
+    ast.string('<arg1>'),
+    to_jsonb(ARRAY[ 
+      ast.string('<arg1>'),
+      ast.string('<arg2>')
+    ])
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('rename_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.rename_stmt(
+    6,
+    6,
+    ast.string('<arg1>'),
+    'subname',
+    'newname'
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('column_def', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.column_def(
+    'mycol',
+    ast.type_name( to_jsonb(ARRAY[ast.string('text')]) ),
+    to_jsonb(ARRAY[ 
+      ast.string('<arg1>'),
+      ast.string('<arg2>')
+    ]),
+    ast.collate_clause(
+      ast.string('<arg1>'),
+      ast.string('<arg2>')
+    ),
+    ast.string('<arg3>')
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('column_def', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.column_def(
+    'mycol',
+    ast.type_name( to_jsonb(ARRAY[ast.string('text')]) ),
+    to_jsonb(ARRAY[ 
+      ast.string('<arg1>'),
+      ast.string('<arg2>')
+    ]),
+    NULL,
+    NULL
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('column_def', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.column_def(
+    'my-col',
+    ast.type_name( to_jsonb(ARRAY[ast.string('text')]) ),
+    NULL,
+    NULL,
+    NULL
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});

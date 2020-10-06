@@ -789,6 +789,36 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.collate_clause(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+BEGIN
+
+  IF (node->'CollateClause') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'CollateClause';
+  END IF;
+
+  node = node->'CollateClause';
+
+  IF (node->'arg' IS NOT NULL) THEN 
+    output = array_append(output, deparser.expression(node->'arg'));
+  END IF;
+
+  output = array_append(output, 'COLLATE');
+
+  IF (node->'collname' IS NOT NULL) THEN 
+    output = array_append(output, deparser.list_quotes(node->'collname'));
+  END IF;
+
+  RETURN array_to_string(output, ' ');
+
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.a_array_expr(
   node jsonb,
   context text default null
@@ -823,11 +853,11 @@ BEGIN
   END IF;
 
   IF (node->'ColumnDef'->'colname') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'ColumnDef';
+    RAISE EXCEPTION 'BAD_EXPRESSION % (colname)', 'ColumnDef';
   END IF;
 
   IF (node->'ColumnDef'->'typeName') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'ColumnDef';
+    RAISE EXCEPTION 'BAD_EXPRESSION % (typeName)', 'ColumnDef';
   END IF;
 
   node = node->'ColumnDef';
@@ -917,6 +947,48 @@ BEGIN
   END IF;
 
   RETURN txt;
+
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.boolean_test(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  booltesttype int;
+BEGIN
+
+  IF (node->'BooleanTest') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BooleanTest';
+  END IF;
+
+  node = node->'BooleanTest';
+
+  IF (node->'arg') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BooleanTest';
+  END IF;
+
+  IF (node->'booltesttype') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BooleanTest';
+  END IF;
+
+  booltesttype = (node->'booltesttype')::int;
+
+  output = array_append(output, deparser.expression(node->'arg'));
+
+  output = array_append(output, (CASE
+      WHEN booltesttype = 0 THEN 'IS TRUE'
+      WHEN booltesttype = 1 THEN 'IS NOT TRUE'
+      WHEN booltesttype = 2 THEN 'IS FALSE'
+      WHEN booltesttype = 3 THEN 'IS NOT FALSE'
+      WHEN booltesttype = 4 THEN 'IS UNKNOWN'
+      WHEN booltesttype = 5 THEN 'IS NOT UNKNOWN'
+  END));
+
+  RETURN array_to_string(output, ' ');
 
 END;
 $$
@@ -2165,7 +2237,7 @@ BEGIN
     output = array_append(output, deparser.expression(node->'typevar'));
     output = array_append(output, 'AS');
     output = array_append(output, deparser.parens(
-      deparser.list(node->'coldeflist', E',\n')
+      deparser.list(node->'coldeflist', E',')
     ));
 
     RETURN array_to_string(output, ' ');
@@ -3388,13 +3460,14 @@ BEGIN
       output = array_append(output, deparser.expression(node->'relation'));
       output = array_append(output, 'RENAME');
       output = array_append(output, 'COLUMN');
-      output = array_append(output, node->'subname');
+      output = array_append(output, node->>'subname');
       output = array_append(output, 'TO');
-      output = array_append(output, node->'newname');
+      output = array_append(output, node->>'newname');
     ELSE
       RAISE EXCEPTION 'BAD_EXPRESSION % type(%)', 'RenameStmt', node->>'renameType';
     END IF;
 
+    RETURN array_to_string(output, ' ');
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -3946,6 +4019,8 @@ BEGIN
     RETURN deparser.bit_string(expr, context);
   ELSEIF (expr->>'BoolExpr') IS NOT NULL THEN
     RETURN deparser.bool_expr(expr, context);
+  ELSEIF (expr->>'BooleanTest') IS NOT NULL THEN
+    RETURN deparser.boolean_test(expr, context);
   ELSEIF (expr->>'CaseExpr') IS NOT NULL THEN
     RETURN deparser.case_expr(expr, context);
   ELSEIF (expr->>'CaseWhen') IS NOT NULL THEN
@@ -3954,8 +4029,8 @@ BEGIN
     RETURN deparser.coalesce_expr(expr, context);
   ELSEIF (expr->>'ColumnDef') IS NOT NULL THEN
     RETURN deparser.column_def(expr, context);
-  ELSEIF (expr->>'ColumnRef') IS NOT NULL THEN
-    RETURN deparser.column_ref(expr, context);
+  ELSEIF (expr->>'CollateClause') IS NOT NULL THEN
+    RETURN deparser.collate_clause(expr, context);
   ELSEIF (expr->>'CommentStmt') IS NOT NULL THEN
     RETURN deparser.comment_stmt(expr, context);
   ELSEIF (expr->>'CompositeTypeStmt') IS NOT NULL THEN

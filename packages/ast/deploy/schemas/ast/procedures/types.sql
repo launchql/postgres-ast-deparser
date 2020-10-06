@@ -196,13 +196,146 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.column_ref (fields jsonb)
+CREATE FUNCTION ast.case_expr (
+  arg jsonb,
+  args jsonb,
+  defresult jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CaseExpr":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CaseExpr, arg}', arg);
+	result = ast.jsonb_set(result, '{CaseExpr, args}', args);
+	result = ast.jsonb_set(result, '{CaseExpr, defresult}', defresult);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.composite_type_stmt (
+  typevar jsonb,
+  coldeflist jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CompositeTypeStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CompositeTypeStmt, typevar}', typevar);
+	result = ast.jsonb_set(result, '{CompositeTypeStmt, coldeflist}', coldeflist);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.rename_stmt (
+  renameType int,
+  relationType int,
+  relation jsonb,
+  subname text,
+  newname text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"RenameStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{RenameStmt, renameType}', to_jsonb(renameType));
+	result = ast.jsonb_set(result, '{RenameStmt, relationType}', to_jsonb(relationType));
+	result = ast.jsonb_set(result, '{RenameStmt, relation}', relation);
+	result = ast.jsonb_set(result, '{RenameStmt, subname}', to_jsonb(subname));
+	result = ast.jsonb_set(result, '{RenameStmt, newname}', to_jsonb(newname));
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.coalesce_expr (
+  args jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CoalesceExpr":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CoalesceExpr, args}', args);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.collate_clause (
+  arg jsonb,
+  collname jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CollateClause":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CollateClause, arg}', arg);
+	result = ast.jsonb_set(result, '{CollateClause, collname}', collname);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.boolean_test (
+  booltesttype int,
+  arg jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"BooleanTest":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{BooleanTest, booltesttype}', to_jsonb(booltesttype));
+	result = ast.jsonb_set(result, '{BooleanTest, arg}', arg);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.column_ref (
+  fields jsonb
+)
     RETURNS jsonb
     AS $$
 DECLARE
     result jsonb = '{"ColumnRef":{"fields":""}}'::jsonb;
 BEGIN
 	RETURN ast.jsonb_set(result, '{ColumnRef, fields}', fields);
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.column_def (
+  colname text,
+  typeName jsonb,
+  constraints jsonb,
+  collClause jsonb,
+  raw_default jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"ColumnDef":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{ColumnDef, colname}', to_jsonb(colname));
+	result = ast.jsonb_set(result, '{ColumnDef, typeName}', typeName);
+	result = ast.jsonb_set(result, '{ColumnDef, raw_default}', raw_default);
+	result = ast.jsonb_set(result, '{ColumnDef, constraints}', constraints);
+	result = ast.jsonb_set(result, '{ColumnDef, collClause}', collClause);
+  RETURN result;
 END;
 $$
 LANGUAGE 'plpgsql'
