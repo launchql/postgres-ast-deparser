@@ -1473,3 +1473,68 @@ select deparser.deparse(
   );
   expect(result).toMatchSnapshot();
 });
+it('grant_role_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.grant_role_stmt(
+    true,
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb,
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb,
+    TRUE
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('transaction_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.transaction_stmt(
+    0
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('case_when', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.case_when(
+    ast.string('id'),
+    ast.string('name')
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('with_clause', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.with_clause(
+    true,
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});

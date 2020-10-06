@@ -2160,6 +2160,33 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.with_clause(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'WithClause') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'WithClause';
+    END IF;
+
+    IF (node->'WithClause'->'ctes') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'WithClause';
+    END IF;
+
+    node = node->'WithClause';
+    output = array_append(output, 'WITH');
+    IF (node->'recursive' IS NOT NULL AND (node->'recursive')::bool IS TRUE) THEN 
+      output = array_append(output, 'RECURSIVE');
+    END IF;
+    output = array_append(output, deparser.list(node->'ctes'));
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.variable_set_stmt(
   node jsonb,
   context text default null
@@ -4728,6 +4755,8 @@ BEGIN
     RETURN deparser.variable_set_stmt(expr, context);
   ELSEIF (expr->>'ViewStmt') IS NOT NULL THEN
     RETURN deparser.view_stmt(expr, context);
+  ELSEIF (expr->>'WithClause') IS NOT NULL THEN
+    RETURN deparser.with_clause(expr, context);
   ELSE
     RAISE EXCEPTION 'UNSUPPORTED_EXPRESSION %', expr::text;
   END IF;

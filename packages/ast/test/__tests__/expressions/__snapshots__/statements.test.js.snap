@@ -86,6 +86,8 @@ exports[`case_expr 1`] = `"CASE <arg placeholder> <arg1> <arg2> ELSE <defresult 
 
 exports[`case_expr 2`] = `"CASE <arg placeholder> ELSE <defresult placeholder> END"`;
 
+exports[`case_when 1`] = `"WHEN id THEN name"`;
+
 exports[`coalesce_expr 1`] = `"COALESCE(<arg1>, <arg2>)"`;
 
 exports[`collate_clause 1`] = `"<arg1> COLLATE \\"<arg1>\\", \\"<arg2>\\""`;
@@ -151,6 +153,8 @@ exports[`func_call 2`] = `"name1.name2(DISTINCT arg1, VARIADIC arg2)"`;
 exports[`func_call 3`] = `"name1.name2(DISTINCT arg1, arg2, VARIADIC *) WITHIN GROUP (ORDER BY arg1, arg2) FILTER (WHERE arg2) OVER arg2"`;
 
 exports[`func_call 4`] = `"name1.name2(arg1, arg2 ORDER BY arg1, arg2 ) FILTER (WHERE arg2) OVER arg2"`;
+
+exports[`grant_role_stmt 1`] = `"GRANT id, name TO id, name WITH ADMIN OPTION"`;
 
 exports[`grant_stmt 1`] = `null`;
 
@@ -473,6 +477,8 @@ exports[`sql_value_function 3`] = `"CURRENT_USER"`;
 
 exports[`sql_value_function 4`] = `"SESSION_USER"`;
 
+exports[`transaction_stmt 1`] = `"BEGIN"`;
+
 exports[`type_cast 1`] = `"NULL::text[]"`;
 
 exports[`type_name 1`] = `"text"`;
@@ -480,3 +486,5 @@ exports[`type_name 1`] = `"text"`;
 exports[`variable_set_stmt 1`] = `"SET LOCAL varasdf = id, name"`;
 
 exports[`view_stmt 1`] = `"CREATE VIEW id AS name"`;
+
+exports[`with_clause 1`] = `"WITH RECURSIVE id, name"`;

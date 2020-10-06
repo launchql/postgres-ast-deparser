@@ -236,6 +236,46 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast.transaction_stmt (
+  kind int,
+  options jsonb default null,
+  gid text default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"TransactionStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{TransactionStmt, kind}', to_jsonb(kind));
+	result = ast.jsonb_set(result, '{TransactionStmt, options}', options);
+	result = ast.jsonb_set(result, '{TransactionStmt, gid}', to_jsonb(gid));
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.grant_role_stmt (
+  is_grant boolean,
+  granted_roles jsonb,
+  grantee_roles jsonb,
+  admin_opt boolean
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"GrantRoleStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{GrantRoleStmt, is_grant}', to_jsonb(is_grant));
+	result = ast.jsonb_set(result, '{GrantRoleStmt, granted_roles}', granted_roles);
+	result = ast.jsonb_set(result, '{GrantRoleStmt, grantee_roles}', grantee_roles);
+	result = ast.jsonb_set(result, '{GrantRoleStmt, admin_opt}', to_jsonb(admin_opt));
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast.grant_stmt (
   objtype int,
   targtype int,
@@ -540,6 +580,40 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast.case_when (
+  expr jsonb,
+  res jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CaseWhen":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CaseWhen, result}', res);
+	result = ast.jsonb_set(result, '{CaseWhen, expr}', expr);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.with_clause (
+  recur boolean,
+  ctes jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"WithClause":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{WithClause, recursive}', to_jsonb(recur));
+	result = ast.jsonb_set(result, '{WithClause, ctes}', ctes);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast.composite_type_stmt (
   typevar jsonb,
   coldeflist jsonb
@@ -551,6 +625,27 @@ DECLARE
 BEGIN
 	result = ast.jsonb_set(result, '{CompositeTypeStmt, typevar}', typevar);
 	result = ast.jsonb_set(result, '{CompositeTypeStmt, coldeflist}', coldeflist);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.sub_link (
+  subLinkType jsonb,
+  subselect jsonb,
+  testexpr jsonb,
+  operName jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"SubLink":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{SubLink, subLinkType}', subLinkType);
+	result = ast.jsonb_set(result, '{SubLink, subselect}', subselect);
+	result = ast.jsonb_set(result, '{SubLink, testexpr}', testexpr);
+	result = ast.jsonb_set(result, '{SubLink, operName}', operName);
   return result;
 END;
 $$
@@ -1027,7 +1122,11 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.type_name (names jsonb, isarray boolean default false)
+--- note shortcut
+CREATE FUNCTION ast.type_name (
+  names jsonb,
+  isarray boolean default false
+)
     RETURNS jsonb
     AS $$
 DECLARE
@@ -1045,11 +1144,35 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.type_cast (arg jsonb, typename jsonb)
+CREATE FUNCTION ast.type_name (
+  names jsonb,
+  vsetof boolean,
+  typemods jsonb,
+  arrayBounds jsonb
+)
     RETURNS jsonb
     AS $$
 DECLARE
-  result jsonb = '{"TypeCast":{"arg":{},"typeName":{"TypeName":{"names":[{"String":{"str":"text"}}],"typemod":-1,"arrayBounds":[{"Integer":{"ival":-1}}]}}}}'::jsonb;
+  result jsonb = '{"TypeName":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{TypeName, names}', names);
+	result = ast.jsonb_set(result, '{TypeName, setof}', to_jsonb(vsetof));
+	result = ast.jsonb_set(result, '{TypeName, typemods}', typemods);
+	result = ast.jsonb_set(result, '{TypeName, arrayBounds}', arrayBounds);
+  RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.type_cast (
+  arg jsonb,
+  typename jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  result jsonb = '{"TypeCast":{}}'::jsonb;
 BEGIN
 	result = ast.jsonb_set(result, '{TypeCast, arg}', arg);
 	result = ast.jsonb_set(result, '{TypeCast, typeName}', typename);
