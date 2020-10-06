@@ -1,5 +1,5 @@
 import { getConnections } from '../../utils';
-
+import { inserts } from './__fixtures__/inserts';
 let db, teardown;
 const objs = {
   tables: {}
@@ -800,4 +800,193 @@ select deparser.deparse(
   `
   );
   expect(result).toMatchSnapshot();
+});
+
+it('grouping_func', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.grouping_func(
+    to_jsonb(ARRAY[ 
+      ast.string('name1'),
+      ast.string('name2')
+    ])
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('grouping_set', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.grouping_set(
+    0
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('grouping_set', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.grouping_set(
+    2,
+    to_jsonb(ARRAY[ 
+      ast.string('name1'),
+      ast.string('name2')
+    ])
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('grouping_set', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.grouping_set(
+    3,
+    to_jsonb(ARRAY[ 
+      ast.string('name1'),
+      ast.string('name2')
+    ])
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('grouping_set', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.grouping_set(
+    4,
+    to_jsonb(ARRAY[ 
+      ast.string('name1'),
+      ast.string('name2')
+    ])
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('index_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.index_stmt(
+    ast.string('<relation>')
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('index_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.index_stmt(
+    ast.string('<relation>'),
+    to_jsonb(ARRAY[ 
+      ast.string('name1'),
+      ast.string('name2')
+    ])
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('index_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.index_stmt(
+    ast.string('<relation>'),
+    to_jsonb(ARRAY[ 
+      ast.string('name1'),
+      ast.string('name2')
+    ])::jsonb,
+    NULL::jsonb,
+    true,
+    'idxname'::text,
+    true
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('index_elem', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.index_elem(
+    'indexname',
+    ast.string('<relation>')
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('insert_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.insert_stmt(
+    ast.string('<relation>')
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('insert_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.insert_stmt(
+    ast.string('<relation>'),
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('insert_stmt', async () => {
+  for (const insert of inserts) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  $1::jsonb
+);
+  `,
+      [insert]
+    );
+    expect(result).toMatchSnapshot();
+  }
 });

@@ -13,7 +13,8 @@ $$
 LANGUAGE 'sql';
 
 CREATE FUNCTION deparser.compact (
-  vvalues text[]
+  vvalues text[],
+  usetrim boolean default false
 ) returns text[] as $$
 DECLARE
   value text;
@@ -21,8 +22,14 @@ DECLARE
 BEGIN
   FOREACH value IN array vvalues
     LOOP
-        IF (value IS NOT NULL AND character_length (value) > 0) THEN 
-          filtered = array_append(filtered, value);
+        IF (usetrim IS TRUE) THEN 
+          IF (value IS NOT NULL AND character_length (trim(value)) > 0) THEN 
+            filtered = array_append(filtered, value);
+          END IF;
+        ELSE
+          IF (value IS NOT NULL AND character_length (value) > 0) THEN 
+            filtered = array_append(filtered, value);
+          END IF;
         END IF;
     END LOOP;
   RETURN filtered;
@@ -230,6 +237,43 @@ BEGIN
     END IF;
 
     RETURN format('%s::%s', arg, type);    
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.returning_list (
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  rets text[];
+  item jsonb;
+  name text;
+BEGIN
+  IF (node->'returningList' IS NOT NULL) THEN 
+    output = array_append(output, 'RETURNING');
+    FOR item IN
+    SELECT * FROM jsonb_array_elements(node->'returningList')
+    LOOP 
+
+      IF (item->'ResTarget'->'name' IS NOT NULL) THEN 
+        name = ' AS ' || quote_ident(item->'ResTarget'->>'name');
+      ELSE 
+        name = '';
+      END IF;
+
+      rets = array_append(rets, 
+        deparser.expression(item->'ResTarget'->'val')
+      ) || name;
+
+    END LOOP;
+
+    output = array_append(output, array_to_string(deparser.compact(rets, true), ', '));
+
+  END IF;
+
+  RETURN array_to_string(output, ' ');
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -1250,15 +1294,19 @@ DECLARE
   txt text = expr->'String'->>'str';
 BEGIN
   IF (context = 'trigger') THEN
-    IF (lower(txt) = 'new') THEN
+    IF (upper(txt) = 'NEW') THEN
       RETURN 'NEW';
-    ELSIF (lower(txt) = 'old') THEN
+    ELSIF (upper(txt) = 'OLD') THEN
       RETURN 'OLD';
     ELSE 
       RETURN quote_ident(txt);
     END IF;
   ELSIF (context = 'column') THEN
     RETURN quote_ident(txt);
+  ELSIF (context = 'update') THEN
+    IF (upper(txt) = 'EXCLUDED') THEN 
+      RETURN 'EXCLUDED';
+    END IF;
   ELSIF (context = 'enum') THEN
     RETURN '''' || txt || '''';
   ELSIF (context = 'identifiers') THEN
@@ -1456,8 +1504,11 @@ BEGIN
       output = array_append(output, deparser.expression(node->'onConflictClause'));
     END IF;
 
-    RETURN array_to_string(output, ' ');
+    IF (node->'returningList' IS NOT NULL) THEN 
+      output = array_append(output, deparser.returning_list(node));
+    END IF;
 
+    RETURN array_to_string(output, ' ');
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -2718,18 +2769,20 @@ DECLARE
   name text;
   item jsonb;
 BEGIN
-    IF (node->'UpdateStmt') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'UpdateStmt';
-    END IF;
+    IF (node->'UpdateStmt') IS NOT NULL THEN
+      -- we re-use this function for onConflictClause, so we only 
+      -- check this for UpdateStmt, and then assume it's good for the other calls
+      IF (node->'UpdateStmt'->'relation') IS NULL THEN
+        RAISE EXCEPTION 'BAD_EXPRESSION % (relation)', 'UpdateStmt';
+      END IF;
 
-    IF (node->'UpdateStmt'->'relation') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'UpdateStmt';
+      node = node->'UpdateStmt';
     END IF;
-
-    node = node->'UpdateStmt';
   
     output = array_append(output, 'UPDATE');
-    output = array_append(output, deparser.expression(node->'relation'));
+    IF (node->'relation' IS NOT NULL) THEN 
+      output = array_append(output, deparser.expression(node->'relation'));
+    END IF;
     output = array_append(output, 'SET');
 
     IF (node->'targetList' IS NOT NULL AND jsonb_array_length(node->'targetList') > 0) THEN 
@@ -2746,9 +2799,9 @@ BEGIN
         END LOOP;
         output = array_append(output, deparser.parens(array_to_string(targets, ', ')));
         output = array_append(output, '=');
-        output = array_append(output, deparser.expression(node->'targetList'->0->'val'));
+        output = array_append(output, deparser.expression(node->'targetList'->0->'ResTarget'->'val'));
       ELSE
-        output = array_append(output, deparser.list(node->'targetList'));
+        output = array_append(output, deparser.list(node->'targetList', ', ', 'update'));
       END IF;
     END IF;
 
@@ -2763,25 +2816,7 @@ BEGIN
     END IF;
 
     IF (node->'returningList' IS NOT NULL) THEN 
-      output = array_append(output, 'RETURNING');
-      FOR item IN
-      SELECT * FROM jsonb_array_elements(node->'returningList')
-      LOOP 
-
-        IF (item->'ResTarget'->'name' IS NOT NULL) THEN 
-          name = ' AS ' || quote_ident(item->'ResTarget'->>'name');
-        ELSE 
-          name = '';
-        END IF;
-
-        rets = array_append(rets, 
-          deparser.expression(item->'ResTarget'->'val')
-        ) || name;
-
-      END LOOP;
-
-      output = array_append(output, array_to_string(rets, ', '));
-
+      output = array_append(output, deparser.returning_list(node));
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -3065,6 +3100,58 @@ BEGIN
     END IF;
 
     RETURN array_to_string(output, ' ');
+
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.grouping_func(
+  node jsonb,
+  context text default null
+) returns text as $$
+BEGIN
+    IF (node->'GroupingFunc') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GroupingFunc';
+    END IF;
+    IF (node->'GroupingFunc'->'args') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GroupingFunc';
+    END IF;
+
+    node = node->'GroupingFunc';
+
+    RETURN format('GROUPING(%s)', deparser.list(node->'args'));
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.grouping_set(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  kind int;
+BEGIN
+    IF (node->'GroupingSet') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GroupingSet';
+    END IF;
+    IF (node->'GroupingSet'->'kind') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GroupingSet';
+    END IF;
+
+    node = node->'GroupingSet';
+    kind = (node->'kind')::int;
+
+    IF (kind = 0) THEN 
+      RETURN '()';
+    ELSIF (kind = 2) THEN 
+      RETURN format('ROLLUP (%s)', deparser.list(node->'content'));
+    ELSIF (kind = 3) THEN 
+      RETURN format('CUBE (%s)', deparser.list(node->'content'));
+    ELSIF (kind = 4) THEN 
+      RETURN format('GROUPING SETS (%s)', deparser.list(node->'content'));
+    END IF;
+
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'GroupingSet';
 
 END;
 $$
@@ -3465,13 +3552,13 @@ BEGIN
     -- NOTE seems like compact is required here, sometimes the name is NOT used!
     IF (context = 'select') THEN       
       output = array_append(output, array_to_string(deparser.compact(ARRAY[
-        deparser.expression(node->'val'),
+        deparser.expression(node->'val', 'select'),
         quote_ident(node->>'name')
       ]), ' AS '));
     ELSIF (context = 'update') THEN 
       output = array_append(output, array_to_string(deparser.compact(ARRAY[
         quote_ident(node->>'name'),
-        deparser.expression(node->'val')
+        deparser.expression(node->'val', 'update')
       ]), ' = '));
     ELSE
       output = array_append(output, quote_ident(node->>'name'));
@@ -4262,6 +4349,10 @@ BEGIN
     RETURN deparser.grant_role_stmt(expr, context);
   ELSEIF (expr->>'GrantStmt') IS NOT NULL THEN
     RETURN deparser.grant_stmt(expr, context);
+  ELSEIF (expr->>'GroupingFunc') IS NOT NULL THEN
+    RETURN deparser.grouping_func(expr, context);
+  ELSEIF (expr->>'GroupingSet') IS NOT NULL THEN
+    RETURN deparser.grouping_set(expr, context);
   ELSEIF (expr->>'IndexElem') IS NOT NULL THEN
     RETURN deparser.index_elem(expr, context);
   ELSEIF (expr->>'IndexStmt') IS NOT NULL THEN

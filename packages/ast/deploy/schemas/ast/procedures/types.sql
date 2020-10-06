@@ -397,6 +397,101 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast.grouping_func (
+  args jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"GroupingFunc":{"args":[]}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{GroupingFunc, args}', args);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.grouping_set (
+  kind int,
+  content jsonb default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"GroupingSet":{}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{GroupingSet, kind}', to_jsonb(kind));
+	  result = ast.jsonb_set(result, '{GroupingSet, content}', content);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.index_stmt (
+  relation jsonb,
+  indexParams jsonb default null,
+  whereClause jsonb default null,
+  uniq boolean default null,
+  idxname text default null,
+  concur boolean default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"IndexStmt":{}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{IndexStmt, relation}', relation);
+	  result = ast.jsonb_set(result, '{IndexStmt, indexParams}', indexParams);
+	  result = ast.jsonb_set(result, '{IndexStmt, whereClause}', whereClause);
+	  result = ast.jsonb_set(result, '{IndexStmt, idxname}', to_jsonb(idxname));
+	  result = ast.jsonb_set(result, '{IndexStmt, unique}', to_jsonb(uniq));
+	  result = ast.jsonb_set(result, '{IndexStmt, concurrent}', to_jsonb(concur));
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.index_elem (
+  name text,
+  expr jsonb default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"IndexElem":{}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{IndexElem, name}', to_jsonb(name));
+	  result = ast.jsonb_set(result, '{IndexElem, expr}', expr);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.insert_stmt (
+  relation jsonb,
+  cols jsonb default null,
+  selectStmt jsonb default null,
+  onConflictClause jsonb default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"InsertStmt":{}}'::jsonb;
+BEGIN
+	  result = ast.jsonb_set(result, '{InsertStmt, relation}', relation);
+	  result = ast.jsonb_set(result, '{InsertStmt, cols}', cols);
+	  result = ast.jsonb_set(result, '{InsertStmt, selectStmt}', selectStmt);
+	  result = ast.jsonb_set(result, '{InsertStmt, onConflictClause}', onConflictClause);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast.func_call (name text, args jsonb default '[]'::jsonb)
     RETURNS jsonb
     AS $$
