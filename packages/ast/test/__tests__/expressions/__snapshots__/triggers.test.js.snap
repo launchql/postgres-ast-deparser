@@ -91,7 +91,7 @@ Object {
  BEFORE UPDATE ON \\"schema-name\\".mytable 
  FOR EACH ROW 
  WHEN (OLD.\\"field-a\\" IS DISTINCT FROM NEW.\\"field-a\\") 
- EXECUTE PROCEDURE \\"tg-schema\\".tgname ( )",
+ EXECUTE PROCEDURE \\"tg-schema\\".tgname ( 'arg2', 'arg2' )",
 }
 `;
 

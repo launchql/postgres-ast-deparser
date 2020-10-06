@@ -1064,10 +1064,16 @@ CREATE FUNCTION ast.create_trigger_stmt (
   trigname text,
   relation jsonb,
   funcname jsonb,
+  args jsonb,
   isrow bool,
   timing int,
   events int,
-  whenClause jsonb
+  whenClause jsonb,
+  columns jsonb default null,
+  transitionRels jsonb default null,
+  isconstraint bool default null,
+  vdeferrable boolean default null,
+  initdeferred boolean default null
 )
     RETURNS jsonb
     AS $$
@@ -1077,10 +1083,16 @@ BEGIN
 	result = ast.jsonb_set(result, '{CreateTrigStmt, trigname}', to_jsonb(trigname));
 	result = ast.jsonb_set(result, '{CreateTrigStmt, row}', to_jsonb(isrow));
 	result = ast.jsonb_set(result, '{CreateTrigStmt, timing}', to_jsonb(timing));
+	result = ast.jsonb_set(result, '{CreateTrigStmt, deferrable}', to_jsonb(vdeferrable));
+	result = ast.jsonb_set(result, '{CreateTrigStmt, initdeferred}', to_jsonb(initdeferred));
 	result = ast.jsonb_set(result, '{CreateTrigStmt, events}', to_jsonb(events));
 	result = ast.jsonb_set(result, '{CreateTrigStmt, funcname}', funcname);
+	result = ast.jsonb_set(result, '{CreateTrigStmt, args}', args);
 	result = ast.jsonb_set(result, '{CreateTrigStmt, relation}', relation);
 	result = ast.jsonb_set(result, '{CreateTrigStmt, whenClause}', whenClause);
+	result = ast.jsonb_set(result, '{CreateTrigStmt, columns}', columns);
+	result = ast.jsonb_set(result, '{CreateTrigStmt, transitionRels}', transitionRels);
+	result = ast.jsonb_set(result, '{CreateTrigStmt, isconstraint}', to_jsonb(isconstraint));
 	RETURN result;
 END;
 $$
@@ -1161,6 +1173,57 @@ DECLARE
 BEGIN
 	result = ast.jsonb_set(result, '{RoleSpec, roletype}', to_jsonb(roletype));
 	result = ast.jsonb_set(result, '{RoleSpec, rolename}', to_jsonb(rolename));
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.view_stmt (
+  view jsonb,
+  query jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"ViewStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{ViewStmt, view}', view);
+	result = ast.jsonb_set(result, '{ViewStmt, query}', query);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.create_table_as_stmt (
+  vinto jsonb,
+  query jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CreateTableAsStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CreateTableAsStmt, into}', vinto);
+	result = ast.jsonb_set(result, '{CreateTableAsStmt, query}', query);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.create_seq_stmt (
+  seq jsonb,
+  options jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CreateSeqStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CreateSeqStmt, sequence}', seq);
+	result = ast.jsonb_set(result, '{CreateSeqStmt, options}', options);
 	RETURN result;
 END;
 $$

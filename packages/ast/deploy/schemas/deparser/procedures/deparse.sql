@@ -1290,10 +1290,10 @@ BEGIN
   IF (node->'args' IS NOT NULL AND jsonb_array_length(node->'args') > 0) THEN
     FOR item IN SELECT * FROM jsonb_array_elements(node->'args')
     LOOP 
-      IF (arg->'String' IS NOT NULL) THEN
-        str = '''' || deparser.expression(arg) || '''';
+      IF (item->'String' IS NOT NULL) THEN
+        str = '''' || deparser.expression(item) || '''';
       ELSE
-        str = deparser.expression(arg);
+        str = deparser.expression(item);
       END IF;
       IF (character_length(str) > 0) THEN 
         args = array_append(args, str);
@@ -1752,6 +1752,37 @@ BEGIN
     output = array_append(output, E'DO $CODEZ$\n');
     output = array_append(output, node->'args'->0->'DefElem'->'arg'->'String'->>'str');
     output = array_append(output, E'$CODEZ$');
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.create_table_as_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'CreateTableAsStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateTableAsStmt';
+    END IF;
+
+    IF (node->'CreateTableAsStmt'->'into') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateTableAsStmt';
+    END IF;
+
+    IF (node->'CreateTableAsStmt'->'query') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateTableAsStmt';
+    END IF;
+    
+    node = node->'CreateTableAsStmt';
+
+    output = array_append(output, 'CREATE MATERIALIZED VIEW');
+    output = array_append(output, deparser.expression(node->'into'));
+    output = array_append(output, 'AS');
+    output = array_append(output, deparser.expression(node->'query'));
 
     RETURN array_to_string(output, ' ');
 END;
@@ -4593,6 +4624,8 @@ BEGIN
     RETURN deparser.create_stmt(expr, context);
   ELSEIF (expr->>'CreateTrigStmt') IS NOT NULL THEN
     RETURN deparser.create_trigger_stmt(expr, context);
+  ELSEIF (expr->>'CreateTableAsStmt') IS NOT NULL THEN
+    RETURN deparser.create_table_as_stmt(expr, context);
   ELSEIF (expr->>'DefElem') IS NOT NULL THEN
     RETURN deparser.def_elem(expr, context);
   ELSEIF (expr->>'DeleteStmt') IS NOT NULL THEN

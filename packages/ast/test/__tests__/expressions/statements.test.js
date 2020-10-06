@@ -1312,3 +1312,48 @@ select deparser.deparse(
   );
   expect(result).toMatchSnapshot();
 });
+
+it('view_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.view_stmt(
+    ast.string('id'),
+    ast.string('name')
+ )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('create_seq_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.create_seq_stmt(
+    ast.string('id'),
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb
+ )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('create_table_as_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.create_table_as_stmt(
+    ast.string('id'),
+    ast.string('id')
+ )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});

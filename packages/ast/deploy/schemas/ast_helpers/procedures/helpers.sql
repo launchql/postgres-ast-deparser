@@ -226,6 +226,7 @@ BEGIN
   result = ast.create_trigger_stmt(trigger_name,
     ast.range_var(schema_name, table_name, true, 'p'),
     to_jsonb(ARRAY[ ast.string(trigger_fn_schema),ast.string(trigger_fn_name) ]),
+    NULL,
     true,
     timing,
     events,
@@ -290,7 +291,6 @@ END;
 $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
-
 
 CREATE FUNCTION ast_helpers.create_policy (
   name text,

@@ -104,6 +104,10 @@ exports[`common_table_expr 1`] = `"ctename (arg1, arg2) AS (<ctequery>)"`;
 
 exports[`composite_type_stmt 1`] = `"CREATE TYPE <arg1> AS (<arg1>,<arg2>)"`;
 
+exports[`create_seq_stmt 1`] = `"CREATE SEQUENCE id id name"`;
+
+exports[`create_table_as_stmt 1`] = `"CREATE MATERIALIZED VIEW id AS id"`;
+
 exports[`def_elem 1`] = `"thing=<arg>"`;
 
 exports[`def_elem 2`] = `"ISOLATION LEVEL MYLEVEL"`;
@@ -457,3 +461,5 @@ exports[`sql_value_function 4`] = `"SESSION_USER"`;
 exports[`type_cast 1`] = `"NULL::text[]"`;
 
 exports[`type_name 1`] = `"text"`;
+
+exports[`view_stmt 1`] = `"CREATE VIEW id AS name"`;
