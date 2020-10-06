@@ -411,14 +411,31 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast.func_call (name jsonb, args jsonb default '[]'::jsonb)
+CREATE FUNCTION ast.func_call (
+  funcname jsonb,
+  args jsonb default '[]'::jsonb,
+  func_variadic boolean default null,
+  agg_distinct boolean default null,
+  agg_within_group boolean default null,
+  agg_star boolean default null,
+  agg_filter jsonb default null,
+  agg_order jsonb default null,
+  vover jsonb default null
+)
     RETURNS jsonb
     AS $$
 DECLARE
     result jsonb = '{"FuncCall":{"funcname":[],"args":[]}}'::jsonb;
 BEGIN
-	  result = ast.jsonb_set(result, '{FuncCall, funcname}', name);
+	  result = ast.jsonb_set(result, '{FuncCall, funcname}', funcname);
 	  result = ast.jsonb_set(result, '{FuncCall, args}', args);
+	  result = ast.jsonb_set(result, '{FuncCall, over}', vover);
+	  result = ast.jsonb_set(result, '{FuncCall, func_variadic}', to_jsonb(func_variadic));
+	  result = ast.jsonb_set(result, '{FuncCall, agg_distinct}', to_jsonb(agg_distinct));
+	  result = ast.jsonb_set(result, '{FuncCall, agg_order}', agg_order);
+	  result = ast.jsonb_set(result, '{FuncCall, agg_filter}', agg_filter);
+	  result = ast.jsonb_set(result, '{FuncCall, agg_within_group}', to_jsonb(agg_within_group));
+	  result = ast.jsonb_set(result, '{FuncCall, agg_star}', to_jsonb(agg_star));
 	RETURN result;
 END;
 $$

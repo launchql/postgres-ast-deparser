@@ -719,3 +719,85 @@ select deparser.deparse(
     expect(result).toMatchSnapshot();
   }
 });
+
+it('func_call', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.func_call(
+    to_jsonb(ARRAY[ 
+      ast.string('name1'),
+      ast.string('name2')
+    ]),
+    to_jsonb(ARRAY[ 
+      ast.string('arg1'),
+      ast.string('arg2')
+    ]),
+    true,
+    true
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('func_call', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.func_call(
+    to_jsonb(ARRAY[ 
+      ast.string('name1'),
+      ast.string('name2')
+    ]),
+    to_jsonb(ARRAY[ 
+      ast.string('arg1'),
+      ast.string('arg2')
+    ]),
+    true,
+    true,
+    true,
+    true,
+    ast.string('arg2'),
+    to_jsonb(ARRAY[ 
+      ast.string('arg1'),
+      ast.string('arg2')
+    ]),
+    ast.string('arg2')
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('func_call', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.func_call(
+    to_jsonb(ARRAY[ 
+      ast.string('name1'),
+      ast.string('name2')
+    ]),
+    to_jsonb(ARRAY[ 
+      ast.string('arg1'),
+      ast.string('arg2')
+    ]),
+    false,
+    false,
+    false,
+    false,
+    ast.string('arg2'),
+    to_jsonb(ARRAY[ 
+      ast.string('arg1'),
+      ast.string('arg2')
+    ]),
+    ast.string('arg2')
+  )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});

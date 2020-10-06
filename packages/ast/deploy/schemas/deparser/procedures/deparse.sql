@@ -21,7 +21,7 @@ DECLARE
 BEGIN
   FOREACH value IN array vvalues
     LOOP
-        IF (value IS NOT NULL AND character_length (trim(value)) > 0) THEN 
+        IF (value IS NOT NULL AND character_length (value) > 0) THEN 
           filtered = array_append(filtered, value);
         END IF;
     END LOOP;
@@ -3077,6 +3077,12 @@ CREATE FUNCTION deparser.func_call(
 DECLARE
   fn_name text;
   fn_args text = '';
+  args text[];
+  ordr text[];
+  calr text[];
+  output text[];
+  arg jsonb;
+  agg_within_group boolean;
 BEGIN
     IF (node->'FuncCall') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'FuncCall';
@@ -3086,14 +3092,65 @@ BEGIN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'FuncCall';
     END IF;
 
-    fn_name = array_to_string(deparser.expressions_array(node->'FuncCall'->'funcname', context), '.');
-    IF (node->'FuncCall'->'args') IS NOT NULL THEN
-      IF (node->'FuncCall'->'args'->0) IS NOT NULL THEN
-        fn_args = array_to_string(deparser.expressions_array(node->'FuncCall'->'args', context), ', ');
-      END IF;
+    node = node->'FuncCall';
+
+    fn_name = deparser.quoted_name(node->'funcname');
+    IF (node->'args' IS NOT NULL AND jsonb_array_length(node->'args') > 0) THEN
+        -- fn_args = deparser.list(node->'args', ', ', context);
+        FOR arg in SELECT * FROM jsonb_array_elements(node->'args')
+        LOOP 
+          args = array_append(args, deparser.expression(arg));
+        END LOOP;
     END IF;
 
-    RETURN array_to_string(ARRAY[fn_name, format( '(%s)', fn_args )], ' ');
+    IF (node->'agg_star' IS NOT NULL AND (node->'agg_star')::bool IS TRUE) THEN 
+      args = array_append(args, '*');
+    END IF;
+
+    IF (node->'agg_order' IS NOT NULL) THEN 
+      ordr = array_append(ordr, 'ORDER BY');
+      ordr = array_append(ordr, deparser.list(node->'agg_order', ', ', context));
+    END IF;
+
+    calr = array_append(calr, fn_name);
+    calr = array_append(calr, '(');
+
+    IF (node->'agg_distinct' IS NOT NULL AND (node->'agg_distinct')::bool IS TRUE) THEN 
+      calr = array_append(calr, 'DISTINCT');
+      calr = array_append(calr, ' ');
+    END IF;
+
+    IF (node->'func_variadic' IS NOT NULL AND (node->'func_variadic')::bool IS TRUE) THEN 
+      args[cardinality(args)] = 'VARIADIC ' || args[cardinality(args)];
+    END IF;
+
+    calr = array_append(calr, array_to_string(args, ', '));
+
+    agg_within_group = (node->'agg_within_group' IS NOT NULL AND (node->'agg_within_group')::bool IS TRUE);
+
+    IF (cardinality(ordr) > 0 AND agg_within_group IS FALSE) THEN 
+      calr = array_append(calr, ' ');
+      calr = array_append(calr, array_to_string(ordr, ' '));
+      calr = array_append(calr, ' ');
+    END IF;
+
+    calr = array_append(calr, ')');
+    output = array_append(output, array_to_string(deparser.compact(calr), ''));
+
+    IF (cardinality(ordr) > 0 AND agg_within_group IS TRUE) THEN 
+      output = array_append(output, 'WITHIN GROUP');
+      output = array_append(output, deparser.parens(array_to_string(ordr, ' ')));
+    END IF;
+
+    IF (node->'agg_filter' IS NOT NULL) THEN 
+      output = array_append(output, format('FILTER (WHERE %s)', deparser.expression(node->'agg_filter')));
+    END IF;
+
+    IF (node->'over' IS NOT NULL) THEN 
+      output = array_append(output, format('OVER %s', deparser.expression(node->'over')));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;

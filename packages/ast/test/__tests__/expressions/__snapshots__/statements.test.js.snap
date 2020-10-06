@@ -121,7 +121,13 @@ exports[`float 3`] = `"3.145"`;
 
 exports[`float 4`] = `"234.2342432"`;
 
-exports[`func_call 1`] = `"dan ()"`;
+exports[`func_call 1`] = `"dan()"`;
+
+exports[`func_call 2`] = `"name1.name2(DISTINCT arg1, VARIADIC arg2)"`;
+
+exports[`func_call 3`] = `"name1.name2(DISTINCT arg1, arg2, VARIADIC *) WITHIN GROUP (ORDER BY arg1, arg2) FILTER (WHERE arg2) OVER arg2"`;
+
+exports[`func_call 4`] = `"name1.name2(arg1, arg2 ORDER BY arg1, arg2 ) FILTER (WHERE arg2) OVER arg2"`;
 
 exports[`raw_stmt 1`] = `"NULL::text[]"`;
 
