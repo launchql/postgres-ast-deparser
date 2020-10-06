@@ -1372,7 +1372,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.str ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.string ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
   txt text = expr->'String'->>'str';
 BEGIN
@@ -4004,7 +4004,7 @@ BEGIN
   ELSEIF (expr->>'SortBy') IS NOT NULL THEN
     RETURN deparser.sort_by(expr, context);
   ELSEIF (expr->>'String') IS NOT NULL THEN
-    RETURN deparser.str(expr, context);
+    RETURN deparser.string(expr, context);
   ELSEIF (expr->>'SubLink') IS NOT NULL THEN
     RETURN deparser.sub_link(expr, context);
   ELSEIF (expr->>'TransactionStmt') IS NOT NULL THEN

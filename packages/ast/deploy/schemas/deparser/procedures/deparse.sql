@@ -884,6 +884,41 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.sql_value_function(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  op int;
+BEGIN
+
+  IF (node->'SQLValueFunction') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'SQLValueFunction';
+  END IF;
+
+  IF (node->'SQLValueFunction'->'op') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION % (op)', 'SQLValueFunction';
+  END IF;
+
+  node = node->'SQLValueFunction';
+  op = (node->'op')::int;
+
+  IF (op = 0) THEN
+    RETURN 'CURRENT_DATE';
+  ELSIF (op = 3) THEN
+    RETURN 'CURRENT_TIMESTAMP';
+  ELSIF (op = 10) THEN 
+    RETURN 'CURRENT_USER';
+  ELSIF (op = 12) THEN
+    RETURN 'SESSION_USER';
+  END IF;
+
+  RAISE EXCEPTION 'BAD_EXPRESSION %', 'SQLValueFunction';
+
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.escape(
   txt text
 ) returns text as $$
@@ -1163,7 +1198,7 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE FUNCTION deparser.str(
+CREATE FUNCTION deparser.string(
   expr jsonb,
   context text default null
 ) returns text as $$
@@ -4029,6 +4064,8 @@ BEGIN
     RETURN deparser.coalesce_expr(expr, context);
   ELSEIF (expr->>'ColumnDef') IS NOT NULL THEN
     RETURN deparser.column_def(expr, context);
+  ELSEIF (expr->>'ColumnRef') IS NOT NULL THEN
+    RETURN deparser.column_ref(expr, context);
   ELSEIF (expr->>'CollateClause') IS NOT NULL THEN
     RETURN deparser.collate_clause(expr, context);
   ELSEIF (expr->>'CommentStmt') IS NOT NULL THEN
@@ -4111,8 +4148,10 @@ BEGIN
     RETURN deparser.select_stmt(expr, context);
   ELSEIF (expr->>'SortBy') IS NOT NULL THEN
     RETURN deparser.sort_by(expr, context);
+  ELSEIF (expr->>'SQLValueFunction') IS NOT NULL THEN
+    RETURN deparser.sql_value_function(expr, context);
   ELSEIF (expr->>'String') IS NOT NULL THEN
-    RETURN deparser.str(expr, context);
+    RETURN deparser.string(expr, context);
   ELSEIF (expr->>'SubLink') IS NOT NULL THEN
     RETURN deparser.sub_link(expr, context);
   ELSEIF (expr->>'TransactionStmt') IS NOT NULL THEN

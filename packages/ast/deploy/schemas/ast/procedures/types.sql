@@ -341,6 +341,21 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast.sql_value_function (
+  op int
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"SQLValueFunction":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{SQLValueFunction, op}', to_jsonb(op));
+  RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast.func_call (name text, args jsonb default '[]'::jsonb)
     RETURNS jsonb
     AS $$

@@ -575,3 +575,51 @@ select deparser.deparse(
   );
   expect(result).toMatchSnapshot();
 });
+
+it('sql_value_function', async () => {
+  for (const i of [0, 3, 10, 12]) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  ast.sql_value_function(
+    $1
+   )
+);
+  `,
+      [i]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('column_ref', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.column_ref(
+    to_jsonb(ARRAY[ 
+      ast.string('<arg1>'),
+      ast.string('<arg2>')
+    ])
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('column_ref', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.column_ref(
+    to_jsonb(ARRAY[ 
+      ast.string('arg1'),
+      ast.string('arg2')
+    ])
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});

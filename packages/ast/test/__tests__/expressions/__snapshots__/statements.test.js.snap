@@ -94,6 +94,10 @@ exports[`column_def 2`] = `"mycol text <arg1> <arg2>"`;
 
 exports[`column_def 3`] = `"\\"my-col\\" text"`;
 
+exports[`column_ref 1`] = `"\\"<arg1>\\".\\"<arg2>\\""`;
+
+exports[`column_ref 2`] = `"arg1.arg2"`;
+
 exports[`composite_type_stmt 1`] = `"CREATE TYPE <arg1> AS (<arg1>,<arg2>)"`;
 
 exports[`func_call 1`] = `"dan ()"`;
@@ -103,6 +107,14 @@ exports[`raw_stmt 1`] = `"NULL::text[]"`;
 exports[`rename_stmt 1`] = `"ALTER TABLE <arg1> RENAME COLUMN subname TO newname"`;
 
 exports[`rule_stmt 1`] = `"CREATE RULE \\"my-rule\\" AS ON INSERT TO <relation placeholder> WHERE <whereClause placeholder> DO <actions placeholder>"`;
+
+exports[`sql_value_function 1`] = `"CURRENT_DATE"`;
+
+exports[`sql_value_function 2`] = `"CURRENT_TIMESTAMP"`;
+
+exports[`sql_value_function 3`] = `"CURRENT_USER"`;
+
+exports[`sql_value_function 4`] = `"SESSION_USER"`;
 
 exports[`type_cast 1`] = `"NULL::text[]"`;
 
