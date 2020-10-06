@@ -312,7 +312,48 @@ CREATE FUNCTION ast.column_ref (
 DECLARE
     result jsonb = '{"ColumnRef":{"fields":""}}'::jsonb;
 BEGIN
-	RETURN ast.jsonb_set(result, '{ColumnRef, fields}', fields);
+	result = ast.jsonb_set(result, '{ColumnRef, fields}', fields);
+  RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.common_table_expr (
+  ctename text,
+  ctequery jsonb,
+  aliascolnames jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CommonTableExpr":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CommonTableExpr, ctename}', to_jsonb(ctename));
+	result = ast.jsonb_set(result, '{CommonTableExpr, ctequery}', ctequery);
+	result = ast.jsonb_set(result, '{CommonTableExpr, aliascolnames}', aliascolnames);
+  RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.comment_stmt (
+  objtype int,
+  object jsonb,
+  comment text,
+  objargs jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CommentStmt":{"fields":""}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CommentStmt, objtype}', to_jsonb(objtype));
+	result = ast.jsonb_set(result, '{CommentStmt, object}', object);
+	result = ast.jsonb_set(result, '{CommentStmt, comment}', to_jsonb(comment));
+	result = ast.jsonb_set(result, '{CommentStmt, objargs}', objargs);
+  RETURN result;
 END;
 $$
 LANGUAGE 'plpgsql'
@@ -482,6 +523,37 @@ BEGIN
 	result = ast.jsonb_set(result, '{DefElem, defname}', to_jsonb(defname));
 	result = ast.jsonb_set(result, '{DefElem, arg}', arg);
 	result = ast.jsonb_set(result, '{DefElem, defaction}', to_jsonb(defaction));
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.do_stmt (
+  stmt text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  -- seemed like this was the only pattern seen so far... so simplified it
+  result jsonb = '{"DoStmt":{"args":[{"DefElem":{"arg":{"String":{"str":""}}}}]}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{DoStmt, args, 0, DefElem, arg, String, str}', to_jsonb(stmt));
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.float (
+  flt float
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  result jsonb = '{"Float":{"str":""}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{Float, str}', to_jsonb(flt));
 	RETURN result;
 END;
 $$

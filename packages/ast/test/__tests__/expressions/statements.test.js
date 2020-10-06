@@ -623,3 +623,99 @@ select deparser.deparse(
   );
   expect(result).toMatchSnapshot();
 });
+
+it('comment_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.comment_stmt(
+    6,
+    ast.string('<object>'),
+    'my comment',
+    to_jsonb(ARRAY[ 
+      ast.string('arg1'),
+      ast.string('arg2')
+    ])
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('common_table_expr', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.common_table_expr(
+    'ctename',
+    ast.string('<ctequery>'),
+    to_jsonb(ARRAY[ 
+      ast.string('arg1'),
+      ast.string('arg2')
+    ])
+   )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('def_elem', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.def_elem(
+    'thing',
+    ast.string('<arg>'),
+    0
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('def_elem', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.def_elem(
+    'transaction_isolation',
+    ast.a_const(ast.string('mylevel')),
+    0
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('do_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.do_stmt(
+    'RUN MY CODEZ'
+    )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('float', async () => {
+  for (const i of [0.1234, 3234.234235234, 3.145, 234.2342432]) {
+    const [{ deparse: result }] = await db.any(
+      `
+select deparser.deparse(
+  ast.float(
+    $1::float
+  )
+);
+  `,
+      [i]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});

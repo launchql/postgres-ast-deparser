@@ -98,7 +98,28 @@ exports[`column_ref 1`] = `"\\"<arg1>\\".\\"<arg2>\\""`;
 
 exports[`column_ref 2`] = `"arg1.arg2"`;
 
+exports[`comment_stmt 1`] = `"COMMENT ON COLUMN <object> (arg1, arg2) IS E'my comment'"`;
+
+exports[`common_table_expr 1`] = `"ctename (arg1, arg2) AS (<ctequery>)"`;
+
 exports[`composite_type_stmt 1`] = `"CREATE TYPE <arg1> AS (<arg1>,<arg2>)"`;
+
+exports[`def_elem 1`] = `"thing=<arg>"`;
+
+exports[`def_elem 2`] = `"ISOLATION LEVEL MYLEVEL"`;
+
+exports[`do_stmt 1`] = `
+"DO $CODEZ$
+ RUN MY CODEZ $CODEZ$"
+`;
+
+exports[`float 1`] = `"0.1234"`;
+
+exports[`float 2`] = `"3234.234235234"`;
+
+exports[`float 3`] = `"3.145"`;
+
+exports[`float 4`] = `"234.2342432"`;
 
 exports[`func_call 1`] = `"dan ()"`;
 

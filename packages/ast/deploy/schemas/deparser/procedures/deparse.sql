@@ -919,6 +919,50 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.common_table_expr(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+BEGIN
+
+  IF (node->'CommonTableExpr') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'CommonTableExpr';
+  END IF;
+
+  IF (node->'CommonTableExpr'->'ctename') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION % (ctename)', 'CommonTableExpr';
+  END IF;
+
+  IF (node->'CommonTableExpr'->'ctequery') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION % (ctequery)', 'CommonTableExpr';
+  END IF;
+
+  node = node->'CommonTableExpr';
+
+  -- TODO needs quote?
+  output = array_append(output, node->>'ctename');
+  -- output = array_append(output, quote_ident(node->>'ctename'));
+
+  IF (node->'aliascolnames' IS NOT NULL) THEN 
+    output = array_append(output, 
+      deparser.parens(
+        deparser.list_quotes(node->'aliascolnames')
+      )
+    );
+  END IF;
+
+  output = array_append(output, 
+      format('AS (%s)', deparser.expression(node->'ctequery'))
+  );
+
+  RETURN array_to_string(output, ' ');
+
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.escape(
   txt text
 ) returns text as $$
@@ -1221,6 +1265,19 @@ BEGIN
     RETURN quote_ident(txt);
   END IF;
   RETURN txt;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.float(
+  node jsonb,
+  context text default null
+) returns text as $$
+BEGIN
+  IF (LEFT(node->'Float'->>'str', 1) = '-') THEN 
+    RETURN deparser.parens(node->'Float'->>'str');
+  END IF;
+  RETURN node->'Float'->>'str';
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -1588,6 +1645,40 @@ BEGIN
     IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
       output = array_append(output, deparser.list(node->'options', ' ', 'sequence'));
     END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.do_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'DoStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'DoStmt';
+    END IF;
+
+    IF (node->'DoStmt'->'args') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'DoStmt';
+    END IF;
+    
+    node = node->'DoStmt';
+
+    IF (
+      node->'args'->0 IS NULL OR
+      node->'args'->0->'DefElem' IS NULL OR
+      node->'args'->0->'DefElem'->'arg'->'String'->'str' IS NULL
+    ) THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'DoStmt';
+    END IF;
+
+    output = array_append(output, E'DO $CODEZ$\n');
+    output = array_append(output, node->'args'->0->'DefElem'->'arg'->'String'->>'str');
+    output = array_append(output, E'$CODEZ$');
 
     RETURN array_to_string(output, ' ');
 END;
@@ -4070,6 +4161,8 @@ BEGIN
     RETURN deparser.collate_clause(expr, context);
   ELSEIF (expr->>'CommentStmt') IS NOT NULL THEN
     RETURN deparser.comment_stmt(expr, context);
+  ELSEIF (expr->>'CommonTableExpr') IS NOT NULL THEN
+    RETURN deparser.common_table_expr(expr, context);
   ELSEIF (expr->>'CompositeTypeStmt') IS NOT NULL THEN
     RETURN deparser.composite_type_stmt(expr, context);
   ELSEIF (expr->>'Constraint') IS NOT NULL THEN
@@ -4098,8 +4191,12 @@ BEGIN
     RETURN deparser.delete_stmt(expr, context);
   ELSEIF (expr->>'DropStmt') IS NOT NULL THEN
     RETURN deparser.drop_stmt(expr, context);
+  ELSEIF (expr->>'DoStmt') IS NOT NULL THEN
+    RETURN deparser.do_stmt(expr, context);
   ELSEIF (expr->>'ExecuteStmt') IS NOT NULL THEN
     RETURN deparser.execute_stmt(expr, context);
+  ELSEIF (expr->>'Float') IS NOT NULL THEN
+    RETURN deparser.float(expr, context);
   ELSEIF (expr->>'FuncCall') IS NOT NULL THEN
     RETURN deparser.func_call(expr, context);
   ELSEIF (expr->>'FunctionParameter') IS NOT NULL THEN
