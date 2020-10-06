@@ -312,7 +312,7 @@ BEGIN
     name,
     ast.range_var(vschema, vtable, true, 'p'),
     to_jsonb(ARRAY[
-        ast.role_spec(vrole, 0)
+        ast.role_spec(0, vrole)
     ]),
     qual,
     cmd,

@@ -1357,3 +1357,119 @@ select deparser.deparse(
   );
   expect(result).toMatchSnapshot();
 });
+
+it('create_domain_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.create_domain_stmt(
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb,
+    ast.string('id'),
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb
+ )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('create_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.create_stmt(
+    ast.string('id'),
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb,
+    NULL,
+    NULL
+ )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('constraint', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.constraint(
+    0,
+    NULL
+ )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('access_priv', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.access_priv(
+    'priv',
+    NULL
+ )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('variable_set_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.variable_set_stmt(
+    0,
+    true,
+    'varasdf',
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb
+ )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('grant_stmt', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse(
+  ast.grant_stmt(
+    0,
+    0,
+    true,
+    true,
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb,
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb,
+    to_jsonb(ARRAY[ 
+      ast.string('id'),
+      ast.string('name')
+    ])::jsonb,
+    1
+ )
+);
+  `
+  );
+  expect(result).toMatchSnapshot();
+});

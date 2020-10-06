@@ -236,6 +236,35 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast.grant_stmt (
+  objtype int,
+  targtype int,
+  is_grant boolean,
+  grant_option boolean,
+  privileges jsonb, 
+  objects jsonb, 
+  grantees jsonb,
+  behavior int
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"GrantStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{GrantStmt, objtype}', to_jsonb(objtype));
+	result = ast.jsonb_set(result, '{GrantStmt, targtype}', to_jsonb(targtype));
+	result = ast.jsonb_set(result, '{GrantStmt, is_grant}', to_jsonb(is_grant));
+	result = ast.jsonb_set(result, '{GrantStmt, grant_option}', to_jsonb(grant_option));
+	result = ast.jsonb_set(result, '{GrantStmt, privileges}', privileges);
+	result = ast.jsonb_set(result, '{GrantStmt, objects}', objects);
+	result = ast.jsonb_set(result, '{GrantStmt, grantees}', grantees);
+	result = ast.jsonb_set(result, '{GrantStmt, behavior}', to_jsonb(behavior));
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast.select_stmt (
   op int,
   relation jsonb,
@@ -566,6 +595,59 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast.constraint (
+  contype int,
+  keys jsonb,
+  raw_expr jsonb default null,
+  fk_del_action text default 'a',
+  fk_upd_action text default 'a', 
+  fk_matchtype text default null,
+  is_no_inherit boolean default null, 
+  skip_validation boolean default null, 
+  vdeferrable boolean default null,
+
+  -- exclusion constraint
+  exclusions jsonb default null,
+  access_method boolean default null,
+
+  -- reference constraint
+  pk_attrs jsonb default null,
+  fk_attrs jsonb default null,
+  conname text default null, -- shared (also on other constraints)
+  pktable jsonb default null
+
+
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"Constraint":{}}'::jsonb;
+BEGIN
+  result = ast.jsonb_set(result, '{Constraint, contype}', to_jsonb(contype)); 
+  result = ast.jsonb_set(result, '{Constraint, keys}', keys); 
+  result = ast.jsonb_set(result, '{Constraint, raw_expr}', raw_expr); 
+  result = ast.jsonb_set(result, '{Constraint, fk_del_action}', to_jsonb(fk_del_action)); 
+  result = ast.jsonb_set(result, '{Constraint, fk_upd_action}', to_jsonb(fk_upd_action)); 
+  result = ast.jsonb_set(result, '{Constraint, fk_matchtype}', to_jsonb(fk_matchtype)); 
+  result = ast.jsonb_set(result, '{Constraint, is_no_inherit}', to_jsonb(is_no_inherit)); 
+  result = ast.jsonb_set(result, '{Constraint, skip_validation}', to_jsonb(skip_validation)); 
+  result = ast.jsonb_set(result, '{Constraint, vdeferrable}', to_jsonb(vdeferrable)); 
+  
+  result = ast.jsonb_set(result, '{Constraint, exclusions}', exclusions); 
+  result = ast.jsonb_set(result, '{Constraint, access_method}', to_jsonb(access_method)); 
+
+  result = ast.jsonb_set(result, '{Constraint, pk_attrs}', pk_attrs); 
+  result = ast.jsonb_set(result, '{Constraint, fk_attrs}', fk_attrs); 
+  result = ast.jsonb_set(result, '{Constraint, pktable}', pktable); 
+
+  result = ast.jsonb_set(result, '{Constraint, conname}', to_jsonb(conname)); 
+
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast.collate_clause (
   arg jsonb,
   collname jsonb
@@ -577,6 +659,44 @@ DECLARE
 BEGIN
 	result = ast.jsonb_set(result, '{CollateClause, arg}', arg);
 	result = ast.jsonb_set(result, '{CollateClause, collname}', collname);
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.access_priv (
+  priv_name text,
+  cols jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"AccessPriv":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{AccessPriv, cols}', cols);
+	result = ast.jsonb_set(result, '{AccessPriv, priv_name}', to_jsonb(priv_name));
+  return result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.variable_set_stmt (
+  kind int,
+  is_local boolean,
+  name text,
+  args jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"VariableSetStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{VariableSetStmt, args}', args);
+	result = ast.jsonb_set(result, '{VariableSetStmt, kind}', to_jsonb(kind));
+	result = ast.jsonb_set(result, '{VariableSetStmt, is_local}', to_jsonb(is_local));
+	result = ast.jsonb_set(result, '{VariableSetStmt, name}', to_jsonb(name));
   return result;
 END;
 $$
@@ -1102,28 +1222,8 @@ IMMUTABLE;
 CREATE FUNCTION ast.function_parameter (
   name text,
   argType jsonb,
-  mode int
-)
-    RETURNS jsonb
-    AS $$
-DECLARE
-    result jsonb = '{"FunctionParameter":{}}'::jsonb;
-BEGIN
-	result = ast.jsonb_set(result, '{FunctionParameter, name}', to_jsonb(name));
-	result = ast.jsonb_set(result, '{FunctionParameter, argType}', argType);
-	result = ast.jsonb_set(result, '{FunctionParameter, mode}', to_jsonb(mode));
-
-	RETURN result;
-END;
-$$
-LANGUAGE 'plpgsql'
-IMMUTABLE;
-
-CREATE FUNCTION ast.function_parameter (
-  name text,
-  argType jsonb,
   mode int,
-  defexpr jsonb -- never let this be NULL, just don't pass it in. breaks shit. just stop.
+  defexpr jsonb default null
 )
     RETURNS jsonb
     AS $$
@@ -1132,8 +1232,8 @@ DECLARE
 BEGIN
 	result = ast.jsonb_set(result, '{FunctionParameter, name}', to_jsonb(name));
 	result = ast.jsonb_set(result, '{FunctionParameter, argType}', argType);
-	result = ast.jsonb_set(result, '{FunctionParameter, mode}', to_jsonb(mode));
 	result = ast.jsonb_set(result, '{FunctionParameter, defexpr}', defexpr);
+	result = ast.jsonb_set(result, '{FunctionParameter, mode}', to_jsonb(mode));
 
 	RETURN result;
 END;
@@ -1145,7 +1245,8 @@ CREATE FUNCTION ast.create_function_stmt (
   funcname jsonb,
   parameters jsonb,
   returnType jsonb,
-  options jsonb
+  options jsonb,
+  repl boolean default null
 )
     RETURNS jsonb
     AS $$
@@ -1156,6 +1257,26 @@ BEGIN
 	result = ast.jsonb_set(result, '{CreateFunctionStmt, parameters}', parameters);
 	result = ast.jsonb_set(result, '{CreateFunctionStmt, returnType}', returnType);
 	result = ast.jsonb_set(result, '{CreateFunctionStmt, options}', options);
+	result = ast.jsonb_set(result, '{CreateFunctionStmt, replace}', to_jsonb(repl));
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.create_domain_stmt (
+  domainname jsonb,
+  typeName jsonb,
+  constraints jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CreateDomainStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CreateDomainStmt, domainname}', domainname);
+	result = ast.jsonb_set(result, '{CreateDomainStmt, typeName}', typeName);
+	result = ast.jsonb_set(result, '{CreateDomainStmt, constraints}', constraints);
 	RETURN result;
 END;
 $$
@@ -1163,8 +1284,8 @@ LANGUAGE 'plpgsql'
 IMMUTABLE;
 
 CREATE FUNCTION ast.role_spec (
-  rolename text,
-  roletype int
+  roletype int,
+  rolename text default null
 )
     RETURNS jsonb
     AS $$
@@ -1207,6 +1328,27 @@ DECLARE
 BEGIN
 	result = ast.jsonb_set(result, '{CreateTableAsStmt, into}', vinto);
 	result = ast.jsonb_set(result, '{CreateTableAsStmt, query}', query);
+	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast.create_stmt (
+  relation jsonb,
+  tableElts jsonb,
+  options jsonb,
+  inhRelations jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+    result jsonb = '{"CreateStmt":{}}'::jsonb;
+BEGIN
+	result = ast.jsonb_set(result, '{CreateStmt, relation}', relation);
+	result = ast.jsonb_set(result, '{CreateStmt, tableElts}', tableElts);
+	result = ast.jsonb_set(result, '{CreateStmt, inhRelations}', inhRelations);
+	result = ast.jsonb_set(result, '{CreateStmt, options}', options);
 	RETURN result;
 END;
 $$

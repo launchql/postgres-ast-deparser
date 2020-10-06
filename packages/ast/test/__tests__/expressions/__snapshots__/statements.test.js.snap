@@ -56,6 +56,8 @@ exports[`a_indirection 1`] = `".namesplaceholder1.namesplaceholder2"`;
 
 exports[`a_star 1`] = `"*"`;
 
+exports[`access_priv 1`] = `"PRIV"`;
+
 exports[`alias 1`] = `"AS myrule (namesplaceholder)"`;
 
 exports[`alias 2`] = `"AS myrule"`;
@@ -104,7 +106,18 @@ exports[`common_table_expr 1`] = `"ctename (arg1, arg2) AS (<ctequery>)"`;
 
 exports[`composite_type_stmt 1`] = `"CREATE TYPE <arg1> AS (<arg1>,<arg2>)"`;
 
+exports[`constraint 1`] = `"NULL  "`;
+
+exports[`create_domain_stmt 1`] = `"CREATE DOMAIN id.name AS id id, name"`;
+
 exports[`create_seq_stmt 1`] = `"CREATE SEQUENCE id id name"`;
+
+exports[`create_stmt 1`] = `
+"CREATE TABLE id (
+ id,
+name 
+)"
+`;
 
 exports[`create_table_as_stmt 1`] = `"CREATE MATERIALIZED VIEW id AS id"`;
 
@@ -138,6 +151,8 @@ exports[`func_call 2`] = `"name1.name2(DISTINCT arg1, VARIADIC arg2)"`;
 exports[`func_call 3`] = `"name1.name2(DISTINCT arg1, arg2, VARIADIC *) WITHIN GROUP (ORDER BY arg1, arg2) FILTER (WHERE arg2) OVER arg2"`;
 
 exports[`func_call 4`] = `"name1.name2(arg1, arg2 ORDER BY arg1, arg2 ) FILTER (WHERE arg2) OVER arg2"`;
+
+exports[`grant_stmt 1`] = `null`;
 
 exports[`grouping_func 1`] = `"GROUPING(name1, name2)"`;
 
@@ -461,5 +476,7 @@ exports[`sql_value_function 4`] = `"SESSION_USER"`;
 exports[`type_cast 1`] = `"NULL::text[]"`;
 
 exports[`type_name 1`] = `"text"`;
+
+exports[`variable_set_stmt 1`] = `"SET LOCAL varasdf = id, name"`;
 
 exports[`view_stmt 1`] = `"CREATE VIEW id AS name"`;
