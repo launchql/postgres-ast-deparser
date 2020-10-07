@@ -2,6 +2,7 @@
 
 -- requires: schemas/deparser/schema
 -- requires: schemas/ast_utils/procedures/utils
+-- requires: schemas/ast_constants/procedures/constants 
 
 BEGIN;
 
@@ -292,13 +293,6 @@ BEGIN
 
     node = node->'RangeVar';
 
-    -- TODO why have both inhOpt AND inh?
-    -- seems like it's worth researching
-
-    IF ((node->'inhOpt')::int = 0) THEN
-      output = array_append(output, 'ONLY');
-    END IF;
-
     IF ((node->'inh')::bool = FALSE) THEN
       output = array_append(output, 'ONLY');
     END IF;
@@ -525,13 +519,13 @@ BEGIN
   
   IF ((expr->>'kind')::int = 6) THEN
     -- AEXPR_IN
+    -- BUG 6 = AEXPR_OF ?!?!?
     IF (operator = '=') THEN
       RETURN format('%s %s ( %s )', left_expr, 'IN', right_expr);
     ELSE
       RETURN format('%s %s ( %s )', left_expr, 'NOT IN', right_expr);
     END IF;
-  ELSEIF ((expr->>'kind')::int = 7) THEN
-    -- AEXPR_IN
+  ELSEIF ((expr->>'kind')::int = ast_constants.a_expr_kind('AEXPR_IN')) THEN
     IF (operator = '<>') THEN
       RETURN format('%s %s ( %s )', left_expr, 'NOT IN', right_expr);
     ELSE
@@ -558,6 +552,7 @@ BEGIN
 
   IF ((expr->>'kind')::int = 4) THEN
     -- AEXPR_NULLIF
+    -- BUG 4 = AEXPR_NOT_DISTINCT ?!?!?
     RETURN format('NULLIF(%s, %s)', left_expr, right_expr);
   END IF;
 
@@ -586,8 +581,7 @@ BEGIN
     output = array_append(output, left_expr);
   END IF;
 
-  IF ((expr->>'kind')::int != 0) THEN
-    -- AEXPR_OP
+  IF ((expr->>'kind')::int != ast_constants.a_expr_kind('AEXPR_OP')) THEN
     RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP)', 'A_Expr';
   END IF;
 
@@ -635,8 +629,7 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ANY)', 'A_Expr';
   END IF;
 
-  IF ((expr->>'kind')::int != 1) THEN
-    -- AEXPR_OP_ANY
+  IF ((expr->>'kind')::int != ast_constants.a_expr_kind('AEXPR_OP_ANY')) THEN
     RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ANY)', 'A_Expr';
   END IF;
 
@@ -667,8 +660,7 @@ BEGIN
   right_expr = deparser.expression(expr->'rexpr', context);
   operator = deparser.expression(expr->'name'->0);
 
-  IF ((expr->>'kind')::int != 2) THEN
-    -- AEXPR_OP_ALL
+  IF ((expr->>'kind')::int != ast_constants.a_expr_kind('AEXPR_OP_ALL')) THEN
     RAISE EXCEPTION 'BAD_EXPRESSION % (AEXPR_OP_ALL)', 'A_Expr';
   END IF;
 
@@ -690,8 +682,7 @@ BEGIN
   left_expr = deparser.expression(expr->'lexpr', context);
   right_expr = deparser.expression(expr->'rexpr', context);
 
-  IF ((expr->>'kind')::int = 3) THEN
-    -- AEXPR_DISTINCT
+  IF ((expr->>'kind')::int = ast_constants.a_expr_kind('AEXPR_DISTINCT')) THEN
     RETURN format('%s IS DISTINCT FROM %s', left_expr, right_expr);
   END IF;
 
@@ -726,44 +717,37 @@ BEGIN
 
   kind = (expr->>'kind')::int;
 
-  IF (kind = 0) THEN
-    -- AEXPR_OP
+  IF (kind = ast_constants.a_expr_kind('AEXPR_OP')) THEN
     RETURN deparser.a_expr_op(expr, context);
-  ELSEIF (kind = 1) THEN
-    -- AEXPR_OP_ANY
+  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_OP_ANY')) THEN
     RETURN deparser.a_expr_op_any(expr, context);
-  ELSEIF (kind = 2) THEN
-    -- AEXPR_OP_ALL
+  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_OP_ALL')) THEN
     RETURN deparser.a_expr_op_all(expr, context);
-  ELSEIF (kind = 3) THEN
-    -- AEXPR_DISTINCT
+  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_DISTINCT')) THEN
     RETURN deparser.a_expr_distinct(expr, context);
   ELSEIF (kind = 4) THEN
-    -- AEXPR_NULLIF
+  -- BUG 4 = AEXPR_NOT_DISTINCT!! ???
+  -- ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_NULLIF')) THEN
     RETURN deparser.a_expr_nullif(expr, context);
   ELSEIF (kind = 5) THEN
-    -- AEXPR_OF
+  -- ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_OF')) THEN
+  --  BUG 5 = AEXPR_NULL_IF ?!?!?!
     RETURN deparser.a_expr_of(expr, context);
   ELSEIF (kind = 6) THEN
-    -- AEXPR_IN
+  -- ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_IN')) THEN
+  -- BUG AEXPR_IN is actually 7 ?!?!?
     RETURN deparser.a_expr_in(expr, context);
-  ELSEIF (kind = 7) THEN
-    -- AEXPR_IN
+  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_IN')) THEN
     RETURN deparser.a_expr_in(expr, context);
-  ELSEIF (kind = 8) THEN
-    -- AEXPR_LIKE
+  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_LIKE')) THEN
     RETURN deparser.a_expr_like(expr, context);
-  ELSEIF (kind = 9) THEN
-    -- AEXPR_ILIKE
+  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_ILIKE')) THEN
     RETURN deparser.a_expr_ilike(expr, context);
-  ELSEIF (kind = 10) THEN
-    -- AEXPR_SIMILAR
+  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_SIMILAR')) THEN
     RETURN deparser.a_expr_similar(expr, context);
-  ELSEIF (kind = 11) THEN
-    -- AEXPR_BETWEEN
+  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_BETWEEN')) THEN
     RETURN deparser.a_expr_between(expr, context);
-  ELSEIF (kind = 12) THEN
-    -- AEXPR_NOT_BETWEEN
+  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_NOT_BETWEEN')) THEN
     RETURN deparser.a_expr_not_between(expr, context);
   END IF;
 
@@ -778,6 +762,7 @@ CREATE FUNCTION deparser.bool_expr(
 ) returns text as $$
 DECLARE
   txt text[];
+  boolop int;
 BEGIN
 
   IF (node->>'BoolExpr') IS NULL THEN  
@@ -792,16 +777,17 @@ BEGIN
   IF (node->'args') IS NULL THEN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
   END IF;
+
+  boolop = (node->'boolop')::int;
  
-  IF ((node->>'boolop')::int = 2) THEN
+  IF (boolop = 2) THEN
     RETURN format('NOT IN (%s)', deparser.expression(node->'args'->0, context));
   END IF;
 
   txt = deparser.expressions_array(node->'args', context);
-
-  IF ((node->>'boolop')::int = 0) THEN
+  IF (boolop = ast_constants.bool_expr_type('AND_EXPR')) THEN
     RETURN format('(%s)', array_to_string(txt, ' AND '));
-  ELSEIF ((node->>'boolop')::int = 1) THEN
+  ELSEIF (boolop = ast_constants.bool_expr_type('OR_EXPR')) THEN
     RETURN format('(%s)', array_to_string(txt, ' OR '));
   END IF;
 
@@ -956,6 +942,7 @@ CREATE FUNCTION deparser.sql_value_function(
 ) returns text as $$
 DECLARE
   op int;
+  value text;
 BEGIN
 
   IF (node->'SQLValueFunction') IS NULL THEN
@@ -969,17 +956,41 @@ BEGIN
   node = node->'SQLValueFunction';
   op = (node->'op')::int;
 
-  IF (op = 0) THEN
-    RETURN 'CURRENT_DATE';
-  ELSIF (op = 3) THEN
-    RETURN 'CURRENT_TIMESTAMP';
-  ELSIF (op = 10) THEN 
-    RETURN 'CURRENT_USER';
-  ELSIF (op = 12) THEN
-    RETURN 'SESSION_USER';
-  END IF;
+  SELECT (CASE
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_DATE'))
+      THEN 'CURRENT_DATE' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIME'))
+      THEN 'CURRENT_TIME' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIME_N'))
+      THEN 'CURRENT_TIME_N' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIMESTAMP'))
+      THEN 'CURRENT_TIMESTAMP' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIMESTAMP_N'))
+      THEN 'CURRENT_TIMESTAMP_N' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIME'))
+      THEN 'LOCALTIME' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIME_N'))
+      THEN 'LOCALTIME_N' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIMESTAMP'))
+      THEN 'LOCALTIMESTAMP' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIMESTAMP_N'))
+      THEN 'LOCALTIMESTAMP_N' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_ROLE'))
+      THEN 'CURRENT_ROLE' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_USER'))
+      THEN 'CURRENT_USER'
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_USER'))
+      THEN 'USER' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_SESSION_USER'))
+      THEN 'SESSION_USER' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_CATALOG'))
+      THEN 'CURRENT_CATALOG' 
+  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_SCHEMA'))
+      THEN 'CURRENT_SCHEMA'
+  END)
+  INTO value;
 
-  RAISE EXCEPTION 'BAD_EXPRESSION %', 'SQLValueFunction';
+  RETURN value;
 
 END;
 $$
@@ -1460,7 +1471,6 @@ CREATE FUNCTION deparser.role_spec(
   context text default null
 ) returns text as $$
 DECLARE
-  output text[];
   roletype int;
 BEGIN
     IF (node->'RoleSpec') IS NULL THEN
@@ -1474,20 +1484,17 @@ BEGIN
     node = node->'RoleSpec';
     roletype = (node->'roletype')::int;
 
-    IF (roletype = 0) THEN
-      output = array_append(output, quote_ident(node->>'rolename'));
-    ELSIF (roletype = 1) THEN 
-      output = array_append(output, 'CURRENT_USER');
-    ELSIF (roletype = 2) THEN 
-      output = array_append(output, 'SESSION_USER');
-    ELSIF (roletype = 3) THEN 
-      output = array_append(output, 'PUBLIC');
-    ELSE
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RoleSpec';
+    IF (roletype = ast_constants.role_spec_type('ROLESPEC_CSTRING')) THEN
+      RETURN quote_ident(node->>'rolename');
+    ELSIF (roletype = ast_constants.role_spec_type('ROLESPEC_CURRENT_USER')) THEN 
+      RETURN 'CURRENT_USER';
+    ELSIF (roletype = ast_constants.role_spec_type('ROLESPEC_SESSION_USER')) THEN 
+      RETURN 'SESSION_USER';
+    ELSIF (roletype = ast_constants.role_spec_type('ROLESPEC_PUBLIC')) THEN 
+      RETURN 'PUBLIC';
     END IF;
 
-    RETURN array_to_string(output, ' ');
-
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'RoleSpec';
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -1809,7 +1816,7 @@ BEGIN
     node = node->'Constraint';
     contype = (node->'contype')::int;
 
-    IF (contype = ast_utils.constrainttype_idxs('CONSTR_FOREIGN')) THEN 
+    IF (contype = ast_constants.constr_type('CONSTR_FOREIGN')) THEN 
       output = array_append(output, deparser.reference_constraint(node));
     ELSE
       output = array_append(output, deparser.constraint_stmt(node));
@@ -1855,7 +1862,7 @@ BEGIN
       output = array_append(output, 'NOT VALID');
     END IF;
 
-    IF (contype = ast_utils.constrainttype_idxs('CONSTR_EXCLUSION')) THEN 
+    IF (contype = ast_constants.constr_type('CONSTR_EXCLUSION')) THEN 
       output = array_append(output, deparser.exclusion_constraint(node));
     END IF;
 
@@ -1967,39 +1974,39 @@ BEGIN
     output = array_append(output, 'ON');
     output = array_append(output, objtypes[objtype + 1]);
 
-    IF (objtype = ast_utils.objtypes_idxs('OBJECT_CAST')) THEN
+    IF (objtype = ast_constants.object_type('OBJECT_CAST')) THEN
       output = array_append(output, '(');
       output = array_append(output, deparser.expression(node->'object'->0));
       output = array_append(output, 'AS');
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, ')');
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_DOMCONSTRAINT')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_DOMCONSTRAINT')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, 'DOMAIN');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_OPCLASS')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_OPCLASS')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'USING');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_OPFAMILY')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_OPFAMILY')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'USING');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_OPERATOR')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_OPERATOR')) THEN
       -- TODO lookup noquotes context in pgsql-parser
       output = array_append(output, deparser.expression(node->'object', 'noquotes'));
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_POLICY')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_POLICY')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_ROLE')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_ROLE')) THEN
       output = array_append(output, deparser.expression(node->'object'));
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_RULE')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_RULE')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_TABCONSTRAINT')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_TABCONSTRAINT')) THEN
       IF (jsonb_array_length(node->'object') = 3) THEN 
         output = array_append(output, deparser.expression(node->'object'->2));
         output = array_append(output, 'ON');
@@ -2018,16 +2025,16 @@ BEGIN
         output = array_append(output, 'ON');
         output = array_append(output, deparser.expression(node->'object'->0));
       END IF;
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_TRANSFORM')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_TRANSFORM')) THEN
       output = array_append(output, 'FOR');
       output = array_append(output, deparser.expression(node->'object'->0));
       output = array_append(output, 'LANGUAGE');
       output = array_append(output, deparser.expression(node->'object'->1));
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_TRIGGER')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_TRIGGER')) THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_utils.objtypes_idxs('OBJECT_LARGEOBJECT')) THEN
+    ELSIF (objtype = ast_constants.object_type('OBJECT_LARGEOBJECT')) THEN
       output = array_append(output, deparser.expression(node->'object'));
     ELSE 
       IF (jsonb_typeof(node->'object') = 'array') THEN 
@@ -2207,27 +2214,26 @@ BEGIN
 
     node = node->'VariableSetStmt';
 
-    -- NOTE uses ENUM
     kind = (node->'kind')::int;
-    IF (kind = 0) THEN 
+    IF (kind = ast_constants.variable_set_kind('VAR_SET_VALUE')) THEN 
       IF (node->'is_local' IS NOT NULL AND (node->'is_local')::bool IS TRUE) THEN 
         local = 'LOCAL ';
       END IF;
       output = array_append(output, format('SET %s%s = %s', local, node->>'name', deparser.list(node->'args', ', ', 'simple')));
-    ELSIF (kind = 1) THEN
+    ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_DEFAULT')) THEN
       output = array_append(output, format('SET %s TO DEFAULT', node->>'name'));
-    ELSIF (kind = 2) THEN
+    ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_CURRENT')) THEN
       output = array_append(output, format('SET %s FROM CURRENT', node->>'name'));
-    ELSIF (kind = 3) THEN
+    ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_MULTI')) THEN
       IF (node->>'name' = 'TRANSACTION') THEN
         multi = 'TRANSACTION';
       ELSIF (node->>'name' = 'SESSION CHARACTERISTICS') THEN
         multi = 'SESSION CHARACTERISTICS AS TRANSACTION';
       END IF;
       output = array_append(output, format('SET %s %s', multi, deparser.list(node->'args', ', ', 'simple')));
-    ELSIF (kind = 4) THEN
+    ELSIF (kind = ast_constants.variable_set_kind('VAR_RESET')) THEN
       output = array_append(output, format('RESET %s', node->>'name'));
-    ELSIF (kind = 5) THEN
+    ELSIF (kind = ast_constants.variable_set_kind('VAR_RESET_ALL')) THEN
       output = array_append(output, 'RESET ALL');
     ELSE
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableSetStmt';
@@ -3616,16 +3622,14 @@ BEGIN
       output = array_append(output, deparser.expression(node->'node'));
     END IF;
 
-
-    -- NOTE uses ENUMS
     dir = (node->'sortby_dir')::int;
-    IF (dir = 0) THEN 
+    IF (dir = ast_constants.sort_by_dir('SORTBY_DEFAULT')) THEN 
       -- noop
-    ELSIF (dir = 1) THEN
+    ELSIF (dir = ast_constants.sort_by_dir('SORTBY_ASC')) THEN
       output = array_append(output, 'ASC');
-    ELSIF (dir = 2) THEN
+    ELSIF (dir = ast_constants.sort_by_dir('SORTBY_DESC')) THEN
       output = array_append(output, 'DESC');
-    ELSIF (dir = 3) THEN
+    ELSIF (dir = ast_constants.sort_by_dir('SORTBY_USING')) THEN
       output = array_append(output, 'USING');
       output = array_append(output, deparser.list(node->'useOp'));
     ELSE 
@@ -3634,11 +3638,11 @@ BEGIN
 
     IF (node->'sortby_nulls' IS NOT NULL) THEN
       nulls = (node->'sortby_nulls')::int;
-      IF (nulls = 0) THEN 
+      IF (nulls = ast_constants.sort_by_nulls('SORTBY_NULLS_DEFAULT')) THEN 
         -- noop
-      ELSIF (nulls = 1) THEN
+      ELSIF (nulls = ast_constants.sort_by_nulls('SORTBY_NULLS_FIRST')) THEN
         output = array_append(output, 'NULLS FIRST');
-      ELSIF (nulls = 2) THEN
+      ELSIF (nulls = ast_constants.sort_by_nulls('SORTBY_NULLS_LAST')) THEN
         output = array_append(output, 'NULLS LAST');
       END IF;
     END IF;
@@ -3892,7 +3896,7 @@ BEGIN
 
     node = node->'RenameStmt';
     objtype = (node->'renameType')::int;
-    IF (objtype = ast_utils.objtypes_idxs('OBJECT_COLUMN')) THEN
+    IF (objtype = ast_constants.object_type('OBJECT_COLUMN')) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, 'TABLE');
       output = array_append(output, deparser.expression(node->'relation'));
@@ -4132,15 +4136,15 @@ BEGIN
 
     node = node->'LockingClause';
     strength = (node->'strength')::int;
-    IF (strength = 0) THEN 
+    IF (strength = ast_constants.lock_clause_strength('LCS_NONE')) THEN 
       output = array_append(output, 'NONE');
-    ELSIF (strength = 1) THEN
+    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORKEYSHARE')) THEN
       output = array_append(output, 'FOR KEY SHARE');
-    ELSIF (strength = 2) THEN
+    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORSHARE')) THEN
       output = array_append(output, 'FOR SHARE');
-    ELSIF (strength = 3) THEN
+    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORNOKEYUPDATE')) THEN
       output = array_append(output, 'FOR NO KEY UPDATE');
-    ELSIF (strength = 4) THEN
+    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORUPDATE')) THEN
       output = array_append(output, 'FOR UPDATE');
     END IF;
 
@@ -4223,7 +4227,7 @@ BEGIN
 
     node = node->'NullTest';
     nulltesttype = (node->'nulltesttype')::int;
-    IF (nulltesttype = 0) THEN 
+    IF (nulltesttype = ast_constants.null_test_type('IS_NULL')) THEN 
       output = array_append(output, 'IS NULL');
     ELSE 
       output = array_append(output, 'IS NOT NULL');

@@ -2,6 +2,8 @@
 %project=ast
 %uri=ast
   
+schemas/ast_constants/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_constants/schema
+schemas/ast_constants/procedures/constants [schemas/ast_constants/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_constants/procedures/constants
 schemas/ast_helpers/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_helpers/schema
 schemas/ast/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast/schema
 schemas/ast/procedures/types [schemas/ast/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast/procedures/types
@@ -9,4 +11,4 @@ schemas/ast_helpers/procedures/helpers [schemas/ast_helpers/schema schemas/ast/p
 schemas/ast_utils/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_utils/schema
 schemas/ast_utils/procedures/utils [schemas/ast_utils/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_utils/procedures/utils
 schemas/deparser/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/deparser/schema
-schemas/deparser/procedures/deparse [schemas/deparser/schema schemas/ast_utils/procedures/utils] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/deparser/procedures/deparse
+schemas/deparser/procedures/deparse [schemas/deparser/schema schemas/ast_utils/procedures/utils schemas/ast_constants/procedures/constants] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/deparser/procedures/deparse
