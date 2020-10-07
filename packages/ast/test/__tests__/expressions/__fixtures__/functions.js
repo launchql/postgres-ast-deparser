@@ -82,7 +82,6 @@ export const functions = [
               {
                 String: {
                   str: 'some string'
-                  // "\nDECLARE\n  txt text;\nBEGIN\n\n  IF (node->'A_Const') IS NULL THEN\n    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Const';\n  END IF;\n\n  node = node->'A_Const';\n\n  IF (node->'val') IS NULL THEN\n    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Const';\n  END IF;\n\n  txt = collections_private.deparse_expression(node->'val', context);\n\n  IF (node->'val'->'String') IS NOT NULL THEN\n    txt = REPLACE(txt, '''', '''''' );\n    return format('''%s''', txt);\n  END IF;\n\n  RETURN txt;\n\nEND;\n"
                 }
               }
             ],
