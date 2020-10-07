@@ -6,6 +6,9 @@ GRANT USAGE ON SCHEMA inflection TO PUBLIC;
 ALTER DEFAULT PRIVILEGES IN SCHEMA inflection 
  GRANT EXECUTE ON FUNCTIONS  TO PUBLIC;
 
+-- TODO simplify this:
+-- https://gist.github.com/pyramation/a0dc84c663c32ea4152aa3577d99e976
+
 CREATE FUNCTION inflection.no_consecutive_caps_till_end ( str text ) RETURNS text AS $EOFCODE$
 DECLARE
   result text[];

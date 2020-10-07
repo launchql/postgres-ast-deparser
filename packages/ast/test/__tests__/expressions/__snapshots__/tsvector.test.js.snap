@@ -4,7 +4,7 @@ exports[`pure psql 1`] = `"(setweight(to_tsvector(\\"coalesce\\"(NEW.field1, '')
 
 exports[`trigger tsvector index 1`] = `
 Object {
-  "deparse": "(setweight(to_tsvector('pg_catalog.simple', \\"coalesce\\"(array_to_string(tags::text[], ' '), '')), 'A') || (setweight(to_tsvector('pg_catalog.simple', \\"coalesce\\"(name, '')), 'A') || (setweight(to_tsvector('english', \\"coalesce\\"(description, '')), 'B') || setweight(to_tsvector('pg_catalog.english', \\"coalesce\\"(name, '')), 'A'))))",
+  "deparse": "(setweight(to_tsvector('pg_catalog.simple', \\"coalesce\\"(array_to_string(tags::citext[], ' '), '')), 'A') || (setweight(to_tsvector('pg_catalog.simple', \\"coalesce\\"(name, '')), 'A') || (setweight(to_tsvector('english', \\"coalesce\\"(description, '')), 'B') || setweight(to_tsvector('pg_catalog.english', \\"coalesce\\"(name, '')), 'A'))))",
 }
 `;
 

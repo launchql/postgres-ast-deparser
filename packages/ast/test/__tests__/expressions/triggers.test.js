@@ -30,20 +30,20 @@ select deparser.deparse( '${JSON.stringify(json)}'::jsonb );
 
 it('create_trigger_stmt', async () => {
   const [result] = await db.any(`
-select ast.create_trigger_stmt('trigger',
-    ast.range_var('schema-name', 'mytable', true, 'p'),
-    to_jsonb(ARRAY[ ast.string('tg-schema'),ast.string('tgname') ]),
-    NULL,
-    true,
-    2,
-    16,
-    ast.a_expr(3, 
-        ast.column_ref(
-          to_jsonb(ARRAY[ ast.string('old'),ast.string('field-a') ])
+select ast.create_trig_stmt(
+    v_trigname := 'trigger',
+    v_relation := ast.range_var( v_schemaname := 'schema-name', v_relname := 'mytable', v_inh := true, v_relpersistence := 'p'),
+    v_funcname := to_jsonb(ARRAY[ ast.string('tg-schema'),ast.string('tgname') ]),
+    v_row := true,
+    v_timing := 2,
+    v_events := 16,
+    v_whenClause := ast.a_expr( v_kind := 3, 
+        v_lexpr := ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('old'),ast.string('field-b') ])
         ),
-        '=',
-        ast.column_ref(
-          to_jsonb(ARRAY[ ast.string('new'),ast.string('field-a') ])
+        v_name := to_jsonb(ARRAY[ast.string('=')]),
+        v_rexpr := ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('new'),ast.string('field-b') ])
         ) 
     )
 );
@@ -54,20 +54,20 @@ select ast.create_trigger_stmt('trigger',
 it('create_trigger_stmt deparse', async () => {
   const [result] = await db.any(`
 select deparser.deparse( 
-  ast.create_trigger_stmt('trigger',
-    ast.range_var('schema-name', 'mytable', true, 'p'),
-    to_jsonb(ARRAY[ ast.string('tg-schema'),ast.string('tgname') ]),
-    to_jsonb(ARRAY[ ast.string('arg2'),ast.string('arg2') ]),
-    true,
-    2,
-    16,
-    ast.a_expr(3, 
-        ast.column_ref(
-          to_jsonb(ARRAY[ ast.string('old'),ast.string('field-a') ])
+  ast.create_trig_stmt(
+    v_trigname := 'trigger',
+    v_relation := ast.range_var( v_schemaname := 'schema-name', v_relname := 'mytable', v_inh := true, v_relpersistence := 'p'),
+    v_funcname := to_jsonb(ARRAY[ ast.string('tg-schema'),ast.string('tgname') ]),
+    v_row := true,
+    v_timing := 2,
+    v_events := 16,
+    v_whenClause := ast.a_expr( v_kind := 3, 
+        v_lexpr := ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('old'),ast.string('field-b') ])
         ),
-        '=',
-        ast.column_ref(
-          to_jsonb(ARRAY[ ast.string('new'),ast.string('field-a') ])
+        v_name := to_jsonb(ARRAY[ast.string('=')]),
+        v_rexpr := ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('new'),ast.string('field-b') ])
         ) 
     )
   )

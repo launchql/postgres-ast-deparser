@@ -31,37 +31,47 @@ select deparser.deparse( '${JSON.stringify(json)}'::jsonb );
 it('create_function_stmt', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse( ast.create_function_stmt(
-  -- name
-  to_jsonb(ARRAY[ ast.string('schemer'),ast.string('funker') ]),
-  -- params
-  to_jsonb(ARRAY[
+  v_funcname := to_jsonb(ARRAY[ ast.string('schemer'),ast.string('funker') ]),
+  v_parameters := to_jsonb(ARRAY[
     ast.function_parameter(
-      'param0',
-      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
-      105
+      v_name := 'param0',
+      v_argType := ast.type_name( 
+        v_names := to_jsonb(ARRAY[ast.string('text')])
+      ),
+      v_mode := 105
     ),
     ast.function_parameter(
-      'param1',
-      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
-      105
+      v_name := 'param1',
+      v_argType := ast.type_name( 
+        v_names := to_jsonb(ARRAY[ast.string('text')])
+      ),
+      v_mode := 105
     ),
     ast.function_parameter(
-      'param2',
-      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true ),
-      105,
-      ast.a_const(ast.null())
+      v_name := 'param2',
+      v_argType := ast.type_name( 
+        v_names := to_jsonb(ARRAY[ast.string('text')]),
+        v_arrayBounds := to_jsonb(ARRAY[ast.integer(-1)])
+      ),
+      v_mode := 105,
+      v_defexpr := ast.a_const(ast.null())
     ),
     ast.function_parameter(
-      'param3',
-      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true ),
-      105,
-      ast.a_const(ast.null())
+      v_name := 'param3',
+      v_argType := ast.type_name( 
+        v_names := to_jsonb(ARRAY[ast.string('text')]),
+        v_arrayBounds := to_jsonb(ARRAY[ast.integer(-1)])
+      ),
+      v_mode := 105,
+      v_defexpr := ast.a_const(ast.null())
     )
   ]::jsonb[]),
-  -- return type
-  ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
-  -- options 
-  to_jsonb(ARRAY[
+  
+  v_returnType := ast.type_name( 
+    v_names := to_jsonb(ARRAY[ast.string('text')])
+  ),
+
+  v_options := to_jsonb(ARRAY[
     ast.def_elem(
       'volatility',
       ast.string('volatile')
@@ -82,26 +92,31 @@ select deparser.deparse( ast.create_function_stmt(
 it('create_function_stmt ast', async () => {
   const [{ create_function_stmt: result }] = await db.any(`
 select ast.create_function_stmt(
-  -- name
-  to_jsonb(ARRAY[ ast.string('schemer'),ast.string('funker') ]),
-  -- params
-  to_jsonb(ARRAY[
+  v_funcname := to_jsonb(ARRAY[ ast.string('schemer'),ast.string('funker') ]),
+  v_parameters := to_jsonb(ARRAY[
     ast.function_parameter(
-      'param1',
-      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
-      105
+      v_name := 'param1',
+      v_argType := ast.type_name( 
+        v_names := to_jsonb(ARRAY[ast.string('text')])
+      ),
+      v_mode := 105
     ),
     ast.function_parameter(
-      'param2',
-      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true ),
-      105
+      v_name := 'param2',
+      v_argType := ast.type_name( 
+        v_names := to_jsonb(ARRAY[ast.string('text')]),
+        v_arrayBounds := to_jsonb(ARRAY[ast.integer(-1)])
+      ),
+      v_mode := 105
       --ast.a_const(ast.null())
     )
   ]::jsonb[]),
-  -- return type
-  ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
-  -- options 
-  to_jsonb(ARRAY[
+
+  v_returnType := ast.type_name( 
+    v_names := to_jsonb(ARRAY[ast.string('text')])
+  ),
+
+  v_options := to_jsonb(ARRAY[
     ast.def_elem(
       'volatility',
       ast.string('volatile')
@@ -127,14 +142,19 @@ SELECT ast_helpers.create_function(
   'text',
   to_jsonb(ARRAY[
     ast.function_parameter(
-      'param1',
-      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), false ),
-      105
+      v_name := 'param1',
+      v_argType := ast.type_name( 
+        v_names := to_jsonb(ARRAY[ast.string('text')])
+      ),
+      v_mode := 105
     ),
     ast.function_parameter(
-      'param2',
-      ast.type_name( to_jsonb(ARRAY[ast.string('text')]), true ),
-      105
+      v_name := 'param2',
+      v_argType := ast.type_name( 
+        v_names := to_jsonb(ARRAY[ast.string('text')]),
+        v_arrayBounds := to_jsonb(ARRAY[ast.integer(-1)])
+      ),
+      v_mode := 105
       --ast.a_const(ast.null())
     )
   ]::jsonb[]),

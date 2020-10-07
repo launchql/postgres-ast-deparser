@@ -10,7 +10,7 @@ exports[`create trig stmt 1`] = `
 
 exports[`create_trigger_stmt 1`] = `
 Object {
-  "create_trigger_stmt": Object {
+  "create_trig_stmt": Object {
     "CreateTrigStmt": Object {
       "events": 16,
       "funcname": Array [
@@ -49,7 +49,7 @@ Object {
                 },
                 Object {
                   "String": Object {
-                    "str": "field-a",
+                    "str": "field-b",
                   },
                 },
               ],
@@ -72,7 +72,7 @@ Object {
                 },
                 Object {
                   "String": Object {
-                    "str": "field-a",
+                    "str": "field-b",
                   },
                 },
               ],
@@ -90,8 +90,8 @@ Object {
   "deparse": "CREATE TRIGGER trigger 
  BEFORE UPDATE ON \\"schema-name\\".mytable 
  FOR EACH ROW 
- WHEN (OLD.\\"field-a\\" IS DISTINCT FROM NEW.\\"field-a\\") 
- EXECUTE PROCEDURE \\"tg-schema\\".tgname ( 'arg2', 'arg2' )",
+ WHEN (OLD.\\"field-b\\" IS DISTINCT FROM NEW.\\"field-b\\") 
+ EXECUTE PROCEDURE \\"tg-schema\\".tgname ( )",
 }
 `;
 

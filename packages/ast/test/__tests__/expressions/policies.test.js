@@ -35,24 +35,24 @@ SELECT deparser.deparse(ast_helpers.create_policy(
   'mytable',
   'authenticated',
   ast.bool_expr(1, to_jsonb(ARRAY[
-    ast.a_expr(0,
-      ast.column_ref(
-        to_jsonb(ARRAY[ ast.string('responder_id') ])
+    ast.a_expr(v_kind := 0,
+      v_lexpr := ast.column_ref(
+        v_fields := to_jsonb(ARRAY[ ast.string('responder_id') ])
       ),
-      '=',
-      ast.func_call(
-        to_jsonb(ARRAY[ ast.string('dbe'), ast.string('get_uid') ]),
-        to_jsonb(ARRAY[ ast.string('c'), ast.string('b') ])
+      v_name := to_jsonb(ARRAY[ast.string('=')]),
+      v_rexpr := ast.func_call(
+        v_funcname := to_jsonb(ARRAY[ ast.string('dbe'), ast.string('get_uid') ]),
+        v_args := to_jsonb(ARRAY[ ast.string('c'), ast.string('b') ])
       )  
     ),
-    ast.a_expr(0,
-      ast.column_ref(
-        to_jsonb(ARRAY[ ast.string('requester_id') ])
+    ast.a_expr(v_kind := 0,
+      v_lexpr := ast.column_ref(
+        v_fields := to_jsonb(ARRAY[ ast.string('requester_id') ])
       ),
-      '=',
-      ast.func_call(
-        to_jsonb(ARRAY[ ast.string('dbe'), ast.string('get_other_uid') ]),
-        to_jsonb(ARRAY[ ast.string('c'), ast.string('b') ])
+      v_name := to_jsonb(ARRAY[ast.string('=')]),
+      v_rexpr := ast.func_call(
+        v_funcname := to_jsonb(ARRAY[ ast.string('dbe'), ast.string('get_other_uid') ]),
+        v_args := to_jsonb(ARRAY[ ast.string('c'), ast.string('b') ])
       )  
     )
   ])),
