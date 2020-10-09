@@ -176,11 +176,13 @@ RETURN result;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.raw_stmt ( v_stmt jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast.raw_stmt ( v_stmt jsonb DEFAULT NULL, v_stmt_len int DEFAULT NULL, v_stmt_location int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
 DECLARE
     result jsonb = '{"RawStmt":{}}'::jsonb;
 BEGIN
     result = ast.jsonb_set(result, '{RawStmt, stmt}', v_stmt);
+    result = ast.jsonb_set(result, '{RawStmt, stmt_len}', to_jsonb(v_stmt_len));
+    result = ast.jsonb_set(result, '{RawStmt, stmt_location}', to_jsonb(v_stmt_location));
     RETURN result;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
@@ -2540,6 +2542,23 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION deparser.raw_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+BEGIN
+    IF (node->'RawStmt') IS NULL THEN  
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RawStmt';
+    END IF;
+
+    node = node->'RawStmt';
+
+    IF (node->'stmt_len') IS NOT NULL THEN
+      RETURN deparser.expression(node->'stmt') || ';';
+    ELSE
+      RETURN deparser.expression(node->'stmt');
+    END IF;
+
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION deparser.a_expr_between ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
@@ -4791,6 +4810,12 @@ BEGIN
     output = array_append(output, 'ON');
     output = array_append(output, deparser.expression(node->'relation'));
 
+    -- BTREE is default, don't need to explicitly put it there
+    IF (node->'accessMethod' IS NOT NULL AND upper(node->>'accessMethod') != 'BTREE') THEN
+      output = array_append(output, 'USING');
+      output = array_append(output, upper(node->>'accessMethod'));
+    END IF;
+
     IF (node->'indexParams' IS NOT NULL AND jsonb_array_length(node->'indexParams') > 0) THEN 
       output = array_append(output, deparser.parens(deparser.list(node->'indexParams')));
     END IF; 
@@ -5584,6 +5609,7 @@ BEGIN
       output = array_append(output, deparser.list_quotes(node->'objname', '.'));
     END IF;
 
+    -- TODO args_unspecified bool implies no objargs...
     IF (node->'objargs' IS NOT NULL AND jsonb_array_length(node->'objargs') > 0) THEN 
       output = array_append(output, '(');
       FOR item in SELECT * FROM jsonb_array_elements(node->'objargs')
@@ -6113,12 +6139,8 @@ BEGIN
     FOR obj IN SELECT * FROM jsonb_array_elements(node->'objects')
     LOOP
       IF (jsonb_typeof(obj) = 'array') THEN
-        -- quoted = array_append(quoted, deparser.quoted_name(obj));
-        quoted = array_append(quoted, deparser.list(obj, '.'));
+        quoted = array_append(quoted, deparser.quoted_name(obj));
       ELSE
-        -- TODO if you quote this, then you end up with:
-        -- DROP FUNCTION "sillysrf (int)"
-        -- quoted = array_append(quoted, quote_ident(deparser.expression(obj)));
         quoted = array_append(quoted, deparser.expression(obj));
       END IF;
     END LOOP;
@@ -6470,7 +6492,7 @@ BEGIN
   ELSEIF (expr->>'RangeVar') IS NOT NULL THEN
     RETURN deparser.range_var(expr, context);
   ELSEIF (expr->>'RawStmt') IS NOT NULL THEN
-    RETURN deparser.expression(expr->'RawStmt'->'stmt');
+    RETURN deparser.raw_stmt(expr, context);
   ELSEIF (expr->>'RenameStmt') IS NOT NULL THEN
     RETURN deparser.rename_stmt(expr, context);
   ELSEIF (expr->>'ResTarget') IS NOT NULL THEN

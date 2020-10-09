@@ -23,12 +23,16 @@ IMMUTABLE;
 
 
 CREATE FUNCTION ast.raw_stmt (
-    v_stmt jsonb DEFAULT NULL
+    v_stmt jsonb DEFAULT NULL,
+    v_stmt_len int DEFAULT NULL,
+    v_stmt_location int DEFAULT NULL
 ) RETURNS jsonb AS $EOFCODE$
 DECLARE
     result jsonb = '{"RawStmt":{}}'::jsonb;
 BEGIN
     result = ast.jsonb_set(result, '{RawStmt, stmt}', v_stmt);
+    result = ast.jsonb_set(result, '{RawStmt, stmt_len}', to_jsonb(v_stmt_len));
+    result = ast.jsonb_set(result, '{RawStmt, stmt_location}', to_jsonb(v_stmt_location));
     RETURN result;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;

@@ -1558,3 +1558,203 @@ select deparser.deparse(
 //   );
 //   expect(result).toMatchSnapshot();
 // });
+
+it('drop_stmt', async () => {
+  for (const obj of [
+    ['my-schema', 'my-function', 0],
+    ['myschema', 'myfunction', 0]
+  ]) {
+    const [schema_name, index_name, behavior] = obj;
+
+    const [{ deparse: result }] = await db.any(
+      `select deparser.deparse(
+      ast.drop_stmt(
+        v_objects:= to_jsonb(ARRAY[
+          to_jsonb(ARRAY[
+            ast.string($1::text),
+            ast.string($2::text)
+          ])
+        ]),
+        v_removeType:= ast_constants.object_type('OBJECT_INDEX'),
+        v_behavior:= $3
+      )
+);
+  `,
+      [schema_name, index_name, behavior]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('drop_stmt', async () => {
+  for (const obj of [
+    ['my-schema', 'my-table', 0],
+    ['myschema', 'mytable', 0]
+  ]) {
+    const [schema_name, table_name, behavior] = obj;
+
+    const [{ deparse: result }] = await db.any(
+      `select deparser.deparse(
+      ast.drop_stmt(
+        v_objects:= to_jsonb(ARRAY[
+          to_jsonb(ARRAY[
+            ast.string($1::text),
+            ast.string($2::text)
+          ])
+        ]),
+        v_removeType:= ast_constants.object_type('OBJECT_TABLE'),
+        v_behavior:= $3
+      )
+);
+  `,
+      [schema_name, table_name, behavior]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+const str = (s) => ({
+  String: {
+    str: s
+  }
+});
+
+it('drop_stmt', async () => {
+  for (const obj of [
+    [
+      [
+        ['some-schema', 'some-table'],
+        ['someschema', 'sometable'],
+        ['sometable'],
+        ['some-table']
+      ],
+      1
+    ],
+    [[['myschema', 'mytable']], 0]
+  ]) {
+    const [relations, behavior] = obj;
+
+    const [{ deparse: result }] = await db.any(
+      `select deparser.deparse(
+      ast.drop_stmt(
+        v_objects:= $1::jsonb,
+        v_removeType:= ast_constants.object_type('OBJECT_TABLE'),
+        v_behavior:= $2
+      )
+);
+  `,
+      [
+        JSON.stringify(
+          relations.map((rel) => {
+            const [schema_name, rel_name] = rel;
+            return rel_name
+              ? [str(schema_name), str(rel_name)]
+              : [str(schema_name)];
+          })
+        ),
+        behavior
+      ]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('drop_stmt', async () => {
+  for (const obj of [
+    ['schema-name', 'my-func', 'int', 0],
+    ['schema-name', 'myfunction', 'int', 0],
+    ['schemaname', 'my-func', 'int', 0]
+  ]) {
+    const [schema_name, function_name, param_type, behavior] = obj;
+
+    const [{ deparse: result }] = await db.any(
+      `select deparser.deparse(ast.drop_stmt(
+      v_objects:= to_jsonb(ARRAY[
+        ast.object_with_args(
+          v_objname := to_jsonb(ARRAY[
+            ast.string($1::text),
+            ast.string($2::text)
+          ]),
+          v_objargs := to_jsonb(ARRAY[
+            ast.string($3::text)
+          ])  
+        )
+      ]),
+      v_removeType:= ast_constants.object_type('OBJECT_FUNCTION'),
+      v_behavior:= $4
+    )
+);
+  `,
+      [schema_name, function_name, param_type, behavior]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+const renderArgs = (args) => {
+  return args.map((arg) => {
+    return str(arg);
+  });
+};
+
+const objectWithArgs = (params) => {
+  const [schema, rel, args] = params;
+  if (schema) {
+    return {
+      ObjectWithArgs: {
+        objname: [str(schema), str(rel)],
+        objargs: renderArgs(args)
+      }
+    };
+  } else {
+    return {
+      ObjectWithArgs: {
+        objname: [str(rel)],
+        objargs: renderArgs(args)
+      }
+    };
+  }
+};
+
+it('drop_stmt', async () => {
+  for (const obj of [
+    [
+      [
+        ['some-schema', 'some-function', ['int']],
+        ['someschema', 'somefunction', ['int', 'bool']],
+        [null, 'somefunction', []],
+        [null, 'some-function', ['text[]']]
+      ],
+      1
+    ],
+    [
+      [
+        ['some-schema', 'some-function', ['int']],
+        ['someschema', 'somefunction', ['int', 'bool']],
+        [null, 'somefunction', []],
+        [null, 'somefunction', ['text[]']]
+      ],
+      0
+    ]
+  ]) {
+    const [fns, behavior] = obj;
+    const [{ deparse: result }] = await db.any(
+      `select deparser.deparse(
+      ast.drop_stmt(
+        v_objects:= $1::jsonb,
+        v_removeType:= ast_constants.object_type('OBJECT_FUNCTION'),
+        v_behavior:= $2
+      )
+);
+  `,
+      [
+        JSON.stringify(
+          fns.map((fn) => {
+            return objectWithArgs(fn);
+          })
+        ),
+        behavior
+      ]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});

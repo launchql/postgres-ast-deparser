@@ -2,258 +2,280 @@
 
 exports[`a_expr 1`] = `"(a = b)"`;
 
+exports[`drop_stmt 1`] = `"DROP INDEX \\"my-schema\\".\\"my-function\\""`;
+
+exports[`drop_stmt 2`] = `"DROP INDEX myschema.myfunction"`;
+
+exports[`drop_stmt 3`] = `"DROP TABLE \\"my-schema\\".\\"my-table\\""`;
+
+exports[`drop_stmt 4`] = `"DROP TABLE myschema.mytable"`;
+
+exports[`drop_stmt 5`] = `"DROP TABLE \\"some-schema\\".\\"some-table\\", someschema.sometable, sometable, \\"some-table\\" CASCADE"`;
+
+exports[`drop_stmt 6`] = `"DROP TABLE myschema.mytable"`;
+
+exports[`drop_stmt 7`] = `"DROP FUNCTION \\"schema-name\\".\\"my-func\\" ( int )"`;
+
+exports[`drop_stmt 8`] = `"DROP FUNCTION \\"schema-name\\".myfunction ( int )"`;
+
+exports[`drop_stmt 9`] = `"DROP FUNCTION schemaname.\\"my-func\\" ( int )"`;
+
+exports[`drop_stmt 10`] = `"DROP FUNCTION \\"some-schema\\".\\"some-function\\" ( int ), someschema.somefunction ( int, bool ), somefunction, \\"some-function\\" ( text[] ) CASCADE"`;
+
+exports[`drop_stmt 11`] = `"DROP FUNCTION \\"some-schema\\".\\"some-function\\" ( int ), someschema.somefunction ( int, bool ), somefunction, somefunction ( text[] )"`;
+
 exports[`func_call 1`] = `"dan()"`;
 
-exports[`insert_stmt 1`] = `"INSERT INTO objects.object (name, val, active, hash) VALUES ('name', 'val', 't'::boolean, 'abcdefg'), ('name', 'val', 't'::boolean, 'abcdefg'), ('name', 'val', 't'::boolean, 'abcdefg')"`;
+exports[`insert_stmt 1`] = `"INSERT INTO objects.object (name, val, active, hash) VALUES ('name', 'val', 't'::boolean, 'abcdefg'), ('name', 'val', 't'::boolean, 'abcdefg'), ('name', 'val', 't'::boolean, 'abcdefg');"`;
 
-exports[`insert_stmt 2`] = `"INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name"`;
+exports[`insert_stmt 2`] = `"INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name;"`;
 
-exports[`insert_stmt 3`] = `"INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name WHERE (prop = 1)"`;
+exports[`insert_stmt 3`] = `"INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name WHERE (prop = 1);"`;
 
-exports[`insert_stmt 4`] = `"INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO NOTHING"`;
+exports[`insert_stmt 4`] = `"INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO NOTHING;"`;
 
-exports[`insert_stmt 5`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT ON CONSTRAINT customers_name_key DO NOTHING"`;
+exports[`insert_stmt 5`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT ON CONSTRAINT customers_name_key DO NOTHING;"`;
 
-exports[`insert_stmt 6`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = ((EXCLUDED.email || ';') || customers.email)"`;
+exports[`insert_stmt 6`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = ((EXCLUDED.email || ';') || customers.email);"`;
 
-exports[`insert_stmt 7`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = ((EXCLUDED.email || ';') || customers.email), level = (customers.level + 1), other = EXCLUDED.other"`;
+exports[`insert_stmt 7`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = ((EXCLUDED.email || ';') || customers.email), level = (customers.level + 1), other = EXCLUDED.other;"`;
 
-exports[`insert_stmt 8`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (id, project_id) DO UPDATE SET email = ((EXCLUDED.email || ';') || customers.email), level = (customers.level + 1), other = EXCLUDED.other RETURNING *"`;
+exports[`insert_stmt 8`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (id, project_id) DO UPDATE SET email = ((EXCLUDED.email || ';') || customers.email), level = (customers.level + 1), other = EXCLUDED.other RETURNING *;"`;
 
 exports[`raw_stmt 1`] = `"NULL::text[]"`;
 
-exports[`select_stmt 1`] = `"SELECT * onek WHERE (onek.unique1 < 10) ORDER BY onek.unique1"`;
+exports[`select_stmt 1`] = `"SELECT * onek WHERE (onek.unique1 < 10) ORDER BY onek.unique1;"`;
 
 exports[`select_stmt 2`] = `
 "SELECT onek.unique1,
-onek.stringu1 onek WHERE (onek.unique1 < 20) ORDER BY unique1 USING >"
+onek.stringu1 onek WHERE (onek.unique1 < 20) ORDER BY unique1 USING >;"
 `;
 
 exports[`select_stmt 3`] = `
 "SELECT onek.unique1,
-onek.stringu1 onek WHERE (onek.unique1 > 980) ORDER BY stringu1 USING <"
+onek.stringu1 onek WHERE (onek.unique1 > 980) ORDER BY stringu1 USING <;"
 `;
 
 exports[`select_stmt 4`] = `
 "SELECT onek.unique1,
 onek.string4 onek WHERE (onek.unique1 > 980) ORDER BY string4 USING <,
-unique1 USING >"
+unique1 USING >;"
 `;
 
 exports[`select_stmt 5`] = `
 "SELECT onek.unique1,
 onek.string4 onek WHERE (onek.unique1 > 980) ORDER BY string4 USING >,
-unique1 USING <"
+unique1 USING <;"
 `;
 
 exports[`select_stmt 6`] = `
 "SELECT onek.unique1,
 onek.string4 onek WHERE (onek.unique1 < 20) ORDER BY unique1 USING >,
-string4 USING <"
+string4 USING <;"
 `;
 
 exports[`select_stmt 7`] = `
 "SELECT onek.unique1,
 onek.string4 onek WHERE (onek.unique1 < 20) ORDER BY unique1 USING <,
-string4 USING >"
+string4 USING >;"
 `;
 
 exports[`select_stmt 8`] = `null`;
 
-exports[`select_stmt 9`] = `"SET enable_seqscan = 'off'"`;
+exports[`select_stmt 9`] = `"SET enable_seqscan = 'off';"`;
 
-exports[`select_stmt 10`] = `"SET enable_bitmapscan = 'off'"`;
+exports[`select_stmt 10`] = `"SET enable_bitmapscan = 'off';"`;
 
-exports[`select_stmt 11`] = `"SET enable_sort = 'off'"`;
+exports[`select_stmt 11`] = `"SET enable_sort = 'off';"`;
 
-exports[`select_stmt 12`] = `"SELECT onek2.* onek2 WHERE (onek2.unique1 < 10)"`;
+exports[`select_stmt 12`] = `"SELECT onek2.* onek2 WHERE (onek2.unique1 < 10);"`;
 
 exports[`select_stmt 13`] = `
 "SELECT onek2.unique1,
-onek2.stringu1 onek2 WHERE (onek2.unique1 < 20) ORDER BY unique1 USING >"
+onek2.stringu1 onek2 WHERE (onek2.unique1 < 20) ORDER BY unique1 USING >;"
 `;
 
 exports[`select_stmt 14`] = `
 "SELECT onek2.unique1,
-onek2.stringu1 onek2 WHERE (onek2.unique1 > 980)"
+onek2.stringu1 onek2 WHERE (onek2.unique1 > 980);"
 `;
 
-exports[`select_stmt 15`] = `"RESET enable_seqscan"`;
+exports[`select_stmt 15`] = `"RESET enable_seqscan;"`;
 
-exports[`select_stmt 16`] = `"RESET enable_bitmapscan"`;
+exports[`select_stmt 16`] = `"RESET enable_bitmapscan;"`;
 
-exports[`select_stmt 17`] = `"RESET enable_sort"`;
+exports[`select_stmt 17`] = `"RESET enable_sort;"`;
 
 exports[`select_stmt 18`] = `
 "SELECT two,
 stringu1,
 ten,
-string4 tmp onek"
+string4 tmp onek;"
 `;
 
 exports[`select_stmt 19`] = `
 "SELECT p.name,
-p.age person AS p"
+p.age person AS p;"
 `;
 
 exports[`select_stmt 20`] = `
 "SELECT p.name,
 p.age person AS p ORDER BY age USING >,
-name"
+name;"
 `;
 
-exports[`select_stmt 21`] = `"SELECT foo (SELECT 1) AS foo"`;
+exports[`select_stmt 21`] = `"SELECT foo (SELECT 1) AS foo;"`;
 
-exports[`select_stmt 22`] = `"SELECT foo (SELECT NULL) AS foo"`;
+exports[`select_stmt 22`] = `"SELECT foo (SELECT NULL) AS foo;"`;
 
 exports[`select_stmt 23`] = `
 "SELECT foo (SELECT 'xyzzy',
 1,
-NULL) AS foo"
+NULL) AS foo;"
 `;
 
 exports[`select_stmt 24`] = `
 "SELECT * onek,
-(VALUES (147, 'RFAAAA'), (931, 'VJAAAA')) AS v (i, j) WHERE ((onek.unique1 = v.i) AND (onek.stringu1 = v.j))"
+(VALUES (147, 'RFAAAA'), (931, 'VJAAAA')) AS v (i, j) WHERE ((onek.unique1 = v.i) AND (onek.stringu1 = v.j));"
 `;
 
 exports[`select_stmt 25`] = `
 "SELECT * onek,
-(VALUES ((SELECT i (VALUES (10000), (2), (389), (1000), (2000), ((SELECT 10029))) AS foo (i) ORDER BY i ASC LIMIT 1))) AS bar (i) WHERE (onek.unique1 = bar.i)"
+(VALUES ((SELECT i (VALUES (10000), (2), (389), (1000), (2000), ((SELECT 10029))) AS foo (i) ORDER BY i ASC LIMIT 1))) AS bar (i) WHERE (onek.unique1 = bar.i);"
 `;
 
-exports[`select_stmt 26`] = `"SELECT * onek WHERE (unique1, ten) IN (VALUES (1, 1), (20, 0), (99, 9), (17, 99)) ORDER BY unique1"`;
+exports[`select_stmt 26`] = `"SELECT * onek WHERE (unique1, ten) IN (VALUES (1, 1), (20, 0), (99, 9), (17, 99)) ORDER BY unique1;"`;
 
-exports[`select_stmt 27`] = `"VALUES (1, 2), (3, (4 + 4)), (7, 77.7)"`;
+exports[`select_stmt 27`] = `"VALUES (1, 2), (3, (4 + 4)), (7, 77.7);"`;
 
 exports[`select_stmt 28`] = `
 "( ( VALUES (1, 2), (3, (4 + 4)), (7, 77.7) ) UNION ALL ( SELECT (2 + 2),
-57 ) ) UNION ALL ( SELECT * int8_tbl )"
+57 ) ) UNION ALL ( SELECT * int8_tbl );"
 `;
 
 exports[`select_stmt 29`] = `
 "CREATE foo (
  f1 int 
-)"
+);"
 `;
 
-exports[`select_stmt 30`] = `"INSERT INTO foo VALUES (42), (3), (10), (7), (NULL), (NULL), (1)"`;
+exports[`select_stmt 30`] = `"INSERT INTO foo VALUES (42), (3), (10), (7), (NULL), (NULL), (1);"`;
 
-exports[`select_stmt 31`] = `"SELECT * foo ORDER BY f1"`;
+exports[`select_stmt 31`] = `"SELECT * foo ORDER BY f1;"`;
 
-exports[`select_stmt 32`] = `"SELECT * foo ORDER BY f1 ASC"`;
+exports[`select_stmt 32`] = `"SELECT * foo ORDER BY f1 ASC;"`;
 
-exports[`select_stmt 33`] = `"SELECT * foo ORDER BY f1 NULLS FIRST"`;
+exports[`select_stmt 33`] = `"SELECT * foo ORDER BY f1 NULLS FIRST;"`;
 
-exports[`select_stmt 34`] = `"SELECT * foo ORDER BY f1 DESC"`;
+exports[`select_stmt 34`] = `"SELECT * foo ORDER BY f1 DESC;"`;
 
-exports[`select_stmt 35`] = `"SELECT * foo ORDER BY f1 DESC NULLS LAST"`;
+exports[`select_stmt 35`] = `"SELECT * foo ORDER BY f1 DESC NULLS LAST;"`;
 
-exports[`select_stmt 36`] = `"CREATE INDEX fooi ON foo (f1)"`;
+exports[`select_stmt 36`] = `"CREATE INDEX fooi ON foo (f1);"`;
 
-exports[`select_stmt 37`] = `"SET enable_sort = 'false'"`;
+exports[`select_stmt 37`] = `"SET enable_sort = 'false';"`;
 
-exports[`select_stmt 38`] = `"SELECT * foo ORDER BY f1"`;
+exports[`select_stmt 38`] = `"SELECT * foo ORDER BY f1;"`;
 
-exports[`select_stmt 39`] = `"SELECT * foo ORDER BY f1 NULLS FIRST"`;
+exports[`select_stmt 39`] = `"SELECT * foo ORDER BY f1 NULLS FIRST;"`;
 
-exports[`select_stmt 40`] = `"SELECT * foo ORDER BY f1 DESC"`;
+exports[`select_stmt 40`] = `"SELECT * foo ORDER BY f1 DESC;"`;
 
-exports[`select_stmt 41`] = `"SELECT * foo ORDER BY f1 DESC NULLS LAST"`;
+exports[`select_stmt 41`] = `"SELECT * foo ORDER BY f1 DESC NULLS LAST;"`;
 
-exports[`select_stmt 42`] = `"DROP INDEX fooi"`;
+exports[`select_stmt 42`] = `"DROP INDEX fooi;"`;
 
-exports[`select_stmt 43`] = `"CREATE INDEX fooi ON foo (f1)"`;
+exports[`select_stmt 43`] = `"CREATE INDEX fooi ON foo (f1);"`;
 
-exports[`select_stmt 44`] = `"SELECT * foo ORDER BY f1"`;
+exports[`select_stmt 44`] = `"SELECT * foo ORDER BY f1;"`;
 
-exports[`select_stmt 45`] = `"SELECT * foo ORDER BY f1 NULLS FIRST"`;
+exports[`select_stmt 45`] = `"SELECT * foo ORDER BY f1 NULLS FIRST;"`;
 
-exports[`select_stmt 46`] = `"SELECT * foo ORDER BY f1 DESC"`;
+exports[`select_stmt 46`] = `"SELECT * foo ORDER BY f1 DESC;"`;
 
-exports[`select_stmt 47`] = `"SELECT * foo ORDER BY f1 DESC NULLS LAST"`;
+exports[`select_stmt 47`] = `"SELECT * foo ORDER BY f1 DESC NULLS LAST;"`;
 
-exports[`select_stmt 48`] = `"DROP INDEX fooi"`;
+exports[`select_stmt 48`] = `"DROP INDEX fooi;"`;
 
-exports[`select_stmt 49`] = `"CREATE INDEX fooi ON foo (f1)"`;
+exports[`select_stmt 49`] = `"CREATE INDEX fooi ON foo (f1);"`;
 
-exports[`select_stmt 50`] = `"SELECT * foo ORDER BY f1"`;
+exports[`select_stmt 50`] = `"SELECT * foo ORDER BY f1;"`;
 
-exports[`select_stmt 51`] = `"SELECT * foo ORDER BY f1 NULLS FIRST"`;
+exports[`select_stmt 51`] = `"SELECT * foo ORDER BY f1 NULLS FIRST;"`;
 
-exports[`select_stmt 52`] = `"SELECT * foo ORDER BY f1 DESC"`;
+exports[`select_stmt 52`] = `"SELECT * foo ORDER BY f1 DESC;"`;
 
-exports[`select_stmt 53`] = `"SELECT * foo ORDER BY f1 DESC NULLS LAST"`;
+exports[`select_stmt 53`] = `"SELECT * foo ORDER BY f1 DESC NULLS LAST;"`;
 
-exports[`select_stmt 54`] = `"EXPLAIN SELECT * onek2 WHERE ((unique2 = 11) AND (stringu1 = 'ATAAAA'))"`;
+exports[`select_stmt 54`] = `"EXPLAIN SELECT * onek2 WHERE ((unique2 = 11) AND (stringu1 = 'ATAAAA'));"`;
 
-exports[`select_stmt 55`] = `"SELECT * onek2 WHERE ((unique2 = 11) AND (stringu1 = 'ATAAAA'))"`;
+exports[`select_stmt 55`] = `"SELECT * onek2 WHERE ((unique2 = 11) AND (stringu1 = 'ATAAAA'));"`;
 
-exports[`select_stmt 56`] = `"EXPLAIN SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 = 'ATAAAA'))"`;
+exports[`select_stmt 56`] = `"EXPLAIN SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 = 'ATAAAA'));"`;
 
-exports[`select_stmt 57`] = `"SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 = 'ATAAAA'))"`;
+exports[`select_stmt 57`] = `"SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 = 'ATAAAA'));"`;
 
-exports[`select_stmt 58`] = `"EXPLAIN SELECT * onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'))"`;
+exports[`select_stmt 58`] = `"EXPLAIN SELECT * onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'));"`;
 
-exports[`select_stmt 59`] = `"SELECT * onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'))"`;
+exports[`select_stmt 59`] = `"SELECT * onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'));"`;
 
-exports[`select_stmt 60`] = `"EXPLAIN SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'))"`;
+exports[`select_stmt 60`] = `"EXPLAIN SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'));"`;
 
-exports[`select_stmt 61`] = `"SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'))"`;
+exports[`select_stmt 61`] = `"SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'));"`;
 
-exports[`select_stmt 62`] = `"EXPLAIN SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B')) OFFSET FOR UPDATE"`;
+exports[`select_stmt 62`] = `"EXPLAIN SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B')) OFFSET FOR UPDATE;"`;
 
-exports[`select_stmt 63`] = `"SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B')) OFFSET FOR UPDATE"`;
+exports[`select_stmt 63`] = `"SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B')) OFFSET FOR UPDATE;"`;
 
-exports[`select_stmt 64`] = `"EXPLAIN SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'C'))"`;
+exports[`select_stmt 64`] = `"EXPLAIN SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'C'));"`;
 
-exports[`select_stmt 65`] = `"SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'C'))"`;
+exports[`select_stmt 65`] = `"SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'C'));"`;
 
-exports[`select_stmt 66`] = `"SET enable_indexscan = 'off'"`;
+exports[`select_stmt 66`] = `"SET enable_indexscan = 'off';"`;
 
-exports[`select_stmt 67`] = `"EXPLAIN SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'))"`;
+exports[`select_stmt 67`] = `"EXPLAIN SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'));"`;
 
-exports[`select_stmt 68`] = `"SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'))"`;
+exports[`select_stmt 68`] = `"SELECT unique2 onek2 WHERE ((unique2 = 11) AND (stringu1 < 'B'));"`;
 
-exports[`select_stmt 69`] = `"RESET enable_indexscan"`;
+exports[`select_stmt 69`] = `"RESET enable_indexscan;"`;
 
 exports[`select_stmt 70`] = `
 "EXPLAIN SELECT unique1,
-unique2 onek2 WHERE (((unique2 = 11) OR (unique1 = 0)) AND (stringu1 < 'B'))"
+unique2 onek2 WHERE (((unique2 = 11) OR (unique1 = 0)) AND (stringu1 < 'B'));"
 `;
 
 exports[`select_stmt 71`] = `
 "SELECT unique1,
-unique2 onek2 WHERE (((unique2 = 11) OR (unique1 = 0)) AND (stringu1 < 'B'))"
+unique2 onek2 WHERE (((unique2 = 11) OR (unique1 = 0)) AND (stringu1 < 'B'));"
 `;
 
 exports[`select_stmt 72`] = `
 "EXPLAIN SELECT unique1,
-unique2 onek2 WHERE (((unique2 = 11) AND (stringu1 < 'B')) OR (unique1 = 0))"
+unique2 onek2 WHERE (((unique2 = 11) AND (stringu1 < 'B')) OR (unique1 = 0));"
 `;
 
 exports[`select_stmt 73`] = `
 "SELECT unique1,
-unique2 onek2 WHERE (((unique2 = 11) AND (stringu1 < 'B')) OR (unique1 = 0))"
+unique2 onek2 WHERE (((unique2 = 11) AND (stringu1 < 'B')) OR (unique1 = 0));"
 `;
 
-exports[`select_stmt 74`] = `"SELECT 1 AS x ORDER BY x"`;
+exports[`select_stmt 74`] = `"SELECT 1 AS x ORDER BY x;"`;
 
 exports[`select_stmt 75`] = `
 "CREATE FUNCTION sillysrf ( int ) RETURNS SETOF int AS $LQLCODEZ$ 
  values (1),(10),(2),($1) 
- $LQLCODEZ$ LANGUAGE sql IMMUTABLE"
+ $LQLCODEZ$ LANGUAGE sql IMMUTABLE;"
 `;
 
-exports[`select_stmt 76`] = `"SELECT sillysrf(42)"`;
+exports[`select_stmt 76`] = `"SELECT sillysrf(42);"`;
 
-exports[`select_stmt 77`] = `"SELECT sillysrf(-1) ORDER BY 1"`;
+exports[`select_stmt 77`] = `"SELECT sillysrf(-1) ORDER BY 1;"`;
 
-exports[`select_stmt 78`] = `"DROP FUNCTION sillysrf ( int )"`;
+exports[`select_stmt 78`] = `"DROP FUNCTION sillysrf ( int );"`;
 
-exports[`select_stmt 79`] = `"SELECT * (VALUES (2), (NULL), (1)) AS v (k) WHERE (k = k) ORDER BY k"`;
+exports[`select_stmt 79`] = `"SELECT * (VALUES (2), (NULL), (1)) AS v (k) WHERE (k = k) ORDER BY k;"`;
 
-exports[`select_stmt 80`] = `"SELECT * (VALUES (2), (NULL), (1)) AS v (k) WHERE (k = k)"`;
+exports[`select_stmt 80`] = `"SELECT * (VALUES (2), (NULL), (1)) AS v (k) WHERE (k = k);"`;
 
 exports[`type_cast 1`] = `"NULL::text[]"`;
 
