@@ -2374,6 +2374,7 @@ BEGIN
       FOREACH item IN array deparser.expressions_array(node)
       LOOP
         -- strip off the [] if it exists at the end, and set is_array prop
+        -- TODO, not sure if we need this anymore... we fixed the quote stuff higher up...
         IF (ARRAY_LENGTH(REGEXP_MATCHES(trim(item), '(.*)\s*(\[\s*?\])$', 'i'), 1) > 0) THEN
           item = REGEXP_REPLACE(trim(item), '(.*)\s*(\[\s*?\])$', '\1', 'i');
           output = array_append(output, quote_ident(item) || '[]');
