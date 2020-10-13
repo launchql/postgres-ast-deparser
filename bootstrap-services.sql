@@ -17,7 +17,24 @@ INSERT INTO services_public.services
     ARRAY['collections_public', 'modules_public']
 );
         
-          
+INSERT INTO services_public.services 
+(
+    subdomain,
+    domain,
+    dbname,
+    role_name,
+    anon_role,
+    schemas
+) VALUES 
+(
+    'svc',
+    'lql.io',
+    'service-db',
+    'administrator',
+    'administrator',
+    ARRAY['collections_public', 'modules_public']
+);
+
 INSERT INTO services_public.services 
 (
     subdomain,
@@ -31,8 +48,8 @@ INSERT INTO services_public.services
     'admin',
     'lql.io',
     'launchql-db-v1',
-    'authenticated',
-    'anonymous',
+    'administrator',
+    'administrator',
     ARRAY['collections_public', 'modules_public']
 );
         
