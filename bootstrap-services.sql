@@ -1,4 +1,12 @@
 BEGIN;
+
+DELETE FROM services_public.services WHERE TRUE;
+
+GRANT CONNECT ON DATABASE "service-db" TO app_user;
+GRANT CONNECT ON DATABASE "service-db" TO app_admin;
+GRANT CONNECT ON DATABASE "launchql-db-v1" TO app_user;
+GRANT CONNECT ON DATABASE "launchql-db-v1" TO app_admin;
+
 INSERT INTO services_public.services 
 (
     subdomain,
