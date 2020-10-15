@@ -1063,6 +1063,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.11.2":
+  version "7.12.0"
+  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.12.0.tgz#98bd7666186969c04be893d747cf4a6c6c8fa6b0"
+  integrity sha512-lS4QLXQ2Vbw2ubfQjeQcn+BZgZ5+ROHW9f+DWjEp5Y+NHYmkRGKqHSJ1tuhbUauKu2nhZNTBIvsIQ8dXfY5Gjw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.10.4", "@babel/template@^7.3.3", "@babel/template@^7.8.6":
   version "7.10.4"
   resolved "https://registry.npmjs.org/@babel/template/-/template-7.10.4.tgz#3251996c4200ebc71d1a8fc405fba940f36ba278"
@@ -8389,6 +8396,13 @@ performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
   integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
+
+pg-ast@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/pg-ast/-/pg-ast-0.1.0.tgz#4ae1cfca1db3a79cd1f1f727b565c69ecba76f74"
+  integrity sha512-M3x1l/wT3pe28SX+PPiark66N2SkzGlOw9QbluXxtLWvrmqZ0UPHmmKUlogqk3c/v0UmjC+RzGk0A2rsxN4lpg==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
 
 pg-connection-string@^2.0.0, pg-connection-string@^2.2.3, pg-connection-string@^2.3.0:
   version "2.3.0"
