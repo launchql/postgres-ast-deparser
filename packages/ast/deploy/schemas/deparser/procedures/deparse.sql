@@ -232,6 +232,8 @@ BEGIN
 
     type = deparser.expression(node->'typeName', context);
 
+    -- TODO look into more possibilities here
+    -- TODO more parens solutions
     IF (node#>'{arg, A_Expr}' IS NOT NULL) THEN 
       arg = deparser.parens(deparser.expression(node->'arg', context));
     ELSE 
@@ -837,6 +839,7 @@ CREATE FUNCTION deparser.bool_expr(
 DECLARE
   txt text[];
   boolop int;
+  ctx jsonb;
   fmt_str text = '%s';
 BEGIN
 
@@ -854,29 +857,26 @@ BEGIN
   END IF;
 
   boolop = (node->'boolop')::int;
-  -- TODO too many parens (does removing this break anything?)
-  -- TODO update pgsql-parser if not
-  IF (boolop = 2) THEN
-    -- RETURN format('NOT (%s)', deparser.expression(node->'args'->0, context));
-    RETURN format('NOT %s', deparser.expression(node->'args'->0, context));
-  END IF;
 
-  -- context should be an OBJECT!!! jsonb!!
-  -- you could pass in the current operation
-  -- IF AND between two, and the parent is already AND, no need for parens!
-  -- ONLY parens when it changes boolean types!
-  txt = deparser.expressions_array(node->'args', jsonb_set(context, '{bool}', to_jsonb(TRUE)));
- 
   IF ((context->'bool')::bool IS TRUE) THEN 
     fmt_str = '(%s)';
   END IF;
+  ctx = jsonb_set(context, '{bool}', to_jsonb(TRUE));
+
+  -- TODO too many parens (does removing this break anything?)
+  -- TODO update pgsql-parser if not
+  IF (boolop = 2) THEN
+    RETURN format('NOT (%s)', deparser.expression(node->'args'->0, context));
+    -- RETURN format('NOT ' || fmt_str, deparser.expression(node->'args'->0, ctx));
+  END IF;
+
+ 
+  txt = deparser.expressions_array(node->'args', ctx);
 
   IF (boolop = ast_constants.bool_expr_type('AND_EXPR')) THEN
     RETURN format(fmt_str, array_to_string(txt, ' AND '));
-    -- RETURN array_to_string(txt, ' AND ');
   ELSEIF (boolop = ast_constants.bool_expr_type('OR_EXPR')) THEN
     RETURN format(fmt_str, array_to_string(txt, ' OR '));
-    -- RETURN array_to_string(txt, ' OR ');
   END IF;
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
