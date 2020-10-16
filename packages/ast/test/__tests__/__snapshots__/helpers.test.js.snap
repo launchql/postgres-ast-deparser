@@ -1,28 +1,94 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`alias 1`] = `
+exports[`kitchen sink alias 1`] = `
 "SELECT * FROM generate_series(1, 1) AS \\"a#b\\";
 SELECT * FROM generate_series(1, 1) AS \\"a#b\\" (\\"c#d\\");
 SELECT * FROM generate_series(1, 1) AS aba;
 SELECT * FROM generate_series(1, 1) AS aba (ccd);"
 `;
 
-exports[`alias 2`] = `
+exports[`kitchen sink alias 2`] = `
 "SELECT * FROM generate_series(1, 1) AS \\"a#b\\";
 SELECT * FROM generate_series(1, 1) AS \\"a#b\\"(\\"c#d\\");
 SELECT * FROM generate_series(1, 1) AS aba;
 SELECT * FROM generate_series(1, 1) AS aba(ccd);"
 `;
 
-exports[`conflicts 1`] = `
-"INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name;
-INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name WHERE (prop = 1);
-INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO NOTHING;
-INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT ON CONSTRAINT customers_name_key DO NOTHING;
-INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = ((EXCLUDED.email || ';') || customers.email);"
+exports[`kitchen sink alter 1`] = `
+"CREATE SCHEMA IF NOT EXISTS app_jobs;
+CREATE TABLE app_jobs.job_queues (
+queue_name varchar NOT NULL PRIMARY KEY,
+job_count int DEFAULT (0) NOT NULL,
+locked_at pg_catalog.timestamptz,
+locked_by varchar
+);
+ALTER TABLE app_jobs.job_queues ENABLE ROW LEVEL SECURITY;
+CREATE TABLE foo (
+name text,
+foo_timestamp timestampz DEFAULT (CURRENT_DATE)
+);
+ALTER TABLE foo RENAME COLUMN name TO city;
+ALTER TABLE foo ALTER COLUMN foo_timestamp DROP DEFAULT, ALTER COLUMN foo_timestamp TYPE pg_catalog.timestamptz USING 'epoch'::pg_catalog.timestamptz + foo_timestamp * '1 second'::interval, ALTER COLUMN foo_timestamp SET DEFAULT now();
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id)  ;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON DELETE CASCADE ;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON DELETE RESTRICT ;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id)  ;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON DELETE SET NULL ;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id)  ON UPDATE SET DEFAULT;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id)  ON UPDATE CASCADE;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id)  ON UPDATE RESTRICT;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id)  ;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id)  ON UPDATE SET NULL;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id)  ON UPDATE SET DEFAULT;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON DELETE SET NULL ON UPDATE SET DEFAULT;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (a, b) REFERENCES othr.orders (c, d)   MATCH FULL;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (a, b) REFERENCES othr.orders (c, d)  ;
+ALTER TABLE ONLY collections.mfield ADD CONSTRAINT col_field_pkey PRIMARY KEY (id);
+ALTER TABLE collections.mfield ADD CONSTRAINT col_field_pkey PRIMARY KEY (id);"
 `;
 
-exports[`conflicts 2`] = `
+exports[`kitchen sink alter 2`] = `
+"CREATE SCHEMA IF NOT EXISTS app_jobs;
+CREATE TABLE app_jobs.job_queues (
+queue_name varchar NOT NULL PRIMARY KEY,
+job_count int DEFAULT ( 0 ) NOT NULL,
+locked_at pg_catalog.timestamptz,
+locked_by varchar
+);
+ALTER TABLE app_jobs.job_queues ENABLE ROW LEVEL SECURITY;
+CREATE TABLE foo (
+name text,
+foo_timestamp timestampz DEFAULT ( CURRENT_DATE )
+);
+ALTER TABLE foo RENAME COLUMN name TO city;
+ALTER TABLE foo ALTER COLUMN foo_timestamp DROP DEFAULT, ALTER COLUMN foo_timestamp TYPE pg_catalog.timestamptz USING (('epoch'::pg_catalog.timestamptz) + (((foo_timestamp) * ('1 second'::interval)))), ALTER COLUMN foo_timestamp SET DEFAULT now();
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id );
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id ) ON DELETE CASCADE;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id ) ON DELETE RESTRICT;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id );
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id ) ON DELETE SET NULL;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id ) ON UPDATE SET DEFAULT;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id ) ON UPDATE CASCADE;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id ) ON UPDATE RESTRICT;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id );
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id ) ON UPDATE SET NULL;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id ) ON UPDATE SET DEFAULT;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id ) ON DELETE SET NULL ON UPDATE SET DEFAULT;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( a, b ) REFERENCES othr.orders ( c, d ) MATCH FULL;
+ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( a, b ) REFERENCES othr.orders ( c, d );
+ALTER TABLE ONLY collections.mfield ADD CONSTRAINT col_field_pkey PRIMARY KEY ( id );
+ALTER TABLE collections.mfield ADD CONSTRAINT col_field_pkey PRIMARY KEY ( id );"
+`;
+
+exports[`kitchen sink conflicts 1`] = `
+"INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name;
+INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name WHERE prop = 1;
+INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO NOTHING;
+INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT ON CONSTRAINT customers_name_key DO NOTHING;
+INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = EXCLUDED.email || ';' || customers.email;"
+`;
+
+exports[`kitchen sink conflicts 2`] = `
 "INSERT INTO yo.\\"table\\" ( project_id, name, field_name ) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT ( project_id, name ) DO UPDATE  SET field_name = excluded.field_name;
 INSERT INTO yo.\\"table\\" ( project_id, name, field_name ) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT ( project_id, name ) DO UPDATE  SET field_name = excluded.field_name WHERE ((prop) = (1));
 INSERT INTO yo.\\"table\\" ( project_id, name, field_name ) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT ( project_id, name ) DO NOTHING;
@@ -30,55 +96,389 @@ INSERT INTO customers ( name, email ) VALUES ('Microsoft', 'hotline@microsoft.co
 INSERT INTO customers ( name, email ) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT ( name ) DO UPDATE  SET email = ((((excluded.email) || (';'))) || (customers.email));"
 `;
 
-exports[`delete 1`] = `
-"DELETE FROM shoelace_data WHERE (sl_name = old.sl_name);
-DELETE FROM delete_test AS dt WHERE (dt.a > 75);
-DELETE FROM delete_test AS dt WHERE (delete_test.a > 25);
-DELETE FROM delete_test WHERE (a > 25);"
+exports[`kitchen sink default privs 1`] = `
+"ALTER DEFAULT PRIVILEGES IN SCHEMA objects_public
+GRANT EXECUTE ON FUNCTIONS  TO authenticated;
+ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema
+GRANT SELECT ON TABLES  TO PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema
+GRANT INSERT ON TABLES  TO webuser;
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema
+REVOKE SELECT ON TABLES  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema
+REVOKE INSERT ON TABLES  FROM webuser;
+ALTER DEFAULT PRIVILEGES FOR ROLE admin
+REVOKE EXECUTE ON FUNCTIONS  FROM PUBLIC;"
 `;
 
-exports[`delete 2`] = `
+exports[`kitchen sink default privs 2`] = `
+"ALTER DEFAULT PRIVILEGES IN SCHEMA objects_public
+GRANT EXECUTE ON FUNCTIONS  TO authenticated;
+ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema
+GRANT SELECT ON TABLES  TO PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema
+GRANT INSERT ON TABLES  TO webuser;
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema
+REVOKE SELECT ON TABLES  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES IN SCHEMA myschema
+REVOKE INSERT ON TABLES  FROM webuser;
+ALTER DEFAULT PRIVILEGES FOR ROLE admin
+REVOKE EXECUTE ON FUNCTIONS  FROM PUBLIC;"
+`;
+
+exports[`kitchen sink delete 1`] = `
+"DELETE FROM shoelace_data WHERE sl_name = old.sl_name;
+DELETE FROM delete_test AS dt WHERE dt.a > 75;
+DELETE FROM delete_test AS dt WHERE delete_test.a > 25;
+DELETE FROM delete_test WHERE a > 25;"
+`;
+
+exports[`kitchen sink delete 2`] = `
 "DELETE FROM shoelace_data WHERE ((sl_name) = (old.sl_name));
 DELETE FROM delete_test AS dt WHERE ((dt.a) > (75));
 DELETE FROM delete_test AS dt WHERE ((delete_test.a) > (25));
 DELETE FROM delete_test WHERE ((a) > (25));"
 `;
 
-exports[`domain 1`] = `
-"CREATE DOMAIN v8.json AS json;
-CREATE DOMAIN email AS citext CHECK ((value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_\`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'));"
+exports[`kitchen sink do stmt 1`] = `
+"DO $CODEZ$
+BEGIN
+IF NOT EXISTS (
+SELECT
+1
+FROM
+pg_roles
+WHERE
+rolname = 'administrator') THEN
+CREATE ROLE administrator;
+COMMENT ON ROLE administrator IS 'Administration group';
+END IF;
+END $CODEZ$;"
 `;
 
-exports[`domain 2`] = `
+exports[`kitchen sink do stmt 2`] = `
+"DO $$
+BEGIN
+IF NOT EXISTS (
+SELECT
+1
+FROM
+pg_roles
+WHERE
+rolname = 'administrator') THEN
+CREATE ROLE administrator;
+COMMENT ON ROLE administrator IS 'Administration group';
+END IF;
+END $$;"
+`;
+
+exports[`kitchen sink domain 1`] = `
+"CREATE DOMAIN v8.json AS json;
+CREATE DOMAIN email AS citext CHECK (value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_\`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$');"
+`;
+
+exports[`kitchen sink domain 2`] = `
 "CREATE DOMAIN v8.json AS json;
 CREATE DOMAIN email AS citext CHECK ( ((value) ~ ('^[a-zA-Z0-9.!#$%&''*+/=?^_\`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$')) );"
 `;
 
-exports[`domains 1`] = `
+exports[`kitchen sink domains 1`] = `
 "CREATE DOMAIN v8.json AS json;
-CREATE DOMAIN email AS citext CHECK ((value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_\`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'));"
+CREATE DOMAIN email AS citext CHECK (value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_\`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$');"
 `;
 
-exports[`domains 2`] = `
+exports[`kitchen sink domains 2`] = `
 "CREATE DOMAIN v8.json AS json;
 CREATE DOMAIN email AS citext CHECK ( ((value) ~ ('^[a-zA-Z0-9.!#$%&''*+/=?^_\`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$')) );"
 `;
 
-exports[`enums 1`] = `
+exports[`kitchen sink enums 1`] = `
 "CREATE TYPE myschema.special_type AS ENUM (
 'oh',
 'yea'
 );"
 `;
 
-exports[`enums 2`] = `
+exports[`kitchen sink enums 2`] = `
 "CREATE TYPE myschema.special_type AS ENUM (
 'oh',
 'yea'
 );"
 `;
 
-exports[`grants 1`] = `
+exports[`kitchen sink fixtures complex.sql 1`] = `
+"SELECT p1.playerid,
+f1.playername,
+p2.playerid,
+f2.playername FROM player AS f1,
+player AS f2,
+plays AS p1 FULL OUTER JOIN plays AS p2 ON p1.playerid < p2.playerid AND p1.teamid = p2.teamid GROUP BY p1.playerid,
+f1.playerid,
+p2.playerid,
+f2.playerid HAVING count(p1.playerid) = count(*) AND count(p2.playerid) = count(*) AND p1.playerid = f1.playerid AND p2.playerid = f2.playerid;"
+`;
+
+exports[`kitchen sink fixtures complex.sql 2`] = `
+"SELECT p1.playerid,
+f1.playername,
+p2.playerid,
+f2.playername FROM player AS f1,
+player AS f2,
+plays AS p1 FULL OUTER JOIN plays AS p2 ON (((p1.playerid) < (p2.playerid)) AND ((p1.teamid) = (p2.teamid))) GROUP BY p1.playerid,
+f1.playerid,
+p2.playerid,
+f2.playerid HAVING (((count(p1.playerid)) = (count(*))) AND ((count(p2.playerid)) = (count(*))) AND ((p1.playerid) = (f1.playerid)) AND ((p2.playerid) = (f2.playerid)));"
+`;
+
+exports[`kitchen sink fixtures custom.sql 1`] = `
+"SELECT * FROM tab ORDER BY col USING <;
+SELECT * FROM tab ORDER BY col USING >;
+SELECT * FROM tab ORDER BY col USING =;
+SELECT * FROM tab ORDER BY col USING = NULLS FIRST,
+col2 USING < NULLS LAST;
+SELECT mleast(VARIADIC arr:=ARRAY[10, -1, 5, 4.4]);
+SELECT encode('''123\\\\000\\\\001', 'base64');
+SELECT 'слон';
+SELECT 'data';
+SELECT 3 OPERATOR(pg_catalog.+) 4;
+SELECT * FROM ROWS FROM (getfoo6(1) AS (fooid int, foosubid int, fooname text), getfoo7(1) AS (fooid int, foosubid int, fooname text)) AS (fooid int, foosubid int, fooname text);
+SELECT a FROM b WHERE a < (SELECT 1);
+SELECT a FROM b WHERE a < ALL (SELECT 1);
+SELECT a FROM b WHERE a < ANY (SELECT 1);
+SELECT a FROM b WHERE EXISTS (SELECT 1);
+SELECT a FROM b WHERE a < ARRAY (SELECT DISTINCT (SELECT 1),
+(SELECT DISTINCT 1 GROUP BY 7 HAVING 1 < (SELECT 1)));
+SELECT 1 WHERE 'abc' SIMILAR TO 'abc' ESCAPE NULL;
+SELECT 1 WHERE 'abc' SIMILAR TO test('test') ESCAPE NULL;
+SELECT 1 WHERE 'abc' SIMILAR TO test('test') ESCAPE 't';
+SELECT 1::bit(1);
+SET client_encoding = 'UNICODE';
+SET client_encoding = 'UNICODE';
+SET client_min_messages = 'notice';
+SHOW client_encoding;"
+`;
+
+exports[`kitchen sink fixtures custom.sql 2`] = `
+"SELECT * FROM tab ORDER BY col USING <;
+SELECT * FROM tab ORDER BY col USING >;
+SELECT * FROM tab ORDER BY col USING =;
+SELECT * FROM tab ORDER BY col USING = NULLS FIRST,
+col2 USING < NULLS LAST;
+SELECT mleast(VARIADIC arr := ARRAY[10, (-1), 5, 4.4]);
+SELECT encode('''123\\\\000\\\\001', 'base64');
+SELECT 'слон';
+SELECT 'data';
+SELECT ((3) OPERATOR(pg_catalog.+) (4));
+SELECT * FROM ROWS FROM (getfoo6(1) AS (fooid int, foosubid int, fooname text), getfoo7(1) AS (fooid int, foosubid int, fooname text))  AS (fooid int, foosubid int, fooname text);
+SELECT a FROM b WHERE ((a) < ((SELECT 1)));
+SELECT a FROM b WHERE a < ALL (SELECT 1);
+SELECT a FROM b WHERE a < ANY (SELECT 1);
+SELECT a FROM b WHERE EXISTS (SELECT 1);
+SELECT a FROM b WHERE ((a) < (ARRAY (SELECT DISTINCT (SELECT 1),
+(SELECT DISTINCT 1 GROUP BY 7 HAVING ((1) < ((SELECT 1)))))));
+SELECT 1 WHERE 'abc' SIMILAR TO 'abc' ESCAPE NULL;
+SELECT 1 WHERE 'abc' SIMILAR TO test('test') ESCAPE NULL;
+SELECT 1 WHERE 'abc' SIMILAR TO test('test') ESCAPE 't';
+SELECT 1::bit(1);
+SET client_encoding = 'UNICODE';
+SET client_encoding = 'UNICODE';
+SET client_min_messages = 'notice';
+SHOW client_encoding;"
+`;
+
+exports[`kitchen sink fixtures param-ref.sql 1`] = `
+"SELECT * FROM table_name WHERE name = ?;
+SELECT * FROM table_name WHERE name = $1;
+SELECT $1::text AS name;"
+`;
+
+exports[`kitchen sink fixtures param-ref.sql 2`] = `
+"SELECT * FROM table_name WHERE ((name) = (?));
+SELECT * FROM table_name WHERE ((name) = ($1));
+SELECT $1::text AS name;"
+`;
+
+exports[`kitchen sink fixtures query-001.sql 1`] = `
+"SELECT array_agg(players),
+player_teams FROM (SELECT DISTINCT t1.t1player AS players_dist,
+t1.player_teams FROM (SELECT p.playerid AS t1id,
+concat(p.playerid, ':', p.playername, ' ') AS t1player,
+array_agg(pl.teamid ORDER BY pl.teamid ) AS player_teams FROM player AS p LEFT OUTER JOIN plays AS pl ON p.playerid = pl.playerid GROUP BY p.playerid,
+p.playername) AS t1 INNER JOIN (SELECT p.playerid AS t2id,
+array_agg(pl.teamid ORDER BY pl.teamid ) AS player_teams FROM player AS p LEFT OUTER JOIN plays AS pl ON p.playerid = pl.playerid GROUP BY p.playerid,
+p.playername) AS t2 ON t1.player_teams = t2.player_teams AND t1.t1id <> t2.t2id) AS innerquery GROUP BY player_teams;"
+`;
+
+exports[`kitchen sink fixtures query-001.sql 2`] = `
+"SELECT array_agg(players),
+player_teams FROM (SELECT DISTINCT t1.t1player AS players_dist,
+t1.player_teams FROM (SELECT p.playerid AS t1id,
+concat(p.playerid, ':', p.playername, ' ') AS t1player,
+array_agg(pl.teamid ORDER BY pl.teamid) AS player_teams FROM player AS p LEFT OUTER JOIN plays AS pl ON ((p.playerid) = (pl.playerid)) GROUP BY p.playerid,
+p.playername) AS t1 INNER JOIN (SELECT p.playerid AS t2id,
+array_agg(pl.teamid ORDER BY pl.teamid) AS player_teams FROM player AS p LEFT OUTER JOIN plays AS pl ON ((p.playerid) = (pl.playerid)) GROUP BY p.playerid,
+p.playername) AS t2 ON (((t1.player_teams) = (t2.player_teams)) AND ((t1.t1id) <> (t2.t2id)))) AS innerquery GROUP BY player_teams;"
+`;
+
+exports[`kitchen sink fixtures query-002.sql 1`] = `"SELECT * FROM \\"Foo\\" AS f1 WHERE f1.\\"FooUID\\" = (SELECT f2.\\"FooUID\\" FROM \\"Foo\\" AS f2 LEFT OUTER JOIN \\"Bar\\" AS b ON f2.\\"BarUID\\" = b.\\"BarUID\\" WHERE f2.\\"BarUID\\" IS NOT NULL AND b.\\"BarUID\\" IS NULL LIMIT 1)"`;
+
+exports[`kitchen sink fixtures query-002.sql 2`] = `"SELECT * FROM \\"Foo\\" AS f1 WHERE ((f1.\\"FooUID\\") = ((SELECT f2.\\"FooUID\\" FROM \\"Foo\\" AS f2 LEFT OUTER JOIN \\"Bar\\" AS b ON ((f2.\\"BarUID\\") = (b.\\"BarUID\\")) WHERE (f2.\\"BarUID\\" IS NOT NULL AND b.\\"BarUID\\" IS NULL) LIMIT 1)));"`;
+
+exports[`kitchen sink fixtures query-003.sql 1`] = `"SELECT ((SELECT ROW(1, 1, 1, 1)::test)::test).*;"`;
+
+exports[`kitchen sink fixtures query-003.sql 2`] = `"SELECT ((SELECT ROW(1, 1, 1, 1)::test)::test).*;"`;
+
+exports[`kitchen sink fixtures simple.sql 1`] = `
+"SELECT * FROM table_name WHERE name = 'test' AND num > 7 AND last_name LIKE ( '%''test''%' );
+SELECT * FROM table_name WHERE name = 'test' AND num > 7 AND last_name NOT LIKE ( '%''test''%' );
+SELECT * FROM table_name WHERE name = 'test' AND num > 7 AND last_name ILIKE ( '%''test''%' );
+SELECT * FROM table_name WHERE name = 'test' AND num > 7 AND last_name NOT ILIKE ( '%''test''%' );
+SELECT * FROM table_name WHERE last_name SIMILAR TO '%(b|d)%' ESCAPE NULL;
+SELECT * FROM table_name WHERE last_name SIMILAR TO '%(b|d)%' ESCAPE 'a';
+SELECT * FROM table_name WHERE last_name NOT SIMILAR TO '%(b|d)%' ESCAPE NULL;
+SELECT * FROM table_name WHERE last_name NOT SIMILAR TO '%(b|d)%' ESCAPE 'a';
+SELECT * FROM table_name WHERE last_name > first_name;
+SELECT * FROM table_name WHERE last_name <> first_name;
+SELECT * FROM table_name WHERE last_name = ANY( stuff );
+SELECT * FROM table_name WHERE last_name = ALL( stuff );
+SELECT title,
+category_id FROM film JOIN film_category USING (film_id) WHERE category_id = ANY (SELECT category_id FROM category WHERE name = 'Action' OR name = 'Drama');
+SELECT title,
+category_id FROM film JOIN film_category USING (film_id) WHERE category_id IN (SELECT category_id FROM category WHERE name = 'Action' OR name = 'Drama');
+SELECT title,
+category_id FROM film JOIN film_category USING (film_id) WHERE NOT category_id IN (SELECT category_id FROM category WHERE name = 'Action' OR name = 'Drama');
+SELECT title FROM film WHERE length >= ANY (SELECT max(length) FROM film JOIN film_category USING (film_id) GROUP BY category_id);
+SELECT * FROM transactions.transaction WHERE transaction_date BETWEEN to_date('2020-01-01', 'YYYY-MM-DD') AND to_date('2020-12-31', 'YYYY-MM-DD') AND owner = 0;
+SELECT * FROM transactions.transaction WHERE transaction_date NOT BETWEEN to_date('2020-01-01', 'YYYY-MM-DD') AND to_date('2020-12-31', 'YYYY-MM-DD') AND owner = 0;"
+`;
+
+exports[`kitchen sink fixtures simple.sql 2`] = `
+"SELECT * FROM table_name WHERE (((name) = ('test')) AND ((num) > (7)) AND last_name LIKE ('%''test''%'));
+SELECT * FROM table_name WHERE (((name) = ('test')) AND ((num) > (7)) AND last_name NOT LIKE ('%''test''%'));
+SELECT * FROM table_name WHERE (((name) = ('test')) AND ((num) > (7)) AND last_name ILIKE ('%''test''%'));
+SELECT * FROM table_name WHERE (((name) = ('test')) AND ((num) > (7)) AND last_name NOT ILIKE ('%''test''%'));
+SELECT * FROM table_name WHERE last_name SIMILAR TO '%(b|d)%' ESCAPE NULL;
+SELECT * FROM table_name WHERE last_name SIMILAR TO '%(b|d)%' ESCAPE 'a';
+SELECT * FROM table_name WHERE last_name NOT SIMILAR TO '%(b|d)%' ESCAPE NULL;
+SELECT * FROM table_name WHERE last_name NOT SIMILAR TO '%(b|d)%' ESCAPE 'a';
+SELECT * FROM table_name WHERE ((last_name) > (first_name));
+SELECT * FROM table_name WHERE ((last_name) <> (first_name));
+SELECT * FROM table_name WHERE last_name = ANY (stuff);
+SELECT * FROM table_name WHERE last_name = ALL (stuff);
+SELECT title,
+category_id FROM film JOIN film_category USING (film_id) WHERE category_id = ANY (SELECT category_id FROM category WHERE (((name) = ('Action')) OR ((name) = ('Drama'))));
+SELECT title,
+category_id FROM film JOIN film_category USING (film_id) WHERE category_id IN (SELECT category_id FROM category WHERE (((name) = ('Action')) OR ((name) = ('Drama'))));
+SELECT title,
+category_id FROM film JOIN film_category USING (film_id) WHERE NOT (category_id IN (SELECT category_id FROM category WHERE (((name) = ('Action')) OR ((name) = ('Drama')))));
+SELECT title FROM film WHERE length >= ANY (SELECT max(length) FROM film JOIN film_category USING (film_id) GROUP BY category_id);
+SELECT * FROM transactions.transaction WHERE (transaction_date BETWEEN to_date('2020-01-01', 'YYYY-MM-DD') AND to_date('2020-12-31', 'YYYY-MM-DD') AND ((owner) = (0)));
+SELECT * FROM transactions.transaction WHERE (transaction_date NOT BETWEEN to_date('2020-01-01', 'YYYY-MM-DD') AND to_date('2020-12-31', 'YYYY-MM-DD') AND ((owner) = (0)));"
+`;
+
+exports[`kitchen sink functions basic 1`] = `
+"CREATE OR REPLACE FUNCTION someschema.myfunc ( some_id uuid, other_id uuid ) RETURNS void AS $LQLCODEZ$
+UPDATE
+mytable
+SET
+ref_id = new_ref_id
+WHERE
+id = some_id;
+$LQLCODEZ$ LANGUAGE sql VOLATILE;
+CREATE OR REPLACE FUNCTION someschema.myfunc ( some_id uuid, other_id uuid ) RETURNS obj.geo AS $LQLCODEZ$
+UPDATE
+mytable
+SET
+ref_id = new_ref_id
+WHERE
+id = some_id;
+$LQLCODEZ$ LANGUAGE sql VOLATILE;"
+`;
+
+exports[`kitchen sink functions basic 2`] = `
+"CREATE OR REPLACE FUNCTION someschema.myfunc ( some_id uuid, other_id uuid ) RETURNS void AS $EOFCODE$UPDATE
+mytable
+SET
+ref_id = new_ref_id
+WHERE
+id = some_id;$EOFCODE$ LANGUAGE sql VOLATILE;
+CREATE OR REPLACE FUNCTION someschema.myfunc ( some_id uuid, other_id uuid ) RETURNS obj.geo AS $EOFCODE$UPDATE
+mytable
+SET
+ref_id = new_ref_id
+WHERE
+id = some_id;$EOFCODE$ LANGUAGE sql VOLATILE;"
+`;
+
+exports[`kitchen sink functions returns_table 1`] = `
+"CREATE OR REPLACE FUNCTION someschema.myfunc ( some_id obj.geo_type, other_id obj.geo_type ) RETURNS TABLE ( path text, name int ) AS $LQLCODEZ$
+SELECT * FROM
+mytable
+$LQLCODEZ$ LANGUAGE sql VOLATILE;"
+`;
+
+exports[`kitchen sink functions returns_table 2`] = `
+"CREATE OR REPLACE FUNCTION someschema.myfunc ( some_id obj.geo_type, other_id obj.geo_type ) RETURNS TABLE ( path text, name int ) AS $EOFCODE$SELECT * FROM
+mytable$EOFCODE$ LANGUAGE sql VOLATILE;"
+`;
+
+exports[`kitchen sink functions returns_trigger 1`] = `
+"CREATE OR REPLACE FUNCTION helpers.some_method ( ) RETURNS trigger AS $LQLCODEZ$
+BEGIN
+IF tg_op = 'INSERT' THEN
+NEW.some_prop = helpers.do_magic (NEW.data);
+RETURN NEW;
+END IF;
+END;
+$LQLCODEZ$ LANGUAGE plpgsql;"
+`;
+
+exports[`kitchen sink functions returns_trigger 2`] = `
+"CREATE OR REPLACE FUNCTION helpers.some_method (  ) RETURNS trigger AS $EOFCODE$BEGIN
+IF tg_op = 'INSERT' THEN
+NEW.some_prop = helpers.do_magic (NEW.data);
+RETURN NEW;
+END IF;
+END;$EOFCODE$ LANGUAGE plpgsql;"
+`;
+
+exports[`kitchen sink functions setof 1`] = `
+"CREATE OR REPLACE FUNCTION someschema.myfunc ( some_id uuid, other_id uuid ) RETURNS SETOF obj.geo AS $LQLCODEZ$
+UPDATE
+mytable
+SET
+ref_id = new_ref_id
+WHERE
+id = some_id
+$LQLCODEZ$ LANGUAGE sql VOLATILE;
+CREATE OR REPLACE FUNCTION someschema.myfunc ( some_id obj.geo_type, other_id obj.geo_type ) RETURNS SETOF obj.geo AS $LQLCODEZ$
+UPDATE
+mytable
+SET
+ref_id = new_ref_id
+WHERE
+id = some_id
+$LQLCODEZ$ LANGUAGE sql VOLATILE;"
+`;
+
+exports[`kitchen sink functions setof 2`] = `
+"CREATE OR REPLACE FUNCTION someschema.myfunc ( some_id uuid, other_id uuid ) RETURNS SETOF obj.geo AS $EOFCODE$UPDATE
+mytable
+SET
+ref_id = new_ref_id
+WHERE
+id = some_id$EOFCODE$ LANGUAGE sql VOLATILE;
+CREATE OR REPLACE FUNCTION someschema.myfunc ( some_id obj.geo_type, other_id obj.geo_type ) RETURNS SETOF obj.geo AS $EOFCODE$UPDATE
+mytable
+SET
+ref_id = new_ref_id
+WHERE
+id = some_id$EOFCODE$ LANGUAGE sql VOLATILE;"
+`;
+
+exports[`kitchen sink grants 1`] = `
 "GRANT USAGE ON SCHEMA users TO administrator;
 GRANT EXECUTE ON FUNCTION auth.authenticate TO anonymous;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token TO administrator;
@@ -87,7 +487,7 @@ REVOKE EXECUTE ON FUNCTION auth.authenticate FROM anonymous;
 REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;"
 `;
 
-exports[`grants 2`] = `
+exports[`kitchen sink grants 2`] = `
 "GRANT USAGE ON SCHEMA users TO administrator;
 GRANT EXECUTE ON FUNCTION auth.authenticate TO anonymous;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token TO administrator;
@@ -96,21 +496,21 @@ REVOKE EXECUTE ON FUNCTION auth.authenticate FROM anonymous;
 REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;"
 `;
 
-exports[`indexes 1`] = `
+exports[`kitchen sink indexes 1`] = `
 "CREATE INDEX CONCURRENTLY boom_merkle_tree_tag_created_reference_idx ON boom.merkle_tree (tag, created, reference);
 CREATE UNIQUE INDEX databases_database_unique_name_idx ON databases.database (tenant_id, database_name_hash(name));
 CREATE UNIQUE INDEX boom_worktree_idx ON boom.worktree (tag, reference, created, decode(md5(lower(path)), 'hex'));
 CREATE UNIQUE INDEX uniq_service_when_not_null ON schema2.table3 (uid, svc) WHERE svc IS NOT NULL;"
 `;
 
-exports[`indexes 2`] = `
+exports[`kitchen sink indexes 2`] = `
 "CREATE INDEX CONCURRENTLY boom_merkle_tree_tag_created_reference_idx ON boom.merkle_tree ( tag, created, reference );
 CREATE UNIQUE INDEX databases_database_unique_name_idx ON databases.database ( tenant_id, database_name_hash(name) );
 CREATE UNIQUE INDEX boom_worktree_idx ON boom.worktree ( tag, reference, created, decode(md5(lower(path)), 'hex') );
 CREATE UNIQUE INDEX uniq_service_when_not_null ON schema2.table3 ( uid, svc ) WHERE svc IS NOT NULL;"
 `;
 
-exports[`insert 1`] = `
+exports[`kitchen sink insert 1`] = `
 "INSERT INTO shoelace_data VALUES (1, 2, 3, 'truth', 't'::boolean);
 INSERT INTO shoelace_data (id, col1, col2, val1, bl2) VALUES (1, 2, 3, 'truth', 't'::boolean);
 INSERT INTO shoelace_data DEFAULT VALUES;
@@ -6613,7 +7013,7 @@ the KEY OF ''''. / / RETURN the result OF stringifying the value. RETURN str (''
 RETURN module; })(); ');"
 `;
 
-exports[`insert 2`] = `
+exports[`kitchen sink insert 2`] = `
 "INSERT INTO shoelace_data VALUES (1, 2, 3, 'truth', (TRUE));
 INSERT INTO shoelace_data ( id, col1, col2, val1, bl2 ) VALUES (1, 2, 3, 'truth', (TRUE));
 INSERT INTO shoelace_data DEFAULT VALUES;
@@ -13116,11 +13516,11 @@ the KEY OF ''''. / / RETURN the result OF stringifying the value. RETURN str (''
 RETURN module; })(); ');"
 `;
 
-exports[`policies 1`] = `
-"CREATE POLICY delete_user ON users.\\"user\\" FOR DELETE TO authenticated USING ( (id = current_setting('user.id')::uuid) );
-CREATE POLICY delete_user_no_to ON users.\\"user\\" FOR DELETE TO PUBLIC USING ( (id = current_setting('user.id')::uuid) );
-CREATE POLICY delete_user_no_to ON users.\\"user\\" FOR DELETE TO PUBLIC WITH CHECK ( (id = current_setting('user.id')::uuid) );
-CREATE POLICY delete_user ON users.\\"user\\" FOR DELETE TO authenticated USING ( (id = current_setting('user.id')::uuid) );
+exports[`kitchen sink policies 1`] = `
+"CREATE POLICY delete_user ON users.\\"user\\" FOR DELETE TO authenticated USING ( id = current_setting('user.id')::uuid );
+CREATE POLICY delete_user_no_to ON users.\\"user\\" FOR DELETE TO PUBLIC USING ( id = current_setting('user.id')::uuid );
+CREATE POLICY delete_user_no_to ON users.\\"user\\" FOR DELETE TO PUBLIC WITH CHECK ( id = current_setting('user.id')::uuid );
+CREATE POLICY delete_user ON users.\\"user\\" FOR DELETE TO authenticated USING ( id = current_setting('user.id')::uuid );
 CREATE POLICY select_user ON users.\\"user\\" FOR SELECT TO PUBLIC USING ( 't'::boolean );
 CREATE POLICY delete_own ON myschema.mytable FOR DELETE TO PUBLIC USING ( group_id = ANY( otherschema.my_policy_fn() ) );
 CREATE POLICY insert_own ON myschema.mytable FOR ALL TO PUBLIC WITH CHECK ( group_id = ANY( otherschema.my_policy_fn() ) );
@@ -13128,7 +13528,7 @@ CREATE POLICY select_any ON myschema.mytable FOR SELECT TO PUBLIC USING ( 't'::b
 CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY( otherschema.my_policy_fn() ) );"
 `;
 
-exports[`policies 2`] = `
+exports[`kitchen sink policies 2`] = `
 "CREATE POLICY delete_user ON users.\\"user\\" FOR DELETE TO authenticated USING ( ((id) = (current_setting('user.id')::uuid)) );
 CREATE POLICY delete_user_no_to ON users.\\"user\\" FOR DELETE TO PUBLIC USING ( ((id) = (current_setting('user.id')::uuid)) );
 CREATE POLICY delete_user_no_to ON users.\\"user\\" FOR DELETE TO PUBLIC WITH CHECK ( ((id) = (current_setting('user.id')::uuid)) );
@@ -13140,146 +13540,122 @@ CREATE POLICY select_any ON myschema.mytable FOR SELECT TO PUBLIC USING ( (TRUE)
 CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY (otherschema.my_policy_fn()) );"
 `;
 
-exports[`tables unique 1`] = `
-"DROP TABLE IF EXISTS users CASCADE;
-CREATE TABLE users (
-id int NOT NULL PRIMARY KEY
-);
-DROP TABLE IF EXISTS post_type CASCADE;
-CREATE TABLE post_type (
-id int NOT NULL PRIMARY KEY
-);
-DROP TABLE IF EXISTS assembly_seat CASCADE;
-CREATE TABLE assembly_seat (
-id int NOT NULL PRIMARY KEY
-);"
+exports[`kitchen sink roles create 1`] = `
+"CREATE ROLE app_anonymous;
+CREATE ROLE app_authenticated;
+CREATE ROLE app_user WITH LOGIN PASSWORD 'xyz';
+CREATE ROLE miriam WITH LOGIN PASSWORD 'jw8s0F4' VALID UNTIL '2005-01-01';
+CREATE ROLE admin1 WITH LOGIN PASSWORD 'jw8s0F4' CREATEDB CREATEROLE INHERIT;
+CREATE ROLE admin2 WITH NOLOGIN NOCREATEDB NOCREATEROLE;
+CREATE ROLE authy WITH ADMIN app_authenticated;"
 `;
 
-exports[`tables unique 2`] = `
-"DROP TABLE IF EXISTS users CASCADE;
-CREATE TABLE users (
-id int NOT NULL PRIMARY KEY
-);
-DROP TABLE IF EXISTS post_type CASCADE;
-CREATE TABLE post_type (
-id int NOT NULL PRIMARY KEY
-);
-DROP TABLE IF EXISTS assembly_seat CASCADE;
-CREATE TABLE assembly_seat (
-id int NOT NULL PRIMARY KEY
-);"
+exports[`kitchen sink roles create 2`] = `
+"CREATE ROLE \\"app_anonymous\\";
+CREATE ROLE \\"app_authenticated\\";
+CREATE ROLE \\"app_user\\" WITH LOGIN PASSWORD 'xyz';
+CREATE ROLE \\"miriam\\" WITH LOGIN PASSWORD 'jw8s0F4' VALID UNTIL '2005-01-01';
+CREATE ROLE \\"admin1\\" WITH LOGIN PASSWORD 'jw8s0F4' CREATEDB CREATEROLE INHERIT;
+CREATE ROLE \\"admin2\\" WITH NOLOGIN NOCREATEDB NOCREATEROLE;
+CREATE ROLE \\"authy\\" WITH ADMIN app_authenticated;"
 `;
 
-exports[`tables unique 3`] = `
-"DROP TABLE IF EXISTS users CASCADE;
-CREATE TEMPORARY TABLE users (
-id int NOT NULL PRIMARY KEY
-);
-DROP TABLE IF EXISTS post_type CASCADE;
-CREATE TEMPORARY TABLE post_type (
-id int NOT NULL PRIMARY KEY
-);
-DROP TABLE IF EXISTS assembly_seat CASCADE;
-CREATE TEMPORARY TABLE assembly_seat (
-id int NOT NULL PRIMARY KEY
-);"
+exports[`kitchen sink roles grants 1`] = `
+"GRANT APP_AUTHENTICATED TO app_user;
+GRANT APP_AUTHENTICATED, APP_ANONYMOUS TO app_user;
+GRANT APP_AUTHENTICATED, APP_ANONYMOUS TO app_user, super_app_user;"
 `;
 
-exports[`tables unique 4`] = `
-"DROP TABLE IF EXISTS users CASCADE;
-CREATE TEMPORARY TABLE users (
-id int NOT NULL PRIMARY KEY
-);
-DROP TABLE IF EXISTS post_type CASCADE;
-CREATE TEMPORARY TABLE post_type (
-id int NOT NULL PRIMARY KEY
-);
-DROP TABLE IF EXISTS assembly_seat CASCADE;
-CREATE TEMPORARY TABLE assembly_seat (
-id int NOT NULL PRIMARY KEY
-);"
+exports[`kitchen sink roles grants 2`] = `
+"GRANT APP_AUTHENTICATED TO app_user;
+GRANT APP_AUTHENTICATED, APP_ANONYMOUS TO app_user;
+GRANT APP_AUTHENTICATED, APP_ANONYMOUS TO app_user, super_app_user;"
 `;
 
-exports[`tables unique 5`] = `
-"ALTER TABLE myschema.role ADD CONSTRAINT fk_myschema_role_actor_id FOREIGN KEY (actor_id) REFERENCES actors.actor (id) ON DELETE CASCADE ;
-CREATE TABLE circles (
-c circle,
-EXCLUDE USING gist ( c WITH && )
-);
-CREATE TABLE actors_private.actor_info (
-actor_id uuid PRIMARY KEY REFERENCES actors.actor (id) ON DELETE CASCADE ,
-email text NOT NULL UNIQUE CHECK ((email ~* '^.+@.+\\\\..+$')),
-password_hash text NOT NULL
-);
-CREATE TABLE foo (
-a int,
-b int,
-PRIMARY KEY (a, b)
-);
-CREATE TABLE t_full (
-a int,
-b int,
-FOREIGN KEY (a, b) REFERENCES foo   MATCH FULL
-);
-CREATE TABLE t_simple (
-a int,
-b int,
-FOREIGN KEY (a, b) REFERENCES foo
-);"
+exports[`kitchen sink rules create 1`] = `
+"CREATE RULE collections_ins_protect AS ON INSERT TO dbs.collections DO INSTEAD NOTHING;
+CREATE RULE collections_upd_protect AS ON UPDATE TO dbs.collections DO INSTEAD NOTHING;
+CREATE RULE collections_del_protect AS ON DELETE TO dbs.collections DO INSTEAD NOTHING;
+CREATE RULE shoelace_upd AS ON UPDATE TO shoelace DO INSTEAD UPDATE shoelace_data SET sl_name = new.sl_name, sl_avail = new.sl_avail, sl_color = new.sl_color, sl_len = new.sl_len, sl_unit = new.sl_unit WHERE sl_name = old.sl_name;
+CREATE RULE shoelace_del AS ON DELETE TO shoelace DO INSTEAD DELETE FROM shoelace_data WHERE sl_name = old.sl_name;
+CREATE RULE \\"_RETURN\\" AS ON SELECT TO t2 DO INSTEAD SELECT * FROM t1;
+CREATE RULE log_shoelace AS ON UPDATE TO shoelace_data WHERE new.sl_avail <> old.sl_avail DO INSERT INTO shoelace_log VALUES (new.sl_name, new.sl_avail, CURRENT_USER, CURRENT_TIMESTAMP);
+CREATE RULE shoelace_ins AS ON INSERT TO shoelace DO INSTEAD INSERT INTO shoelace_data VALUES (new.sl_name, new.sl_avail, new.sl_color, new.sl_len, new.sl_unit);"
 `;
 
-exports[`tables unique 6`] = `
-"ALTER TABLE myschema.role ADD CONSTRAINT fk_myschema_role_actor_id FOREIGN KEY ( actor_id ) REFERENCES actors.actor ( id ) ON DELETE CASCADE;
-CREATE TABLE circles (
-c circle,
-EXCLUDE USING gist ( c WITH && )
-);
-CREATE TABLE actors_private.actor_info (
-actor_id uuid PRIMARY KEY REFERENCES actors.actor ( id ) ON DELETE CASCADE,
-email text NOT NULL UNIQUE CHECK ( ((email) ~* ('^.+@.+\\\\..+$')) ),
-password_hash text NOT NULL
-);
-CREATE TABLE foo (
-a int,
-b int,
-PRIMARY KEY ( a, b )
-);
-CREATE TABLE t_full (
-a int,
-b int,
-FOREIGN KEY ( a, b ) REFERENCES foo MATCH FULL
-);
-CREATE TABLE t_simple (
-a int,
-b int,
-FOREIGN KEY ( a, b ) REFERENCES foo
-);"
+exports[`kitchen sink rules create 2`] = `
+"CREATE RULE collections_ins_protect AS ON INSERT TO dbs.collections DO INSTEAD NOTHING;
+CREATE RULE collections_upd_protect AS ON UPDATE TO dbs.collections DO INSTEAD NOTHING;
+CREATE RULE collections_del_protect AS ON DELETE TO dbs.collections DO INSTEAD NOTHING;
+CREATE RULE shoelace_upd AS ON UPDATE TO shoelace DO INSTEAD UPDATE shoelace_data SET sl_name = new.sl_name,sl_avail = new.sl_avail,sl_color = new.sl_color,sl_len = new.sl_len,sl_unit = new.sl_unit WHERE ((sl_name) = (old.sl_name));
+CREATE RULE shoelace_del AS ON DELETE TO shoelace DO INSTEAD  DELETE FROM shoelace_data WHERE ((sl_name) = (old.sl_name));
+CREATE RULE \\"_RETURN\\" AS ON SELECT TO t2 DO INSTEAD SELECT * FROM t1;
+CREATE RULE log_shoelace AS ON UPDATE TO shoelace_data WHERE ((new.sl_avail) <> (old.sl_avail)) DO INSERT INTO shoelace_log VALUES (new.sl_name, new.sl_avail, CURRENT_USER, CURRENT_TIMESTAMP);
+CREATE RULE shoelace_ins AS ON INSERT TO shoelace DO INSTEAD INSERT INTO shoelace_data VALUES (new.sl_name, new.sl_avail, new.sl_color, new.sl_len, new.sl_unit);"
 `;
 
-exports[`tables unique 7`] = `
+exports[`kitchen sink sequences 1`] = `
+"CREATE SEQUENCE foo.bar;
+CREATE SEQUENCE mysequence increment 5 start 100;
+CREATE SEQUENCE three increment -1 minvalue 1 maxvalue 3 start 3 CYCLE;
+CREATE SEQUENCE three3 increment -1 minvalue 1 maxvalue 3 start 3 NO CYCLE;
+CREATE SEQUENCE app_jobs.jobs_id_seq start 1 increment 1 NO MINVALUE NO MAXVALUE cache 1;"
+`;
+
+exports[`kitchen sink sequences 2`] = `
+"CREATE SEQUENCE foo.bar;
+CREATE SEQUENCE mysequence increment 5 start 100;
+CREATE SEQUENCE three increment -1 minvalue 1 maxvalue 3 start 3 CYCLE;
+CREATE SEQUENCE three3 increment -1 minvalue 1 maxvalue 3 start 3 NO CYCLE;
+CREATE SEQUENCE app_jobs.jobs_id_seq start 1 increment 1 NO MINVALUE NO MAXVALUE cache 1;"
+`;
+
+exports[`kitchen sink set 1`] = `
+"SET var FROM CURRENT;
+RESET client_min_messages;
+SET search_path = 'alt_nsp1', 'public';
+SET session_authorization = 'regtest_alter_user1';
+SET client_encoding = 'UNICODE';
+SET client_encoding = 'UNICODE';
+SET client_min_messages = 'notice';
+RESET session_authorization;"
+`;
+
+exports[`kitchen sink set 2`] = `
+"SET var FROM CURRENT;
+RESET client_min_messages;
+SET search_path = 'alt_nsp1', 'public';
+SET session_authorization = 'regtest_alter_user1';
+SET client_encoding = 'UNICODE';
+SET client_encoding = 'UNICODE';
+SET client_min_messages = 'notice';
+RESET session_authorization;"
+`;
+
+exports[`kitchen sink tables check 1`] = `
 "CREATE TABLE products (
 product_no int,
 name text,
-price numeric CHECK ((price > 0))
+price numeric CHECK (price > 0)
 );
 CREATE TABLE products (
 product_no int,
 name text,
-price numeric CONSTRAINT positive_price CHECK ((price > 0))
+price numeric CONSTRAINT positive_price CHECK (price > 0)
 );
 CREATE TABLE products (
 product_no int,
 name text,
-price numeric CHECK ((price > 0)),
-discounted_price numeric CHECK ((discounted_price > 0)),
-CHECK ((price > discounted_price))
+price numeric CHECK (price > 0),
+discounted_price numeric CHECK (discounted_price > 0),
+CHECK (price > discounted_price)
 );
 CREATE TABLE products (
 product_no int,
 name text,
-price numeric CHECK ((price > 0)),
-discounted_price numeric CONSTRAINT check_price CHECK ((discounted_price > 0)),
-CHECK ((price > discounted_price))
+price numeric CHECK (price > 0),
+discounted_price numeric CONSTRAINT check_price CHECK (discounted_price > 0),
+CHECK (price > discounted_price)
 );
 CREATE TABLE boomin (
 d date,
@@ -13296,7 +13672,7 @@ test3 int
 ) INHERITS (atacc1, atacc2);"
 `;
 
-exports[`tables unique 8`] = `
+exports[`kitchen sink tables check 2`] = `
 "CREATE TABLE products (
 product_no int,
 name text,
@@ -13336,7 +13712,63 @@ test3 int
 ) INHERITS ( atacc1, atacc2 );"
 `;
 
-exports[`tables unique 9`] = `
+exports[`kitchen sink tables custom 1`] = `
+"ALTER TABLE myschema.role ADD CONSTRAINT fk_myschema_role_actor_id FOREIGN KEY (actor_id) REFERENCES actors.actor (id) ON DELETE CASCADE ;
+CREATE TABLE circles (
+c circle,
+EXCLUDE USING gist ( c WITH && )
+);
+CREATE TABLE actors_private.actor_info (
+actor_id uuid PRIMARY KEY REFERENCES actors.actor (id) ON DELETE CASCADE ,
+email text NOT NULL UNIQUE CHECK (email ~* '^.+@.+\\\\..+$'),
+password_hash text NOT NULL
+);
+CREATE TABLE foo (
+a int,
+b int,
+PRIMARY KEY (a, b)
+);
+CREATE TABLE t_full (
+a int,
+b int,
+FOREIGN KEY (a, b) REFERENCES foo   MATCH FULL
+);
+CREATE TABLE t_simple (
+a int,
+b int,
+FOREIGN KEY (a, b) REFERENCES foo
+);"
+`;
+
+exports[`kitchen sink tables custom 2`] = `
+"ALTER TABLE myschema.role ADD CONSTRAINT fk_myschema_role_actor_id FOREIGN KEY ( actor_id ) REFERENCES actors.actor ( id ) ON DELETE CASCADE;
+CREATE TABLE circles (
+c circle,
+EXCLUDE USING gist ( c WITH && )
+);
+CREATE TABLE actors_private.actor_info (
+actor_id uuid PRIMARY KEY REFERENCES actors.actor ( id ) ON DELETE CASCADE,
+email text NOT NULL UNIQUE CHECK ( ((email) ~* ('^.+@.+\\\\..+$')) ),
+password_hash text NOT NULL
+);
+CREATE TABLE foo (
+a int,
+b int,
+PRIMARY KEY ( a, b )
+);
+CREATE TABLE t_full (
+a int,
+b int,
+FOREIGN KEY ( a, b ) REFERENCES foo MATCH FULL
+);
+CREATE TABLE t_simple (
+a int,
+b int,
+FOREIGN KEY ( a, b ) REFERENCES foo
+);"
+`;
+
+exports[`kitchen sink tables defaults 1`] = `
 "CREATE TABLE customer_product_categories (
 id serial PRIMARY KEY,
 name text NOT NULL,
@@ -13344,7 +13776,7 @@ effective tstzrange DEFAULT ('[-infinity,infinity]')
 )"
 `;
 
-exports[`tables unique 10`] = `
+exports[`kitchen sink tables defaults 2`] = `
 "CREATE TABLE customer_product_categories (
 id serial PRIMARY KEY,
 name text NOT NULL,
@@ -13352,7 +13784,7 @@ effective tstzrange DEFAULT ( '[-infinity,infinity]' )
 );"
 `;
 
-exports[`tables unique 11`] = `
+exports[`kitchen sink tables exclude 1`] = `
 "CREATE TABLE circles (
 c circle,
 EXCLUDE USING gist ( c WITH && )
@@ -13365,7 +13797,7 @@ EXCLUDE USING gist ( lower(name) WITH =, effective WITH && )
 )"
 `;
 
-exports[`tables unique 12`] = `
+exports[`kitchen sink tables exclude 2`] = `
 "CREATE TABLE circles (
 c circle,
 EXCLUDE USING gist ( c WITH && )
@@ -13378,7 +13810,7 @@ EXCLUDE USING gist ( lower(name) WITH = , effective WITH && )
 );"
 `;
 
-exports[`tables unique 13`] = `
+exports[`kitchen sink tables foreign 1`] = `
 "CREATE TABLE orders (
 order_id int PRIMARY KEY,
 product_no int REFERENCES products (product_no)  ,
@@ -13412,7 +13844,7 @@ PRIMARY KEY (product_no, order_id)
 );"
 `;
 
-exports[`tables unique 14`] = `
+exports[`kitchen sink tables foreign 2`] = `
 "CREATE TABLE orders (
 order_id int PRIMARY KEY,
 product_no int REFERENCES products ( product_no ),
@@ -13446,7 +13878,37 @@ PRIMARY KEY ( product_no, order_id )
 );"
 `;
 
-exports[`tables unique 15`] = `
+exports[`kitchen sink tables match 1`] = `
+"DROP TABLE IF EXISTS users CASCADE;
+CREATE TABLE users (
+id int NOT NULL PRIMARY KEY
+);
+DROP TABLE IF EXISTS post_type CASCADE;
+CREATE TABLE post_type (
+id int NOT NULL PRIMARY KEY
+);
+DROP TABLE IF EXISTS assembly_seat CASCADE;
+CREATE TABLE assembly_seat (
+id int NOT NULL PRIMARY KEY
+);"
+`;
+
+exports[`kitchen sink tables match 2`] = `
+"DROP TABLE IF EXISTS users CASCADE;
+CREATE TABLE users (
+id int NOT NULL PRIMARY KEY
+);
+DROP TABLE IF EXISTS post_type CASCADE;
+CREATE TABLE post_type (
+id int NOT NULL PRIMARY KEY
+);
+DROP TABLE IF EXISTS assembly_seat CASCADE;
+CREATE TABLE assembly_seat (
+id int NOT NULL PRIMARY KEY
+);"
+`;
+
+exports[`kitchen sink tables nulls 1`] = `
 "CREATE TABLE products (
 product_no int NOT NULL,
 name text NOT NULL,
@@ -13460,11 +13922,11 @@ price numeric NULL
 CREATE TABLE products (
 product_no int NOT NULL,
 name text NOT NULL,
-price numeric NOT NULL CHECK ((price > 0))
+price numeric NOT NULL CHECK (price > 0)
 );"
 `;
 
-exports[`tables unique 16`] = `
+exports[`kitchen sink tables nulls 2`] = `
 "CREATE TABLE products (
 product_no int NOT NULL,
 name text NOT NULL,
@@ -13482,7 +13944,7 @@ price numeric NOT NULL CHECK ( ((price) > (0)) )
 );"
 `;
 
-exports[`tables unique 17`] = `
+exports[`kitchen sink tables on_delete 1`] = `
 "CREATE TABLE order_items (
 product_no int REFERENCES products ON DELETE RESTRICT ,
 order_id int REFERENCES orders ON DELETE CASCADE ,
@@ -13491,7 +13953,7 @@ PRIMARY KEY (product_no, order_id)
 );"
 `;
 
-exports[`tables unique 18`] = `
+exports[`kitchen sink tables on_delete 2`] = `
 "CREATE TABLE order_items (
 product_no int REFERENCES products ON DELETE RESTRICT,
 order_id int REFERENCES orders ON DELETE CASCADE,
@@ -13500,7 +13962,7 @@ PRIMARY KEY ( product_no, order_id )
 );"
 `;
 
-exports[`tables unique 19`] = `
+exports[`kitchen sink tables on_update 1`] = `
 "CREATE TABLE order_items (
 product_no int REFERENCES products  ON UPDATE RESTRICT,
 order_id int REFERENCES orders  ON UPDATE CASCADE,
@@ -13509,7 +13971,7 @@ PRIMARY KEY (product_no, order_id)
 );"
 `;
 
-exports[`tables unique 20`] = `
+exports[`kitchen sink tables on_update 2`] = `
 "CREATE TABLE order_items (
 product_no int REFERENCES products ON UPDATE RESTRICT,
 order_id int REFERENCES orders ON UPDATE CASCADE,
@@ -13518,7 +13980,37 @@ PRIMARY KEY ( product_no, order_id )
 );"
 `;
 
-exports[`tables unique 21`] = `
+exports[`kitchen sink tables temp 1`] = `
+"DROP TABLE IF EXISTS users CASCADE;
+CREATE TEMPORARY TABLE users (
+id int NOT NULL PRIMARY KEY
+);
+DROP TABLE IF EXISTS post_type CASCADE;
+CREATE TEMPORARY TABLE post_type (
+id int NOT NULL PRIMARY KEY
+);
+DROP TABLE IF EXISTS assembly_seat CASCADE;
+CREATE TEMPORARY TABLE assembly_seat (
+id int NOT NULL PRIMARY KEY
+);"
+`;
+
+exports[`kitchen sink tables temp 2`] = `
+"DROP TABLE IF EXISTS users CASCADE;
+CREATE TEMPORARY TABLE users (
+id int NOT NULL PRIMARY KEY
+);
+DROP TABLE IF EXISTS post_type CASCADE;
+CREATE TEMPORARY TABLE post_type (
+id int NOT NULL PRIMARY KEY
+);
+DROP TABLE IF EXISTS assembly_seat CASCADE;
+CREATE TEMPORARY TABLE assembly_seat (
+id int NOT NULL PRIMARY KEY
+);"
+`;
+
+exports[`kitchen sink tables unique 1`] = `
 "CREATE TABLE products (
 product_no int UNIQUE,
 name text,
@@ -13543,7 +14035,7 @@ price numeric
 );"
 `;
 
-exports[`tables unique 22`] = `
+exports[`kitchen sink tables unique 2`] = `
 "CREATE TABLE products (
 product_no int UNIQUE,
 name text,
@@ -13568,32 +14060,245 @@ price numeric
 );"
 `;
 
-exports[`types 1`] = `"CREATE TYPE myschema.mycustomtype AS (id uuid,verify_code text,verify_code_expires_on timestamptz,actor_id uuid);"`;
+exports[`kitchen sink transactions begin_commit 1`] = `
+"BEGIN;
+CREATE TABLE products (
+product_no int,
+name text
+);
+COMMIT;"
+`;
 
-exports[`types 2`] = `
+exports[`kitchen sink transactions begin_commit 2`] = `
+"BEGIN;
+CREATE TABLE products (
+product_no int,
+name text
+);
+COMMIT;"
+`;
+
+exports[`kitchen sink triggers create 1`] = `
+"CREATE TRIGGER _100_timestamps
+BEFORE INSERT OR UPDATE ON app_jobs.jobs
+FOR EACH ROW
+EXECUTE PROCEDURE app_jobs.update_timestamps ( );
+CREATE TRIGGER _500_increase_job_queue_count
+AFTER INSERT ON app_jobs.jobs
+FOR EACH ROW
+EXECUTE PROCEDURE app_jobs.jobs__increase_job_queue_count ( );
+CREATE TRIGGER _500_decrease_job_queue_count
+BEFORE DELETE ON app_jobs.jobs
+FOR EACH ROW
+EXECUTE PROCEDURE app_jobs.jobs__decrease_job_queue_count ( );
+CREATE TRIGGER _900_notify_worker
+AFTER INSERT ON app_jobs.jobs
+FOR EACH STATEMENT
+EXECUTE PROCEDURE app_jobs.do_notify ( 'jobs:insert' );
+CREATE TRIGGER check_update
+BEFORE UPDATE OF balance ON accounts
+FOR EACH ROW
+EXECUTE PROCEDURE check_account_update ( );
+CREATE TRIGGER check_update
+BEFORE UPDATE ON accounts
+FOR EACH ROW
+EXECUTE PROCEDURE check_account_update ( );
+CREATE TRIGGER check_update
+BEFORE UPDATE ON accounts
+FOR EACH ROW
+WHEN (old.balance IS DISTINCT FROM new.balance)
+EXECUTE PROCEDURE check_account_update ( );
+CREATE TRIGGER log_update
+AFTER UPDATE ON accounts
+FOR EACH ROW
+WHEN (old.* IS DISTINCT FROM new.*)
+EXECUTE PROCEDURE log_account_update ( );
+CREATE TRIGGER view_insert
+INSTEAD OF INSERT ON my_view
+FOR EACH ROW
+EXECUTE PROCEDURE view_insert_row ( );
+CREATE TRIGGER transfer_insert
+AFTER INSERT ON transfer
+REFERENCING NEW TABLE AS inserted FOR EACH STATEMENT
+EXECUTE PROCEDURE check_transfer_balances_to_zero ( );
+CREATE TRIGGER paired_items_update
+AFTER UPDATE ON paired_items
+REFERENCING NEW TABLE AS newtab OLD TABLE AS oldtab FOR EACH ROW
+EXECUTE PROCEDURE check_matching_pairs ( );
+CREATE TRIGGER paired_items_update
+AFTER UPDATE ON paired_items
+REFERENCING OLD TABLE AS oldtab NEW TABLE AS newtab FOR EACH ROW
+EXECUTE PROCEDURE check_matching_pairs ( );"
+`;
+
+exports[`kitchen sink triggers create 2`] = `
+"CREATE TRIGGER _100_timestamps
+BEFORE INSERT OR UPDATE ON app_jobs.jobs
+FOR EACH ROW
+EXECUTE PROCEDURE app_jobs. update_timestamps (  );
+CREATE TRIGGER _500_increase_job_queue_count
+AFTER INSERT ON app_jobs.jobs
+FOR EACH ROW
+EXECUTE PROCEDURE app_jobs. jobs__increase_job_queue_count (  );
+CREATE TRIGGER _500_decrease_job_queue_count
+BEFORE DELETE ON app_jobs.jobs
+FOR EACH ROW
+EXECUTE PROCEDURE app_jobs. jobs__decrease_job_queue_count (  );
+CREATE TRIGGER _900_notify_worker
+AFTER INSERT ON app_jobs.jobs
+FOR EACH STATEMENT
+EXECUTE PROCEDURE app_jobs. do_notify ( 'jobs:insert' );
+CREATE TRIGGER check_update
+BEFORE UPDATE OF balance ON accounts
+FOR EACH ROW
+EXECUTE PROCEDURE check_account_update (  );
+CREATE TRIGGER check_update
+BEFORE UPDATE ON accounts
+FOR EACH ROW
+EXECUTE PROCEDURE check_account_update (  );
+CREATE TRIGGER check_update
+BEFORE UPDATE ON accounts
+FOR EACH ROW
+WHEN ( OLD.balance IS DISTINCT FROM NEW.balance )
+EXECUTE PROCEDURE check_account_update (  );
+CREATE TRIGGER log_update
+AFTER UPDATE ON accounts
+FOR EACH ROW
+WHEN ( OLD.* IS DISTINCT FROM NEW.* )
+EXECUTE PROCEDURE log_account_update (  );
+CREATE TRIGGER view_insert
+INSTEAD OF INSERT ON my_view
+FOR EACH ROW
+EXECUTE PROCEDURE view_insert_row (  );
+CREATE TRIGGER transfer_insert
+AFTER INSERT ON transfer
+REFERENCING NEW TABLE AS inserted FOR EACH STATEMENT
+EXECUTE PROCEDURE check_transfer_balances_to_zero (  );
+CREATE TRIGGER paired_items_update
+AFTER UPDATE ON paired_items
+REFERENCING NEW TABLE AS newtab OLD TABLE AS oldtab FOR EACH ROW
+EXECUTE PROCEDURE check_matching_pairs (  );
+CREATE TRIGGER paired_items_update
+AFTER UPDATE ON paired_items
+REFERENCING OLD TABLE AS oldtab NEW TABLE AS newtab FOR EACH ROW
+EXECUTE PROCEDURE check_matching_pairs (  );"
+`;
+
+exports[`kitchen sink triggers custom 1`] = `
+"DROP SCHEMA IF EXISTS fb;
+DROP SCHEMA IF EXISTS fb CASCADE;
+CREATE SCHEMA fb;
+SET search_path = 'fb', '$user', 'public';
+CREATE EXTENSION \\"uuid-ossp\\";
+CREATE TABLE \\"user\\" (
+id uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
+created timestamptz NOT NULL DEFAULT (now()),
+full_name text NOT NULL DEFAULT ('')
+);
+CREATE TABLE post (
+id uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
+created timestamptz NOT NULL DEFAULT (now()),
+content text NOT NULL DEFAULT (''),
+\\"user\\" uuid REFERENCES \\"user\\"   NOT NULL
+);
+CREATE TABLE friendship (
+first uuid REFERENCES \\"user\\"   NOT NULL,
+second uuid REFERENCES \\"user\\"   NOT NULL,
+created timestamptz NOT NULL DEFAULT (now()),
+UNIQUE (first, second)
+);
+CREATE FUNCTION check_friendship_symmetry ( ) RETURNS trigger AS $LQLCODEZ$
+DECLARE
+link friendship;
+BEGIN
+SELECT * INTO link FROM friendship
+WHERE second = NEW.first AND first = NEW.second;
+IF NOT FOUND THEN
+RAISE EXCEPTION 'Friendships must be INSERTed as pairs.';
+END IF;
+RETURN NEW;
+END
+$LQLCODEZ$ LANGUAGE plpgsql IMMUTABLE SET search_path FROM CURRENT;
+CREATE CONSTRAINT TRIGGER friendship_symmetry
+AFTER INSERT ON friendship
+DEFERRABLE INITIALLY DEFERRED FOR EACH ROW
+EXECUTE PROCEDURE check_friendship_symmetry ( );
+CREATE TRIGGER _500_increase_job_queue_count_update
+AFTER UPDATE OF queue_name ON app.jobs
+FOR EACH ROW
+EXECUTE PROCEDURE app.jobs__increase_job_queue_count ( );"
+`;
+
+exports[`kitchen sink triggers custom 2`] = `
+"DROP SCHEMA IF EXISTS fb;
+DROP SCHEMA IF EXISTS fb CASCADE;
+CREATE SCHEMA fb;
+SET search_path = 'fb', '$user', 'public';
+CREATE EXTENSION \\"uuid-ossp\\";
+CREATE TABLE \\"user\\" (
+id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
+created timestamptz NOT NULL DEFAULT ( now() ),
+full_name text NOT NULL DEFAULT ( '' )
+);
+CREATE TABLE post (
+id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
+created timestamptz NOT NULL DEFAULT ( now() ),
+content text NOT NULL DEFAULT ( '' ),
+\\"user\\" uuid REFERENCES \\"user\\" NOT NULL
+);
+CREATE TABLE friendship (
+first uuid REFERENCES \\"user\\" NOT NULL,
+second uuid REFERENCES \\"user\\" NOT NULL,
+created timestamptz NOT NULL DEFAULT ( now() ),
+UNIQUE ( first, second )
+);
+CREATE FUNCTION check_friendship_symmetry (  ) RETURNS trigger AS $EOFCODE$DECLARE
+link friendship;
+BEGIN
+SELECT * INTO link FROM friendship
+WHERE second = NEW.first AND first = NEW.second;
+IF NOT FOUND THEN
+RAISE EXCEPTION 'Friendships must be INSERTed as pairs.';
+END IF;
+RETURN NEW;
+END$EOFCODE$ LANGUAGE plpgsql IMMUTABLE SET search_path FROM CURRENT;
+CREATE CONSTRAINT TRIGGER friendship_symmetry
+AFTER INSERT ON friendship
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW
+EXECUTE PROCEDURE check_friendship_symmetry (  );
+CREATE TRIGGER _500_increase_job_queue_count_update
+AFTER UPDATE OF queue_name ON app.jobs
+FOR EACH ROW
+EXECUTE PROCEDURE app. jobs__increase_job_queue_count (  );"
+`;
+
+exports[`kitchen sink types 1`] = `"CREATE TYPE myschema.mycustomtype AS (id uuid,verify_code text,verify_code_expires_on timestamptz,actor_id uuid);"`;
+
+exports[`kitchen sink types 2`] = `
 "CREATE TYPE myschema.mycustomtype AS ( 	id uuid,
 verify_code text,
 verify_code_expires_on timestamptz,
 actor_id uuid );"
 `;
 
-exports[`update 1`] = `
-"UPDATE update_test SET c = repeat('x', 10000) WHERE (c = 'car');
-UPDATE update_test SET (b, a) = (SELECT (a + 1),
-b FROM update_test WHERE (a = 1000)) WHERE (a = 11);
-UPDATE something SET (b, a) = (1, 2) WHERE (a = 11);
-UPDATE update_test SET (c, b, a) = ('bugle', (b + 11), DEFAULT) WHERE (c = 'foo');
-UPDATE shoelace_data SET sl_name = new.sl_name, sl_avail = new.sl_avail, sl_color = new.sl_color, sl_len = new.sl_len, sl_unit = new.sl_unit WHERE (sl_name = old.sl_name);
+exports[`kitchen sink update 1`] = `
+"UPDATE update_test SET c = repeat('x', 10000) WHERE c = 'car';
+UPDATE update_test SET (b, a) = (SELECT a + 1,
+b FROM update_test WHERE a = 1000) WHERE a = 11;
+UPDATE something SET (b, a) = (1, 2) WHERE a = 11;
+UPDATE update_test SET (c, b, a) = ('bugle', b + 11, DEFAULT) WHERE c = 'foo';
+UPDATE shoelace_data SET sl_name = new.sl_name, sl_avail = new.sl_avail, sl_color = new.sl_color, sl_len = new.sl_len, sl_unit = new.sl_unit WHERE sl_name = old.sl_name;
 UPDATE something SET a = 1 RETURNING a;
 UPDATE something SET a = 1 RETURNING a AS b, c;
 UPDATE something SET a = 1 FROM b;
-UPDATE something SET a = 1, b = 'b' FROM c INNER JOIN d ON (x = d.y), (SELECT * FROM e) AS f WHERE ((something.x = d.x) AND (LEAST(something.y, 0) = (f.z + 1)));
+UPDATE something SET a = 1, b = 'b' FROM c INNER JOIN d ON x = d.y, (SELECT * FROM e) AS f WHERE something.x = d.x AND LEAST(something.y, 0) = f.z + 1;
 UPDATE something SET a = 1 RETURNING b AS \\"b#1\\";
 UPDATE something SET a = 1 FROM b WHERE c RETURNING *;
-UPDATE foo SET f2 = lower(f2), f3 = DEFAULT RETURNING foo.*, (f1 + f3) AS sum13;"
+UPDATE foo SET f2 = lower(f2), f3 = DEFAULT RETURNING foo.*, f1 + f3 AS sum13;"
 `;
 
-exports[`update 2`] = `
+exports[`kitchen sink update 2`] = `
 "UPDATE update_test SET c = repeat('x', 10000) WHERE ((c) = ('car'));
 UPDATE update_test SET ( b,a ) = (SELECT ((a) + (1)),
 b FROM update_test WHERE ((a) = (1000))) WHERE ((a) = (11));
@@ -13607,4 +14312,30 @@ UPDATE something SET a = 1,b = 'b' FROM c INNER JOIN d ON ((x) = (d.y)),(SELECT 
 UPDATE something SET a = 1 RETURNING b AS \\"b#1\\";
 UPDATE something SET a = 1 FROM b WHERE c RETURNING *;
 UPDATE foo SET f2 = lower(f2),f3 = DEFAULT RETURNING foo.*,((f1) + (f3)) AS sum13;"
+`;
+
+exports[`kitchen sink views create 1`] = `
+"CREATE VIEW collaboration_public.direct_project_permits AS SELECT * FROM permits;
+CREATE MATERIALIZED VIEW collaboration_public.direct_project_permits AS SELECT * FROM permits;
+CREATE VIEW superschema.app_columns AS SELECT attname AS name,
+t.typname AS type,
+c.relname AS table_name,
+n.nspname AS schema_name FROM pg_attribute AS a INNER JOIN pg_type AS t ON t.oid = a.atttypid INNER JOIN pg_class AS c ON c.oid = a.attrelid INNER JOIN pg_namespace AS n ON n.oid = c.relnamespace WHERE n.nspname NOT IN ( 'pg_catalog', 'information_schema', 'pg_toast' ) AND attnum > 0 AND NOT attisdropped ORDER BY attnum;
+CREATE VIEW superschema.app_columns AS SELECT attname AS name,
+t.typname AS type,
+c.relname AS table_name,
+n.nspname AS schema_name FROM pg_attribute AS a INNER JOIN pg_type AS t ON t.oid = a.atttypid INNER JOIN pg_class AS c ON c.oid = a.attrelid INNER JOIN pg_namespace AS n ON n.oid = c.relnamespace WHERE n.nspname IN ( 'pg_catalog', 'information_schema', 'pg_toast' ) AND attnum > 0 AND NOT attisdropped ORDER BY attnum;"
+`;
+
+exports[`kitchen sink views create 2`] = `
+"CREATE VIEW collaboration_public.direct_project_permits AS SELECT * FROM permits;
+CREATE MATERIALIZED VIEW collaboration_public.direct_project_permits AS SELECT * FROM permits;
+CREATE VIEW superschema.app_columns AS SELECT attname AS name,
+t.typname AS type,
+c.relname AS table_name,
+n.nspname AS schema_name FROM pg_attribute AS a INNER JOIN pg_type AS t ON ((t.oid) = (a.atttypid)) INNER JOIN pg_class AS c ON ((c.oid) = (a.attrelid)) INNER JOIN pg_namespace AS n ON ((n.oid) = (c.relnamespace)) WHERE (n.nspname NOT IN ('pg_catalog', 'information_schema', 'pg_toast') AND ((attnum) > (0)) AND NOT (attisdropped)) ORDER BY attnum;
+CREATE VIEW superschema.app_columns AS SELECT attname AS name,
+t.typname AS type,
+c.relname AS table_name,
+n.nspname AS schema_name FROM pg_attribute AS a INNER JOIN pg_type AS t ON ((t.oid) = (a.atttypid)) INNER JOIN pg_class AS c ON ((c.oid) = (a.attrelid)) INNER JOIN pg_namespace AS n ON ((n.oid) = (c.relnamespace)) WHERE (n.nspname IN ('pg_catalog', 'information_schema', 'pg_toast') AND ((attnum) > (0)) AND NOT (attisdropped)) ORDER BY attnum;"
 `;

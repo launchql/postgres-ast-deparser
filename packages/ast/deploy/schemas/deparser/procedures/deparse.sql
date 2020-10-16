@@ -319,6 +319,41 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.create_extension_stmt (
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+  item jsonb;
+BEGIN
+    IF (node->'CreateExtensionStmt') IS NULL THEN  
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateExtensionStmt';
+    END IF;
+
+    node = node->'CreateExtensionStmt';
+
+    output = array_append(output, 'CREATE EXTENSION');
+    IF (node->'if_not_exists' IS NOT NULL AND (node->'if_not_exists')::bool IS TRUE) THEN 
+      output = array_append(output, 'IF NOT EXISTS');
+    END IF;
+
+    output = array_append(output, quote_ident(node->>'extname'));
+
+    IF (node->'options') IS NOT NULL THEN
+      FOR item IN SELECT * FROM jsonb_array_elements(node->'options')
+      LOOP
+        IF (item#>>'{DefElem, defname}' = 'cascade' AND (item#>>'{DefElem, arg, Integer, ival}')::int = 1) THEN 
+          output = array_append(output, 'CASCADE');
+        END IF;
+      END LOOP;
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.raw_stmt (
   node jsonb,
   context text default null
@@ -477,6 +512,7 @@ BEGIN
 
   IF ((expr->>'kind')::int = 8) THEN
     -- AEXPR_LIKE
+    operator = deparser.expression(expr->'name'->0, context);
     IF (operator = '!~~') THEN
       RETURN format('%s %s ( %s )', left_expr, 'NOT LIKE', right_expr);
     ELSE
@@ -626,11 +662,15 @@ BEGIN
     output = array_append(output, right_expr);
   END IF;
 
+  -- TODO too many parens (does removing this break anything?)
+  -- TODO update pgsql-parser if not
   IF (cardinality(output) = 2) THEN 
-    RETURN deparser.parens(array_to_string(output, ''));
+    -- RETURN deparser.parens(array_to_string(output, ''));
+    RETURN array_to_string(output, '');
   END IF;
 
-  RETURN deparser.parens(array_to_string(output, ' '));
+  RETURN array_to_string(output, ' ');
+  -- RETURN deparser.parens(array_to_string(output, ' '));
 
 END;
 $$
@@ -799,16 +839,20 @@ BEGIN
   END IF;
 
   boolop = (node->'boolop')::int;
- 
+  -- TODO too many parens (does removing this break anything?)
+  -- TODO update pgsql-parser if not
   IF (boolop = 2) THEN
-    RETURN format('NOT IN (%s)', deparser.expression(node->'args'->0, context));
+    -- RETURN format('NOT (%s)', deparser.expression(node->'args'->0, context));
+    RETURN format('NOT %s', deparser.expression(node->'args'->0, context));
   END IF;
 
   txt = deparser.expressions_array(node->'args', context);
   IF (boolop = ast_constants.bool_expr_type('AND_EXPR')) THEN
-    RETURN format('(%s)', array_to_string(txt, ' AND '));
+    -- RETURN format('(%s)', array_to_string(txt, ' AND '));
+    RETURN array_to_string(txt, ' AND ');
   ELSEIF (boolop = ast_constants.bool_expr_type('OR_EXPR')) THEN
-    RETURN format('(%s)', array_to_string(txt, ' OR '));
+    -- RETURN format('(%s)', array_to_string(txt, ' OR '));
+    RETURN array_to_string(txt, ' OR ');
   END IF;
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
@@ -833,9 +877,9 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'ColumnRef';
   END IF;
 
-  IF (context IS NULL) THEN 
-    context = 'column';
-  END IF;
+  -- IF (context IS NULL) THEN 
+  context = 'ColumnRef';
+  -- END IF;
 
   RETURN deparser.list(node->'ColumnRef'->'fields', '.', context);
 END;
@@ -924,17 +968,16 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'ColumnDef';
   END IF;
 
-  IF (node->'ColumnDef'->'colname') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION % (colname)', 'ColumnDef';
-  END IF;
-
   IF (node->'ColumnDef'->'typeName') IS NULL THEN
     RAISE EXCEPTION 'BAD_EXPRESSION % (typeName)', 'ColumnDef';
   END IF;
 
   node = node->'ColumnDef';
 
-  output = array_append(output, quote_ident(node->>'colname'));
+  IF (node->'colname' IS NOT NULL) THEN
+    output = array_append(output, quote_ident(node->>'colname'));
+  END IF;
+
   output = array_append(output, deparser.expression(node->'typeName', context));
 
   IF (node->'raw_default') IS NOT NULL THEN
@@ -1262,9 +1305,6 @@ BEGIN
         ));
       ELSIF (
         item->'TriggerTransition' IS NOT NULL AND
-        (item->'TriggerTransition'->'isNew' IS NOT NULL OR
-          (item->'TriggerTransition'->'isNew')::bool IS FALSE
-        ) AND
         item->'TriggerTransition'->'isTable' IS NOT NULL AND
         (item->'TriggerTransition'->'isTable')::bool IS TRUE
       ) THEN 
@@ -1354,12 +1394,11 @@ BEGIN
     ELSE 
       RETURN quote_ident(txt);
     END IF;
-  ELSIF (context = 'column') THEN
-    RETURN quote_ident(txt);
-  ELSIF (context = 'update') THEN
+  ELSIF (context = 'ColumnRef') THEN
     IF (upper(txt) = 'EXCLUDED') THEN 
       RETURN 'EXCLUDED';
     END IF;
+    RETURN quote_ident(txt);
   ELSIF (context = 'enum') THEN
     RETURN '''' || txt || '''';
   ELSIF (context = 'identifiers') THEN
@@ -2108,7 +2147,7 @@ BEGIN
         IF ( def->'DefElem'->>'defname' = 'schemas') THEN
           output = array_append(output, 'IN SCHEMA');
           output = array_append(output, deparser.expression(def->'DefElem'->'arg'->0));
-        ELSIF ( def->'DefElem'->>'defname' = 'schemas') THEN
+        ELSIF ( def->'DefElem'->>'defname' = 'roles') THEN
           output = array_append(output, 'FOR ROLE');
           output = array_append(output, deparser.expression(def->'DefElem'->'arg'->0));
         END IF;
@@ -2116,7 +2155,7 @@ BEGIN
       END IF;
     END IF;
 
-    output = array_append(output, deparser.expression(def->'action'));
+    output = array_append(output, deparser.expression(node->'action'));
 
     RETURN array_to_string(output, ' ');
 END;
@@ -2259,6 +2298,29 @@ BEGIN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableSetStmt';
     END IF;
 
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.variable_show_stmt(
+  node jsonb,
+  context text default null
+) returns text as $$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'VariableShowStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableShowStmt';
+    END IF;
+
+    IF (node->'VariableShowStmt'->'name') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableShowStmt';
+    END IF;
+
+    node = node->'VariableShowStmt';
+    output = array_append(output, 'SHOW');
+    output = array_append(output, node->>'name');
     RETURN array_to_string(output, ' ');
 END;
 $$
@@ -2605,11 +2667,11 @@ BEGIN
     node = node->'AlterTableCmd';
     subtype = (node->'subtype')::int;
 
-    IF (subtype = 0) THEN 
+    IF (subtype = ast_constants.alter_table_type('AT_AddColumn')) THEN 
       output = array_append(output, 'ADD COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 3) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ColumnDefault')) THEN
       output = array_append(output, 'ALTER COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       IF (node->'def' IS NOT NULL) THEN
@@ -2618,25 +2680,25 @@ BEGIN
       ELSE
         output = array_append(output, 'DROP DEFAULT');
       END IF;
-    ELSIF (subtype = 4) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropNotNull')) THEN
       output = array_append(output, 'ALTER COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'DROP NOT NULL');
-    ELSIF (subtype = 5) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_SetNotNull')) THEN
       output = array_append(output, 'ALTER COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET NOT NULL');
-    ELSIF (subtype = 6) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_SetStatistics')) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET STATISTICS');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 7) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_SetOptions')) THEN
       output = array_append(output, 'ALTER COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = 9) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_SetStorage')) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET STORAGE');
@@ -2645,58 +2707,60 @@ BEGIN
       ELSE
         output = array_append(output, 'PLAIN');
       END IF;
-    ELSIF (subtype = 10) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropColumn')) THEN
       output = array_append(output, 'DROP');
       IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = 14) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_AddConstraint')) THEN
       output = array_append(output, 'ADD');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 18) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ValidateConstraint')) THEN
       output = array_append(output, 'VALIDATE CONSTRAINT');
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = 22) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropConstraint')) THEN
       output = array_append(output, 'DROP CONSTRAINT');
       IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = 25) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_AlterColumnType')) THEN
       output = array_append(output, 'ALTER COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'TYPE');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 28) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ClusterOn')) THEN
       output = array_append(output, 'CLUSTER ON');
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = 29) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropCluster')) THEN
       output = array_append(output, 'SET WITHOUT CLUSTER');
-    ELSIF (subtype = 32) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_AddOids')) THEN
       output = array_append(output, 'SET WITH OIDS');
-    ELSIF (subtype = 34) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropOids')) THEN
       output = array_append(output, 'SET WITHOUT OIDS');
-    ELSIF (subtype = 36) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_SetRelOptions')) THEN
       output = array_append(output, 'SET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = 37) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ResetRelOptions')) THEN
       output = array_append(output, 'RESET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = 51) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_AddInherit')) THEN
       output = array_append(output, 'INHERIT');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 52) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropInherit')) THEN
       output = array_append(output, 'NO INHERIT');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 56) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_EnableRowSecurity')) THEN
       output = array_append(output, 'ENABLE ROW LEVEL SECURITY');
-    ELSIF (subtype = 57) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DisableRowSecurity')) THEN
       output = array_append(output, 'DISABLE ROW LEVEL SECURITY');
-    ELSIF (subtype = 58) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ForceRowSecurity')) THEN
       output = array_append(output, 'FORCE ROW SECURITY');
-    ELSIF (subtype = 59) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_NoForceRowSecurity')) THEN
       output = array_append(output, 'NO FORCE ROW SECURITY');
+    ELSE 
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableCmd may need to implement more alter_table_type(s)';
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -2738,8 +2802,9 @@ BEGIN
       output = array_append(output, 'TABLE');
       IF (
         node->'relation'->'RangeVar' IS NOT NULL AND
-        node->'relation'->'RangeVar'->'inh' IS NOT NULL AND
-        (node->'relation'->'RangeVar'->'inh')::bool IS FALSE
+        node->'relation'->'RangeVar'->'inh' IS NULL OR
+        (node->'relation'->'RangeVar'->'inh' IS NOT NULL AND
+        (node->'relation'->'RangeVar'->'inh')::bool IS FALSE)
       ) THEN 
         output = array_append(output, 'ONLY');
       END IF;
@@ -2764,6 +2829,7 @@ CREATE FUNCTION deparser.range_function(
 DECLARE
   output text[];
   funcs text[];
+  calls text[];
   func jsonb;
 BEGIN
     IF (node->'RangeFunction') IS NULL THEN
@@ -2779,13 +2845,14 @@ BEGIN
     IF (node->'functions' IS NOT NULL AND jsonb_array_length(node->'functions') > 0) THEN 
       FOR func in SELECT * FROM jsonb_array_elements(node->'functions')
       LOOP 
-        funcs = array_append(funcs, deparser.expression(func->0));
+        calls = ARRAY[deparser.expression(func->0)]::text[];
         IF (func->1 IS NOT NULL AND jsonb_typeof(func->1) = 'array' AND jsonb_array_length(func->1) > 0) THEN 
-          funcs = array_append(funcs, format(
+          calls = array_append(calls, format(
             'AS (%s)',
             deparser.list(func->1)
           ));
         END IF;
+        funcs = array_append(funcs, array_to_string(calls, ' '));
       END LOOP;
 
       IF (node->'is_rowsfrom' IS NOT NULL AND (node->'is_rowsfrom')::bool IS TRUE) THEN 
@@ -3023,7 +3090,7 @@ BEGIN
     END IF;
 
     jointype = (node->'jointype')::int;
-    IF (jointype = 0) THEN 
+    IF (jointype = ast_constants.join_type('JOIN_INNER')) THEN 
       IF (node->'quals' IS NOT NULL) THEN 
         jointxt = 'INNER JOIN';
       ELSIF (
@@ -3035,13 +3102,14 @@ BEGIN
       ELSE
         jointxt = 'JOIN';
       END IF;
-    ELSIF (jointype = 1) THEN
+    ELSIF (jointype = ast_constants.join_type('JOIN_LEFT')) THEN
         jointxt = 'LEFT OUTER JOIN';
-    ELSIF (jointype = 2) THEN
+    ELSIF (jointype = ast_constants.join_type('JOIN_FULL')) THEN
         jointxt = 'FULL OUTER JOIN';
-    ELSIF (jointype = 3) THEN
+    ELSIF (jointype = ast_constants.join_type('JOIN_RIGHT')) THEN
         jointxt = 'RIGHT OUTER JOIN';
     ELSE
+      -- TODO need to implement more joins
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
     END IF;
     output = array_append(output, jointxt);
@@ -3061,8 +3129,7 @@ BEGIN
 
     IF (node->'usingClause' IS NOT NULL) THEN 
       output = array_append(output, 'USING');
-      -- TODO check this... maybe not correct.
-      output = array_append(output, deparser.list_quotes(node->'usingClause'));
+      output = array_append(output, deparser.parens(deparser.list(node->'usingClause')));
     END IF;
 
     IF ( (node->'rarg' IS NOT NULL AND node->'rarg'->'JoinExpr' IS NOT NULL ) OR node->'alias' IS NOT NULL) THEN 
@@ -3093,6 +3160,8 @@ BEGIN
     END IF;
 
     node = node->'A_Indirection';
+
+    output = array_append(output, deparser.parens(deparser.expression(node->'arg')));
 
     IF (node->'indirection' IS NOT NULL AND jsonb_array_length(node->'indirection') > 0) THEN 
       FOR subnode IN SELECT * FROM jsonb_array_elements(node->'indirection')
@@ -3473,25 +3542,105 @@ CREATE FUNCTION deparser.create_role_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  event int;
+  stmt_type int;
+  option jsonb;
+  opts_len int;
+  defname text;
 BEGIN
     IF (node->'CreateRoleStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
     END IF;
 
-    -- IF (node->'CreateRoleStmt'->'event') IS NULL THEN
-    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
-    -- END IF;
-
-    -- IF (node->'CreateRoleStmt'->'relation') IS NULL THEN
-    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
-    -- END IF;
+    IF (node->'CreateRoleStmt'->'stmt_type') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
+    END IF;
 
     node = node->'CreateRoleStmt';
+    stmt_type = (node->'stmt_type')::int;
 
     output = array_append(output, 'CREATE');
+    
+    IF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_ROLE')) THEN 
+      output = array_append(output, 'ROLE');
+    ELSEIF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_USER')) THEN 
+      output = array_append(output, 'USER');
+    ELSEIF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_GROUP')) THEN 
+      output = array_append(output, 'GROUP');
+    ELSE 
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
+    END IF;
 
-    RAISE EXCEPTION 'TODO %', 'CreateRoleStmt';
+    output = array_append(output, quote_ident(node->>'role'));
+
+    IF (node->'options' IS NOT NULL) THEN 
+      opts_len = jsonb_array_length(node->'options');
+      IF (opts_len != 1 OR node->'options'->0->'DefElem'->>'defname' != 'addroleto') THEN 
+        output = array_append(output, 'WITH');
+      END IF;
+
+      FOR option IN SELECT * FROM jsonb_array_elements(node->'options')
+      LOOP
+        defname = option#>>'{DefElem, defname}';
+        IF (defname = 'canlogin') THEN 
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'LOGIN');
+          ELSE
+            output = array_append(output, 'NOLOGIN');
+          END IF;
+        ELSEIF (defname = 'addroleto') THEN
+          output = array_append(output, 'IN ROLE');
+          output = array_append(output, deparser.list(option->'DefElem'->'arg'));
+        ELSEIF (defname = 'password') THEN
+          output = array_append(output, 'PASSWORD');
+          output = array_append(output, deparser.expression(option->'DefElem'->'arg'));
+        ELSEIF (defname = 'adminmembers') THEN
+          output = array_append(output, 'ADMIN');
+          output = array_append(output, deparser.list(option->'DefElem'->'arg'));
+        ELSEIF (defname = 'rolemembers') THEN
+          output = array_append(output, 'USER');
+          output = array_append(output, deparser.list(option->'DefElem'->'arg'));
+        ELSEIF (defname = 'createdb') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'CREATEDB');
+          ELSE
+            output = array_append(output, 'NOCREATEDB');
+          END IF;
+        ELSEIF (defname = 'isreplication') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'REPLICATION');
+          ELSE
+            output = array_append(output, 'NOREPLICATION');
+          END IF;
+        ELSEIF (defname = 'bypassrls') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'BYPASSRLS');
+          ELSE
+            output = array_append(output, 'NOBYPASSRLS');
+          END IF;
+        ELSEIF (defname = 'inherit') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'INHERIT');
+          ELSE
+            output = array_append(output, 'NOINHERIT');
+          END IF;
+        ELSEIF (defname = 'superuser') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'SUPERUSER');
+          ELSE
+            output = array_append(output, 'NOSUPERUSER');
+          END IF;
+        ELSEIF (defname = 'createrole') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'CREATEROLE');
+          ELSE
+            output = array_append(output, 'NOCREATEROLE');
+          END IF;
+        ELSEIF (defname = 'validUntil') THEN
+            output = array_append(output, 'VALID UNTIL');
+            output = array_append(output, format('''%s''', deparser.expression(option->'DefElem'->'arg')));
+        END IF;
+      END LOOP;
+    END IF;
 
     RETURN array_to_string(output, ' ');
 END;
@@ -3505,6 +3654,7 @@ CREATE FUNCTION deparser.create_stmt(
 DECLARE
   output text[];
   relpersistence text;
+  item jsonb;
 BEGIN
     IF (node->'CreateStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateStmt';
@@ -3536,7 +3686,16 @@ BEGIN
     END IF;
 
     IF (node->'options') IS NOT NULL THEN
-      -- TODO with/without OIDs
+        IF (node->'options') IS NOT NULL THEN
+        FOR item IN SELECT * FROM jsonb_array_elements(node->'options')
+        LOOP
+          IF (item#>>'{DefElem, defname}' = 'oids' AND (item#>>'{DefElem, arg, Integer, ival}')::int = 1) THEN 
+            output = array_append(output, 'WITH OIDS');
+          ELSE
+            output = array_append(output, 'WITHOUT OIDS');
+          END IF;
+        END LOOP;
+      END IF;
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -4021,11 +4180,16 @@ BEGIN
 
     -- distinct
     IF (node->'distinctClause') IS NOT NULL THEN 
-      IF (node->'distinctClause'->0) IS NOT NULL THEN 
-        output = array_append(output, 'DISTINCT ON');
-        output = array_append(output, '(');
-        output = array_append(output, deparser.list(node->'distinctClause', E',\n', context));
-        output = array_append(output, ')');
+      IF (node->'distinctClause'->0 IS NOT NULL) THEN 
+        IF (jsonb_typeof(node->'distinctClause'->0) = 'null') THEN 
+          -- fix for custom.sql test case
+          output = array_append(output, 'DISTINCT');
+        ELSE
+          output = array_append(output, 'DISTINCT ON');
+          output = array_append(output, '(');
+          output = array_append(output, deparser.list(node->'distinctClause', E',\n', context));
+          output = array_append(output, ')');
+        END IF;
       ELSE
         output = array_append(output, 'DISTINCT');
       END IF;
@@ -4430,7 +4594,7 @@ DECLARE
   param jsonb;
   option jsonb;
   params jsonb[];
-  rets jsonb[];
+  returnsTableElements jsonb[];
   defname text;
 BEGIN
     IF (node->'CreateFunctionStmt') IS NULL THEN
@@ -4446,6 +4610,8 @@ BEGIN
     output = array_append(output, 'FUNCTION');
     output = array_append(output, deparser.list(node->'funcname', '.', 'identifiers'));
 
+    returnsTableElements = ARRAY[]::jsonb[];
+
     -- params
     output = array_append(output, '(');
     IF (node->'parameters' IS NOT NULL) THEN
@@ -4455,9 +4621,8 @@ BEGIN
       LOOP
         IF ((param->'FunctionParameter'->'mode')::int = ANY(ARRAY[118, 111, 98, 105]::int[])) THEN
           params = array_append(params, param);
-        END IF;
-        IF ((param->'FunctionParameter'->'mode')::int = 116) THEN
-          rets = array_append(params, param);
+        ELSEIF ((param->'FunctionParameter'->'mode')::int = 116) THEN
+          returnsTableElements = array_append(returnsTableElements, param);
         END IF;
       END LOOP;
 
@@ -4468,18 +4633,16 @@ BEGIN
 
     -- RETURNS
 
-    IF (cardinality(rets) > 0) THEN
+    IF (cardinality(returnsTableElements) > 0) THEN
       output = array_append(output, 'RETURNS');
       output = array_append(output, 'TABLE');
       output = array_append(output, '(');
-      output = array_append(output, deparser.list(to_jsonb(rets)));
+      output = array_append(output, deparser.list(to_jsonb(returnsTableElements)));
       output = array_append(output, ')');      
     ELSE
       output = array_append(output, 'RETURNS');
       output = array_append(output, deparser.expression(node->'returnType'));
     END IF;
-
-    -- TODO IMMUTABLE type? where is that option?
 
     -- options
     IF (node->'options') IS NOT NULL THEN
@@ -4520,7 +4683,8 @@ BEGIN
               ELSE
                 output = array_append(output, 'CALLED ON NULL INPUT' );
               END IF;
-            -- ELSIF (defname = 'set') THEN 
+            ELSIF (defname = 'set') THEN 
+              output = array_append(output, deparser.expression(option)); 
             ELSIF (defname = 'volatility') THEN 
               output = array_append(output, upper(deparser.expression(option->'DefElem'->'arg')) );
             END IF;
@@ -4679,6 +4843,8 @@ BEGIN
     RETURN deparser.create_domain_stmt(expr, context);
   ELSEIF (expr->>'CreateEnumStmt') IS NOT NULL THEN
     RETURN deparser.create_enum_stmt(expr, context);
+  ELSEIF (expr->>'CreateExtensionStmt') IS NOT NULL THEN
+    RETURN deparser.create_extension_stmt(expr, context);
   ELSEIF (expr->>'CreateFunctionStmt') IS NOT NULL THEN
     RETURN deparser.create_function_stmt(expr, context);
   ELSEIF (expr->>'CreatePolicyStmt') IS NOT NULL THEN
@@ -4795,6 +4961,8 @@ BEGIN
     RETURN deparser.vacuum_stmt(expr, context);
   ELSEIF (expr->>'VariableSetStmt') IS NOT NULL THEN
     RETURN deparser.variable_set_stmt(expr, context);
+  ELSEIF (expr->>'VariableShowStmt') IS NOT NULL THEN
+    RETURN deparser.variable_show_stmt(expr, context);
   ELSEIF (expr->>'ViewStmt') IS NOT NULL THEN
     RETURN deparser.view_stmt(expr, context);
   ELSEIF (expr->>'WithClause') IS NOT NULL THEN
