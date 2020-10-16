@@ -238,7 +238,7 @@ SELECT * FROM tab ORDER BY col USING >;
 SELECT * FROM tab ORDER BY col USING =;
 SELECT * FROM tab ORDER BY col USING = NULLS FIRST,
 col2 USING < NULLS LAST;
-SELECT mleast(VARIADIC arr:=ARRAY[10, -1, 5, 4.4]);
+SELECT mleast(VARIADIC arr:=ARRAY[10, (-1), 5, 4.4]);
 SELECT encode('''123\\\\000\\\\001', 'base64');
 SELECT 'слон';
 SELECT 'data';
@@ -14106,12 +14106,12 @@ EXECUTE PROCEDURE check_account_update ( );
 CREATE TRIGGER check_update
 BEFORE UPDATE ON accounts
 FOR EACH ROW
-WHEN (old.balance IS DISTINCT FROM new.balance)
+WHEN (OLD.balance IS DISTINCT FROM NEW.balance)
 EXECUTE PROCEDURE check_account_update ( );
 CREATE TRIGGER log_update
 AFTER UPDATE ON accounts
 FOR EACH ROW
-WHEN (old.* IS DISTINCT FROM new.*)
+WHEN (OLD.* IS DISTINCT FROM NEW.*)
 EXECUTE PROCEDURE log_account_update ( );
 CREATE TRIGGER view_insert
 INSTEAD OF INSERT ON my_view

@@ -130,6 +130,7 @@ DECLARE
   parsed text[];
   catalog text;
   typ text;
+  ctx jsonb;
 BEGIN
   parsed = deparser.expressions_array(names);
   catalog = parsed[1];
@@ -141,9 +142,11 @@ BEGIN
 
   IF (catalog != 'pg_catalog') THEN 
     IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
-      RETURN deparser.quoted_name(names, 'type') || deparser.parens(typemods);
+      ctx = '{"type": true}'::jsonb;
+      RETURN deparser.quoted_name(names, ctx) || deparser.parens(typemods);
     ELSE
-      RETURN deparser.quoted_name(names, 'type');
+      ctx = '{"type": true}'::jsonb;
+      RETURN deparser.quoted_name(names, ctx);
     END IF;
   END IF;
 
@@ -160,7 +163,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.type_name (
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[] = ARRAY[]::text[];
@@ -211,7 +214,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.type_cast (
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   type text;
@@ -250,7 +253,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.returning_list (
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -286,7 +289,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.range_var (
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -327,7 +330,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_extension_stmt (
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -362,7 +365,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.raw_stmt (
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
     IF (node->'RawStmt') IS NULL THEN  
@@ -383,7 +386,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_between(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -406,7 +409,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_not_between(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -430,7 +433,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_similar(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -475,7 +478,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_ilike(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -506,7 +509,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_like(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -533,7 +536,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_of(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -564,7 +567,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_in(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -603,7 +606,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_nullif(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -625,7 +628,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_op(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -689,7 +692,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_op_any(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -716,7 +719,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_op_all(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -743,7 +746,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr_distinct(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   left_expr text;
@@ -764,7 +767,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   kind int;
@@ -829,7 +832,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.bool_expr(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   txt text[];
@@ -854,17 +857,17 @@ BEGIN
   -- TODO too many parens (does removing this break anything?)
   -- TODO update pgsql-parser if not
   IF (boolop = 2) THEN
-    RETURN format('NOT (%s)', deparser.expression(node->'args'->0, context));
-    -- RETURN format('NOT %s', deparser.expression(node->'args'->0, context));
+    -- RETURN format('NOT (%s)', deparser.expression(node->'args'->0, context));
+    RETURN format('NOT %s', deparser.expression(node->'args'->0, context));
   END IF;
 
   -- context should be an OBJECT!!! jsonb!!
   -- you could pass in the current operation
   -- IF AND between two, and the parent is already AND, no need for parens!
   -- ONLY parens when it changes boolean types!
-  txt = deparser.expressions_array(node->'args', 'bool');
+  txt = deparser.expressions_array(node->'args', jsonb_set(context, '{bool}', to_jsonb(TRUE)));
  
-  IF (context = 'bool') THEN 
+  IF ((context->'bool')::bool IS TRUE) THEN 
     fmt_str = '(%s)';
   END IF;
 
@@ -884,7 +887,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.column_ref(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   txt text;
@@ -898,18 +901,14 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'ColumnRef';
   END IF;
 
-  -- IF (context IS NULL) THEN 
-  context = 'ColumnRef';
-  -- END IF;
-
-  RETURN deparser.list(node->'ColumnRef'->'fields', '.', context);
+  RETURN deparser.list(node->'ColumnRef'->'fields', '.', jsonb_set(context, '{ColumnRef}', to_jsonb(TRUE)));
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.explain_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
 
@@ -928,7 +927,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.collate_clause(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -958,7 +957,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_array_expr(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
 
@@ -979,7 +978,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.column_def(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1022,7 +1021,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.sql_value_function(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   op int;
@@ -1082,7 +1081,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.common_table_expr(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1137,7 +1136,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.bit_string(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   prefix text;
@@ -1164,7 +1163,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_const(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   txt text;
@@ -1194,7 +1193,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.boolean_test(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1236,7 +1235,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_trigger_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   txt text;
@@ -1368,7 +1367,7 @@ BEGIN
   IF (node->'whenClause') IS NOT NULL THEN
       output = array_append(output, 'WHEN');
       output = array_append(output, deparser.parens(
-        deparser.expression(node->'whenClause', 'trigger')
+        deparser.expression(node->'whenClause', jsonb_set(context, '{trigger}', to_jsonb(TRUE)))
       ));
       output = array_append(output, chr(10));
   END IF;
@@ -1402,12 +1401,12 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.string(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   txt text = expr->'String'->>'str';
 BEGIN
-  IF (context = 'trigger') THEN
+  IF ((context->'trigger')::bool IS TRUE) THEN
     IF (upper(txt) = 'NEW') THEN
       RETURN 'NEW';
     ELSIF (upper(txt) = 'OLD') THEN
@@ -1415,14 +1414,14 @@ BEGIN
     ELSE 
       RETURN quote_ident(txt);
     END IF;
-  ELSIF (context = 'ColumnRef') THEN
+  ELSIF ((context->'ColumnRef')::bool IS TRUE) THEN
     IF (upper(txt) = 'EXCLUDED') THEN 
       RETURN 'EXCLUDED';
     END IF;
     RETURN quote_ident(txt);
-  ELSIF (context = 'enum') THEN
+  ELSIF ((context->'enum')::bool IS TRUE) THEN
     RETURN '''' || txt || '''';
-  ELSIF (context = 'identifiers') THEN
+  ELSIF ((context->'identifiers')::bool IS TRUE) THEN
     RETURN quote_ident(txt);
   END IF;
   RETURN txt;
@@ -1432,7 +1431,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.float(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
   IF (LEFT(node->'Float'->>'str', 1) = '-') THEN 
@@ -1446,7 +1445,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 CREATE FUNCTION deparser.list(
   node jsonb,
   delimiter text default ', ',
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   txt text;
@@ -1459,7 +1458,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 CREATE FUNCTION deparser.list_quotes(
   node jsonb,
   delimiter text default ', ',
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   txt text;
@@ -1479,7 +1478,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 -- CREATE FUNCTION deparser.rls_column_ref(
 --   node jsonb,
---   context text default null
+--   context jsonb default '{}'::jsonb
 -- ) returns text as $$
 -- DECLARE
 --   txt text;
@@ -1494,7 +1493,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_policy_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1548,7 +1547,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.role_spec(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   roletype int;
@@ -1581,7 +1580,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.insert_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1624,7 +1623,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_schema_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1659,7 +1658,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.exclusion_constraint(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1710,7 +1709,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.reference_constraint(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1758,7 +1757,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.constraint_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1784,7 +1783,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_seq_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1803,7 +1802,7 @@ BEGIN
     output = array_append(output, deparser.expression(node->'sequence'));
 
     IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
-      output = array_append(output, deparser.list(node->'options', ' ', 'sequence'));
+      output = array_append(output, deparser.list(node->'options', ' ', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -1813,7 +1812,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.do_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1847,7 +1846,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_table_as_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1878,7 +1877,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.constraint(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -1957,7 +1956,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.def_elem(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   defname text;
@@ -1999,7 +1998,7 @@ BEGIN
       defname = node->>'defnamespace' || '.' || node->>'defname';
     END IF;
 
-    IF (context = 'sequence') THEN
+    IF ((context->'sequence')::bool IS TRUE) THEN
       IF (defname = 'cycle') THEN 
         IF (trim(deparser.expression(node->'arg')) = '1') THEN
           RETURN 'CYCLE';
@@ -2010,16 +2009,16 @@ BEGIN
         IF (node->'arg' IS NULL) THEN
           RETURN 'NO MINVALUE';
         ELSE 
-          RETURN defname || ' ' || deparser.expression(node->'arg', 'simple');
+          RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
         END IF;
       ELSIF (defname = 'maxvalue') THEN 
         IF (node->'arg' IS NULL) THEN
           RETURN 'NO MAXVALUE';
         ELSE 
-          RETURN defname || ' ' || deparser.expression(node->'arg', 'simple');
+          RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
         END IF;
       ELSIF (node->'arg' IS NOT NULL) THEN
-        RETURN defname || ' ' || deparser.expression(node->'arg', 'simple');
+        RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
       END IF;
     ELSE
         RETURN defname || '=' || deparser.expression(node->'arg');
@@ -2032,7 +2031,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.comment_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2142,7 +2141,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_default_privileges_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2185,7 +2184,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.case_expr(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2218,7 +2217,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.case_when(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2249,7 +2248,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.with_clause(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2276,7 +2275,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.variable_set_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2299,7 +2298,7 @@ BEGIN
       IF (node->'is_local' IS NOT NULL AND (node->'is_local')::bool IS TRUE) THEN 
         local = 'LOCAL ';
       END IF;
-      output = array_append(output, format('SET %s%s = %s', local, node->>'name', deparser.list(node->'args', ', ', 'simple')));
+      output = array_append(output, format('SET %s%s = %s', local, node->>'name', deparser.list(node->'args', ', ', jsonb_set(context, '{simple}', to_jsonb(TRUE)))));
     ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_DEFAULT')) THEN
       output = array_append(output, format('SET %s TO DEFAULT', node->>'name'));
     ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_CURRENT')) THEN
@@ -2310,7 +2309,7 @@ BEGIN
       ELSIF (node->>'name' = 'SESSION CHARACTERISTICS') THEN
         multi = 'SESSION CHARACTERISTICS AS TRANSACTION';
       END IF;
-      output = array_append(output, format('SET %s %s', multi, deparser.list(node->'args', ', ', 'simple')));
+      output = array_append(output, format('SET %s %s', multi, deparser.list(node->'args', ', ', jsonb_set(context, '{simple}', to_jsonb(TRUE)))));
     ELSIF (kind = ast_constants.variable_set_kind('VAR_RESET')) THEN
       output = array_append(output, format('RESET %s', node->>'name'));
     ELSIF (kind = ast_constants.variable_set_kind('VAR_RESET_ALL')) THEN
@@ -2326,7 +2325,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.variable_show_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2349,7 +2348,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.alias(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2379,7 +2378,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.range_subselect(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2411,7 +2410,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.delete_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2442,7 +2441,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.quoted_name(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2450,12 +2449,12 @@ DECLARE
 BEGIN
     -- NOTE: assumes array of names passed in 
 
-    IF (context = 'type') THEN 
+    IF ((context->'type')::bool IS TRUE) THEN 
 
 
       FOREACH item IN array deparser.expressions_array(node)
       LOOP
-        -- strip off the [] if it exists at the end, and set is_array prop
+        -- strip off the [] if it exists at the end
         -- TODO, not sure if we need this anymore... we fixed the quote stuff higher up...
         IF (ARRAY_LENGTH(REGEXP_MATCHES(trim(item), '(.*)\s*(\[\s*?\])$', 'i'), 1) > 0) THEN
           item = REGEXP_REPLACE(trim(item), '(.*)\s*(\[\s*?\])$', '\1', 'i');
@@ -2479,7 +2478,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_domain_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2516,7 +2515,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.grant_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2580,7 +2579,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.composite_type_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2614,7 +2613,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.index_elem(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
     IF (node->'IndexElem') IS NULL THEN
@@ -2639,7 +2638,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_enum_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2661,7 +2660,7 @@ BEGIN
     output = array_append(output, deparser.list(node->'typeName', '.'));
     output = array_append(output, 'AS ENUM');
     output = array_append(output, E'(\n');
-    output = array_append(output, deparser.list(node->'vals', E',\n', 'enum'));
+    output = array_append(output, deparser.list(node->'vals', E',\n', jsonb_set(context, '{enum}', to_jsonb(TRUE))));
     output = array_append(output, E'\n)');
 
     RETURN array_to_string(output, ' ');
@@ -2671,7 +2670,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_table_cmd(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2791,7 +2790,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.alter_table_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2845,7 +2844,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.range_function(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2906,7 +2905,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.index_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -2962,7 +2961,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.update_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3003,7 +3002,7 @@ BEGIN
         output = array_append(output, '=');
         output = array_append(output, deparser.expression(node->'targetList'->0->'ResTarget'->'val'));
       ELSE
-        output = array_append(output, deparser.list(node->'targetList', ', ', 'update'));
+        output = array_append(output, deparser.list(node->'targetList', ', ', jsonb_set(context, '{update}', to_jsonb(TRUE))));
       END IF;
     END IF;
 
@@ -3028,7 +3027,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.param_ref(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
     IF (node->'ParamRef') IS NULL THEN
@@ -3048,7 +3047,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.set_to_default(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
     IF (node->'SetToDefault') IS NULL THEN
@@ -3062,7 +3061,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.multi_assign_ref(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
     IF (node->'MultiAssignRef') IS NULL THEN
@@ -3080,7 +3079,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.join_expr(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3170,7 +3169,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_indirection(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3205,7 +3204,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.sub_link(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3274,7 +3273,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_star(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
     IF (node->'A_Star') IS NULL THEN
@@ -3287,7 +3286,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.integer(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   ival int;
@@ -3303,7 +3302,7 @@ BEGIN
     node = node->'Integer';
     ival = (node->'ival')::int;
 
-    IF (ival < 0 AND context != 'simple') THEN
+    IF (ival < 0 AND context->'simple' IS NULL) THEN
       RETURN deparser.parens(node->>'ival');
     END IF;
     
@@ -3314,7 +3313,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.access_priv(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3345,7 +3344,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.grouping_func(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
     IF (node->'GroupingFunc') IS NULL THEN
@@ -3364,7 +3363,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.grouping_set(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   kind int;
@@ -3397,7 +3396,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.func_call(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   fn_name text;
@@ -3482,7 +3481,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.rule_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3559,7 +3558,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_role_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3670,7 +3669,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3726,7 +3725,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.transaction_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3780,7 +3779,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.view_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3810,7 +3809,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.sort_by(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3863,7 +3862,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.res_target(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3876,15 +3875,15 @@ BEGIN
     node = node->'ResTarget';
 
     -- NOTE seems like compact is required here, sometimes the name is NOT used!
-    IF (context = 'select') THEN       
+    IF ((context->'select')::bool IS TRUE) THEN       
       output = array_append(output, array_to_string(deparser.compact(ARRAY[
-        deparser.expression(node->'val', 'select'),
+        deparser.expression(node->'val', context),
         quote_ident(node->>'name')
       ]), ' AS '));
-    ELSIF (context = 'update') THEN 
+    ELSIF ((context->'update')::bool IS TRUE) THEN 
       output = array_append(output, array_to_string(deparser.compact(ARRAY[
         quote_ident(node->>'name'),
-        deparser.expression(node->'val', 'update')
+        deparser.expression(node->'val', context)
       ]), ' = '));
     ELSE
       output = array_append(output, quote_ident(node->>'name'));
@@ -3897,7 +3896,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.object_with_args(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3910,7 +3909,7 @@ BEGIN
 
     node = node->'ObjectWithArgs';
 
-    IF (context = 'noquotes') THEN 
+    IF ((context->'noquotes')::bool IS TRUE) THEN 
       output = array_append(output, deparser.list(node->'objname'));
     ELSE
       -- TODO why no '.' for the case above?
@@ -3940,7 +3939,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 -- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.alter_domain_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -3973,7 +3972,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 -- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.alter_enum_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4005,7 +4004,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 -- TODO never FULLY TESTED
 CREATE FUNCTION deparser.execute_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   fn_args text;
@@ -4034,7 +4033,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.row_expr(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   row_format int;
@@ -4056,7 +4055,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.a_indices(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
     IF (node->'A_Indices') IS NULL THEN
@@ -4079,7 +4078,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.into_clause(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
     IF (node->'IntoClause') IS NULL THEN
@@ -4094,7 +4093,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 -- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.rename_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4127,7 +4126,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 -- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.vacuum_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4147,7 +4146,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.select_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4218,7 +4217,7 @@ BEGIN
 
     -- target
     IF (node->'targetList') IS NOT NULL THEN 
-      output = array_append(output, deparser.list(node->'targetList', E',\n', 'select'));
+      output = array_append(output, deparser.list(node->'targetList', E',\n', jsonb_set(context, '{select}', to_jsonb(TRUE))));
     END IF;
 
     -- into
@@ -4229,7 +4228,7 @@ BEGIN
     -- from
     IF (node->'fromClause') IS NOT NULL THEN 
       output = array_append(output, 'FROM');
-      output = array_append(output, deparser.list(node->'fromClause', E',\n', 'from'));
+      output = array_append(output, deparser.list(node->'fromClause', E',\n', context));
     END IF;
 
     -- where
@@ -4252,7 +4251,7 @@ BEGIN
     -- groups
     IF (node->'groupClause') IS NOT NULL THEN 
       output = array_append(output, 'GROUP BY');
-      output = array_append(output, deparser.list(node->'groupClause', E',\n', 'group'));
+      output = array_append(output, deparser.list(node->'groupClause', E',\n', context));
     END IF;
 
     -- having
@@ -4269,7 +4268,7 @@ BEGIN
     -- sort
     IF (node->'sortClause') IS NOT NULL THEN 
       output = array_append(output, 'ORDER BY');
-      output = array_append(output, deparser.list(node->'sortClause', E',\n', 'sort'));
+      output = array_append(output, deparser.list(node->'sortClause', E',\n', context));
     END IF;
 
     -- limit
@@ -4297,7 +4296,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.grant_role_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4336,7 +4335,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.locking_clause(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4376,7 +4375,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.coalesce_expr(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
     IF (node->'CoalesceExpr') IS NULL THEN
@@ -4396,7 +4395,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.min_max_expr(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   op int;
@@ -4427,7 +4426,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.null_test(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   nulltesttype int;
@@ -4462,7 +4461,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.named_arg_expr(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4492,7 +4491,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.drop_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4548,7 +4547,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.infer_clause(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4574,7 +4573,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.on_conflict_clause(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4608,7 +4607,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.create_function_stmt(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4629,7 +4628,7 @@ BEGIN
       output = array_append(output, 'OR REPLACE');
     END IF;
     output = array_append(output, 'FUNCTION');
-    output = array_append(output, deparser.list(node->'funcname', '.', 'identifiers'));
+    output = array_append(output, deparser.list(node->'funcname', '.', jsonb_set(context, '{identifiers}', to_jsonb(TRUE))));
 
     returnsTableElements = ARRAY[]::jsonb[];
 
@@ -4722,7 +4721,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.function_parameter(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
@@ -4760,7 +4759,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 -- CREATE FUNCTION deparser.rls_func_ref(
 --   node jsonb,
---   context text default null
+--   context jsonb default '{}'::jsonb
 -- ) returns text as $$
 -- DECLARE
 --   txt text;
@@ -4799,7 +4798,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.expression(
   expr jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text as $$
 BEGIN
 
@@ -4998,7 +4997,7 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION deparser.expressions_array(
   node jsonb,
-  context text default null
+  context jsonb default '{}'::jsonb
 ) returns text[] as $$
 DECLARE
   expr jsonb;

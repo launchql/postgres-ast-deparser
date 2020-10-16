@@ -43,3 +43,4 @@ SET client_encoding TO 'UNICODE';
 SET client_min_messages=notice;
 
 SHOW client_encoding;
+
