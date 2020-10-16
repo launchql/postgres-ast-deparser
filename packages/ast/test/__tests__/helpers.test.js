@@ -51,6 +51,10 @@ export const check = async (file) => {
   expect(cleanTree(parser.parse(sqlfromparser))).toEqual(originalTree);
 };
 
+it('parens', async () => {
+  await check('parens.sql');
+});
+
 describe('kitchen sink', () => {
   it('alter', async () => {
     await check('alter/alter.sql');

@@ -228,7 +228,13 @@ BEGIN
     END IF;
 
     type = deparser.expression(node->'typeName', context);
-    arg = deparser.expression(node->'arg', context);
+
+    IF (node#>'{arg, A_Expr}' IS NOT NULL) THEN 
+      arg = deparser.parens(deparser.expression(node->'arg', context));
+    ELSE 
+      arg = deparser.expression(node->'arg', context);
+    END IF;
+
     IF (type = 'boolean') THEN
       IF (arg = 'f') THEN
         RETURN '(FALSE)';
@@ -669,6 +675,11 @@ BEGIN
     RETURN array_to_string(output, '');
   END IF;
 
+  IF (operator = ANY(ARRAY['->', '->>']::text[])) THEN
+    -- RETURN deparser.parens(array_to_string(output, ''));
+    RETURN array_to_string(output, '');
+  END IF;
+
   RETURN array_to_string(output, ' ');
   -- RETURN deparser.parens(array_to_string(output, ' '));
 
@@ -823,6 +834,7 @@ CREATE FUNCTION deparser.bool_expr(
 DECLARE
   txt text[];
   boolop int;
+  fmt_str text = '%s';
 BEGIN
 
   IF (node->>'BoolExpr') IS NULL THEN  
@@ -842,17 +854,26 @@ BEGIN
   -- TODO too many parens (does removing this break anything?)
   -- TODO update pgsql-parser if not
   IF (boolop = 2) THEN
-    -- RETURN format('NOT (%s)', deparser.expression(node->'args'->0, context));
-    RETURN format('NOT %s', deparser.expression(node->'args'->0, context));
+    RETURN format('NOT (%s)', deparser.expression(node->'args'->0, context));
+    -- RETURN format('NOT %s', deparser.expression(node->'args'->0, context));
   END IF;
 
-  txt = deparser.expressions_array(node->'args', context);
+  -- context should be an OBJECT!!! jsonb!!
+  -- you could pass in the current operation
+  -- IF AND between two, and the parent is already AND, no need for parens!
+  -- ONLY parens when it changes boolean types!
+  txt = deparser.expressions_array(node->'args', 'bool');
+ 
+  IF (context = 'bool') THEN 
+    fmt_str = '(%s)';
+  END IF;
+
   IF (boolop = ast_constants.bool_expr_type('AND_EXPR')) THEN
-    -- RETURN format('(%s)', array_to_string(txt, ' AND '));
-    RETURN array_to_string(txt, ' AND ');
+    RETURN format(fmt_str, array_to_string(txt, ' AND '));
+    -- RETURN array_to_string(txt, ' AND ');
   ELSEIF (boolop = ast_constants.bool_expr_type('OR_EXPR')) THEN
-    -- RETURN format('(%s)', array_to_string(txt, ' OR '));
-    RETURN array_to_string(txt, ' OR ');
+    RETURN format(fmt_str, array_to_string(txt, ' OR '));
+    -- RETURN array_to_string(txt, ' OR ');
   END IF;
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';

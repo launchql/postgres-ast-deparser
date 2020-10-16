@@ -14339,3 +14339,17 @@ t.typname AS type,
 c.relname AS table_name,
 n.nspname AS schema_name FROM pg_attribute AS a INNER JOIN pg_type AS t ON ((t.oid) = (a.atttypid)) INNER JOIN pg_class AS c ON ((c.oid) = (a.attrelid)) INNER JOIN pg_namespace AS n ON ((n.oid) = (c.relnamespace)) WHERE (n.nspname IN ('pg_catalog', 'information_schema', 'pg_toast') AND ((attnum) > (0)) AND NOT (attisdropped)) ORDER BY attnum;"
 `;
+
+exports[`parens 1`] = `
+"SELECT node->'relation'->'RangeVar' IS NOT NULL FROM my_json_store;
+SELECT node->'relation'->'RangeVar' IS NOT NULL AND node->'relation'->'RangeVar'->>'inh' IS NULL FROM my_json_store;
+SELECT (a IS NOT NULL AND b IS NULL) OR (c IS NOT NULL AND (a->'inh')::bool IS FALSE) FROM my_json_store;
+SELECT (node->'relation'->'RangeVar' IS NOT NULL AND node->'relation'->'RangeVar'->'inh' IS NULL) OR (node->'relation'->'RangeVar'->'inh' IS NOT NULL AND (node->'relation'->'RangeVar'->'inh')::bool IS FALSE) FROM my_json_store;"
+`;
+
+exports[`parens 2`] = `
+"SELECT ((((node) -> ('relation'))) -> ('RangeVar')) IS NOT NULL FROM my_json_store;
+SELECT (((((node) -> ('relation'))) -> ('RangeVar')) IS NOT NULL AND ((((((node) -> ('relation'))) -> ('RangeVar'))) ->> ('inh')) IS NULL) FROM my_json_store;
+SELECT ((a IS NOT NULL AND b IS NULL) OR (c IS NOT NULL AND ((a) -> ('inh'))::bool IS FALSE)) FROM my_json_store;
+SELECT ((((((node) -> ('relation'))) -> ('RangeVar')) IS NOT NULL AND ((((((node) -> ('relation'))) -> ('RangeVar'))) -> ('inh')) IS NULL) OR (((((((node) -> ('relation'))) -> ('RangeVar'))) -> ('inh')) IS NOT NULL AND ((((((node) -> ('relation'))) -> ('RangeVar'))) -> ('inh'))::bool IS FALSE)) FROM my_json_store;"
+`;
