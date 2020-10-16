@@ -10,13 +10,12 @@ CREATE FUNCTION ast_helpers.coalesce (field text, value text default '')
     RETURNS jsonb
     AS $$
 DECLARE
-    result jsonb = ast.func_call(
-      v_funcname := to_jsonb(ARRAY[ast.string('coalesce')]),
+    result jsonb = ast.coalesce_expr(
       v_args := to_jsonb(ARRAY[ ast.string(''), ast.a_const(ast.string('')) ])
     );
 BEGIN
-	result = jsonb_set(result, '{FuncCall, args, 0, String, str}', to_jsonb(field));
-	result = jsonb_set(result, '{FuncCall, args, 1, A_Const, String, str}', to_jsonb(value));
+	result = jsonb_set(result, '{CoalesceExpr, args, 0, String, str}', to_jsonb(field));
+	result = jsonb_set(result, '{CoalesceExpr, args, 1, A_Const, String, str}', to_jsonb(value));
 	RETURN result;
 END;
 $$
@@ -27,13 +26,12 @@ CREATE FUNCTION ast_helpers.coalesce (field jsonb, value text default '')
     RETURNS jsonb
     AS $$
 DECLARE
-    result jsonb = ast.func_call(
-      v_funcname := to_jsonb(ARRAY[ast.string('coalesce')]),
+    result jsonb = ast.coalesce_expr(
       v_args := to_jsonb(ARRAY[ ast.string(''), ast.a_const(ast.string('')) ])
     );
 BEGIN
-	result = jsonb_set(result, '{FuncCall, args, 0}', field);
-	result = jsonb_set(result, '{FuncCall, args, 1, A_Const, String, str}', to_jsonb(value));
+	result = jsonb_set(result, '{CoalesceExpr, args, 0}', field);
+	result = jsonb_set(result, '{CoalesceExpr, args, 1, A_Const, String, str}', to_jsonb(value));
 	RETURN result;
 END;
 $$
