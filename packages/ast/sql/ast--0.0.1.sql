@@ -2311,6 +2311,60 @@ CREATE FUNCTION ast_helpers.verify_table ( v_schema_name text, v_table_name text
   );
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.create_index ( v_index_name text, v_schema_name text, v_table_name text, v_fields text[], v_accessmethod text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  parameters jsonb[];
+
+  item text;
+  i int;
+
+  ast jsonb;
+BEGIN
+  FOR i IN
+    SELECT * FROM generate_series(1, cardinality(v_fields)) g (i)
+  LOOP
+    parameters = array_append(parameters, ast.index_elem(
+      v_name := v_fields[i],
+      v_ordering := 0,
+      v_nulls_ordering := 0
+    ));
+  END LOOP;
+
+  SELECT ast.raw_stmt(
+    v_stmt := ast.index_stmt(
+      v_idxname := v_index_name,
+      v_relation := ast.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name,
+        v_inh := true,
+        v_relpersistence := 'p'::text
+      ),
+      v_accessMethod := v_accessMethod,
+      v_indexParams := to_jsonb(parameters)
+    ),
+    v_stmt_len:= 1
+  ) INTO ast;
+
+  RETURN ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.drop_index ( v_schema_name text, v_index_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast.raw_stmt(
+    v_stmt := ast.drop_stmt(
+      v_objects:= to_jsonb(ARRAY[
+        to_jsonb(ARRAY[
+          ast.string(v_schema_name),
+          ast.string(v_index_name)
+        ])
+      ]),
+      v_removeType:= ast_constants.object_type('OBJECT_INDEX'),
+      v_behavior:= 0
+    ),
+    v_stmt_len := 1
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
 CREATE SCHEMA ast_utils;
 
 CREATE FUNCTION ast_utils.interval ( n int ) RETURNS text[] AS $EOFCODE$
