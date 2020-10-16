@@ -366,5 +366,87 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.create_table (
+  v_schema_name text,
+  v_table_name text
+)
+    RETURNS jsonb
+    AS $$
+  select ast.raw_stmt(
+    v_stmt := ast.create_stmt(
+      v_relation := ast.range_var(
+        v_schemaname:= v_schema_name,
+        v_relname:= v_table_name,
+        v_inh := TRUE,
+        v_relpersistence := 'p'
+      ),
+      v_oncommit := 0
+    ),
+    v_stmt_len := 1
+  );
+$$
+LANGUAGE 'sql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.drop_table (
+  v_schema_name text,
+  v_table_name text,
+  v_cascade boolean default false
+)
+    RETURNS jsonb
+    AS $$
+  select ast.raw_stmt(
+    v_stmt := ast.drop_stmt(
+      v_objects := to_jsonb(ARRAY[ARRAY[
+        ast.string(v_schema_name),
+        ast.string(v_table_name)
+      ]]),
+      v_removeType := ast_constants.object_type('OBJECT_TABLE'),
+      v_behavior:= (CASE when v_cascade IS TRUE then 1 else 0 END)
+    ),
+    v_stmt_len := 1
+  );
+$$
+LANGUAGE 'sql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_table (
+  v_schema_name text,
+  v_table_name text
+)
+    RETURNS jsonb
+    AS $$
+  select ast.raw_stmt(
+    v_stmt := ast.select_stmt(
+      v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+          v_val := ast.a_const(
+            v_val := ast.integer(
+              v_ival := 1
+            )
+          )
+        )
+      ]),
+      v_fromClause := to_jsonb(ARRAY[
+        ast.range_var(
+          v_schemaname:= v_schema_name,
+          v_relname:= v_table_name,
+          v_inh := TRUE,
+          v_relpersistence := 'p'
+        )]
+      ),
+      v_limitCount := ast.a_const(
+        v_val := ast.integer(
+          v_ival := 1
+        )
+      ),
+      v_op := 0
+    ),
+    v_stmt_len := 1
+  );
+$$
+LANGUAGE 'sql'
+IMMUTABLE;
+
 
 COMMIT;

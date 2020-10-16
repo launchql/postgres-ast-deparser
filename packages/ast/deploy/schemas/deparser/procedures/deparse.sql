@@ -259,14 +259,13 @@ BEGIN
     LOOP 
 
       IF (item->'ResTarget'->'name' IS NOT NULL) THEN 
-        name = ' AS ' || quote_ident(item->'ResTarget'->>'name');
-      ELSE 
-        name = '';
+        rets = array_append(rets, 
+        deparser.expression(item->'ResTarget'->'val') ||
+        ' AS ' ||
+        quote_ident(item->'ResTarget'->>'name'));
+      ELSE
+        rets = array_append(rets, deparser.expression(item->'ResTarget'->'val'));
       END IF;
-
-      rets = array_append(rets, 
-        deparser.expression(item->'ResTarget'->'val')
-      ) || name;
 
     END LOOP;
 
@@ -297,11 +296,11 @@ BEGIN
       output = array_append(output, 'ONLY');
     END IF;
 
-    IF ((node->'relpersistence')::text = 'u') THEN
+    IF (node->>'relpersistence' = 'u') THEN
       output = array_append(output, 'UNLOGGED');
     END IF;
 
-    IF ((node->'relpersistence')::text = 't') THEN
+    IF (node->>'relpersistence' = 't') THEN
       output = array_append(output, 'TEMPORARY TABLE');
     END IF;
 
@@ -1608,6 +1607,7 @@ DECLARE
   a text[];
   b text[];
   i int;
+  stmts text[];
 BEGIN
     
     IF (node->'exclusions' IS NOT NULL AND node->'access_method' IS NOT NULL) THEN 
@@ -1633,14 +1633,13 @@ BEGIN
       END LOOP;
       -- after loop
 
+      stmts = ARRAY[]::text[];
       FOR i IN
-      SELECT * FROM generate_series(1, a) g (i)
+      SELECT * FROM generate_series(1, cardinality(a)) g (i)
       LOOP
-        output = array_append(output, format('%s WITH %s', a[i], b[i]));
-        IF ( cardinality(a) = i ) THEN 
-          output = array_append(output, ',');
-        END IF;
+        stmts = array_append(stmts, format('%s WITH %s', a[i], b[i]));
       END LOOP;
+      output = array_append(output, array_to_string(stmts, ', '));
       output = array_append(output, ')');
     END IF;
 
@@ -2452,7 +2451,7 @@ BEGIN
     objtype = (node->'objtype')::int;
 
     IF (objtype != 0) THEN 
-      IF (node->'is_grant' IS NOT NULL AND (node->'is_grant')::bool IS TRUE) THEN 
+      IF (node->'is_grant' IS NULL OR (node->'is_grant')::bool IS FALSE) THEN 
         output = array_append(output, 'REVOKE');
         IF (node->'grant_option' IS NOT NULL AND (node->'grant_option')::bool IS TRUE) THEN 
           output = array_append(output, 'GRANT OPTION');
@@ -2781,7 +2780,7 @@ BEGIN
       FOR func in SELECT * FROM jsonb_array_elements(node->'functions')
       LOOP 
         funcs = array_append(funcs, deparser.expression(func->0));
-        IF (func->1 IS NOT NULL AND jsonb_array_length(func->1) > 0) THEN 
+        IF (func->1 IS NOT NULL AND jsonb_typeof(func->1) = 'array' AND jsonb_array_length(func->1) > 0) THEN 
           funcs = array_append(funcs, format(
             'AS (%s)',
             deparser.list(func->1)
@@ -2864,6 +2863,7 @@ BEGIN
     END IF; 
 
     IF (node->'whereClause' IS NOT NULL) THEN 
+      output = array_append(output, 'WHERE');
       output = array_append(output, deparser.expression(node->'whereClause'));
     END IF; 
 
@@ -2921,7 +2921,7 @@ BEGIN
 
     IF (node->'fromClause' IS NOT NULL) THEN 
       output = array_append(output, 'FROM');
-      output = array_append(output, deparser.list(node->'fromClause', ' '));
+      output = array_append(output, deparser.list(node->'fromClause', ', '));
     END IF;
 
     IF (node->'whereClause' IS NOT NULL) THEN 
@@ -2980,6 +2980,10 @@ BEGIN
     IF (node->'MultiAssignRef') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'MultiAssignRef';
     END IF;
+    IF (node->'MultiAssignRef'->'source') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'MultiAssignRef';
+    END IF;
+    node = node->'MultiAssignRef';
 
     RETURN deparser.expression(node->'source');
 END;
@@ -3010,6 +3014,8 @@ BEGIN
     END IF;
 
     node = node->'JoinExpr';
+
+    output = array_append(output, deparser.expression(node->'larg'));
 
     IF (node->'isNatural' IS NOT NULL AND (node->'isNatural')::bool IS TRUE) THEN 
       output = array_append(output, 'NATURAL');
@@ -3059,7 +3065,7 @@ BEGIN
       output = array_append(output, deparser.list_quotes(node->'usingClause'));
     END IF;
 
-    IF (node->'rarg' IS NOT NULL OR node->'alias' IS NOT NULL) THEN 
+    IF ( (node->'rarg' IS NOT NULL AND node->'rarg'->'JoinExpr' IS NOT NULL ) OR node->'alias' IS NOT NULL) THEN 
       wrapped = deparser.parens(array_to_string(output, ' '));
     ELSE 
       wrapped = array_to_string(output, ' ');
@@ -3510,12 +3516,7 @@ BEGIN
 
     node = node->'CreateStmt';
 
-    IF (
-        node->'relation' IS NOT NULL AND
-        node->'relation'->'RangeVar' IS NOT NULL AND
-        node->'relation'->'RangeVar'->'relpersistence' IS NOT NULL) THEN
-      relpersistence = node->'relation'->'RangeVar'->>'relpersistence';
-    END IF;
+    relpersistence = node#>>'{relation, RangeVar, relpersistence}';
 
     IF (relpersistence = 't') THEN 
       output = array_append(output, 'CREATE');
@@ -4042,6 +4043,7 @@ BEGIN
 
     -- from
     IF (node->'fromClause') IS NOT NULL THEN 
+      output = array_append(output, 'FROM');
       output = array_append(output, deparser.list(node->'fromClause', E',\n', 'from'));
     END IF;
 
@@ -4254,15 +4256,21 @@ BEGIN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'NullTest';
     END IF;
 
+    IF (node->'NullTest'->'arg') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'NullTest';
+    END IF;
+
     node = node->'NullTest';
     nulltesttype = (node->'nulltesttype')::int;
+
+    output = array_append(output, deparser.expression(node->'arg'));
     IF (nulltesttype = ast_constants.null_test_type('IS_NULL')) THEN 
       output = array_append(output, 'IS NULL');
     ELSE 
       output = array_append(output, 'IS NOT NULL');
     END IF;
 
-    RETURN array_to_string(output, '');
+    RETURN array_to_string(output, ' ');
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -4610,6 +4618,11 @@ CREATE FUNCTION deparser.expression(
 ) returns text as $$
 BEGIN
 
+  -- TODO potentially remove this to help find issues...
+  IF (expr IS NULL) THEN 
+    RETURN '';
+  END IF;
+
   IF (expr->>'A_Const') IS NOT NULL THEN
     RETURN deparser.a_const(expr, context);
   ELSEIF (expr->>'A_ArrayExpr') IS NOT NULL THEN
@@ -4819,23 +4832,6 @@ CREATE FUNCTION deparser.deparse (ast jsonb)
     AS $$
 BEGIN
 	RETURN deparser.expression(ast);
-END;
-$$
-LANGUAGE 'plpgsql'
-IMMUTABLE;
-
-CREATE FUNCTION deparser.deparse_query (ast jsonb)
-    RETURNS text
-    AS $$
-DECLARE
-  lines text[];
-  node jsonb;
-BEGIN
-   FOR node IN SELECT * FROM jsonb_array_elements(ast)
-   LOOP 
-    lines = array_append(lines, deparser.deparse(node) || ';' || E'\n');
-   END LOOP;
-   RETURN array_to_string(lines, E'\n');
 END;
 $$
 LANGUAGE 'plpgsql'

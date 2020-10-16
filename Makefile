@@ -47,3 +47,10 @@ generate:
 
 gen:
 	@cd packages/db_text && ./generate/generate.js
+
+ast:
+	@cd packages/ast && lql package --version 0.0.1
+	@cd packages/ast_actions && lql package --version 0.0.1
+	$(MAKE) install
+
+
