@@ -1,6 +1,95 @@
 \echo Use "CREATE EXTENSION ast" to load this file. \quit
 CREATE SCHEMA ast_constants;
 
+CREATE FUNCTION ast_constants.alter_table_type ( val text ) RETURNS int AS $EOFCODE$
+SELECT CASE
+ WHEN ((val) = ('AT_AddColumn')) THEN 0
+ WHEN ((val) = ('AT_AddColumnRecurse')) THEN 1
+ WHEN ((val) = ('AT_AddColumnToView')) THEN 2
+ WHEN ((val) = ('AT_ColumnDefault')) THEN 3
+ WHEN ((val) = ('AT_DropNotNull')) THEN 4
+ WHEN ((val) = ('AT_SetNotNull')) THEN 5
+ WHEN ((val) = ('AT_SetStatistics')) THEN 6
+ WHEN ((val) = ('AT_SetOptions')) THEN 7
+ WHEN ((val) = ('AT_ResetOptions')) THEN 8
+ WHEN ((val) = ('AT_SetStorage')) THEN 9
+ WHEN ((val) = ('AT_DropColumn')) THEN 10
+ WHEN ((val) = ('AT_DropColumnRecurse')) THEN 11
+ WHEN ((val) = ('AT_AddIndex')) THEN 12
+ WHEN ((val) = ('AT_ReAddIndex')) THEN 13
+ WHEN ((val) = ('AT_AddConstraint')) THEN 14
+ WHEN ((val) = ('AT_AddConstraintRecurse')) THEN 15
+ WHEN ((val) = ('AT_ReAddConstraint')) THEN 16
+ WHEN ((val) = ('AT_AlterConstraint')) THEN 17
+ WHEN ((val) = ('AT_ValidateConstraint')) THEN 18
+ WHEN ((val) = ('AT_ValidateConstraintRecurse')) THEN 19
+ WHEN ((val) = ('AT_ProcessedConstraint')) THEN 20
+ WHEN ((val) = ('AT_AddIndexConstraint')) THEN 21
+ WHEN ((val) = ('AT_DropConstraint')) THEN 22
+ WHEN ((val) = ('AT_DropConstraintRecurse')) THEN 23
+ WHEN ((val) = ('AT_ReAddComment')) THEN 24
+ WHEN ((val) = ('AT_AlterColumnType')) THEN 25
+ WHEN ((val) = ('AT_AlterColumnGenericOptions')) THEN 26
+ WHEN ((val) = ('AT_ChangeOwner')) THEN 27
+ WHEN ((val) = ('AT_ClusterOn')) THEN 28
+ WHEN ((val) = ('AT_DropCluster')) THEN 29
+ WHEN ((val) = ('AT_SetLogged')) THEN 30
+ WHEN ((val) = ('AT_SetUnLogged')) THEN 31
+ WHEN ((val) = ('AT_AddOids')) THEN 32
+ WHEN ((val) = ('AT_AddOidsRecurse')) THEN 33
+ WHEN ((val) = ('AT_DropOids')) THEN 34
+ WHEN ((val) = ('AT_SetTableSpace')) THEN 35
+ WHEN ((val) = ('AT_SetRelOptions')) THEN 36
+ WHEN ((val) = ('AT_ResetRelOptions')) THEN 37
+ WHEN ((val) = ('AT_ReplaceRelOptions')) THEN 38
+ WHEN ((val) = ('AT_EnableTrig')) THEN 39
+ WHEN ((val) = ('AT_EnableAlwaysTrig')) THEN 40
+ WHEN ((val) = ('AT_EnableReplicaTrig')) THEN 41
+ WHEN ((val) = ('AT_DisableTrig')) THEN 42
+ WHEN ((val) = ('AT_EnableTrigAll')) THEN 43
+ WHEN ((val) = ('AT_DisableTrigAll')) THEN 44
+ WHEN ((val) = ('AT_EnableTrigUser')) THEN 45
+ WHEN ((val) = ('AT_DisableTrigUser')) THEN 46
+ WHEN ((val) = ('AT_EnableRule')) THEN 47
+ WHEN ((val) = ('AT_EnableAlwaysRule')) THEN 48
+ WHEN ((val) = ('AT_EnableReplicaRule')) THEN 49
+ WHEN ((val) = ('AT_DisableRule')) THEN 50
+ WHEN ((val) = ('AT_AddInherit')) THEN 51
+ WHEN ((val) = ('AT_DropInherit')) THEN 52
+ WHEN ((val) = ('AT_AddOf')) THEN 53
+ WHEN ((val) = ('AT_DropOf')) THEN 54
+ WHEN ((val) = ('AT_ReplicaIdentity')) THEN 55
+ WHEN ((val) = ('AT_EnableRowSecurity')) THEN 56
+ WHEN ((val) = ('AT_DisableRowSecurity')) THEN 57
+ WHEN ((val) = ('AT_ForceRowSecurity')) THEN 58
+ WHEN ((val) = ('AT_NoForceRowSecurity')) THEN 59
+ WHEN ((val) = ('AT_GenericOptions')) THEN 60
+ WHEN ((val) = ('AT_AttachPartition')) THEN 61
+ WHEN ((val) = ('AT_DetachPartition')) THEN 62
+ WHEN ((val) = ('AT_AddIdentity')) THEN 63
+ WHEN ((val) = ('AT_SetIdentity')) THEN 64
+ WHEN ((val) = ('AT_DropIdentity')) THEN 65 END;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_constants.join_type ( val text ) RETURNS int AS $EOFCODE$
+SELECT CASE
+ WHEN ((val) = ('JOIN_INNER')) THEN 0
+ WHEN ((val) = ('JOIN_LEFT')) THEN 1
+ WHEN ((val) = ('JOIN_FULL')) THEN 2
+ WHEN ((val) = ('JOIN_RIGHT')) THEN 3
+ WHEN ((val) = ('JOIN_SEMI')) THEN 4
+ WHEN ((val) = ('JOIN_ANTI')) THEN 5
+ WHEN ((val) = ('JOIN_UNIQUE_OUTER')) THEN 6
+ WHEN ((val) = ('JOIN_UNIQUE_INNER')) THEN 7 END;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_constants.role_stmt_type ( val text ) RETURNS int AS $EOFCODE$
+SELECT CASE
+ WHEN ((val) = ('ROLESTMT_ROLE')) THEN 0
+ WHEN ((val) = ('ROLESTMT_USER')) THEN 1
+ WHEN ((val) = ('ROLESTMT_GROUP')) THEN 2 END;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
 CREATE FUNCTION ast_constants.role_spec_type ( val text ) RETURNS int AS $EOFCODE$
 SELECT CASE
  WHEN ((val) = ('ROLESPEC_CSTRING')) THEN 0
@@ -2429,6 +2518,7 @@ DECLARE
   parsed text[];
   catalog text;
   typ text;
+  ctx jsonb;
 BEGIN
   parsed = deparser.expressions_array(names);
   catalog = parsed[1];
@@ -2440,9 +2530,11 @@ BEGIN
 
   IF (catalog != 'pg_catalog') THEN 
     IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
-      RETURN deparser.quoted_name(names, 'type') || deparser.parens(typemods);
+      ctx = '{"type": true}'::jsonb;
+      RETURN deparser.quoted_name(names, ctx) || deparser.parens(typemods);
     ELSE
-      RETURN deparser.quoted_name(names, 'type');
+      ctx = '{"type": true}'::jsonb;
+      RETURN deparser.quoted_name(names, ctx);
     END IF;
   END IF;
 
@@ -2456,7 +2548,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.type_name ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.type_name ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[] = ARRAY[]::text[];
   typemods text;
@@ -2503,7 +2595,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.type_cast ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.type_cast ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   type text;
   arg text;
@@ -2519,7 +2611,15 @@ BEGIN
     END IF;
 
     type = deparser.expression(node->'typeName', context);
-    arg = deparser.expression(node->'arg', context);
+
+    -- TODO look into more possibilities here
+    -- TODO more parens solutions
+    IF (node#>'{arg, A_Expr}' IS NOT NULL) THEN 
+      arg = deparser.parens(deparser.expression(node->'arg', context));
+    ELSE 
+      arg = deparser.expression(node->'arg', context);
+    END IF;
+
     IF (type = 'boolean') THEN
       IF (arg = 'f') THEN
         RETURN '(FALSE)';
@@ -2532,7 +2632,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.returning_list ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.returning_list ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   rets text[];
@@ -2564,7 +2664,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.range_var ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.range_var ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
     
@@ -2601,7 +2701,38 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.raw_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_extension_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  item jsonb;
+BEGIN
+    IF (node->'CreateExtensionStmt') IS NULL THEN  
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateExtensionStmt';
+    END IF;
+
+    node = node->'CreateExtensionStmt';
+
+    output = array_append(output, 'CREATE EXTENSION');
+    IF (node->'if_not_exists' IS NOT NULL AND (node->'if_not_exists')::bool IS TRUE) THEN 
+      output = array_append(output, 'IF NOT EXISTS');
+    END IF;
+
+    output = array_append(output, quote_ident(node->>'extname'));
+
+    IF (node->'options') IS NOT NULL THEN
+      FOR item IN SELECT * FROM jsonb_array_elements(node->'options')
+      LOOP
+        IF (item#>>'{DefElem, defname}' = 'cascade' AND (item#>>'{DefElem, arg, Integer, ival}')::int = 1) THEN 
+          output = array_append(output, 'CASCADE');
+        END IF;
+      END LOOP;
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION deparser.raw_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
     IF (node->'RawStmt') IS NULL THEN  
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'RawStmt';
@@ -2618,7 +2749,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_between ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_between ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   right_expr text;
@@ -2637,7 +2768,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_not_between ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_not_between ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   right_expr text;
@@ -2657,7 +2788,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_similar ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_similar ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   operator text;
@@ -2698,7 +2829,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_ilike ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_ilike ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   operator text;
@@ -2725,7 +2856,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_like ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_like ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   operator text;
@@ -2736,6 +2867,7 @@ BEGIN
 
   IF ((expr->>'kind')::int = 8) THEN
     -- AEXPR_LIKE
+    operator = deparser.expression(expr->'name'->0, context);
     IF (operator = '!~~') THEN
       RETURN format('%s %s ( %s )', left_expr, 'NOT LIKE', right_expr);
     ELSE
@@ -2747,7 +2879,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_of ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_of ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   operator text;
@@ -2774,7 +2906,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_in ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_in ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   operator text;
@@ -2808,7 +2940,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_nullif ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_nullif ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   right_expr text;
@@ -2826,7 +2958,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_op ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_op ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   operator text;
@@ -2868,16 +3000,25 @@ BEGIN
     output = array_append(output, right_expr);
   END IF;
 
+  -- TODO too many parens (does removing this break anything?)
+  -- TODO update pgsql-parser if not
   IF (cardinality(output) = 2) THEN 
-    RETURN deparser.parens(array_to_string(output, ''));
+    -- RETURN deparser.parens(array_to_string(output, ''));
+    RETURN array_to_string(output, '');
   END IF;
 
-  RETURN deparser.parens(array_to_string(output, ' '));
+  IF (operator = ANY(ARRAY['->', '->>']::text[])) THEN
+    -- RETURN deparser.parens(array_to_string(output, ''));
+    RETURN array_to_string(output, '');
+  END IF;
+
+  RETURN array_to_string(output, ' ');
+  -- RETURN deparser.parens(array_to_string(output, ' '));
 
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_op_any ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_op_any ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   operator text;
@@ -2900,7 +3041,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_op_all ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_op_all ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   operator text;
@@ -2923,7 +3064,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr_distinct ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr_distinct ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   left_expr text;
   operator text;
@@ -2940,7 +3081,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_expr ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_expr ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   kind int;
 BEGIN
@@ -3001,10 +3142,12 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.bool_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.bool_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   txt text[];
   boolop int;
+  ctx jsonb;
+  fmt_str text = '%s';
 BEGIN
 
   IF (node->>'BoolExpr') IS NULL THEN  
@@ -3021,16 +3164,26 @@ BEGIN
   END IF;
 
   boolop = (node->'boolop')::int;
- 
+
+  IF ((context->'bool')::bool IS TRUE) THEN 
+    fmt_str = '(%s)';
+  END IF;
+  ctx = jsonb_set(context, '{bool}', to_jsonb(TRUE));
+
+  -- TODO too many parens (does removing this break anything?)
+  -- TODO update pgsql-parser if not
   IF (boolop = 2) THEN
-    RETURN format('NOT IN (%s)', deparser.expression(node->'args'->0, context));
+    RETURN format('NOT (%s)', deparser.expression(node->'args'->0, context));
+    -- RETURN format('NOT ' || fmt_str, deparser.expression(node->'args'->0, ctx));
   END IF;
 
-  txt = deparser.expressions_array(node->'args', context);
+ 
+  txt = deparser.expressions_array(node->'args', ctx);
+
   IF (boolop = ast_constants.bool_expr_type('AND_EXPR')) THEN
-    RETURN format('(%s)', array_to_string(txt, ' AND '));
+    RETURN format(fmt_str, array_to_string(txt, ' AND '));
   ELSEIF (boolop = ast_constants.bool_expr_type('OR_EXPR')) THEN
-    RETURN format('(%s)', array_to_string(txt, ' OR '));
+    RETURN format(fmt_str, array_to_string(txt, ' OR '));
   END IF;
 
   RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
@@ -3038,7 +3191,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.column_ref ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.column_ref ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   txt text;
 BEGIN
@@ -3051,15 +3204,11 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'ColumnRef';
   END IF;
 
-  IF (context IS NULL) THEN 
-    context = 'column';
-  END IF;
-
-  RETURN deparser.list(node->'ColumnRef'->'fields', '.', context);
+  RETURN deparser.list(node->'ColumnRef'->'fields', '.', jsonb_set(context, '{ColumnRef}', to_jsonb(TRUE)));
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.explain_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.explain_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
 
   IF (node->'ExplainStmt') IS NULL THEN
@@ -3074,7 +3223,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.collate_clause ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.collate_clause ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -3100,7 +3249,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_array_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_array_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
 
   IF (node->'A_ArrayExpr') IS NULL THEN
@@ -3117,7 +3266,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.column_def ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.column_def ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -3126,17 +3275,16 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'ColumnDef';
   END IF;
 
-  IF (node->'ColumnDef'->'colname') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION % (colname)', 'ColumnDef';
-  END IF;
-
   IF (node->'ColumnDef'->'typeName') IS NULL THEN
     RAISE EXCEPTION 'BAD_EXPRESSION % (typeName)', 'ColumnDef';
   END IF;
 
   node = node->'ColumnDef';
 
-  output = array_append(output, quote_ident(node->>'colname'));
+  IF (node->'colname' IS NOT NULL) THEN
+    output = array_append(output, quote_ident(node->>'colname'));
+  END IF;
+
   output = array_append(output, deparser.expression(node->'typeName', context));
 
   IF (node->'raw_default') IS NOT NULL THEN
@@ -3157,7 +3305,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.sql_value_function ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.sql_value_function ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   op int;
   value text;
@@ -3213,7 +3361,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.common_table_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.common_table_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -3261,7 +3409,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.bit_string ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.bit_string ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   prefix text;
   rest text;
@@ -3284,7 +3432,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_const ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_const ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   txt text;
 BEGIN
@@ -3310,7 +3458,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.boolean_test ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.boolean_test ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   booltesttype int;
@@ -3348,7 +3496,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_trigger_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_trigger_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   txt text;
   output text[];
@@ -3437,9 +3585,6 @@ BEGIN
         ));
       ELSIF (
         item->'TriggerTransition' IS NOT NULL AND
-        (item->'TriggerTransition'->'isNew' IS NOT NULL OR
-          (item->'TriggerTransition'->'isNew')::bool IS FALSE
-        ) AND
         item->'TriggerTransition'->'isTable' IS NOT NULL AND
         (item->'TriggerTransition'->'isTable')::bool IS TRUE
       ) THEN 
@@ -3482,7 +3627,7 @@ BEGIN
   IF (node->'whenClause') IS NOT NULL THEN
       output = array_append(output, 'WHEN');
       output = array_append(output, deparser.parens(
-        deparser.expression(node->'whenClause', 'trigger')
+        deparser.expression(node->'whenClause', jsonb_set(context, '{trigger}', to_jsonb(TRUE)))
       ));
       output = array_append(output, chr(10));
   END IF;
@@ -3513,11 +3658,11 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.string ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.string ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   txt text = expr->'String'->>'str';
 BEGIN
-  IF (context = 'trigger') THEN
+  IF ((context->'trigger')::bool IS TRUE) THEN
     IF (upper(txt) = 'NEW') THEN
       RETURN 'NEW';
     ELSIF (upper(txt) = 'OLD') THEN
@@ -3525,22 +3670,21 @@ BEGIN
     ELSE 
       RETURN quote_ident(txt);
     END IF;
-  ELSIF (context = 'column') THEN
-    RETURN quote_ident(txt);
-  ELSIF (context = 'update') THEN
+  ELSIF ((context->'ColumnRef')::bool IS TRUE) THEN
     IF (upper(txt) = 'EXCLUDED') THEN 
       RETURN 'EXCLUDED';
     END IF;
-  ELSIF (context = 'enum') THEN
+    RETURN quote_ident(txt);
+  ELSIF ((context->'enum')::bool IS TRUE) THEN
     RETURN '''' || txt || '''';
-  ELSIF (context = 'identifiers') THEN
+  ELSIF ((context->'identifiers')::bool IS TRUE) THEN
     RETURN quote_ident(txt);
   END IF;
   RETURN txt;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.float ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.float ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
   IF (LEFT(node->'Float'->>'str', 1) = '-') THEN 
     RETURN deparser.parens(node->'Float'->>'str');
@@ -3549,7 +3693,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.list ( node jsonb, delimiter text DEFAULT ', ', context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.list ( node jsonb, delimiter text DEFAULT ', ', context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   txt text;
 BEGIN
@@ -3557,7 +3701,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.list_quotes ( node jsonb, delimiter text DEFAULT ', ', context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.list_quotes ( node jsonb, delimiter text DEFAULT ', ', context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   txt text;
   unquoted text[];
@@ -3573,7 +3717,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_policy_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_policy_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -3623,7 +3767,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.role_spec ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.role_spec ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   roletype int;
 BEGIN
@@ -3652,7 +3796,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.insert_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.insert_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -3691,7 +3835,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_schema_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_schema_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -3722,13 +3866,14 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.exclusion_constraint ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.exclusion_constraint ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   exclusion jsonb;
   a text[];
   b text[];
   i int;
+  stmts text[];
 BEGIN
     
     IF (node->'exclusions' IS NOT NULL AND node->'access_method' IS NOT NULL) THEN 
@@ -3754,14 +3899,13 @@ BEGIN
       END LOOP;
       -- after loop
 
+      stmts = ARRAY[]::text[];
       FOR i IN
-      SELECT * FROM generate_series(1, a) g (i)
+      SELECT * FROM generate_series(1, cardinality(a)) g (i)
       LOOP
-        output = array_append(output, format('%s WITH %s', a[i], b[i]));
-        IF ( cardinality(a) = i ) THEN 
-          output = array_append(output, ',');
-        END IF;
+        stmts = array_append(stmts, format('%s WITH %s', a[i], b[i]));
       END LOOP;
+      output = array_append(output, array_to_string(stmts, ', '));
       output = array_append(output, ')');
     END IF;
 
@@ -3769,7 +3913,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.reference_constraint ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.reference_constraint ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   has_pk_attrs boolean default false;
@@ -3813,7 +3957,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.constraint_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.constraint_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   contype int;
@@ -3835,7 +3979,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_seq_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_seq_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -3853,14 +3997,14 @@ BEGIN
     output = array_append(output, deparser.expression(node->'sequence'));
 
     IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
-      output = array_append(output, deparser.list(node->'options', ' ', 'sequence'));
+      output = array_append(output, deparser.list(node->'options', ' ', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
     END IF;
 
     RETURN array_to_string(output, ' ');
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.do_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.do_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -3890,7 +4034,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_table_as_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_table_as_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -3917,7 +4061,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.constraint ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.constraint ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   contype int;
@@ -3992,7 +4136,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.def_elem ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.def_elem ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   defname text;
 BEGIN
@@ -4033,7 +4177,7 @@ BEGIN
       defname = node->>'defnamespace' || '.' || node->>'defname';
     END IF;
 
-    IF (context = 'sequence') THEN
+    IF ((context->'sequence')::bool IS TRUE) THEN
       IF (defname = 'cycle') THEN 
         IF (trim(deparser.expression(node->'arg')) = '1') THEN
           RETURN 'CYCLE';
@@ -4044,16 +4188,16 @@ BEGIN
         IF (node->'arg' IS NULL) THEN
           RETURN 'NO MINVALUE';
         ELSE 
-          RETURN defname || ' ' || deparser.expression(node->'arg', 'simple');
+          RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
         END IF;
       ELSIF (defname = 'maxvalue') THEN 
         IF (node->'arg' IS NULL) THEN
           RETURN 'NO MAXVALUE';
         ELSE 
-          RETURN defname || ' ' || deparser.expression(node->'arg', 'simple');
+          RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
         END IF;
       ELSIF (node->'arg' IS NOT NULL) THEN
-        RETURN defname || ' ' || deparser.expression(node->'arg', 'simple');
+        RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
       END IF;
     ELSE
         RETURN defname || '=' || deparser.expression(node->'arg');
@@ -4063,7 +4207,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.comment_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.comment_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   objtype int;
@@ -4169,7 +4313,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.alter_default_privileges_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.alter_default_privileges_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   item jsonb;
@@ -4194,7 +4338,7 @@ BEGIN
         IF ( def->'DefElem'->>'defname' = 'schemas') THEN
           output = array_append(output, 'IN SCHEMA');
           output = array_append(output, deparser.expression(def->'DefElem'->'arg'->0));
-        ELSIF ( def->'DefElem'->>'defname' = 'schemas') THEN
+        ELSIF ( def->'DefElem'->>'defname' = 'roles') THEN
           output = array_append(output, 'FOR ROLE');
           output = array_append(output, deparser.expression(def->'DefElem'->'arg'->0));
         END IF;
@@ -4202,13 +4346,13 @@ BEGIN
       END IF;
     END IF;
 
-    output = array_append(output, deparser.expression(def->'action'));
+    output = array_append(output, deparser.expression(node->'action'));
 
     RETURN array_to_string(output, ' ');
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.case_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.case_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -4237,7 +4381,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.case_when ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.case_when ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -4264,7 +4408,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.with_clause ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.with_clause ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -4287,7 +4431,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.variable_set_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.variable_set_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   kind int;
@@ -4309,7 +4453,7 @@ BEGIN
       IF (node->'is_local' IS NOT NULL AND (node->'is_local')::bool IS TRUE) THEN 
         local = 'LOCAL ';
       END IF;
-      output = array_append(output, format('SET %s%s = %s', local, node->>'name', deparser.list(node->'args', ', ', 'simple')));
+      output = array_append(output, format('SET %s%s = %s', local, node->>'name', deparser.list(node->'args', ', ', jsonb_set(context, '{simple}', to_jsonb(TRUE)))));
     ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_DEFAULT')) THEN
       output = array_append(output, format('SET %s TO DEFAULT', node->>'name'));
     ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_CURRENT')) THEN
@@ -4320,7 +4464,7 @@ BEGIN
       ELSIF (node->>'name' = 'SESSION CHARACTERISTICS') THEN
         multi = 'SESSION CHARACTERISTICS AS TRANSACTION';
       END IF;
-      output = array_append(output, format('SET %s %s', multi, deparser.list(node->'args', ', ', 'simple')));
+      output = array_append(output, format('SET %s %s', multi, deparser.list(node->'args', ', ', jsonb_set(context, '{simple}', to_jsonb(TRUE)))));
     ELSIF (kind = ast_constants.variable_set_kind('VAR_RESET')) THEN
       output = array_append(output, format('RESET %s', node->>'name'));
     ELSIF (kind = ast_constants.variable_set_kind('VAR_RESET_ALL')) THEN
@@ -4333,7 +4477,26 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.alias ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.variable_show_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'VariableShowStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableShowStmt';
+    END IF;
+
+    IF (node->'VariableShowStmt'->'name') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableShowStmt';
+    END IF;
+
+    node = node->'VariableShowStmt';
+    output = array_append(output, 'SHOW');
+    output = array_append(output, node->>'name');
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION deparser.alias ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -4359,7 +4522,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.range_subselect ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.range_subselect ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -4387,7 +4550,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.delete_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.delete_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -4414,19 +4577,19 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.quoted_name ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.quoted_name ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   item text;
 BEGIN
     -- NOTE: assumes array of names passed in 
 
-    IF (context = 'type') THEN 
+    IF ((context->'type')::bool IS TRUE) THEN 
 
 
       FOREACH item IN array deparser.expressions_array(node)
       LOOP
-        -- strip off the [] if it exists at the end, and set is_array prop
+        -- strip off the [] if it exists at the end
         -- TODO, not sure if we need this anymore... we fixed the quote stuff higher up...
         IF (ARRAY_LENGTH(REGEXP_MATCHES(trim(item), '(.*)\s*(\[\s*?\])$', 'i'), 1) > 0) THEN
           item = REGEXP_REPLACE(trim(item), '(.*)\s*(\[\s*?\])$', '\1', 'i');
@@ -4447,7 +4610,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_domain_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_domain_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -4480,7 +4643,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.grant_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.grant_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   objtype int;
@@ -4540,7 +4703,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.composite_type_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.composite_type_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -4570,7 +4733,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.index_elem ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.index_elem ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
     IF (node->'IndexElem') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'IndexElem';
@@ -4591,7 +4754,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_enum_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_enum_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -4612,14 +4775,14 @@ BEGIN
     output = array_append(output, deparser.list(node->'typeName', '.'));
     output = array_append(output, 'AS ENUM');
     output = array_append(output, E'(\n');
-    output = array_append(output, deparser.list(node->'vals', E',\n', 'enum'));
+    output = array_append(output, deparser.list(node->'vals', E',\n', jsonb_set(context, '{enum}', to_jsonb(TRUE))));
     output = array_append(output, E'\n)');
 
     RETURN array_to_string(output, ' ');
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.alter_table_cmd ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.alter_table_cmd ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   subtype int;
@@ -4635,11 +4798,11 @@ BEGIN
     node = node->'AlterTableCmd';
     subtype = (node->'subtype')::int;
 
-    IF (subtype = 0) THEN 
+    IF (subtype = ast_constants.alter_table_type('AT_AddColumn')) THEN 
       output = array_append(output, 'ADD COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 3) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ColumnDefault')) THEN
       output = array_append(output, 'ALTER COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       IF (node->'def' IS NOT NULL) THEN
@@ -4648,25 +4811,25 @@ BEGIN
       ELSE
         output = array_append(output, 'DROP DEFAULT');
       END IF;
-    ELSIF (subtype = 4) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropNotNull')) THEN
       output = array_append(output, 'ALTER COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'DROP NOT NULL');
-    ELSIF (subtype = 5) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_SetNotNull')) THEN
       output = array_append(output, 'ALTER COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET NOT NULL');
-    ELSIF (subtype = 6) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_SetStatistics')) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET STATISTICS');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 7) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_SetOptions')) THEN
       output = array_append(output, 'ALTER COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = 9) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_SetStorage')) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET STORAGE');
@@ -4675,65 +4838,67 @@ BEGIN
       ELSE
         output = array_append(output, 'PLAIN');
       END IF;
-    ELSIF (subtype = 10) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropColumn')) THEN
       output = array_append(output, 'DROP');
       IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = 14) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_AddConstraint')) THEN
       output = array_append(output, 'ADD');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 18) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ValidateConstraint')) THEN
       output = array_append(output, 'VALIDATE CONSTRAINT');
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = 22) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropConstraint')) THEN
       output = array_append(output, 'DROP CONSTRAINT');
       IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = 25) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_AlterColumnType')) THEN
       output = array_append(output, 'ALTER COLUMN');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'TYPE');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 28) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ClusterOn')) THEN
       output = array_append(output, 'CLUSTER ON');
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = 29) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropCluster')) THEN
       output = array_append(output, 'SET WITHOUT CLUSTER');
-    ELSIF (subtype = 32) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_AddOids')) THEN
       output = array_append(output, 'SET WITH OIDS');
-    ELSIF (subtype = 34) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropOids')) THEN
       output = array_append(output, 'SET WITHOUT OIDS');
-    ELSIF (subtype = 36) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_SetRelOptions')) THEN
       output = array_append(output, 'SET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = 37) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ResetRelOptions')) THEN
       output = array_append(output, 'RESET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = 51) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_AddInherit')) THEN
       output = array_append(output, 'INHERIT');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 52) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropInherit')) THEN
       output = array_append(output, 'NO INHERIT');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = 56) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_EnableRowSecurity')) THEN
       output = array_append(output, 'ENABLE ROW LEVEL SECURITY');
-    ELSIF (subtype = 57) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DisableRowSecurity')) THEN
       output = array_append(output, 'DISABLE ROW LEVEL SECURITY');
-    ELSIF (subtype = 58) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ForceRowSecurity')) THEN
       output = array_append(output, 'FORCE ROW SECURITY');
-    ELSIF (subtype = 59) THEN
+    ELSIF (subtype = ast_constants.alter_table_type('AT_NoForceRowSecurity')) THEN
       output = array_append(output, 'NO FORCE ROW SECURITY');
+    ELSE 
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableCmd may need to implement more alter_table_type(s)';
     END IF;
 
     RETURN array_to_string(output, ' ');
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.alter_table_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.alter_table_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   relkind int;
@@ -4764,8 +4929,9 @@ BEGIN
       output = array_append(output, 'TABLE');
       IF (
         node->'relation'->'RangeVar' IS NOT NULL AND
-        node->'relation'->'RangeVar'->'inh' IS NOT NULL AND
-        (node->'relation'->'RangeVar'->'inh')::bool IS FALSE
+        node->'relation'->'RangeVar'->'inh' IS NULL OR
+        (node->'relation'->'RangeVar'->'inh' IS NOT NULL AND
+        (node->'relation'->'RangeVar'->'inh')::bool IS FALSE)
       ) THEN 
         output = array_append(output, 'ONLY');
       END IF;
@@ -4782,10 +4948,11 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.range_function ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.range_function ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   funcs text[];
+  calls text[];
   func jsonb;
 BEGIN
     IF (node->'RangeFunction') IS NULL THEN
@@ -4801,13 +4968,14 @@ BEGIN
     IF (node->'functions' IS NOT NULL AND jsonb_array_length(node->'functions') > 0) THEN 
       FOR func in SELECT * FROM jsonb_array_elements(node->'functions')
       LOOP 
-        funcs = array_append(funcs, deparser.expression(func->0));
+        calls = ARRAY[deparser.expression(func->0)]::text[];
         IF (func->1 IS NOT NULL AND jsonb_typeof(func->1) = 'array' AND jsonb_array_length(func->1) > 0) THEN 
-          funcs = array_append(funcs, format(
+          calls = array_append(calls, format(
             'AS (%s)',
             deparser.list(func->1)
           ));
         END IF;
+        funcs = array_append(funcs, array_to_string(calls, ' '));
       END LOOP;
 
       IF (node->'is_rowsfrom' IS NOT NULL AND (node->'is_rowsfrom')::bool IS TRUE) THEN 
@@ -4837,7 +5005,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.index_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.index_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -4889,7 +5057,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.update_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.update_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   targets text[];
@@ -4929,7 +5097,7 @@ BEGIN
         output = array_append(output, '=');
         output = array_append(output, deparser.expression(node->'targetList'->0->'ResTarget'->'val'));
       ELSE
-        output = array_append(output, deparser.list(node->'targetList', ', ', 'update'));
+        output = array_append(output, deparser.list(node->'targetList', ', ', jsonb_set(context, '{update}', to_jsonb(TRUE))));
       END IF;
     END IF;
 
@@ -4951,7 +5119,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.param_ref ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.param_ref ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
     IF (node->'ParamRef') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'ParamRef';
@@ -4967,7 +5135,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.set_to_default ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.set_to_default ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
     IF (node->'SetToDefault') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'SetToDefault';
@@ -4977,7 +5145,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.multi_assign_ref ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.multi_assign_ref ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
     IF (node->'MultiAssignRef') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'MultiAssignRef';
@@ -4991,7 +5159,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.join_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.join_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   jointype int;
@@ -5021,7 +5189,7 @@ BEGIN
     END IF;
 
     jointype = (node->'jointype')::int;
-    IF (jointype = 0) THEN 
+    IF (jointype = ast_constants.join_type('JOIN_INNER')) THEN 
       IF (node->'quals' IS NOT NULL) THEN 
         jointxt = 'INNER JOIN';
       ELSIF (
@@ -5033,13 +5201,14 @@ BEGIN
       ELSE
         jointxt = 'JOIN';
       END IF;
-    ELSIF (jointype = 1) THEN
+    ELSIF (jointype = ast_constants.join_type('JOIN_LEFT')) THEN
         jointxt = 'LEFT OUTER JOIN';
-    ELSIF (jointype = 2) THEN
+    ELSIF (jointype = ast_constants.join_type('JOIN_FULL')) THEN
         jointxt = 'FULL OUTER JOIN';
-    ELSIF (jointype = 3) THEN
+    ELSIF (jointype = ast_constants.join_type('JOIN_RIGHT')) THEN
         jointxt = 'RIGHT OUTER JOIN';
     ELSE
+      -- TODO need to implement more joins
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
     END IF;
     output = array_append(output, jointxt);
@@ -5059,8 +5228,7 @@ BEGIN
 
     IF (node->'usingClause' IS NOT NULL) THEN 
       output = array_append(output, 'USING');
-      -- TODO check this... maybe not correct.
-      output = array_append(output, deparser.list_quotes(node->'usingClause'));
+      output = array_append(output, deparser.parens(deparser.list(node->'usingClause')));
     END IF;
 
     IF ( (node->'rarg' IS NOT NULL AND node->'rarg'->'JoinExpr' IS NOT NULL ) OR node->'alias' IS NOT NULL) THEN 
@@ -5077,7 +5245,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_indirection ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_indirection ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   subnode jsonb;
@@ -5087,6 +5255,8 @@ BEGIN
     END IF;
 
     node = node->'A_Indirection';
+
+    output = array_append(output, deparser.parens(deparser.expression(node->'arg')));
 
     IF (node->'indirection' IS NOT NULL AND jsonb_array_length(node->'indirection') > 0) THEN 
       FOR subnode IN SELECT * FROM jsonb_array_elements(node->'indirection')
@@ -5106,7 +5276,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.sub_link ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.sub_link ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   subLinkType int;
@@ -5171,7 +5341,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_star ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_star ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
     IF (node->'A_Star') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Star';
@@ -5180,7 +5350,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.integer ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.integer ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   ival int;
 BEGIN
@@ -5195,7 +5365,7 @@ BEGIN
     node = node->'Integer';
     ival = (node->'ival')::int;
 
-    IF (ival < 0 AND context != 'simple') THEN
+    IF (ival < 0 AND context->'simple' IS NULL) THEN
       RETURN deparser.parens(node->>'ival');
     END IF;
     
@@ -5203,7 +5373,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.access_priv ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.access_priv ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -5230,7 +5400,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.grouping_func ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.grouping_func ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
     IF (node->'GroupingFunc') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'GroupingFunc';
@@ -5245,7 +5415,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.grouping_set ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.grouping_set ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   kind int;
 BEGIN
@@ -5274,7 +5444,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.func_call ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.func_call ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   fn_name text;
   fn_args text = '';
@@ -5355,7 +5525,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.rule_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.rule_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   event int;
@@ -5428,37 +5598,118 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_role_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_role_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  event int;
+  stmt_type int;
+  option jsonb;
+  opts_len int;
+  defname text;
 BEGIN
     IF (node->'CreateRoleStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
     END IF;
 
-    -- IF (node->'CreateRoleStmt'->'event') IS NULL THEN
-    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
-    -- END IF;
-
-    -- IF (node->'CreateRoleStmt'->'relation') IS NULL THEN
-    --   RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
-    -- END IF;
+    IF (node->'CreateRoleStmt'->'stmt_type') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
+    END IF;
 
     node = node->'CreateRoleStmt';
+    stmt_type = (node->'stmt_type')::int;
 
     output = array_append(output, 'CREATE');
+    
+    IF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_ROLE')) THEN 
+      output = array_append(output, 'ROLE');
+    ELSEIF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_USER')) THEN 
+      output = array_append(output, 'USER');
+    ELSEIF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_GROUP')) THEN 
+      output = array_append(output, 'GROUP');
+    ELSE 
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
+    END IF;
 
-    RAISE EXCEPTION 'TODO %', 'CreateRoleStmt';
+    output = array_append(output, quote_ident(node->>'role'));
+
+    IF (node->'options' IS NOT NULL) THEN 
+      opts_len = jsonb_array_length(node->'options');
+      IF (opts_len != 1 OR node->'options'->0->'DefElem'->>'defname' != 'addroleto') THEN 
+        output = array_append(output, 'WITH');
+      END IF;
+
+      FOR option IN SELECT * FROM jsonb_array_elements(node->'options')
+      LOOP
+        defname = option#>>'{DefElem, defname}';
+        IF (defname = 'canlogin') THEN 
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'LOGIN');
+          ELSE
+            output = array_append(output, 'NOLOGIN');
+          END IF;
+        ELSEIF (defname = 'addroleto') THEN
+          output = array_append(output, 'IN ROLE');
+          output = array_append(output, deparser.list(option->'DefElem'->'arg'));
+        ELSEIF (defname = 'password') THEN
+          output = array_append(output, 'PASSWORD');
+          output = array_append(output, deparser.expression(option->'DefElem'->'arg'));
+        ELSEIF (defname = 'adminmembers') THEN
+          output = array_append(output, 'ADMIN');
+          output = array_append(output, deparser.list(option->'DefElem'->'arg'));
+        ELSEIF (defname = 'rolemembers') THEN
+          output = array_append(output, 'USER');
+          output = array_append(output, deparser.list(option->'DefElem'->'arg'));
+        ELSEIF (defname = 'createdb') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'CREATEDB');
+          ELSE
+            output = array_append(output, 'NOCREATEDB');
+          END IF;
+        ELSEIF (defname = 'isreplication') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'REPLICATION');
+          ELSE
+            output = array_append(output, 'NOREPLICATION');
+          END IF;
+        ELSEIF (defname = 'bypassrls') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'BYPASSRLS');
+          ELSE
+            output = array_append(output, 'NOBYPASSRLS');
+          END IF;
+        ELSEIF (defname = 'inherit') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'INHERIT');
+          ELSE
+            output = array_append(output, 'NOINHERIT');
+          END IF;
+        ELSEIF (defname = 'superuser') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'SUPERUSER');
+          ELSE
+            output = array_append(output, 'NOSUPERUSER');
+          END IF;
+        ELSEIF (defname = 'createrole') THEN
+          IF ( (option#>'{DefElem, arg, Integer, ival}')::int > 0) THEN 
+            output = array_append(output, 'CREATEROLE');
+          ELSE
+            output = array_append(output, 'NOCREATEROLE');
+          END IF;
+        ELSEIF (defname = 'validUntil') THEN
+            output = array_append(output, 'VALID UNTIL');
+            output = array_append(output, format('''%s''', deparser.expression(option->'DefElem'->'arg')));
+        END IF;
+      END LOOP;
+    END IF;
 
     RETURN array_to_string(output, ' ');
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   relpersistence text;
+  item jsonb;
 BEGIN
     IF (node->'CreateStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateStmt';
@@ -5470,12 +5721,12 @@ BEGIN
 
     node = node->'CreateStmt';
 
-    relpersistence = node#>>'{relation RangeVar relpersistence}';
+    relpersistence = node#>>'{relation, RangeVar, relpersistence}';
 
     IF (relpersistence = 't') THEN 
-      output = array_append(output, 'ACREATE');
+      output = array_append(output, 'CREATE');
     ELSE
-      output = array_append(output, 'BCREATE ATABLE');
+      output = array_append(output, 'CREATE TABLE');
     END IF;
 
     output = array_append(output, deparser.expression(node->'relation', context));
@@ -5490,14 +5741,23 @@ BEGIN
     END IF;
 
     IF (node->'options') IS NOT NULL THEN
-      -- TODO with/without OIDs
+        IF (node->'options') IS NOT NULL THEN
+        FOR item IN SELECT * FROM jsonb_array_elements(node->'options')
+        LOOP
+          IF (item#>>'{DefElem, defname}' = 'oids' AND (item#>>'{DefElem, arg, Integer, ival}')::int = 1) THEN 
+            output = array_append(output, 'WITH OIDS');
+          ELSE
+            output = array_append(output, 'WITHOUT OIDS');
+          END IF;
+        END LOOP;
+      END IF;
     END IF;
 
     RETURN array_to_string(output, ' ');
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.transaction_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.transaction_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   kind int;
@@ -5547,7 +5807,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.view_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.view_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   event int;
@@ -5573,7 +5833,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.sort_by ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.sort_by ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   dir int;
@@ -5622,7 +5882,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.res_target ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.res_target ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   event int;
@@ -5634,15 +5894,15 @@ BEGIN
     node = node->'ResTarget';
 
     -- NOTE seems like compact is required here, sometimes the name is NOT used!
-    IF (context = 'select') THEN       
+    IF ((context->'select')::bool IS TRUE) THEN       
       output = array_append(output, array_to_string(deparser.compact(ARRAY[
-        deparser.expression(node->'val', 'select'),
+        deparser.expression(node->'val', context),
         quote_ident(node->>'name')
       ]), ' AS '));
-    ELSIF (context = 'update') THEN 
+    ELSIF ((context->'update')::bool IS TRUE) THEN 
       output = array_append(output, array_to_string(deparser.compact(ARRAY[
         quote_ident(node->>'name'),
-        deparser.expression(node->'val', 'update')
+        deparser.expression(node->'val', context)
       ]), ' = '));
     ELSE
       output = array_append(output, quote_ident(node->>'name'));
@@ -5652,7 +5912,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.object_with_args ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.object_with_args ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   rets text[];
@@ -5664,7 +5924,7 @@ BEGIN
 
     node = node->'ObjectWithArgs';
 
-    IF (context = 'noquotes') THEN 
+    IF ((context->'noquotes')::bool IS TRUE) THEN 
       output = array_append(output, deparser.list(node->'objname'));
     ELSE
       -- TODO why no '.' for the case above?
@@ -5690,7 +5950,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.alter_domain_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.alter_domain_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   subtype text;
@@ -5718,7 +5978,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.alter_enum_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.alter_enum_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -5745,7 +6005,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.execute_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.execute_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   fn_args text;
   fn_name text;
@@ -5770,7 +6030,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.row_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.row_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   row_format int;
 BEGIN
@@ -5788,7 +6048,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.a_indices ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.a_indices ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
     IF (node->'A_Indices') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Indices';
@@ -5807,7 +6067,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.into_clause ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.into_clause ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
     IF (node->'IntoClause') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'IntoClause';
@@ -5817,7 +6077,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.rename_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.rename_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   objtype int;
@@ -5845,7 +6105,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.vacuum_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.vacuum_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   objtype int;
@@ -5861,7 +6121,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.select_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.select_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   sets text[];
@@ -5914,11 +6174,16 @@ BEGIN
 
     -- distinct
     IF (node->'distinctClause') IS NOT NULL THEN 
-      IF (node->'distinctClause'->0) IS NOT NULL THEN 
-        output = array_append(output, 'DISTINCT ON');
-        output = array_append(output, '(');
-        output = array_append(output, deparser.list(node->'distinctClause', E',\n', context));
-        output = array_append(output, ')');
+      IF (node->'distinctClause'->0 IS NOT NULL) THEN 
+        IF (jsonb_typeof(node->'distinctClause'->0) = 'null') THEN 
+          -- fix for custom.sql test case
+          output = array_append(output, 'DISTINCT');
+        ELSE
+          output = array_append(output, 'DISTINCT ON');
+          output = array_append(output, '(');
+          output = array_append(output, deparser.list(node->'distinctClause', E',\n', context));
+          output = array_append(output, ')');
+        END IF;
       ELSE
         output = array_append(output, 'DISTINCT');
       END IF;
@@ -5926,7 +6191,7 @@ BEGIN
 
     -- target
     IF (node->'targetList') IS NOT NULL THEN 
-      output = array_append(output, deparser.list(node->'targetList', E',\n', 'select'));
+      output = array_append(output, deparser.list(node->'targetList', E',\n', jsonb_set(context, '{select}', to_jsonb(TRUE))));
     END IF;
 
     -- into
@@ -5937,7 +6202,7 @@ BEGIN
     -- from
     IF (node->'fromClause') IS NOT NULL THEN 
       output = array_append(output, 'FROM');
-      output = array_append(output, deparser.list(node->'fromClause', E',\n', 'from'));
+      output = array_append(output, deparser.list(node->'fromClause', E',\n', context));
     END IF;
 
     -- where
@@ -5960,7 +6225,7 @@ BEGIN
     -- groups
     IF (node->'groupClause') IS NOT NULL THEN 
       output = array_append(output, 'GROUP BY');
-      output = array_append(output, deparser.list(node->'groupClause', E',\n', 'group'));
+      output = array_append(output, deparser.list(node->'groupClause', E',\n', context));
     END IF;
 
     -- having
@@ -5977,7 +6242,7 @@ BEGIN
     -- sort
     IF (node->'sortClause') IS NOT NULL THEN 
       output = array_append(output, 'ORDER BY');
-      output = array_append(output, deparser.list(node->'sortClause', E',\n', 'sort'));
+      output = array_append(output, deparser.list(node->'sortClause', E',\n', context));
     END IF;
 
     -- limit
@@ -6002,7 +6267,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.grant_role_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.grant_role_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   event int;
@@ -6037,7 +6302,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.locking_clause ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.locking_clause ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   strength int;
@@ -6073,7 +6338,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.coalesce_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.coalesce_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
     IF (node->'CoalesceExpr') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CoalesceExpr';
@@ -6089,7 +6354,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.min_max_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.min_max_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   op int;
   output text[];
@@ -6116,7 +6381,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.null_test ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.null_test ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   nulltesttype int;
   output text[];
@@ -6147,7 +6412,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.named_arg_expr ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.named_arg_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -6173,7 +6438,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.drop_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.drop_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   objtypes text[];
@@ -6225,7 +6490,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.infer_clause ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.infer_clause ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   action int;
@@ -6247,7 +6512,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.on_conflict_clause ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.on_conflict_clause ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   action int;
@@ -6277,13 +6542,13 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_function_stmt ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_function_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   param jsonb;
   option jsonb;
   params jsonb[];
-  rets jsonb[];
+  returnsTableElements jsonb[];
   defname text;
 BEGIN
     IF (node->'CreateFunctionStmt') IS NULL THEN
@@ -6297,7 +6562,9 @@ BEGIN
       output = array_append(output, 'OR REPLACE');
     END IF;
     output = array_append(output, 'FUNCTION');
-    output = array_append(output, deparser.list(node->'funcname', '.', 'identifiers'));
+    output = array_append(output, deparser.list(node->'funcname', '.', jsonb_set(context, '{identifiers}', to_jsonb(TRUE))));
+
+    returnsTableElements = ARRAY[]::jsonb[];
 
     -- params
     output = array_append(output, '(');
@@ -6308,9 +6575,8 @@ BEGIN
       LOOP
         IF ((param->'FunctionParameter'->'mode')::int = ANY(ARRAY[118, 111, 98, 105]::int[])) THEN
           params = array_append(params, param);
-        END IF;
-        IF ((param->'FunctionParameter'->'mode')::int = 116) THEN
-          rets = array_append(params, param);
+        ELSEIF ((param->'FunctionParameter'->'mode')::int = 116) THEN
+          returnsTableElements = array_append(returnsTableElements, param);
         END IF;
       END LOOP;
 
@@ -6321,18 +6587,16 @@ BEGIN
 
     -- RETURNS
 
-    IF (cardinality(rets) > 0) THEN
+    IF (cardinality(returnsTableElements) > 0) THEN
       output = array_append(output, 'RETURNS');
       output = array_append(output, 'TABLE');
       output = array_append(output, '(');
-      output = array_append(output, deparser.list(to_jsonb(rets)));
+      output = array_append(output, deparser.list(to_jsonb(returnsTableElements)));
       output = array_append(output, ')');      
     ELSE
       output = array_append(output, 'RETURNS');
       output = array_append(output, deparser.expression(node->'returnType'));
     END IF;
-
-    -- TODO IMMUTABLE type? where is that option?
 
     -- options
     IF (node->'options') IS NOT NULL THEN
@@ -6373,7 +6637,8 @@ BEGIN
               ELSE
                 output = array_append(output, 'CALLED ON NULL INPUT' );
               END IF;
-            -- ELSIF (defname = 'set') THEN 
+            ELSIF (defname = 'set') THEN 
+              output = array_append(output, deparser.expression(option)); 
             ELSIF (defname = 'volatility') THEN 
               output = array_append(output, upper(deparser.expression(option->'DefElem'->'arg')) );
             END IF;
@@ -6387,7 +6652,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.function_parameter ( node jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.function_parameter ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
 BEGIN
@@ -6421,7 +6686,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.expression ( expr jsonb, context text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.expression ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
 
   -- TODO potentially remove this to help find issues...
@@ -6485,6 +6750,8 @@ BEGIN
     RETURN deparser.create_domain_stmt(expr, context);
   ELSEIF (expr->>'CreateEnumStmt') IS NOT NULL THEN
     RETURN deparser.create_enum_stmt(expr, context);
+  ELSEIF (expr->>'CreateExtensionStmt') IS NOT NULL THEN
+    RETURN deparser.create_extension_stmt(expr, context);
   ELSEIF (expr->>'CreateFunctionStmt') IS NOT NULL THEN
     RETURN deparser.create_function_stmt(expr, context);
   ELSEIF (expr->>'CreatePolicyStmt') IS NOT NULL THEN
@@ -6601,6 +6868,8 @@ BEGIN
     RETURN deparser.vacuum_stmt(expr, context);
   ELSEIF (expr->>'VariableSetStmt') IS NOT NULL THEN
     RETURN deparser.variable_set_stmt(expr, context);
+  ELSEIF (expr->>'VariableShowStmt') IS NOT NULL THEN
+    RETURN deparser.variable_show_stmt(expr, context);
   ELSEIF (expr->>'ViewStmt') IS NOT NULL THEN
     RETURN deparser.view_stmt(expr, context);
   ELSEIF (expr->>'WithClause') IS NOT NULL THEN
@@ -6612,7 +6881,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.expressions_array ( node jsonb, context text DEFAULT NULL ) RETURNS text[] AS $EOFCODE$
+CREATE FUNCTION deparser.expressions_array ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text[] AS $EOFCODE$
 DECLARE
   expr jsonb;
   els text[] = ARRAY[]::text[];
