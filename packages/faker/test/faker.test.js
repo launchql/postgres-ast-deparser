@@ -80,9 +80,10 @@ it('lnglat', async () => {
     'lnglat',
     {
       x1: -118.561721,
-      y1: 33.71,
+      y1: 33.59,
       x2: -117.646374,
-      y2: 34.823302
+      y2: 34.23302 // tighter to LA (from north towards LA)
+      // y2: 34.823302 // goes further north
     },
     {
       x1: 'float',
@@ -92,6 +93,7 @@ it('lnglat', async () => {
     }
   );
   console.log(obj);
+  console.log(obj.bbox.y, ',', obj.bbox.x);
 });
 it('tags', async () => {
   const obj = {};
