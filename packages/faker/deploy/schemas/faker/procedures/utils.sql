@@ -58,13 +58,13 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
-CREATE FUNCTION faker.username(gender text default null) returns text as $$
+CREATE FUNCTION faker.username() returns text as $$
 DECLARE
 BEGIN
-   RETURN (CASE (RANDOM() * 3)::INT
+   RETURN (CASE (RANDOM() * 2)::INT
       WHEN 0 THEN faker.word() || (RANDOM() * 100)::INT
       WHEN 1 THEN faker.word() || '.' || faker.word() || (RANDOM() * 100)::INT
-      WHEN 3 THEN faker.word()
+      WHEN 2 THEN faker.word()
     END);
 END;
 $$
@@ -111,6 +111,183 @@ BEGIN
       WHEN 3 THEN array_to_string( ARRAY[faker.word('bizname') || faker.word('bizpostfix'), faker.word('bizsurname') ]::text[], ' ')
       WHEN 4 THEN array_to_string( ARRAY[faker.word('bizname') || faker.word('bizpostfix'), faker.word('bizsurname') || ',', faker.word('bizsuffix')]::text[], ' ')
     END);
+END;
+$$
+LANGUAGE 'plpgsql';
+
+
+CREATE FUNCTION faker.city(state text default null) returns text as $$
+DECLARE
+  vcity text;
+BEGIN
+
+IF (state IS NOT NULL) THEN 
+
+  SELECT city FROM faker.cities 
+  WHERE cities.state = city.state
+  OFFSET floor( random() * (select count(*) from faker.cities WHERE cities.state = city.state ) ) LIMIT 1
+  INTO vcity;
+
+ELSE
+
+  SELECT city FROM faker.cities 
+  OFFSET floor( random() * (select count(*) from faker.cities ) ) LIMIT 1
+  INTO vcity;
+
+END IF;
+
+
+RETURN vcity;
+
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.zip(city text default null) returns int as $$
+DECLARE
+  vzips int[];
+BEGIN
+
+IF (city IS NOT NULL) THEN 
+
+  SELECT zips FROM faker.cities 
+  WHERE cities.city = zip.city
+  OFFSET floor( random() * (select count(*) from faker.cities WHERE cities.city = zip.city ) ) LIMIT 1
+  INTO vzips;
+
+ELSE
+
+  SELECT zips FROM faker.cities
+  OFFSET floor( random() * (select count(*) from faker.cities ) ) LIMIT 1
+  INTO vzips;
+
+END IF;
+
+
+RETURN vzips[ faker.integer(1, cardinality(vzips)) ];
+
+END;
+$$
+LANGUAGE 'plpgsql';
+
+
+CREATE FUNCTION faker.lnglat(x1 float, y1 float, x2 float, y2 float) returns point as $$
+DECLARE
+  vlat float;
+  vlng float;
+BEGIN
+
+RETURN Point(
+  faker.float(least(x1, x2), greatest(x1, x2)),
+  faker.float(least(y1, y2), greatest(y1, y2))
+);
+
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.lnglat(city text default null) returns point as $$
+DECLARE
+  vlat float;
+  vlng float;
+BEGIN
+
+IF (city IS NOT NULL) THEN 
+  SELECT lat, lng FROM faker.cities 
+  WHERE cities.city = lnglat.city
+  OFFSET floor( random() * (select count(*) from faker.cities WHERE cities.city = lnglat.city ) ) LIMIT 1
+  INTO vlat, vlng;
+ELSE
+  SELECT lat, lng FROM faker.cities 
+  OFFSET floor( random() * (select count(*) from faker.cities ) ) LIMIT 1
+  INTO vlat, vlng;
+END IF;
+
+RETURN Point(vlng, vlat);
+
+END;
+$$
+LANGUAGE 'plpgsql';
+
+
+
+CREATE FUNCTION faker.phone() returns text as $$
+BEGIN
+   RETURN '+1 (555) 555-5454';
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.street() returns text as $$
+BEGIN
+  RETURN faker.word('street');
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.state(state text default null) returns text as $$
+DECLARE
+  vstate text;
+BEGIN
+
+IF (state IS NULL) THEN 
+  SELECT distinct(c.state) FROM faker.cities c
+  OFFSET floor( random() * (select count(distinct(c2.state)) from faker.cities c2 ) ) LIMIT 1
+  INTO vstate;
+ELSE
+  vstate = state;
+END IF;
+
+RETURN vstate;
+
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.address(state text default null, city text default null) returns text as $$
+DECLARE
+  vcity text;
+  vstate text;
+  vstreet text;
+  vstreetnum int;
+  vzips int[];
+  vzip int;
+BEGIN
+
+IF (state IS NULL) THEN 
+  vstate = faker.state();
+ELSE
+  vstate = state;
+END IF;
+
+SELECT c.city, c.zips FROM faker.cities c
+WHERE c.state = vstate
+OFFSET floor( random() * (select count(*) from faker.cities WHERE cities.state = vstate ) ) LIMIT 1
+INTO vcity, vzips;
+
+vstreetnum = faker.integer(1, 3000);
+vstreet = faker.street();
+vzip = vzips[ faker.integer(1, cardinality(vzips)) ];
+
+RETURN concat(vstreetnum::text,  ' ',  vstreet,  E'\n',  vcity,  ', ',   vstate,  ' ',   vzip::text);
+
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.tags(min int default 1, max int default 5, dict text default 'tag') returns citext[] as $$
+DECLARE
+  words text[];
+  lim int = faker.integer(min,max);
+BEGIN
+
+SELECT ARRAY (
+  SELECT word FROM faker.dictionary
+  WHERE type = dict
+  OFFSET floor( random() * (select count(*) from faker.dictionary WHERE type = dict ) ) LIMIT lim
+) INTO words;
+
+RETURN words::citext[];
 END;
 $$
 LANGUAGE 'plpgsql';
@@ -281,13 +458,15 @@ SELECT
 $$
 LANGUAGE 'sql';
 
-CREATE FUNCTION faker.float(min int default 0, max int default 100) returns float as $$
+CREATE FUNCTION faker.float(min float default 0, max float default 100) returns float as $$
 DECLARE
   num float;
+  high float;
+  low float;
 BEGIN
-  min = ceil(min);
-  max = floor(max);
-  num = (RANDOM() * ( max - min + 1 )) + min;
+  high = greatest(min, max);
+  low = least(min, max);
+  num = (RANDOM() * ( high - low )) + low;
   RETURN num;
 END;
 $$
@@ -423,12 +602,34 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
+CREATE FUNCTION faker.profilepic() returns image as $$
+DECLARE
+  obj jsonb = '{}'::jsonb;
+  vurl text = '';
+  face text;
+BEGIN
+  face = faker.word('face');
+  vurl = concat('https://s3.amazonaws.com/uifaces/faces/twitter/', face, '/128.jpg');
+  obj = jsonb_set(obj, '{url}', to_jsonb(vurl::text));
+  obj = jsonb_set(obj, '{mime}', to_jsonb('image/jpeg'::text));
+  RETURN obj;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.file(mime text default null) returns text as $$
+BEGIN
+  RETURN concat(faker.word(), '.', faker.ext(mime));
+END;
+$$
+LANGUAGE 'plpgsql';
+
 CREATE FUNCTION faker.url(mime text default null) returns url as $$
 DECLARE
   obj jsonb = '{}'::jsonb;
   url text;
 BEGIN
-  url = concat('https://', faker.hostname(), '/', faker.word(), '.', faker.ext(mime));
+  url = concat('https://', faker.hostname(), '/', faker.file(mime));
   RETURN url;
 END;
 $$
