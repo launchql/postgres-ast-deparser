@@ -35,14 +35,14 @@ RETURN vword;
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.word(wordtypes text[]) returns text as $$
 BEGIN
   RETURN faker.word(wordtypes[faker.integer(1, cardinality(wordtypes))]::text);
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.gender(gender text default null) returns text as $$
 DECLARE
@@ -56,7 +56,7 @@ BEGIN
     END);
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.username() returns text as $$
 DECLARE
@@ -68,7 +68,7 @@ BEGIN
     END);
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.name(gender text default null) returns text as $$
 DECLARE
@@ -86,21 +86,21 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.surname() returns text as $$
 BEGIN
-    RETURN faker.word('surname');
+    RETURN initcap(faker.word('surname'));
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.fullname(gender text default null) returns text as $$
 BEGIN
     RETURN initcap(faker.name(gender)) || ' ' ||  initcap(faker.word('surname'));
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.business() returns text as $$
 BEGIN
@@ -113,7 +113,7 @@ BEGIN
     END);
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 
 CREATE FUNCTION faker.city(state text default null) returns text as $$
@@ -141,7 +141,7 @@ RETURN vcity;
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.zip(city text default null) returns int as $$
 DECLARE
@@ -168,7 +168,7 @@ RETURN vzips[ faker.integer(1, cardinality(vzips)) ];
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 
 CREATE FUNCTION faker.lnglat(x1 float, y1 float, x2 float, y2 float) returns point as $$
@@ -184,7 +184,7 @@ RETURN Point(
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.lnglat(city text default null) returns point as $$
 DECLARE
@@ -207,7 +207,7 @@ RETURN Point(vlng, vlat);
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 
 
@@ -216,14 +216,14 @@ BEGIN
    RETURN '+1 (555) 555-5454';
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.street() returns text as $$
 BEGIN
   RETURN faker.word('street');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.state(state text default null) returns text as $$
 DECLARE
@@ -242,7 +242,7 @@ RETURN vstate;
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.address(state text default null, city text default null) returns text as $$
 DECLARE
@@ -273,7 +273,7 @@ RETURN concat(vstreetnum::text,  ' ',  vstreet,  E'\n',  vcity,  ', ',   vstate,
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.tags(min int default 1, max int default 5, dict text default 'tag') returns citext[] as $$
 DECLARE
@@ -290,7 +290,7 @@ SELECT ARRAY (
 RETURN words::citext[];
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.sentence(unit text default 'word', min int default 7, max int default 20, cat text[] default ARRAY['lorem']::text[], period text default '.') returns text as $$
 DECLARE
@@ -332,7 +332,7 @@ BEGIN
   END IF;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.paragraph(unit text default 'word', min int default 7, max int default 20, cat text[] default ARRAY['lorem']::text[]) returns text as $$
 DECLARE
@@ -372,7 +372,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.email() returns text as $$
 SELECT
@@ -427,7 +427,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.hostname() returns text as $$
 SELECT
@@ -470,7 +470,7 @@ BEGIN
   RETURN num;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.integer(min int default 0, max int default 100) returns int as $$
 DECLARE
@@ -482,7 +482,7 @@ BEGIN
   RETURN num;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.date(min int default 1, max int default 100, future boolean default false) returns date as $$
 DECLARE
@@ -497,7 +497,7 @@ END IF;
 RETURN d;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.birthdate(min int default 1, max int default 100) returns date as $$
 DECLARE
@@ -511,7 +511,7 @@ BEGIN
   RETURN d;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.interval() returns interval as $$
 DECLARE
@@ -522,7 +522,7 @@ BEGIN
   RETURN ival::interval;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.timestamptz(future boolean default false) returns timestamptz as $$
 DECLARE
@@ -538,7 +538,7 @@ BEGIN
   RETURN t;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.mime() returns text as $$
   SELECT faker.word('mime');
@@ -557,7 +557,7 @@ BEGIN
   RETURN ext;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 
 CREATE FUNCTION faker.image_mime() returns text as $$
@@ -600,7 +600,7 @@ BEGIN
 
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.profilepic() returns image as $$
 DECLARE
@@ -615,14 +615,14 @@ BEGIN
   RETURN obj;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.file(mime text default null) returns text as $$
 BEGIN
   RETURN concat(faker.word(), '.', faker.ext(mime));
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.url(mime text default null) returns url as $$
 DECLARE
@@ -633,14 +633,14 @@ BEGIN
   RETURN url;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.upload(mime text default null) returns upload as $$
 BEGIN
   RETURN faker.url(mime);
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.ip(mime text default null) returns text as $$
 BEGIN
@@ -653,7 +653,7 @@ BEGIN
     ]::text[], '.');
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 CREATE FUNCTION faker.attachment(mime text default null) returns attachment as $$
 DECLARE
@@ -667,6 +667,6 @@ BEGIN
   RETURN obj;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' VOLATILE;
 
 COMMIT;
