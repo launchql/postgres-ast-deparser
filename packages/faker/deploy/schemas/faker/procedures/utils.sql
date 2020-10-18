@@ -524,6 +524,18 @@ END;
 $$
 LANGUAGE 'plpgsql' VOLATILE;
 
+CREATE FUNCTION faker.boolean() returns boolean as $$
+BEGIN
+  RETURN (
+    CASE (RANDOM() * 1)::INT
+      WHEN 0 THEN TRUE
+      WHEN 1 THEN FALSE
+    END
+  );
+END;
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+
 CREATE FUNCTION faker.timestamptz(future boolean default false) returns timestamptz as $$
 DECLARE
   ival interval;
