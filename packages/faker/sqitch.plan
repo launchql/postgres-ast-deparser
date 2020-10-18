@@ -1,0 +1,8 @@
+%syntax-version=1.0.0
+%project=faker
+%uri=faker
+  
+schemas/faker/schema 2020-10-17T11:24:07Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/faker/schema
+schemas/faker/procedures/utils [schemas/faker/schema] 2020-10-17T11:24:35Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/faker/procedures/utils
+schemas/faker/tables/words/table [schemas/faker/schema] 2020-10-17T21:09:07Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/faker/tables/words/table
+schemas/faker/tables/words/fixtures/1602969089665_fixture [schemas/faker/schema schemas/faker/tables/words/table] 2020-10-17T21:11:30Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/faker/tables/words/fixtures/1602969089665_fixture

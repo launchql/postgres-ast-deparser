@@ -1,7 +1,7 @@
 {
-  "name": "inflection",
+  "name": "faker",
   "version": "0.0.1",
-  "description": "inflection",
+  "description": "faker",
   "author": "Dan Lynch <pyramation@gmail.com>",
   "private": true,
   "scripts": {
@@ -17,18 +17,22 @@
     "@babel/plugin-transform-runtime": "7.10.4",
     "@babel/preset-env": "7.10.4",
     "@launchql/db-testing": "0.4.3",
+    "@launchql/graphql-testing": "0.3.16",
     "babel-eslint": "10.1.0",
     "babel-jest": "26.1.0",
+    "babel-plugin-import-graphql": "2.7.0",
     "babel-plugin-macros": "2.8.0",
     "eslint": "^7.3.1",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "graphql": "^14.0.2",
+    "graphql-tag": "2.10.3",
     "jest": "26.1.0",
-    "json-schema-faker": "^0.5.0-rc15",
     "prettier": "2.0.5",
     "regenerator-runtime": "^0.13.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.4.2"
+    "@babel/runtime": "^7.4.2",
+    "pg-query-string": "0.1.7"
   }
 }
