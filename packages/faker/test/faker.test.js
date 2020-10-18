@@ -47,7 +47,13 @@ it('gets random words', async () => {
     'password',
     'hostname',
     'upload',
+    'username',
+    'gender',
+    'name',
+    'surname',
+    'fullname',
     'attachment',
+    'birthdate',
     'ext',
     'ip'
   ];
@@ -55,27 +61,43 @@ it('gets random words', async () => {
     obj[t] = await dbs.callOne(t);
   }
 
+  obj['english-words'] = await dbs.callOne('sentence', {
+    unit: 'word',
+    min: 7,
+    max: 20,
+    cat: ['colors']
+  });
+  obj['mixed-words'] = await dbs.callOne('sentence', {
+    unit: 'word',
+    min: 7,
+    max: 20,
+    cat: ['colors', 'adjectives', 'surname', 'animals', 'stop', 'stop', 'stop']
+  });
   obj['sentence-words'] = await dbs.callOne('sentence', {
     unit: 'word',
     min: 7,
     max: 20,
-    cat: 'lorem'
+    cat: ['lorem']
   });
   obj['sentence-chars'] = await dbs.callOne('sentence', {
     unit: 'char',
     min: 100,
     max: 140,
-    cat: 'lorem'
+    cat: ['lorem']
   });
   obj['paragraph-chars'] = await dbs.callOne('paragraph', {
     unit: 'char',
     min: 300,
     max: 500,
-    cat: 'lorem'
+    cat: ['lorem']
   });
   obj['integer-chars'] = await dbs.callOne('integer', {
     min: 300,
     max: 500
+  });
+  obj['xenial'] = await dbs.callOne('birthdate', {
+    min: 34,
+    max: 39
   });
   console.log(obj);
 });

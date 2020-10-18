@@ -6,23 +6,6 @@
 BEGIN;
 
 
-CREATE FUNCTION faker.words() returns text as $$
-SELECT 
-
-(SELECT word FROM faker.dictionary 
-WHERE type = 'adjectives'
-OFFSET floor( random() * (select count(*) from faker.dictionary WHERE type = 'adjectives' ) ) LIMIT 1)
-|| ' ' ||
-(SELECT word FROM faker.dictionary 
-WHERE type = 'colors'
-OFFSET floor( random() * (select count(*) from faker.dictionary WHERE type = 'colors' ) ) LIMIT 1)
-|| ' ' ||
-(SELECT word FROM faker.dictionary 
-WHERE type = 'animals'
-OFFSET floor( random() * (select count(*) from faker.dictionary WHERE type = 'animals' ) ) LIMIT 1)
-$$
-LANGUAGE 'sql';
-
 CREATE FUNCTION faker.word_type() returns text as $$
 SELECT (CASE (RANDOM() * 2)::INT
       WHEN 0 THEN 'adjectives'
@@ -54,7 +37,73 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
-CREATE FUNCTION faker.sentence(unit text default 'word', min int default 7, max int default 20, cat text default 'lorem', period text default '.') returns text as $$
+CREATE FUNCTION faker.word(wordtypes text[]) returns text as $$
+BEGIN
+  RETURN faker.word(wordtypes[faker.integer(1, cardinality(wordtypes))]::text);
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.gender(gender text default null) returns text as $$
+DECLARE
+BEGIN
+  IF (gender IS NOT NULL) THEN 
+    RETURN gender;
+  END IF;
+  RETURN (CASE (RANDOM() * 1)::INT
+      WHEN 0 THEN 'M'
+      WHEN 1 THEN 'F'
+    END);
+END;
+$$
+LANGUAGE 'plpgsql';
+
+
+CREATE FUNCTION faker.username(gender text default null) returns text as $$
+DECLARE
+BEGIN
+   RETURN (CASE (RANDOM() * 3)::INT
+      WHEN 0 THEN faker.word() || (RANDOM() * 100)::INT
+      WHEN 1 THEN faker.word() || '.' || faker.word() || (RANDOM() * 100)::INT
+      WHEN 3 THEN faker.word()
+    END);
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.name(gender text default null) returns text as $$
+DECLARE
+
+BEGIN
+  IF (gender IS NULL) THEN
+    gender = faker.gender();
+  END IF;
+
+  IF (gender = 'M') THEN 
+    RETURN initcap(faker.word('boys'));
+  ELSE
+    RETURN initcap(faker.word('girls'));
+  END IF;
+
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.surname() returns text as $$
+BEGIN
+    RETURN faker.word('surname');
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.fullname(gender text default null) returns text as $$
+BEGIN
+    RETURN initcap(faker.name(gender)) || ' ' ||  initcap(faker.word('surname'));
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.sentence(unit text default 'word', min int default 7, max int default 20, cat text[] default ARRAY['lorem']::text[], period text default '.') returns text as $$
 DECLARE
   num int = faker.integer(min, max);
   txt text;
@@ -96,7 +145,7 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
-CREATE FUNCTION faker.paragraph(unit text default 'word', min int default 7, max int default 20, cat text default 'lorem') returns text as $$
+CREATE FUNCTION faker.paragraph(unit text default 'word', min int default 7, max int default 20, cat text[] default ARRAY['lorem']::text[]) returns text as $$
 DECLARE
   num int = faker.integer(min, max);
   txt text;
@@ -244,16 +293,31 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
-CREATE FUNCTION faker.date(future boolean default false) returns date as $$
+CREATE FUNCTION faker.date(min int default 1, max int default 100, future boolean default false) returns date as $$
 DECLARE
   d date;
+  num int = faker.integer(min, max);
 BEGIN
 IF (future) THEN 
-  d = now()::date + 10;
+  d = now()::date + num;
 ELSE
-  d = now()::date - 10;
+  d = now()::date - num;
 END IF;
 RETURN d;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.birthdate(min int default 1, max int default 100) returns date as $$
+DECLARE
+  d date;
+  years int = faker.integer(min, max);
+  days int = faker.integer(1, 365);
+  itv interval;
+BEGIN
+  itv = concat(years, ' years')::interval + concat(days, ' days')::interval;
+  d = now()::date - itv;
+  RETURN d;
 END;
 $$
 LANGUAGE 'plpgsql';
