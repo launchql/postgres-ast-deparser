@@ -55,7 +55,8 @@ it('gets random words', async () => {
     'attachment',
     'birthdate',
     'ext',
-    'ip'
+    'ip',
+    'business'
   ];
   for (const t of types) {
     obj[t] = await dbs.callOne(t);
@@ -100,4 +101,11 @@ it('gets random words', async () => {
     max: 39
   });
   console.log(obj);
+});
+
+it('businesses', async () => {
+  for (let i = 0; i < 20; i++) {
+    const biz = await dbs.callOne('business');
+    console.log(biz);
+  }
 });

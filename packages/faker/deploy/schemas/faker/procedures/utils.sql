@@ -58,7 +58,6 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
-
 CREATE FUNCTION faker.username(gender text default null) returns text as $$
 DECLARE
 BEGIN
@@ -99,6 +98,19 @@ LANGUAGE 'plpgsql';
 CREATE FUNCTION faker.fullname(gender text default null) returns text as $$
 BEGIN
     RETURN initcap(faker.name(gender)) || ' ' ||  initcap(faker.word('surname'));
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE FUNCTION faker.business() returns text as $$
+BEGIN
+    RETURN (CASE (RANDOM() * 4)::INT
+      WHEN 0 THEN array_to_string( ARRAY[faker.word('bizname'), faker.word('bizsurname') || ',', faker.word('bizsuffix')]::text[], ' ')
+      WHEN 1 THEN array_to_string( ARRAY[faker.word('bizname'), faker.word('bizsurname')]::text[], ' ')
+      WHEN 2 THEN array_to_string( ARRAY[faker.word('bizname'), faker.word('bizsurname')]::text[], ' ')
+      WHEN 3 THEN array_to_string( ARRAY[faker.word('bizname') || faker.word('bizpostfix'), faker.word('bizsurname') ]::text[], ' ')
+      WHEN 4 THEN array_to_string( ARRAY[faker.word('bizname') || faker.word('bizpostfix'), faker.word('bizsurname') || ',', faker.word('bizsuffix')]::text[], ' ')
+    END);
 END;
 $$
 LANGUAGE 'plpgsql';
