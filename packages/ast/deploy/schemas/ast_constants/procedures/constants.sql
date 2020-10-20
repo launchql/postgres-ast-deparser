@@ -6,6 +6,95 @@
 
 BEGIN;
 
+CREATE FUNCTION ast_constants.alter_table_type ( val text ) RETURNS int AS $EOFCODE$
+SELECT CASE
+ WHEN ((val) = ('AT_AddColumn')) THEN 0
+ WHEN ((val) = ('AT_AddColumnRecurse')) THEN 1
+ WHEN ((val) = ('AT_AddColumnToView')) THEN 2
+ WHEN ((val) = ('AT_ColumnDefault')) THEN 3
+ WHEN ((val) = ('AT_DropNotNull')) THEN 4
+ WHEN ((val) = ('AT_SetNotNull')) THEN 5
+ WHEN ((val) = ('AT_SetStatistics')) THEN 6
+ WHEN ((val) = ('AT_SetOptions')) THEN 7
+ WHEN ((val) = ('AT_ResetOptions')) THEN 8
+ WHEN ((val) = ('AT_SetStorage')) THEN 9
+ WHEN ((val) = ('AT_DropColumn')) THEN 10
+ WHEN ((val) = ('AT_DropColumnRecurse')) THEN 11
+ WHEN ((val) = ('AT_AddIndex')) THEN 12
+ WHEN ((val) = ('AT_ReAddIndex')) THEN 13
+ WHEN ((val) = ('AT_AddConstraint')) THEN 14
+ WHEN ((val) = ('AT_AddConstraintRecurse')) THEN 15
+ WHEN ((val) = ('AT_ReAddConstraint')) THEN 16
+ WHEN ((val) = ('AT_AlterConstraint')) THEN 17
+ WHEN ((val) = ('AT_ValidateConstraint')) THEN 18
+ WHEN ((val) = ('AT_ValidateConstraintRecurse')) THEN 19
+ WHEN ((val) = ('AT_ProcessedConstraint')) THEN 20
+ WHEN ((val) = ('AT_AddIndexConstraint')) THEN 21
+ WHEN ((val) = ('AT_DropConstraint')) THEN 22
+ WHEN ((val) = ('AT_DropConstraintRecurse')) THEN 23
+ WHEN ((val) = ('AT_ReAddComment')) THEN 24
+ WHEN ((val) = ('AT_AlterColumnType')) THEN 25
+ WHEN ((val) = ('AT_AlterColumnGenericOptions')) THEN 26
+ WHEN ((val) = ('AT_ChangeOwner')) THEN 27
+ WHEN ((val) = ('AT_ClusterOn')) THEN 28
+ WHEN ((val) = ('AT_DropCluster')) THEN 29
+ WHEN ((val) = ('AT_SetLogged')) THEN 30
+ WHEN ((val) = ('AT_SetUnLogged')) THEN 31
+ WHEN ((val) = ('AT_AddOids')) THEN 32
+ WHEN ((val) = ('AT_AddOidsRecurse')) THEN 33
+ WHEN ((val) = ('AT_DropOids')) THEN 34
+ WHEN ((val) = ('AT_SetTableSpace')) THEN 35
+ WHEN ((val) = ('AT_SetRelOptions')) THEN 36
+ WHEN ((val) = ('AT_ResetRelOptions')) THEN 37
+ WHEN ((val) = ('AT_ReplaceRelOptions')) THEN 38
+ WHEN ((val) = ('AT_EnableTrig')) THEN 39
+ WHEN ((val) = ('AT_EnableAlwaysTrig')) THEN 40
+ WHEN ((val) = ('AT_EnableReplicaTrig')) THEN 41
+ WHEN ((val) = ('AT_DisableTrig')) THEN 42
+ WHEN ((val) = ('AT_EnableTrigAll')) THEN 43
+ WHEN ((val) = ('AT_DisableTrigAll')) THEN 44
+ WHEN ((val) = ('AT_EnableTrigUser')) THEN 45
+ WHEN ((val) = ('AT_DisableTrigUser')) THEN 46
+ WHEN ((val) = ('AT_EnableRule')) THEN 47
+ WHEN ((val) = ('AT_EnableAlwaysRule')) THEN 48
+ WHEN ((val) = ('AT_EnableReplicaRule')) THEN 49
+ WHEN ((val) = ('AT_DisableRule')) THEN 50
+ WHEN ((val) = ('AT_AddInherit')) THEN 51
+ WHEN ((val) = ('AT_DropInherit')) THEN 52
+ WHEN ((val) = ('AT_AddOf')) THEN 53
+ WHEN ((val) = ('AT_DropOf')) THEN 54
+ WHEN ((val) = ('AT_ReplicaIdentity')) THEN 55
+ WHEN ((val) = ('AT_EnableRowSecurity')) THEN 56
+ WHEN ((val) = ('AT_DisableRowSecurity')) THEN 57
+ WHEN ((val) = ('AT_ForceRowSecurity')) THEN 58
+ WHEN ((val) = ('AT_NoForceRowSecurity')) THEN 59
+ WHEN ((val) = ('AT_GenericOptions')) THEN 60
+ WHEN ((val) = ('AT_AttachPartition')) THEN 61
+ WHEN ((val) = ('AT_DetachPartition')) THEN 62
+ WHEN ((val) = ('AT_AddIdentity')) THEN 63
+ WHEN ((val) = ('AT_SetIdentity')) THEN 64
+ WHEN ((val) = ('AT_DropIdentity')) THEN 65 END;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_constants.join_type ( val text ) RETURNS int AS $EOFCODE$
+SELECT CASE
+ WHEN ((val) = ('JOIN_INNER')) THEN 0
+ WHEN ((val) = ('JOIN_LEFT')) THEN 1
+ WHEN ((val) = ('JOIN_FULL')) THEN 2
+ WHEN ((val) = ('JOIN_RIGHT')) THEN 3
+ WHEN ((val) = ('JOIN_SEMI')) THEN 4
+ WHEN ((val) = ('JOIN_ANTI')) THEN 5
+ WHEN ((val) = ('JOIN_UNIQUE_OUTER')) THEN 6
+ WHEN ((val) = ('JOIN_UNIQUE_INNER')) THEN 7 END;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_constants.role_stmt_type ( val text ) RETURNS int AS $EOFCODE$
+SELECT CASE
+ WHEN ((val) = ('ROLESTMT_ROLE')) THEN 0
+ WHEN ((val) = ('ROLESTMT_USER')) THEN 1
+ WHEN ((val) = ('ROLESTMT_GROUP')) THEN 2 END;
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
 CREATE FUNCTION ast_constants.role_spec_type ( val text ) RETURNS int AS $EOFCODE$
 SELECT CASE
  WHEN ((val) = ('ROLESPEC_CSTRING')) THEN 0

@@ -89,6 +89,8 @@ ALTER TABLE collections.mfield
     ADD CONSTRAINT col_field_pkey PRIMARY KEY (id);
 
 
+
+
 -- TODO MATCH after upgrading to newer engine: https://github.com/lfittl/libpg_query/issues/66
 
 -- ALTER TABLE scha.foo 
