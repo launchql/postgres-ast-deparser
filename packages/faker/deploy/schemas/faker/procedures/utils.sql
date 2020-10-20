@@ -329,7 +329,9 @@ BEGIN
     IF (c > num) THEN 
       RETURN substring(txt from 1 for num) || period;
     END IF;
+    RETURN txt || period;
   END IF;
+  RAISE EXCEPTION 'faker.sentence() bad input';
 END;
 $$
 LANGUAGE 'plpgsql' VOLATILE;
@@ -523,6 +525,12 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql' VOLATILE;
+
+
+CREATE FUNCTION faker.interval(min int, max int) returns interval as $$
+SELECT (faker.integer(min, max)::text || ' ' || 'seconds')::interval;
+$$
+LANGUAGE 'sql' VOLATILE;
 
 CREATE FUNCTION faker.boolean() returns boolean as $$
 BEGIN

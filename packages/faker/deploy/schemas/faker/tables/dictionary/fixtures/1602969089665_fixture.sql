@@ -2189,6 +2189,8 @@ insert into faker.dictionary (type, word) VALUES
 ('lorem', 'vulputate'),
 
 
+    ('mime',  'audio/mpeg'),
+
     ('mime',  'application/epub+zip'),
     ('mime',  'application/font-woff'),
     ('mime',  'application/font-woff2'),
@@ -2233,6 +2235,8 @@ insert into faker.dictionary (type, word) VALUES
     ('mime',  'video/mp4'),
 
 -- extensions
+
+    ('audio/mpeg', 'mp3'),
 
     ('application/epub+zip', 'zip'),
     ('application/font-woff', 'woff'),
