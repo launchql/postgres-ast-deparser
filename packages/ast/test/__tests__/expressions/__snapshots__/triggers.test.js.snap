@@ -99,7 +99,7 @@ exports[`create_trigger_with_fields 1`] = `
 "CREATE TRIGGER \\"my-trigger\\" 
  BEFORE INSERT OR UPDATE ON \\"my-schema\\".\\"my-table\\" 
  FOR EACH ROW 
- WHEN ((OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name)) 
+ WHEN (OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name) 
  EXECUTE PROCEDURE \\"my-tg-fn-schema\\".\\"my-tg-fn\\" ( )"
 `;
 
@@ -107,6 +107,6 @@ exports[`create_trigger_with_fields and names wo quotes 1`] = `
 "CREATE TRIGGER mytrigger 
  BEFORE INSERT OR UPDATE ON myschema.mytable 
  FOR EACH ROW 
- WHEN ((OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name)) 
+ WHEN (OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name) 
  EXECUTE PROCEDURE mytgfnschema.mytgfn ( )"
 `;

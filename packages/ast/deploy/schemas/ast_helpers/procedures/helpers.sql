@@ -3,6 +3,7 @@
 -- requires: schemas/ast_helpers/schema
 -- requires: schemas/ast/procedures/types 
 
+
 BEGIN;
 
 
@@ -332,31 +333,62 @@ LANGUAGE 'plpgsql'
 IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.create_policy (
-  name text,
-  vschema text,
-  vtable text,
-  vrole text,
-  qual jsonb,
-  cmd text,
-  with_check jsonb,
-  permissive boolean
+  v_policy_name text default null,
+  v_schema_name text default null,
+  v_table_name text default null,
+  v_roles text[] default null,
+  v_qual jsonb default null,
+  v_cmd_name text default null,
+  v_with_check jsonb default null,
+  v_permissive boolean default null
 
 )
-    RETURNS jsonb
+RETURNS jsonb
     AS $$
 DECLARE
   ast jsonb;
+  roles jsonb[];
+  i int;
 BEGIN
+
+  IF (v_permissive IS NULL) THEN 
+    -- Policies default to permissive
+    v_permissive = TRUE;
+  END IF;
+
+  -- if there are no roles then use PUBLIC
+  IF (v_roles IS NULL OR cardinality(v_roles) = 0) THEN 
+      roles = array_append(roles, ast.role_spec(
+        v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_PUBLIC'
+        )
+      ));
+  ELSE
+    FOR i IN 
+    SELECT * FROM generate_series(1, cardinality(v_roles))
+    LOOP
+      roles = array_append(roles, ast.role_spec(
+        v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_CSTRING'
+        ),
+        v_rolename:=v_roles[i]
+      ));
+    END LOOP;
+  END IF;
+
   select * FROM ast.create_policy_stmt(
-    v_policy_name := name,
-    v_table := ast.range_var(v_schemaname := vschema, v_relname := vtable, v_inh := true, v_relpersistence := 'p'),
-    v_roles := to_jsonb(ARRAY[
-        ast.role_spec(v_roletype:=0, v_rolename:=vrole)
-    ]),
-    v_qual := qual,
-    v_cmd_name := cmd,
-    v_with_check := with_check,
-    v_permissive := permissive
+    v_policy_name := v_policy_name,
+    v_table := ast.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name,
+      v_inh := true,
+      v_relpersistence := 'p'
+    ),
+    v_roles := to_jsonb(roles),
+    v_qual := v_qual,
+    v_cmd_name := v_cmd_name,
+    v_with_check := v_with_check,
+    v_permissive := v_permissive
   ) INTO ast;
   RETURN ast;
 END;
@@ -401,44 +433,6 @@ CREATE FUNCTION ast_helpers.drop_table (
       ]]),
       v_removeType := ast_constants.object_type('OBJECT_TABLE'),
       v_behavior:= (CASE when v_cascade IS TRUE then 1 else 0 END)
-    ),
-    v_stmt_len := 1
-  );
-$$
-LANGUAGE 'sql'
-IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.verify_table (
-  v_schema_name text,
-  v_table_name text
-)
-    RETURNS jsonb
-    AS $$
-  select ast.raw_stmt(
-    v_stmt := ast.select_stmt(
-      v_targetList := to_jsonb(ARRAY[
-        ast.res_target(
-          v_val := ast.a_const(
-            v_val := ast.integer(
-              v_ival := 1
-            )
-          )
-        )
-      ]),
-      v_fromClause := to_jsonb(ARRAY[
-        ast.range_var(
-          v_schemaname:= v_schema_name,
-          v_relname:= v_table_name,
-          v_inh := TRUE,
-          v_relpersistence := 'p'
-        )]
-      ),
-      v_limitCount := ast.a_const(
-        v_val := ast.integer(
-          v_ival := 1
-        )
-      ),
-      v_op := 0
     ),
     v_stmt_len := 1
   );
@@ -516,5 +510,6 @@ AS $$
 $$
 LANGUAGE 'sql'
 IMMUTABLE;
+
 
 COMMIT;

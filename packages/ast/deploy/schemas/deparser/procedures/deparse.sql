@@ -1497,6 +1497,7 @@ CREATE FUNCTION deparser.create_policy_stmt(
 ) returns text as $$
 DECLARE
   output text[];
+  permissive bool;
 BEGIN
     IF (node->'CreatePolicyStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreatePolicyStmt';
@@ -1519,6 +1520,17 @@ BEGIN
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'table'));
     END IF;
+
+
+    -- permissive is always on there and true, so if not, it's restrictive
+    permissive = (node->'permissive' IS NOT NULL AND (node->'permissive')::bool IS TRUE);
+
+    -- permissive is default so don't need to print it
+    IF (permissive IS FALSE) THEN
+      output = array_append(output, 'AS');
+      output = array_append(output, 'RESTRICTIVE');
+    END IF;
+
     IF (node->'cmd_name') IS NOT NULL THEN
       output = array_append(output, 'FOR');
       output = array_append(output, upper(node->>'cmd_name'));

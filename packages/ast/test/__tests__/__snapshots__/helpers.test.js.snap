@@ -324,7 +324,7 @@ p.playername) AS t2 ON (((t1.player_teams) = (t2.player_teams)) AND ((t1.t1id) <
 
 exports[`kitchen sink fixtures query-002.sql 1`] = `"SELECT * FROM \\"Foo\\" AS f1 WHERE f1.\\"FooUID\\" = (SELECT f2.\\"FooUID\\" FROM \\"Foo\\" AS f2 LEFT OUTER JOIN \\"Bar\\" AS b ON f2.\\"BarUID\\" = b.\\"BarUID\\" WHERE f2.\\"BarUID\\" IS NOT NULL AND b.\\"BarUID\\" IS NULL LIMIT 1)"`;
 
-exports[`kitchen sink fixtures query-002.sql 2`] = `"SELECT * FROM \\"Foo\\" AS f1 WHERE ((f1.\\"FooUID\\") = ((SELECT f2.\\"FooUID\\" FROM \\"Foo\\" AS f2 LEFT OUTER JOIN \\"Bar\\" AS b ON ((f2.\\"BarUID\\") = (b.\\"BarUID\\")) WHERE (f2.\\"BarUID\\" IS NOT NULL AND b.\\"BarUID\\" IS NULL) LIMIT 1)));"`;
+exports[`kitchen sink fixtures query-002.sql 2`] = `"SELECT * FROM \\"Foo\\" AS f1 WHERE ((f1.\\"FooUID\\") = ((SELECT f2.\\"FooUID\\" FROM \\"Foo\\" AS f2 LEFT OUTER JOIN \\"Bar\\" AS b ON ((f2.\\"BarUID\\") = (b.\\"BarUID\\")) WHERE (f2.\\"BarUID\\" IS NOT NULL AND b.\\"BarUID\\" IS NULL) LIMIT 1)))"`;
 
 exports[`kitchen sink fixtures query-003.sql 1`] = `"SELECT ((SELECT ROW(1, 1, 1, 1)::test)::test).*;"`;
 
@@ -13525,7 +13525,9 @@ CREATE POLICY select_user ON users.\\"user\\" FOR SELECT TO PUBLIC USING ( 't'::
 CREATE POLICY delete_own ON myschema.mytable FOR DELETE TO PUBLIC USING ( group_id = ANY( otherschema.my_policy_fn() ) );
 CREATE POLICY insert_own ON myschema.mytable FOR ALL TO PUBLIC WITH CHECK ( group_id = ANY( otherschema.my_policy_fn() ) );
 CREATE POLICY select_any ON myschema.mytable FOR SELECT TO PUBLIC USING ( 't'::boolean );
-CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY( otherschema.my_policy_fn() ) );"
+CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY( otherschema.my_policy_fn() ) );
+CREATE POLICY delete_pol_permissive ON users.\\"user\\" FOR DELETE TO PUBLIC WITH CHECK ( id = current_setting('user.id')::uuid );
+CREATE POLICY delete_pol_restrictive ON users.\\"user\\" AS RESTRICTIVE FOR DELETE TO PUBLIC WITH CHECK ( id = current_setting('user.id')::uuid );"
 `;
 
 exports[`kitchen sink policies 2`] = `
@@ -13537,7 +13539,9 @@ CREATE POLICY select_user ON users.\\"user\\" FOR SELECT TO PUBLIC USING ( (TRUE
 CREATE POLICY delete_own ON myschema.mytable FOR DELETE TO PUBLIC USING ( group_id = ANY (otherschema.my_policy_fn()) );
 CREATE POLICY insert_own ON myschema.mytable FOR ALL TO PUBLIC WITH CHECK ( group_id = ANY (otherschema.my_policy_fn()) );
 CREATE POLICY select_any ON myschema.mytable FOR SELECT TO PUBLIC USING ( (TRUE) );
-CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY (otherschema.my_policy_fn()) );"
+CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY (otherschema.my_policy_fn()) );
+CREATE POLICY delete_pol_permissive ON users.\\"user\\" FOR DELETE TO PUBLIC WITH CHECK ( ((id) = (current_setting('user.id')::uuid)) );
+CREATE POLICY delete_pol_restrictive ON users.\\"user\\" AS RESTRICTIVE FOR DELETE TO PUBLIC WITH CHECK ( ((id) = (current_setting('user.id')::uuid)) );"
 `;
 
 exports[`kitchen sink roles create 1`] = `
@@ -13781,7 +13785,7 @@ exports[`kitchen sink tables defaults 2`] = `
 id serial PRIMARY KEY,
 name text NOT NULL,
 effective tstzrange DEFAULT ( '[-infinity,infinity]' )
-);"
+)"
 `;
 
 exports[`kitchen sink tables exclude 1`] = `
@@ -13806,8 +13810,8 @@ CREATE TABLE customer_product_categories (
 id serial PRIMARY KEY,
 name text NOT NULL,
 effective tstzrange DEFAULT ( '[-infinity,infinity]' ),
-EXCLUDE USING gist ( lower(name) WITH = , effective WITH && )
-);"
+EXCLUDE USING gist ( lower(name) WITH =, effective WITH && )
+)"
 `;
 
 exports[`kitchen sink tables foreign 1`] = `
@@ -14308,7 +14312,7 @@ UPDATE shoelace_data SET sl_name = new.sl_name,sl_avail = new.sl_avail,sl_color 
 UPDATE something SET a = 1 RETURNING a;
 UPDATE something SET a = 1 RETURNING a AS b,c;
 UPDATE something SET a = 1 FROM b;
-UPDATE something SET a = 1,b = 'b' FROM c INNER JOIN d ON ((x) = (d.y)),(SELECT * FROM e) AS f WHERE (((something.x) = (d.x)) AND ((LEAST(something.y, 0)) = (((f.z) + (1)))));
+UPDATE something SET a = 1,b = 'b' FROM c INNER JOIN d ON ((x) = (d.y)), (SELECT * FROM e) AS f WHERE (((something.x) = (d.x)) AND ((LEAST(something.y, 0)) = (((f.z) + (1)))));
 UPDATE something SET a = 1 RETURNING b AS \\"b#1\\";
 UPDATE something SET a = 1 FROM b WHERE c RETURNING *;
 UPDATE foo SET f2 = lower(f2),f3 = DEFAULT RETURNING foo.*,((f1) + (f3)) AS sum13;"

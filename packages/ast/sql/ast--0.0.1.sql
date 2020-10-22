@@ -2232,20 +2232,51 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_policy ( name text, vschema text, vtable text, vrole text, qual jsonb, cmd text, with_check jsonb, permissive boolean ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.create_policy ( v_policy_name text DEFAULT NULL, v_schema_name text DEFAULT NULL, v_table_name text DEFAULT NULL, v_roles text[] DEFAULT NULL, v_qual jsonb DEFAULT NULL, v_cmd_name text DEFAULT NULL, v_with_check jsonb DEFAULT NULL, v_permissive boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast jsonb;
+  roles jsonb[];
+  i int;
 BEGIN
+
+  IF (v_permissive IS NULL) THEN 
+    -- Policies default to permissive
+    v_permissive = TRUE;
+  END IF;
+
+  -- if there are no roles then use PUBLIC
+  IF (v_roles IS NULL OR cardinality(v_roles) = 0) THEN 
+      roles = array_append(roles, ast.role_spec(
+        v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_PUBLIC'
+        )
+      ));
+  ELSE
+    FOR i IN 
+    SELECT * FROM generate_series(1, cardinality(v_roles))
+    LOOP
+      roles = array_append(roles, ast.role_spec(
+        v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_CSTRING'
+        ),
+        v_rolename:=v_roles[i]
+      ));
+    END LOOP;
+  END IF;
+
   select * FROM ast.create_policy_stmt(
-    v_policy_name := name,
-    v_table := ast.range_var(v_schemaname := vschema, v_relname := vtable, v_inh := true, v_relpersistence := 'p'),
-    v_roles := to_jsonb(ARRAY[
-        ast.role_spec(v_roletype:=0, v_rolename:=vrole)
-    ]),
-    v_qual := qual,
-    v_cmd_name := cmd,
-    v_with_check := with_check,
-    v_permissive := permissive
+    v_policy_name := v_policy_name,
+    v_table := ast.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name,
+      v_inh := true,
+      v_relpersistence := 'p'
+    ),
+    v_roles := to_jsonb(roles),
+    v_qual := v_qual,
+    v_cmd_name := v_cmd_name,
+    v_with_check := v_with_check,
+    v_permissive := v_permissive
   ) INTO ast;
   RETURN ast;
 END;
@@ -2275,37 +2306,6 @@ CREATE FUNCTION ast_helpers.drop_table ( v_schema_name text, v_table_name text, 
       ]]),
       v_removeType := ast_constants.object_type('OBJECT_TABLE'),
       v_behavior:= (CASE when v_cascade IS TRUE then 1 else 0 END)
-    ),
-    v_stmt_len := 1
-  );
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.verify_table ( v_schema_name text, v_table_name text ) RETURNS jsonb AS $EOFCODE$
-  select ast.raw_stmt(
-    v_stmt := ast.select_stmt(
-      v_targetList := to_jsonb(ARRAY[
-        ast.res_target(
-          v_val := ast.a_const(
-            v_val := ast.integer(
-              v_ival := 1
-            )
-          )
-        )
-      ]),
-      v_fromClause := to_jsonb(ARRAY[
-        ast.range_var(
-          v_schemaname:= v_schema_name,
-          v_relname:= v_table_name,
-          v_inh := TRUE,
-          v_relpersistence := 'p'
-        )]
-      ),
-      v_limitCount := ast.a_const(
-        v_val := ast.integer(
-          v_ival := 1
-        )
-      ),
-      v_op := 0
     ),
     v_stmt_len := 1
   );
@@ -2362,6 +2362,149 @@ CREATE FUNCTION ast_helpers.drop_index ( v_schema_name text, v_index_name text )
       v_behavior:= 0
     ),
     v_stmt_len := 1
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify ( VARIADIC  text[] ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  i int;
+  fnname text;
+  arguments jsonb[];
+  ast jsonb;
+BEGIN
+ 
+  FOR i IN 
+  SELECT * FROM generate_series(1, cardinality($1))
+  LOOP 
+    IF (i = 1) THEN
+        fnname = $1[i];
+    ELSE
+        arguments = array_append(arguments,
+                  ast.a_const(
+                    v_val := ast.string(
+                      $1[i]
+                    )
+                  )
+                );
+    END IF;
+
+  END LOOP;
+
+  select ast.raw_stmt(
+    v_stmt := ast.select_stmt(
+      v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+          v_val := ast.func_call(
+            v_funcname := to_jsonb(ARRAY[
+              ast.string(fnname)
+            ]),
+            v_args := to_jsonb(arguments)
+          )
+        )
+      ]),
+      v_op := 0
+    ),
+    v_stmt_len := 1
+  ) INTO ast;
+
+  RETURN ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_schema ( v_schema_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_schema',
+    v_schema_name
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_table ( v_schema_name text, v_table_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_table',
+    v_schema_name || '.' || v_table_name
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_index ( v_schema_name text, v_table_name text, v_index_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_index',
+    v_schema_name || '.' || v_table_name,
+    v_index_name
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_policy ( v_policy_name text, v_schema_name text, v_table_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_policy',
+    v_policy_name,
+    v_schema_name || '.' || v_table_name
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_security ( v_schema_name text, v_table_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_security',
+    v_schema_name || '.' || v_table_name
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_table_grant ( v_schema_name text, v_table_name text, v_privilege text, v_role text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_table_grant',
+    v_schema_name || '.' || v_table_name,
+    v_privilege,
+    v_role
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_function ( v_schema_name text, v_funcname text, v_role text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  select (CASE
+   WHEN v_role IS NULL THEN
+    ast_helpers.verify(
+      'verify_function',
+      v_schema_name || '.' || v_funcname
+    )
+   ELSE 
+    ast_helpers.verify(
+      'verify_function',
+      v_schema_name || '.' || v_funcname,
+      v_role
+    )
+  END);
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_trigger ( v_schema_name text, v_trigger_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_trigger',
+    v_schema_name || '.' || v_trigger_name
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_type ( v_schema_name text, v_type_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_type',
+    v_schema_name || '.' || v_type_name
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_domain ( v_schema_name text, v_type_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_domain',
+    v_schema_name || '.' || v_type_name
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_extension ( v_extname text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_extension',
+    v_extname
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.verify_view ( v_schema_name text, v_view_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_view',
+    v_schema_name || '.' || v_view_name
   );
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
@@ -3772,6 +3915,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.create_policy_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
+  permissive bool;
 BEGIN
     IF (node->'CreatePolicyStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreatePolicyStmt';
@@ -3794,6 +3938,17 @@ BEGIN
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'table'));
     END IF;
+
+
+    -- permissive is always on there and true, so if not, it's restrictive
+    permissive = (node->'permissive' IS NOT NULL AND (node->'permissive')::bool IS TRUE);
+
+    -- permissive is default so don't need to print it
+    IF (permissive IS FALSE) THEN
+      output = array_append(output, 'AS');
+      output = array_append(output, 'RESTRICTIVE');
+    END IF;
+
     IF (node->'cmd_name') IS NOT NULL THEN
       output = array_append(output, 'FOR');
       output = array_append(output, upper(node->>'cmd_name'));

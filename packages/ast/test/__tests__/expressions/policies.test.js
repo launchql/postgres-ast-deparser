@@ -30,11 +30,11 @@ it('deparse', async () => {
 it('policy deparse', async () => {
   const result = await db.any(`
 SELECT deparser.deparse(ast_helpers.create_policy(
-  'mypolicy',
-  'schemanamed',
-  'mytable',
-  'authenticated',
-  ast.bool_expr(1, to_jsonb(ARRAY[
+  v_policy_name := 'mypolicy',
+  v_schema_name := 'schemanamed',
+  v_table_name := 'mytable',
+  v_roles := '{authenticated}'::text[],
+  v_qual := ast.bool_expr(1, to_jsonb(ARRAY[
     ast.a_expr(v_kind := 0,
       v_lexpr := ast.column_ref(
         v_fields := to_jsonb(ARRAY[ ast.string('responder_id') ])
@@ -56,9 +56,9 @@ SELECT deparser.deparse(ast_helpers.create_policy(
       )  
     )
   ])),
-  'INSERT',
-  NULL,
-  true
+  v_cmd_name := 'INSERT',
+  v_with_check := NULL,
+  v_permissive := true
 ))`);
   expect(result).toMatchSnapshot();
 });
