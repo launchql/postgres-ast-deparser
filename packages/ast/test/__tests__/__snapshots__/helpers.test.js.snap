@@ -552,7 +552,10 @@ GRANT EXECUTE ON FUNCTION auth.authenticate TO anonymous;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token TO administrator;
 REVOKE USAGE ON SCHEMA users FROM administrator;
 REVOKE EXECUTE ON FUNCTION auth.authenticate FROM anonymous;
-REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;"
+REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;
+GRANT SELECT, INSERT ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;"
 `;
 
 exports[`kitchen sink grants 2`] = `
@@ -561,7 +564,10 @@ GRANT EXECUTE ON FUNCTION auth.authenticate TO anonymous;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token TO administrator;
 REVOKE USAGE ON SCHEMA users FROM administrator;
 REVOKE EXECUTE ON FUNCTION auth.authenticate FROM anonymous;
-REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;"
+REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;
+GRANT SELECT, INSERT ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;"
 `;
 
 exports[`kitchen sink indexes 1`] = `

@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`insert policy (with_check) 1`] = `"CREATE POLICY mypolicy ON myschema.mytable FOR INSERT TO app_user, auth_user WITH CHECK ( roles_public.current_role_id() = role_id OR permissions_private.permitted_on_role(group_id) );"`;
+
+exports[`select policy (using) 1`] = `"CREATE POLICY mypolicy ON myschema.mytable AS RESTRICTIVE FOR SELECT TO app_user, auth_user USING ( roles_public.current_role_id() = role_id OR permissions_private.permitted_on_role(group_id) );"`;

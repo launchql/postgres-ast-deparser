@@ -3344,7 +3344,7 @@ BEGIN
 
     IF (node->'cols') IS NOT NULL THEN
       output = array_append(output, '(');
-      output = array_append(output, deparser.list(node->'cols', context));
+      output = array_append(output, deparser.list(node->'cols', ', ', context));
       output = array_append(output, ')');
     END IF;
 
@@ -4567,7 +4567,7 @@ BEGIN
             ));
           END IF;
         ELSE
-          RAISE EXCEPTION 'why no array %', obj;
+          RAISE EXCEPTION 'BAD_EXPRESSION %', 'DropStmt (POLICY)';
         END IF;
       ELSE
         IF (jsonb_typeof(obj) = 'array') THEN

@@ -71,7 +71,7 @@ it('select policy (using)', async () => {
             )
          );`
   );
-  console.log(result);
+  expect(result).toMatchSnapshot();
 });
 
 it('insert policy (with_check)', async () => {
@@ -125,5 +125,5 @@ it('insert policy (with_check)', async () => {
             )
          );`
   );
-  console.log(result);
+  expect(result).toMatchSnapshot();
 });
