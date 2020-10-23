@@ -1985,6 +1985,132 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.equals ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.any ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 1,
+      v_name := to_jsonb(ARRAY[
+          ast.string('=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.and ( VARIADIC nodes jsonb[] ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.bool_expr(
+      v_boolop := 0,
+      v_args := to_jsonb($1)
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.or ( VARIADIC nodes jsonb[] ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.bool_expr(
+      v_boolop := 1,
+      v_args := to_jsonb($1)
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.array_of_strings ( names text[] ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  nodes jsonb[];
+  i int;
+BEGIN
+  FOR i IN
+  SELECT * FROM generate_series(1, cardinality(names))
+  LOOP 
+    nodes = array_append(nodes, ast.string(names[i]));
+  END LOOP;
+
+  RETURN to_jsonb(nodes);
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.range_var ( v_schemaname text, v_relname text, v_alias jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.range_var(
+      v_schemaname := v_schemaname,
+      v_relname := v_relname,
+      v_inh := true,
+      v_relpersistence := 'p',
+      v_alias := v_alias
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.col ( name text ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.column_ref(
+    v_fields := to_jsonb(ARRAY[
+      ast.string(name)
+    ])
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.col ( VARIADIC  text[] ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+  flds jsonb[];
+  i int;
+BEGIN
+  ast_expr = ast.column_ref(
+    v_fields := ast_helpers.array_of_strings($1)
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.rls_fn ( v_rls_schema text, v_fn_name text ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.func_call(
+      v_funcname := to_jsonb(ARRAY[
+          ast.string(v_rls_schema),
+          ast.string(v_fn_name)
+      ])
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.coalesce ( field text, value text DEFAULT '' ) RETURNS jsonb AS $EOFCODE$
 DECLARE
     result jsonb = ast.coalesce_expr(
@@ -2443,53 +2569,64 @@ BEGIN
   -- Function(id), Field(id)
   -- SELECT db_migrate.text('policy_expression_current_role', 
 
-  policy_ast = ast.a_expr(
-      v_kind := 0,
-      v_name := to_jsonb(ARRAY[
-          ast.string('=')
-      ]),
-      v_lexpr := ast.column_ref(
-          v_fields := to_jsonb(ARRAY[
-              ast.string(policy_template_vars->>'role_key')
-          ])
-      ),
-      v_rexpr := ast.func_call(
-          v_funcname := to_jsonb(ARRAY[
-              ast.string(rls_schema),
-              ast.string(role_fn)
-          ])
-      )
+  policy_ast = ast_helpers.equals(
+      v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
+      v_rexpr := ast_helpers.rls_fn(rls_schema, role_fn)
   );
 
   RETURN policy_ast;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_owned_records ( rls_schema text, groups_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_owned_records ( rls_schema text, role_fn text, groups_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
   -- Function(id), Field(id)
 
+  -- TODO get both role_fn and groups_fn!!!!
+
   -- SELECT db_migrate.text('policy_expression_current_roles', 
-  -- TODO add OR own_records here... 99% sureit won't harm. currently this only asks if you are in the group,
-  policy_ast = ast.a_expr(
-      v_kind := 1,
-      v_name := to_jsonb(ARRAY[
-          ast.string('=')
-      ]),
-      v_lexpr := ast.column_ref(
-          v_fields := to_jsonb(ARRAY[
-              ast.string(policy_template_vars->>'role_key')
-          ])
-      ),
-      v_rexpr := ast.func_call(
-          v_funcname := to_jsonb(ARRAY[
-              ast.string(rls_schema),
-              ast.string(groups_fn)
-          ])
-      )
+  policy_ast = ast_helpers.or(
+    ast_helpers.equals(
+      v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
+      v_rexpr := ast_helpers.rls_fn(rls_schema, role_fn)
+    ),
+    ast_helpers.any(
+      v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
+      v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+    )
   );
+
+  -- policy_ast = ast_helpers.any(
+  --   v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
+  --   v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+  -- );
+
+  RETURN policy_ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.cpt_multi_owners ( rls_schema text, role_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  policy_ast jsonb;
+  key_asts jsonb[];
+  item jsonb;
+BEGIN
+
+  FOR item IN
+    SELECT * FROM jsonb_array_elements(policy_template_vars->'role_keys')
+    LOOP 
+    key_asts = array_append(key_asts, ast_helpers.equals(
+      -- NOTE if you have a string JSON element, item::text will keep " around it
+      -- this just gets the root path unescaped.... a nice hack
+      -- https://dba.stackexchange.com/questions/207984/unquoting-json-strings-print-json-strings-without-quotes
+      v_lexpr := ast_helpers.col(item#>>'{}'),
+      v_rexpr := ast_helpers.rls_fn(rls_schema, role_fn)
+    ));
+  END LOOP;
+
+  policy_ast = ast_helpers.or( variadic nodes := key_asts );
 
   RETURN policy_ast;
 END;
@@ -2503,48 +2640,23 @@ BEGIN
       v_op := 0,
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
-              v_val := ast.a_expr(
-                  v_kind := 1,
-                  v_name := to_jsonb(ARRAY[
-                      ast.string('=')
-                  ]),
-                  v_lexpr := ast.column_ref(
-                      v_fields := to_jsonb(ARRAY[
-                          ast.string('p'),
-                          ast.string(policy_template_vars->>'permission_role_key')
-                      ])
-                  ),
-                  v_rexpr := ast.func_call(
-                      v_funcname := to_jsonb(ARRAY[
-                          ast.string(rls_schema),
-                          ast.string(groups_fn)
-                      ])
-                  )
+              v_val := ast_helpers.any(
+                  v_lexpr := ast_helpers.col('p', policy_template_vars->>'permission_role_key'),
+                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
               )
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
-          ast.range_var(
+          ast_helpers.range_var(
               v_schemaname := policy_template_vars->>'permission_schema',
               v_relname := policy_template_vars->>'permission_table',
-              v_inh := true,
-              v_relpersistence := 'p',
               v_alias := ast.alias(
                   v_aliasname := 'p'
               )
           )
       ]),
-      v_whereClause := ast.a_expr(
-          v_kind := 0,
-          v_name := to_jsonb(ARRAY[
-              ast.string('=')
-          ]),
-          v_lexpr := ast.column_ref(
-              v_fields := to_jsonb(ARRAY[
-                  ast.string('p'),
-                  ast.string(policy_template_vars->>'permission_name_key')
-              ])
-          ),
+      v_whereClause := ast_helpers.equals(
+          v_lexpr := ast_helpers.col('p', policy_template_vars->>'permission_name_key'),
           v_rexpr := ast.a_const(
               v_val := ast.string(policy_template_vars->>'this_value')
           )
@@ -2566,53 +2678,24 @@ BEGIN
       v_op := 0,
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
-              v_val := ast.a_expr(
-                  v_kind := 1,
-                  v_name := to_jsonb(ARRAY[
-                      ast.string('=')
-                  ]),
-                  v_lexpr := ast.column_ref(
-                      v_fields := to_jsonb(ARRAY[
-                          ast.string('p'),
-                          ast.string(policy_template_vars->>'owned_table_key')
-                      ])
-                  ),
-                  v_rexpr := ast.func_call(
-                      v_funcname := to_jsonb(ARRAY[
-                          ast.string(rls_schema),
-                          ast.string(groups_fn)
-                      ])
-                  )
+              v_val := ast_helpers.any(
+                  v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key'),
+                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
               )
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
-          ast.range_var(
+          ast_helpers.range_var(
               v_schemaname := policy_template_vars->>'owned_schema',
               v_relname := policy_template_vars->>'owned_table',
-              v_inh := true,
-              v_relpersistence := 'p',
               v_alias := ast.alias(
                   v_aliasname := 'p'
               )
           )
       ]),
-      v_whereClause := ast.a_expr(
-          v_kind := 0,
-          v_name := to_jsonb(ARRAY[
-              ast.string('=')
-          ]),
-          v_lexpr := ast.column_ref(
-              v_fields := to_jsonb(ARRAY[
-                  ast.string('p'),
-                  ast.string(policy_template_vars->>'owned_table_ref_key')
-              ])
-          ),
-          v_rexpr := ast.column_ref(
-              v_fields := to_jsonb(ARRAY[
-                  ast.string(policy_template_vars->>'this_object_key')
-              ])
-          )
+      v_whereClause := ast_helpers.equals(
+          v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
+          v_rexpr := ast_helpers.col(policy_template_vars->>'this_object_key')
       )
   );
 
@@ -2632,83 +2715,38 @@ BEGIN
       v_op := 0,
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
-              v_val := ast.a_expr(
-                  v_kind := 1,
-                  v_name := to_jsonb(ARRAY[
-                      ast.string('=')
-                  ]),
-                  v_lexpr := ast.column_ref(
-                      v_fields := to_jsonb(ARRAY[
-                          ast.string('p'),
-                          ast.string(policy_template_vars->>'owned_table_key')
-                      ])
-                  ),
-                  v_rexpr := ast.func_call(
-                      v_funcname := to_jsonb(ARRAY[
-                          ast.string(rls_schema),
-                          ast.string(groups_fn)
-                      ])
-                  )
+              v_val := ast_helpers.any(
+                  v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key'),
+                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
               )
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
           ast.join_expr(
               v_jointype := 0,
-              v_larg := ast.range_var(
+              v_larg := ast_helpers.range_var(
                   v_schemaname := policy_template_vars->>'object_schema',
                   v_relname := policy_template_vars->>'object_table',
-                  v_inh := true,
-                  v_relpersistence := 'p',
                   v_alias := ast.alias(
                       v_aliasname := 'c'
                   )
               ),
-              v_rarg := ast.range_var(
+              v_rarg := ast_helpers.range_var(
                   v_schemaname := policy_template_vars->>'owned_schema',
                   v_relname := policy_template_vars->>'owned_table',
-                  v_inh := true,
-                  v_relpersistence := 'p',
                   v_alias := ast.alias(
                       v_aliasname := 'p'
                   )
               ),
-              v_quals := ast.a_expr(
-                  v_kind := 0,
-                  v_name := to_jsonb(ARRAY[
-                      ast.string('=')
-                  ]),
-                  v_lexpr := ast.column_ref(
-                      v_fields := to_jsonb(ARRAY[
-                          ast.string('p'),
-                          ast.string(policy_template_vars->>'owned_table_ref_key')
-                      ])
-                  ),
-                  v_rexpr := ast.column_ref(
-                      v_fields := to_jsonb(ARRAY[
-                          ast.string('c'),
-                          ast.string(policy_template_vars->>'object_table_owned_key')
-                      ])
-                  )
+              v_quals := ast_helpers.equals(
+                  v_lexpr := ast_helpers.col('p',policy_template_vars->>'owned_table_ref_key'),
+                  v_rexpr := ast_helpers.col('c',policy_template_vars->>'object_table_owned_key')
               )
           )
       ]),
-      v_whereClause := ast.a_expr(
-          v_kind := 0,
-          v_name := to_jsonb(ARRAY[
-              ast.string('=')
-          ]),
-          v_lexpr := ast.column_ref(
-              v_fields := to_jsonb(ARRAY[
-                  ast.string('c'),
-                  ast.string(policy_template_vars->>'object_table_ref_key')
-              ])
-          ),
-          v_rexpr := ast.column_ref(
-              v_fields := to_jsonb(ARRAY[
-                  ast.string(policy_template_vars->>'this_object_key')
-              ])
-          )
+      v_whereClause := ast_helpers.equals(
+          v_lexpr := ast_helpers.col('c',policy_template_vars->>'object_table_ref_key'),
+          v_rexpr := ast_helpers.col(policy_template_vars->>'this_object_key')
       )
   );
 
@@ -2737,22 +2775,9 @@ BEGIN
     v_boolop := 0,
     v_args := to_jsonb(ARRAY[
         policy_ast->'SelectStmt'->'fromClause'->0->'JoinExpr'->'quals',
-        ast.a_expr(
-            v_kind := 0,
-            v_name := to_jsonb(ARRAY[
-                ast.string('=')
-            ]),
-            v_lexpr := ast.column_ref(
-                v_fields := to_jsonb(ARRAY[
-                    ast.string('p'),
-                    ast.string(policy_template_vars->>'owned_table_ref_key')
-                ])
-            ),
-            v_rexpr := ast.column_ref(
-                v_fields := to_jsonb(ARRAY[
-                    ast.string(policy_template_vars->>'this_owned_key')
-                ])
-            )
+        ast_helpers.equals(
+            v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
+            v_rexpr := ast_helpers.col(policy_template_vars->>'this_owned_key')
         )
     ])
   ));
@@ -2779,7 +2804,14 @@ BEGIN
   ELSEIF (policy_template_name = 'owned_records') THEN
       policy_ast = ast_helpers.cpt_owned_records(
           rls_schema,
+          role_fn,
           groups_fn,
+          policy_template_vars
+      );
+  ELSEIF (policy_template_name = 'multi_owners') THEN
+      policy_ast = ast_helpers.cpt_multi_owners(
+          rls_schema,
+          role_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'permission_name') THEN

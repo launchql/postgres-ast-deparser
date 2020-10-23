@@ -94,6 +94,13 @@ it('owned_records', async () => {
   expect(result).toMatchSnapshot();
 });
 
+it('multi_owners', async () => {
+  const result = await getPolicyResult('multi_owners', {
+    role_keys: ['requester_id', 'responder_id', 'verifier_id']
+  });
+  expect(result).toMatchSnapshot();
+});
+
 it('permission_name', async () => {
   const result = await getPolicyResult('permission_name', {
     permission_role_key: 'permission_role_key',

@@ -6,6 +6,192 @@
 
 BEGIN;
 
+CREATE FUNCTION ast_helpers.equals (
+  v_lexpr jsonb,
+  v_rexpr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.any (
+  v_lexpr jsonb,
+  v_rexpr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 1,
+      v_name := to_jsonb(ARRAY[
+          ast.string('=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.and (
+  variadic nodes jsonb[]
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.bool_expr(
+      v_boolop := 0,
+      v_args := to_jsonb($1)
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.or (
+  variadic nodes jsonb[]
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.bool_expr(
+      v_boolop := 1,
+      v_args := to_jsonb($1)
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.array_of_strings (
+  names text[]
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  nodes jsonb[];
+  i int;
+BEGIN
+  FOR i IN
+  SELECT * FROM generate_series(1, cardinality(names))
+  LOOP 
+    nodes = array_append(nodes, ast.string(names[i]));
+  END LOOP;
+
+  RETURN to_jsonb(nodes);
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.range_var (
+  v_schemaname text,
+  v_relname text,
+  v_alias jsonb default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.range_var(
+      v_schemaname := v_schemaname,
+      v_relname := v_relname,
+      v_inh := true,
+      v_relpersistence := 'p',
+      v_alias := v_alias
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.col (
+  name text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.column_ref(
+    v_fields := to_jsonb(ARRAY[
+      ast.string(name)
+    ])
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+
+CREATE FUNCTION ast_helpers.col (
+  variadic text[]
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+  flds jsonb[];
+  i int;
+BEGIN
+  ast_expr = ast.column_ref(
+    v_fields := ast_helpers.array_of_strings($1)
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+-- Helps so you NEVER use arguments when using RLS fns...
+CREATE FUNCTION ast_helpers.rls_fn (
+  v_rls_schema text,
+  v_fn_name text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.func_call(
+      v_funcname := to_jsonb(ARRAY[
+          ast.string(v_rls_schema),
+          ast.string(v_fn_name)
+      ])
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.coalesce (field text, value text default '')
     RETURNS jsonb

@@ -26,6 +26,14 @@ Array [
 ]
 `;
 
+exports[`multi_owners 1`] = `
+Array [
+  Object {
+    "deparse": "requester_id = rls_schema.role_fn() OR responder_id = rls_schema.role_fn() OR verifier_id = rls_schema.role_fn()",
+  },
+]
+`;
+
 exports[`open 1`] = `
 Array [
   Object {
@@ -53,7 +61,7 @@ Array [
 exports[`owned_records 1`] = `
 Array [
   Object {
-    "deparse": "role_key = ANY( rls_schema.group_fn() )",
+    "deparse": "role_key = rls_schema.role_fn() OR role_key = ANY( rls_schema.group_fn() )",
   },
 ]
 `;
