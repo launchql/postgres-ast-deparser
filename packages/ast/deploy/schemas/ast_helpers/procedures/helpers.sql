@@ -89,7 +89,7 @@ LANGUAGE 'plpgsql'
 IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.array_of_strings (
-  names text[]
+  variadic strs text[]
 )
     RETURNS jsonb
     AS $$
@@ -98,9 +98,9 @@ DECLARE
   i int;
 BEGIN
   FOR i IN
-  SELECT * FROM generate_series(1, cardinality(names))
+  SELECT * FROM generate_series(1, cardinality(strs))
   LOOP 
-    nodes = array_append(nodes, ast.string(names[i]));
+    nodes = array_append(nodes, ast.string(strs[i]));
   END LOOP;
 
   RETURN to_jsonb(nodes);
@@ -163,7 +163,7 @@ DECLARE
   i int;
 BEGIN
   ast_expr = ast.column_ref(
-    v_fields := ast_helpers.array_of_strings($1)
+    v_fields := ast_helpers.array_of_strings( variadic strs := $1 )
   );
   RETURN ast_expr;
 END;
@@ -453,8 +453,11 @@ BEGIN
 
   result = ast.create_trig_stmt(
     v_trigname := trigger_name,
-    v_relation := ast.range_var(schema_name, table_name, true, 'p'),
-    v_funcname := to_jsonb(ARRAY[ ast.string(trigger_fn_schema),ast.string(trigger_fn_name) ]),
+    v_relation := ast_helpers.range_var(
+      v_schemaname := schema_name,
+      v_relname := table_name
+    ),
+    v_funcname := ast_helpers.array_of_strings(trigger_fn_schema, trigger_fn_name),
     v_row := true,
     v_timing := timing,
     v_events := events,
@@ -489,7 +492,7 @@ BEGIN
     v_funcname := to_jsonb(ARRAY[ ast.string(schema),ast.string(name) ]),
     v_parameters := parameters,
     v_returnType := ast.type_name( 
-        v_names := to_jsonb(ARRAY[ast.string(type)])
+        v_names := ast_helpers.array_of_strings(type)
     ),
     v_options := to_jsonb(ARRAY[
       ast.def_elem(
@@ -564,11 +567,9 @@ BEGIN
 
   select * FROM ast.create_policy_stmt(
     v_policy_name := v_policy_name,
-    v_table := ast.range_var(
+    v_table := ast_helpers.range_var(
       v_schemaname := v_schema_name,
-      v_relname := v_table_name,
-      v_inh := true,
-      v_relpersistence := 'p'
+      v_relname := v_table_name
     ),
     v_roles := to_jsonb(roles),
     v_qual := v_qual,
@@ -687,11 +688,9 @@ BEGIN
   SELECT ast.raw_stmt(
     v_stmt := ast.index_stmt(
       v_idxname := v_index_name,
-      v_relation := ast.range_var(
+      v_relation := ast_helpers.range_var(
         v_schemaname := v_schema_name,
-        v_relname := v_table_name,
-        v_inh := true,
-        v_relpersistence := 'p'::text
+        v_relname := v_table_name
       ),
       v_accessMethod := v_accessMethod,
       v_indexParams := to_jsonb(parameters)
@@ -755,11 +754,9 @@ BEGIN
       v_targtype := 0, -- why?
       v_objtype := 1, --why?
       v_objects := to_jsonb(ARRAY[
-        ast.range_var(
+        ast_helpers.range_var(
           v_schemaname := v_schema_name,
-          v_relname := v_table_name,
-          v_inh := true,
-          v_relpersistence := 'p'
+          v_relname := v_table_name
         )
       ]),
       v_privileges := to_jsonb(ARRAY[
@@ -785,7 +782,5 @@ END;
 $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
-
-
 
 COMMIT;
