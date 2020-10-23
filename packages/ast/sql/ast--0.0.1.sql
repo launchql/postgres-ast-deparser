@@ -2284,80 +2284,123 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_trigger_with_fields ( trigger_name text, schema_name text, table_name text, trigger_fn_schema text, trigger_fn_name text, fields text[], timing int DEFAULT 2, events int DEFAULT ((4) | (16)) ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.create_trigger_distinct_fields ( v_trigger_name text, v_schema_name text, v_table_name text, v_trigger_fn_schema text, v_trigger_fn_name text, v_fields text[] DEFAULT ARRAY[]::text[], v_timing int DEFAULT 2, v_events int DEFAULT ((4) | (16)) ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   results jsonb[];
   result jsonb;
   whenClause jsonb;
-  r jsonb;
 	i int;
-  field text;
+
+  nodes jsonb[];
 BEGIN
 
-  FOR i IN SELECT * FROM generate_subscripts(fields, 1) g(i)
-    LOOP
-      field = fields[i];
-      IF (i = 1) THEN
-        whenClause = ast_helpers.a_expr_distinct_tg_field(field);
-      ELSE
-        whenClause = ast.bool_expr( 
-          v_boolop := 1, 
-          v_args := to_jsonb(ARRAY[ast_helpers.a_expr_distinct_tg_field(field), whenClause])
-        );
-      END IF;
-    END LOOP;
+  FOR i IN SELECT * FROM generate_subscripts(v_fields, 1) g(i)
+  LOOP
+    nodes = array_append(nodes, ast_helpers.a_expr_distinct_tg_field(v_fields[i]));
+  END LOOP;
+ 
+  IF (cardinality(nodes) > 1) THEN
+    whenClause = ast_helpers.or( variadic nodes := nodes );
+  ELSEIF (cardinality(nodes) = 1) THEN
+    whenClause = nodes[1];
+  END IF;
 
   result = ast.create_trig_stmt(
-    v_trigname := trigger_name,
+    v_trigname := v_trigger_name,
     v_relation := ast_helpers.range_var(
-      v_schemaname := schema_name,
-      v_relname := table_name
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
     ),
-    v_funcname := ast_helpers.array_of_strings(trigger_fn_schema, trigger_fn_name),
+    v_funcname := ast_helpers.array_of_strings(v_trigger_fn_schema, v_trigger_fn_name),
     v_row := true,
-    v_timing := timing,
-    v_events := events,
+    v_timing := v_timing,
+    v_events := v_events,
     v_whenClause := whenClause
   );
-
-
-	RETURN result;
+	RETURN ast.raw_stmt(
+    v_stmt := result,
+    v_stmt_len := 1
+  );
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_function ( schema text, name text, type text, parameters jsonb, body text, vol text, lan text, sec int ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.drop_trigger ( v_trigger_name text, v_schema_name text, v_table_name text, v_cascade boolean DEFAULT (FALSE) ) RETURNS jsonb AS $EOFCODE$
+  select ast.raw_stmt(
+    v_stmt := ast.drop_stmt(
+      v_objects := to_jsonb(ARRAY[ARRAY[
+        ast.string(v_schema_name),
+        ast.string(v_table_name),
+        ast.string(v_trigger_name)
+      ]]),
+      v_removeType := ast_constants.object_type('OBJECT_TRIGGER'),
+      v_behavior:= (CASE when v_cascade IS TRUE then 1 else 0 END)
+    ),
+    v_stmt_len := 1
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.create_function ( v_schema_name text, v_function_name text, v_type text, v_parameters jsonb, v_body text, v_language text, v_volatility text DEFAULT NULL, v_security int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast jsonb;
+  options jsonb[];
+BEGIN
+
+  options = array_append(options, ast.def_elem(
+    'as',
+    to_jsonb(ARRAY[ast.string(v_body)])
+  ));
+  
+  options = array_append(options, ast.def_elem(
+    'language',
+    ast.string(v_language)
+  ));
+
+  IF (v_volatility IS NOT NULL) THEN 
+    options = array_append(options, ast.def_elem(
+      'volatility',
+      ast.string(v_volatility)
+    ));
+  END IF;
+
+  IF (v_security IS NOT NULL) THEN 
+    options = array_append(options, ast.def_elem(
+      'security',
+      ast.integer(v_security)
+    ));
+  END IF;
+
+  select * FROM ast.create_function_stmt(
+    v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
+    v_parameters := v_parameters,
+    v_returnType := ast.type_name( 
+        v_names := ast_helpers.array_of_strings(v_type)
+    ),
+    v_options := to_jsonb(options)
+  ) INTO ast;
+
+  RETURN ast.raw_stmt(
+    v_stmt := ast,
+    v_stmt_len := 1
+  );
+
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.drop_function ( v_schema_name text DEFAULT NULL, v_function_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast jsonb;
 BEGIN
-
-  select * FROM ast.create_function_stmt(
-    v_funcname := to_jsonb(ARRAY[ ast.string(schema),ast.string(name) ]),
-    v_parameters := parameters,
-    v_returnType := ast.type_name( 
-        v_names := ast_helpers.array_of_strings(type)
+  ast = ast.raw_stmt(
+    v_stmt := ast.drop_stmt(
+      v_objects := to_jsonb(ARRAY[ARRAY[
+        ast.string(v_schema_name),
+        ast.string(v_function_name)
+      ]]),
+      v_removeType := ast_constants.object_type('OBJECT_FUNCTION')
     ),
-    v_options := to_jsonb(ARRAY[
-      ast.def_elem(
-        'as',
-        to_jsonb(ARRAY[ast.string(body)])
-      ),
-      ast.def_elem(
-        'volatility',
-        ast.string(vol)
-      ),
-      ast.def_elem(
-        'language',
-        ast.string(lan)
-      ),
-      ast.def_elem(
-        'security',
-        ast.integer(sec)
-      )
-    ]::jsonb[])
-  ) INTO ast;
-
+    v_stmt_len := 1
+  );
   RETURN ast;
-
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
@@ -2937,18 +2980,18 @@ CREATE FUNCTION ast_helpers.verify_security ( v_schema_name text, v_table_name t
   );
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.verify_function ( v_schema_name text, v_funcname text, v_role text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.verify_function ( v_schema_name text, v_function_name text, v_role_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
   select (CASE
-   WHEN v_role IS NULL THEN
+   WHEN v_role_name IS NULL THEN
     ast_helpers.verify(
       'verify_function',
-      v_schema_name || '.' || v_funcname
+      v_schema_name || '.' || v_function_name
     )
    ELSE 
     ast_helpers.verify(
       'verify_function',
-      v_schema_name || '.' || v_funcname,
-      v_role
+      v_schema_name || '.' || v_function_name,
+      v_role_name
     )
   END);
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
@@ -3198,6 +3241,11 @@ BEGIN
   parsed = deparser.expressions_array(names);
   catalog = parsed[1];
   typ = parsed[2];
+
+  -- NOT typ can be NULL
+  IF (typ IS NULL AND lower(catalog) = 'trigger') THEN 
+    RETURN 'TRIGGER';
+  END IF;
 
   IF (names->0->'String'->>'str' = 'char' ) THEN 
     	names = jsonb_set(names, '{0, String, str}', '"char"');
@@ -7159,7 +7207,11 @@ BEGIN
     
     FOR obj IN SELECT * FROM jsonb_array_elements(node->'objects')
     LOOP
-      IF ( objtype = ast_constants.object_type('OBJECT_POLICY') ) THEN
+      IF ( 
+        objtype = ast_constants.object_type('OBJECT_POLICY')
+        OR objtype = ast_constants.object_type('OBJECT_RULE')
+        OR objtype = ast_constants.object_type('OBJECT_TRIGGER')
+      ) THEN
         IF (jsonb_typeof(obj) = 'array') THEN
           IF (jsonb_array_length(obj) = 2) THEN
             output = array_append(output, deparser.quoted_name( 
@@ -7190,6 +7242,12 @@ BEGIN
         ELSE
           RAISE EXCEPTION 'BAD_EXPRESSION %', 'DropStmt (POLICY)';
         END IF;
+      ELSEIF (objtype = ast_constants.object_type('OBJECT_CAST')) THEN 
+        output = array_append(output, '(');
+        output = array_append(output, deparser.expression(obj->0));
+        output = array_append(output, 'AS');
+        output = array_append(output, deparser.expression(obj->1));
+        output = array_append(output, ')');
       ELSE
         IF (jsonb_typeof(obj) = 'array') THEN
           quoted = array_append(quoted, deparser.quoted_name(obj));
@@ -7337,11 +7395,13 @@ BEGIN
               output = array_append(output, 'LANGUAGE' );
               output = array_append(output, deparser.expression(option->'DefElem'->'arg') );
             ELSIF (defname = 'security') THEN 
-              output = array_append(output, 'SECURITY' );
               IF ((option->'DefElem'->'arg'->'Integer'->'ival')::int > 0) THEN
+                output = array_append(output, 'SECURITY' );
                 output = array_append(output, 'DEFINER' );
               ELSE
-                output = array_append(output, 'INVOKER' );
+                -- this is the default, no need to put it here...
+                -- output = array_append(output, 'SECURITY' );
+                -- output = array_append(output, 'INVOKER' );
               END IF;
             ELSIF (defname = 'leakproof') THEN 
               IF ((option->'DefElem'->'arg'->'Integer'->'ival')::int > 0) THEN

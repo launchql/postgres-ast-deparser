@@ -31,7 +31,34 @@ DROP FUNCTION testfunc6b ( int );
 DROP FUNCTION \\"my-schema\\".testfunc6b ( int );
 DROP FUNCTION \\"my-schema\\".\\"test-func6b\\" ( int );
 DROP FUNCTION testfunc7777;
-DROP FUNCTION \\"my-schema\\".testfunc7777;"
+DROP FUNCTION \\"my-schema\\".testfunc7777;
+DROP TRIGGER trigger_name ON table_name;
+DROP TRIGGER IF EXISTS trigger_name ON table_name;
+DROP TRIGGER trigger_name ON schema_name.table_name;
+DROP TRIGGER IF EXISTS trigger_name ON schema_name.table_name;
+DROP RULE rule_name ON table_name;
+DROP RULE IF EXISTS rule_name ON table_name;
+DROP RULE rule_name ON schema_name.table_name;
+DROP RULE IF EXISTS rule_name ON schema_name.table_name;
+DROP VIEW IF EXISTS test_view_exists;
+DROP VIEW test_view_exists;
+DROP EXTENSION test_extension_exists;
+DROP EXTENSION IF EXISTS test_extension_exists;
+DROP FOREIGN DATA WRAPPER test_fdw_exists;
+DROP FOREIGN DATA WRAPPER IF EXISTS test_fdw_exists;
+DROP AGGREGATE IF EXISTS no_such_schema.foo ( int );
+DROP AGGREGATE IF EXISTS foo ( no_such_type );
+DROP AGGREGATE IF EXISTS foo ( no_such_schema.no_such_type );
+DROP CAST IF EXISTS ( int AS no_such_type2 );
+DROP CAST IF EXISTS ( no_such_type1 AS int );
+DROP CAST IF EXISTS ( int AS no_such_schema.bar );
+DROP CAST IF EXISTS ( no_such_schema.foo AS int );
+DROP COLLATION IF EXISTS no_such_schema.foo;
+DROP CONVERSION IF EXISTS no_such_schema.foo;
+DROP DOMAIN IF EXISTS no_such_schema.foo;
+DROP FOREIGN TABLE IF EXISTS no_such_schema.foo;
+DROP INDEX IF EXISTS no_such_schema.foo;
+DROP MATERIALIZED VIEW IF EXISTS no_such_schema.foo;"
 `;
 
 exports[`drops 2`] = `
@@ -65,7 +92,34 @@ DROP FUNCTION testfunc6b ( int );
 DROP FUNCTION \\"my-schema\\".testfunc6b ( int );
 DROP FUNCTION \\"my-schema\\".\\"test-func6b\\" ( int );
 DROP FUNCTION testfunc7777;
-DROP FUNCTION \\"my-schema\\".testfunc7777;"
+DROP FUNCTION \\"my-schema\\".testfunc7777;
+DROP TRIGGER trigger_name ON table_name;
+DROP TRIGGER IF EXISTS trigger_name ON table_name;
+DROP TRIGGER trigger_name ON schema_name.table_name;
+DROP TRIGGER IF EXISTS trigger_name ON schema_name.table_name;
+DROP RULE rule_name ON table_name;
+DROP RULE IF EXISTS rule_name ON table_name;
+DROP RULE rule_name ON schema_name.table_name;
+DROP RULE IF EXISTS rule_name ON schema_name.table_name;
+DROP VIEW IF EXISTS test_view_exists;
+DROP VIEW test_view_exists;
+DROP EXTENSION test_extension_exists;
+DROP EXTENSION IF EXISTS test_extension_exists;
+DROP FOREIGN DATA WRAPPER test_fdw_exists;
+DROP FOREIGN DATA WRAPPER IF EXISTS test_fdw_exists;
+DROP AGGREGATE IF EXISTS no_such_schema.foo ( int );
+DROP AGGREGATE IF EXISTS foo ( no_such_type );
+DROP AGGREGATE IF EXISTS foo ( no_such_schema.no_such_type );
+DROP CAST IF EXISTS ( int AS no_such_type2 );
+DROP CAST IF EXISTS ( no_such_type1 AS int );
+DROP CAST IF EXISTS ( int AS no_such_schema.bar );
+DROP CAST IF EXISTS ( no_such_schema.foo AS int );
+DROP COLLATION IF EXISTS no_such_schema.foo;
+DROP CONVERSION IF EXISTS no_such_schema.foo;
+DROP DOMAIN IF EXISTS no_such_schema.foo;
+DROP FOREIGN TABLE IF EXISTS no_such_schema.foo;
+DROP INDEX IF EXISTS no_such_schema.foo;
+DROP MATERIALIZED VIEW IF EXISTS no_such_schema.foo;"
 `;
 
 exports[`kitchen sink alias 1`] = `
@@ -493,7 +547,7 @@ mytable$EOFCODE$ LANGUAGE sql VOLATILE;"
 `;
 
 exports[`kitchen sink functions returns_trigger 1`] = `
-"CREATE OR REPLACE FUNCTION helpers.some_method ( ) RETURNS trigger AS $LQLCODEZ$
+"CREATE OR REPLACE FUNCTION helpers.some_method ( ) RETURNS TRIGGER AS $LQLCODEZ$
 BEGIN
 IF tg_op = 'INSERT' THEN
 NEW.some_prop = helpers.do_magic (NEW.data);
@@ -14293,7 +14347,7 @@ second uuid REFERENCES \\"user\\"   NOT NULL,
 created timestamptz NOT NULL DEFAULT (now()),
 UNIQUE (first, second)
 );
-CREATE FUNCTION check_friendship_symmetry ( ) RETURNS trigger AS $LQLCODEZ$
+CREATE FUNCTION check_friendship_symmetry ( ) RETURNS TRIGGER AS $LQLCODEZ$
 DECLARE
 link friendship;
 BEGIN

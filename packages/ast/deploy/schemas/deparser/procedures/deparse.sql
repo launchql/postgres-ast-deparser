@@ -136,6 +136,11 @@ BEGIN
   catalog = parsed[1];
   typ = parsed[2];
 
+  -- NOT typ can be NULL
+  IF (typ IS NULL AND lower(catalog) = 'trigger') THEN 
+    RETURN 'TRIGGER';
+  END IF;
+
   IF (names->0->'String'->>'str' = 'char' ) THEN 
     	names = jsonb_set(names, '{0, String, str}', '"char"');
   END IF;
@@ -4538,7 +4543,11 @@ BEGIN
     
     FOR obj IN SELECT * FROM jsonb_array_elements(node->'objects')
     LOOP
-      IF ( objtype = ast_constants.object_type('OBJECT_POLICY') ) THEN
+      IF ( 
+        objtype = ast_constants.object_type('OBJECT_POLICY')
+        OR objtype = ast_constants.object_type('OBJECT_RULE')
+        OR objtype = ast_constants.object_type('OBJECT_TRIGGER')
+      ) THEN
         IF (jsonb_typeof(obj) = 'array') THEN
           IF (jsonb_array_length(obj) = 2) THEN
             output = array_append(output, deparser.quoted_name( 
@@ -4569,6 +4578,12 @@ BEGIN
         ELSE
           RAISE EXCEPTION 'BAD_EXPRESSION %', 'DropStmt (POLICY)';
         END IF;
+      ELSEIF (objtype = ast_constants.object_type('OBJECT_CAST')) THEN 
+        output = array_append(output, '(');
+        output = array_append(output, deparser.expression(obj->0));
+        output = array_append(output, 'AS');
+        output = array_append(output, deparser.expression(obj->1));
+        output = array_append(output, ')');
       ELSE
         IF (jsonb_typeof(obj) = 'array') THEN
           quoted = array_append(quoted, deparser.quoted_name(obj));
@@ -4728,11 +4743,13 @@ BEGIN
               output = array_append(output, 'LANGUAGE' );
               output = array_append(output, deparser.expression(option->'DefElem'->'arg') );
             ELSIF (defname = 'security') THEN 
-              output = array_append(output, 'SECURITY' );
               IF ((option->'DefElem'->'arg'->'Integer'->'ival')::int > 0) THEN
+                output = array_append(output, 'SECURITY' );
                 output = array_append(output, 'DEFINER' );
               ELSE
-                output = array_append(output, 'INVOKER' );
+                -- this is the default, no need to put it here...
+                -- output = array_append(output, 'SECURITY' );
+                -- output = array_append(output, 'INVOKER' );
               END IF;
             ELSIF (defname = 'leakproof') THEN 
               IF ((option->'DefElem'->'arg'->'Integer'->'ival')::int > 0) THEN

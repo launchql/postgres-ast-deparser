@@ -417,15 +417,18 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_trigger_with_fields (
-  trigger_name text,
-  schema_name text,
-  table_name text,
-  trigger_fn_schema text,
-  trigger_fn_name text,
-  fields text[],
-  timing int default 2,
-  events int default 4 | 16
+CREATE FUNCTION ast_helpers.create_trigger_distinct_fields (
+  v_trigger_name text,
+  
+  v_schema_name text,
+  v_table_name text,
+
+  v_trigger_fn_schema text,
+  v_trigger_fn_name text,
+
+  v_fields text[] default ARRAY[]::text[],
+  v_timing int default 2,
+  v_events int default 4 | 16
 )
     RETURNS jsonb
     AS $$
@@ -433,89 +436,149 @@ DECLARE
   results jsonb[];
   result jsonb;
   whenClause jsonb;
-  r jsonb;
 	i int;
-  field text;
+
+  nodes jsonb[];
 BEGIN
 
-  FOR i IN SELECT * FROM generate_subscripts(fields, 1) g(i)
-    LOOP
-      field = fields[i];
-      IF (i = 1) THEN
-        whenClause = ast_helpers.a_expr_distinct_tg_field(field);
-      ELSE
-        whenClause = ast.bool_expr( 
-          v_boolop := 1, 
-          v_args := to_jsonb(ARRAY[ast_helpers.a_expr_distinct_tg_field(field), whenClause])
-        );
-      END IF;
-    END LOOP;
+  FOR i IN SELECT * FROM generate_subscripts(v_fields, 1) g(i)
+  LOOP
+    nodes = array_append(nodes, ast_helpers.a_expr_distinct_tg_field(v_fields[i]));
+  END LOOP;
+ 
+  IF (cardinality(nodes) > 1) THEN
+    whenClause = ast_helpers.or( variadic nodes := nodes );
+  ELSEIF (cardinality(nodes) = 1) THEN
+    whenClause = nodes[1];
+  END IF;
 
   result = ast.create_trig_stmt(
-    v_trigname := trigger_name,
+    v_trigname := v_trigger_name,
     v_relation := ast_helpers.range_var(
-      v_schemaname := schema_name,
-      v_relname := table_name
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
     ),
-    v_funcname := ast_helpers.array_of_strings(trigger_fn_schema, trigger_fn_name),
+    v_funcname := ast_helpers.array_of_strings(v_trigger_fn_schema, v_trigger_fn_name),
     v_row := true,
-    v_timing := timing,
-    v_events := events,
+    v_timing := v_timing,
+    v_events := v_events,
     v_whenClause := whenClause
   );
-
-
-	RETURN result;
+	RETURN ast.raw_stmt(
+    v_stmt := result,
+    v_stmt_len := 1
+  );
 END;
 $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.drop_trigger (
+  v_trigger_name text,
+
+  v_schema_name text,
+  v_table_name text,
+
+  v_cascade boolean default false
+)
+    RETURNS jsonb
+    AS $$
+  select ast.raw_stmt(
+    v_stmt := ast.drop_stmt(
+      v_objects := to_jsonb(ARRAY[ARRAY[
+        ast.string(v_schema_name),
+        ast.string(v_table_name),
+        ast.string(v_trigger_name)
+      ]]),
+      v_removeType := ast_constants.object_type('OBJECT_TRIGGER'),
+      v_behavior:= (CASE when v_cascade IS TRUE then 1 else 0 END)
+    ),
+    v_stmt_len := 1
+  );
+$$
+LANGUAGE 'sql'
+IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.create_function (
-  schema text,
-  name text,
-  type text,
-  parameters jsonb,
-  body text,
-  vol text,
-  lan text,
-  sec int
+  v_schema_name text,
+  v_function_name text,
+  v_type text,
+  v_parameters jsonb,
+  v_body text,
+  v_language text,
+  v_volatility text default null,
+  v_security int default null
 )
     RETURNS jsonb
     AS $$
 DECLARE
   ast jsonb;
+  options jsonb[];
 BEGIN
 
+  options = array_append(options, ast.def_elem(
+    'as',
+    to_jsonb(ARRAY[ast.string(v_body)])
+  ));
+  
+  options = array_append(options, ast.def_elem(
+    'language',
+    ast.string(v_language)
+  ));
+
+  IF (v_volatility IS NOT NULL) THEN 
+    options = array_append(options, ast.def_elem(
+      'volatility',
+      ast.string(v_volatility)
+    ));
+  END IF;
+
+  IF (v_security IS NOT NULL) THEN 
+    options = array_append(options, ast.def_elem(
+      'security',
+      ast.integer(v_security)
+    ));
+  END IF;
+
   select * FROM ast.create_function_stmt(
-    v_funcname := to_jsonb(ARRAY[ ast.string(schema),ast.string(name) ]),
-    v_parameters := parameters,
+    v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
+    v_parameters := v_parameters,
     v_returnType := ast.type_name( 
-        v_names := ast_helpers.array_of_strings(type)
+        v_names := ast_helpers.array_of_strings(v_type)
     ),
-    v_options := to_jsonb(ARRAY[
-      ast.def_elem(
-        'as',
-        to_jsonb(ARRAY[ast.string(body)])
-      ),
-      ast.def_elem(
-        'volatility',
-        ast.string(vol)
-      ),
-      ast.def_elem(
-        'language',
-        ast.string(lan)
-      ),
-      ast.def_elem(
-        'security',
-        ast.integer(sec)
-      )
-    ]::jsonb[])
+    v_options := to_jsonb(options)
   ) INTO ast;
 
-  RETURN ast;
+  RETURN ast.raw_stmt(
+    v_stmt := ast,
+    v_stmt_len := 1
+  );
 
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.drop_function (
+  v_schema_name text default null,
+  v_function_name text default null
+)
+RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  ast = ast.raw_stmt(
+    v_stmt := ast.drop_stmt(
+      v_objects := to_jsonb(ARRAY[ARRAY[
+        ast.string(v_schema_name),
+        ast.string(v_function_name)
+      ]]),
+      v_removeType := ast_constants.object_type('OBJECT_FUNCTION')
+    ),
+    v_stmt_len := 1
+  );
+  RETURN ast;
 END;
 $$
 LANGUAGE 'plpgsql'

@@ -149,22 +149,22 @@ IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.verify_function (
   v_schema_name text,
-  v_funcname text,
-  v_role text default null
+  v_function_name text,
+  v_role_name text default null
 )
     RETURNS jsonb
     AS $$
   select (CASE
-   WHEN v_role IS NULL THEN
+   WHEN v_role_name IS NULL THEN
     ast_helpers.verify(
       'verify_function',
-      v_schema_name || '.' || v_funcname
+      v_schema_name || '.' || v_function_name
     )
    ELSE 
     ast_helpers.verify(
       'verify_function',
-      v_schema_name || '.' || v_funcname,
-      v_role
+      v_schema_name || '.' || v_function_name,
+      v_role_name
     )
   END);
 $$

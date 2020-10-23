@@ -32,20 +32,20 @@ Object {
         "DefElem": Object {
           "arg": Object {
             "String": Object {
-              "str": "volatile",
+              "str": "plpgsql",
             },
           },
-          "defname": "volatility",
+          "defname": "language",
         },
       },
       Object {
         "DefElem": Object {
           "arg": Object {
             "String": Object {
-              "str": "plpgsql",
+              "str": "volatile",
             },
           },
-          "defname": "language",
+          "defname": "volatility",
         },
       },
       Object {
@@ -120,7 +120,7 @@ Object {
 exports[`create_function deparse 1`] = `
 "CREATE FUNCTION schema.name ( param1 text, active bool, sid uuid DEFAULT uuid_generate_v4(), description text DEFAULT NULL, tags text[] DEFAULT NULL ) RETURNS text AS $LQLCODEZ$ 
  code here 
- $LQLCODEZ$ VOLATILE LANGUAGE plpgsql SECURITY DEFINER"
+ $LQLCODEZ$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER"
 `;
 
 exports[`create_function_stmt 1`] = `"CREATE FUNCTION schemer.funker ( param0 text, param1 text, param2 text[] DEFAULT NULL, param3 text[] DEFAULT NULL ) RETURNS text VOLATILE LANGUAGE plpgsql SECURITY DEFINER"`;
@@ -230,8 +230,16 @@ Object {
 }
 `;
 
+exports[`create_trigger deparse 1`] = `
+"CREATE FUNCTION schema.name ( param1 text, active bool, sid uuid DEFAULT uuid_generate_v4(), description text DEFAULT NULL, tags text[] DEFAULT NULL ) RETURNS TRIGGER AS $LQLCODEZ$ 
+ code here 
+ $LQLCODEZ$ LANGUAGE plpgsql VOLATILE"
+`;
+
 exports[`createfunction stmt from json 1`] = `
 "CREATE FUNCTION \\"collections-private\\".\\"deparse_a-const\\" ( \\"node-a\\" jsonb, context text DEFAULT NULL ) RETURNS text AS $LQLCODEZ$ 
  some string 
  $LQLCODEZ$ LANGUAGE plpgsql SECURITY DEFINER VOLATILE"
 `;
+
+exports[`drop deparse 1`] = `"DROP FUNCTION schema.name;"`;
