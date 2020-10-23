@@ -2740,7 +2740,7 @@ BEGIN
         output = array_append(output, 'PLAIN');
       END IF;
     ELSIF (subtype = ast_constants.alter_table_type('AT_DropColumn')) THEN
-      output = array_append(output, 'DROP');
+      output = array_append(output, 'DROP COLUMN');
       IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
@@ -4538,10 +4538,43 @@ BEGIN
     
     FOR obj IN SELECT * FROM jsonb_array_elements(node->'objects')
     LOOP
-      IF (jsonb_typeof(obj) = 'array') THEN
-        quoted = array_append(quoted, deparser.quoted_name(obj));
+      IF ( objtype = ast_constants.object_type('OBJECT_POLICY') ) THEN
+        IF (jsonb_typeof(obj) = 'array') THEN
+          IF (jsonb_array_length(obj) = 2) THEN
+            output = array_append(output, deparser.quoted_name( 
+              to_jsonb(ARRAY[
+                obj->1
+              ])
+            ));
+            output = array_append(output, 'ON');
+            output = array_append(output, deparser.quoted_name( 
+              to_jsonb(ARRAY[
+                obj->0
+              ])
+            ));
+          ELSEIF (jsonb_array_length(obj) = 3) THEN
+            output = array_append(output, deparser.quoted_name( 
+              to_jsonb(ARRAY[
+                obj->2
+              ])
+            ));
+            output = array_append(output, 'ON');
+            output = array_append(output, deparser.quoted_name( 
+              to_jsonb(ARRAY[
+                obj->0,
+                obj->1
+              ])
+            ));
+          END IF;
+        ELSE
+          RAISE EXCEPTION 'why no array %', obj;
+        END IF;
       ELSE
-        quoted = array_append(quoted, deparser.expression(obj));
+        IF (jsonb_typeof(obj) = 'array') THEN
+          quoted = array_append(quoted, deparser.quoted_name(obj));
+        ELSE
+          quoted = array_append(quoted, deparser.expression(obj));
+        END IF;
       END IF;
     END LOOP;
 

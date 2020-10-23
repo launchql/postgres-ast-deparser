@@ -54,6 +54,10 @@ it('parens', async () => {
   await check('parens.sql');
 });
 
+it('drops', async () => {
+  await check('drops.sql');
+});
+
 describe('kitchen sink', () => {
   it('alter', async () => {
     await check('alter/alter.sql');

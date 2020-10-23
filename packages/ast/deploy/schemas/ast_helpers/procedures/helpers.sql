@@ -390,6 +390,37 @@ BEGIN
     v_with_check := v_with_check,
     v_permissive := v_permissive
   ) INTO ast;
+
+  RETURN ast.raw_stmt(
+    v_stmt := ast,
+    v_stmt_len := 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.drop_policy (
+  v_policy_name text default null,
+  v_schema_name text default null,
+  v_table_name text default null
+)
+RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  ast = ast.raw_stmt(
+    v_stmt := ast.drop_stmt(
+      v_objects := to_jsonb(ARRAY[ARRAY[
+        ast.string(v_schema_name),
+        ast.string(v_table_name),
+        ast.string(v_policy_name)
+      ]]),
+      v_removeType := ast_constants.object_type('OBJECT_POLICY')
+    ),
+    v_stmt_len := 1
+  );
   RETURN ast;
 END;
 $$

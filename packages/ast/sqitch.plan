@@ -13,3 +13,4 @@ schemas/ast_utils/procedures/utils [schemas/ast_utils/schema] 2017-08-11T08:11:5
 schemas/deparser/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/deparser/schema
 schemas/deparser/procedures/deparse [schemas/deparser/schema schemas/ast_utils/procedures/utils schemas/ast_constants/procedures/constants] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/deparser/procedures/deparse
 schemas/ast_helpers/procedures/verify [schemas/ast_helpers/schema] 2020-10-22T21:08:04Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/ast_helpers/procedures/verify
+schemas/ast_helpers/procedures/policy_templates [schemas/ast_helpers/schema] 2020-10-23T01:51:21Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/ast_helpers/procedures/policy_templates
