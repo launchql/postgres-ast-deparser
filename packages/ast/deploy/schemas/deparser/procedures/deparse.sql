@@ -3344,7 +3344,7 @@ BEGIN
 
     IF (node->'cols') IS NOT NULL THEN
       output = array_append(output, '(');
-      output = array_append(output, deparser.list(node->'cols', ', ', context));
+      output = array_append(output, deparser.list_quotes(node->'cols', ', ', context));
       output = array_append(output, ')');
     END IF;
 

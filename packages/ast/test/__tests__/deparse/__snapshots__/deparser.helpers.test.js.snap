@@ -1,5 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`column_grant revoke select 1`] = `"REVOKE SELECT ( col1, \\"column-asdf\\" ) ON TABLE myschema.mytable FROM authenticated;"`;
+
+exports[`column_grant select 1`] = `"GRANT SELECT ( col1, \\"column-asdf\\" ) ON TABLE myschema.mytable TO authenticated;"`;
+
+exports[`column_grant update 1`] = `"GRANT UPDATE ( col1, \\"column-asdf\\" ) ON TABLE myschema.mytable TO authenticated;"`;
+
 exports[`insert policy (with_check) 1`] = `"CREATE POLICY mypolicy ON myschema.mytable FOR INSERT TO app_user, auth_user WITH CHECK ( roles_public.current_role_id() = role_id OR permissions_private.permitted_on_role(group_id) );"`;
 
+exports[`noCalls 1`] = `"GRANT SELECT ON TABLE myschema.mytable TO authenticated;"`;
+
 exports[`select policy (using) 1`] = `"CREATE POLICY mypolicy ON myschema.mytable AS RESTRICTIVE FOR SELECT TO app_user, auth_user USING ( roles_public.current_role_id() = role_id OR permissions_private.permitted_on_role(group_id) );"`;
+
+exports[`table_grant revoke select 1`] = `"REVOKE SELECT ( col1, \\"column-asdf\\" ) ON TABLE myschema.mytable FROM authenticated;"`;
+
+exports[`table_grant select 1`] = `"GRANT SELECT ( col1, \\"column-asdf\\" ) ON TABLE myschema.mytable TO authenticated;"`;
+
+exports[`table_grant update 1`] = `"GRANT UPDATE ( col1, \\"column-asdf\\" ) ON TABLE myschema.mytable TO authenticated;"`;
+
+exports[`table_privilege_grant revoke select 1`] = `"REVOKE SELECT ( col1, \\"column-asdf\\" ) ON TABLE myschema.mytable FROM authenticated;"`;
+
+exports[`table_privilege_grant select 1`] = `"GRANT SELECT ( col1, \\"column-asdf\\" ) ON TABLE myschema.mytable TO authenticated;"`;
+
+exports[`table_privilege_grant update 1`] = `"GRANT UPDATE ( col1, \\"column-asdf\\" ) ON TABLE myschema.mytable TO authenticated;"`;

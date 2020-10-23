@@ -127,3 +127,66 @@ it('insert policy (with_check)', async () => {
   );
   expect(result).toMatchSnapshot();
 });
+
+it('table_grant update', async () => {
+  const [{ expression: result }] = await db.any(
+    `select deparser.expression(
+            ast_helpers.table_grant(
+                v_schema_name := 'myschema',
+                v_table_name := 'mytable',
+                v_priv_name := 'update',
+                v_cols := ARRAY['col1', 'column-asdf'],
+                v_is_grant := true,
+                v_role_name := 'authenticated'
+                )
+         );`
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('table_grant select', async () => {
+  const [{ expression: result }] = await db.any(
+    `select deparser.expression(
+            ast_helpers.table_grant(
+                v_schema_name := 'myschema',
+                v_table_name := 'mytable',
+                v_priv_name := 'select',
+                v_cols := ARRAY['col1', 'column-asdf'],
+                v_is_grant := true,
+                v_role_name := 'authenticated'
+                )
+         );`
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('table_grant revoke select', async () => {
+  const [{ expression: result }] = await db.any(
+    `select deparser.expression(
+            ast_helpers.table_grant(
+                v_schema_name := 'myschema',
+                v_table_name := 'mytable',
+                v_priv_name := 'select',
+                v_cols := ARRAY['col1', 'column-asdf'],
+                v_is_grant := false,
+                v_role_name := 'authenticated'
+                )
+         );`
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('noCalls', async () => {
+  const [{ expression: result }] = await db.any(
+    `select deparser.expression(
+            ast_helpers.table_grant(
+                v_schema_name := 'myschema',
+                v_table_name := 'mytable',
+                v_priv_name := 'select',
+                v_is_grant := true,
+                v_role_name := 'authenticated'
+                )
+         );`
+  );
+  expect(result).toMatchSnapshot();
+});

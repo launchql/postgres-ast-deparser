@@ -2388,6 +2388,53 @@ CREATE FUNCTION ast_helpers.drop_index ( v_schema_name text, v_index_name text )
   );
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.table_grant ( v_schema_name text, v_table_name text, v_priv_name text, v_is_grant boolean, v_role_name text, v_cols text[] DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast jsonb;
+  cols jsonb[];
+  i int;
+BEGIN
+  FOR i IN 
+  SELECT * FROM generate_series(1, cardinality(v_cols))
+  LOOP 
+    cols = array_append(cols, ast.string(v_cols[i]));
+  END LOOP;
+
+  SELECT ast.raw_stmt(
+    v_stmt := ast.grant_stmt(
+      v_is_grant := v_is_grant,
+      v_targtype := 0, -- why?
+      v_objtype := 1, --why?
+      v_objects := to_jsonb(ARRAY[
+        ast.range_var(
+          v_schemaname := v_schema_name,
+          v_relname := v_table_name,
+          v_inh := true,
+          v_relpersistence := 'p'
+        )
+      ]),
+      v_privileges := to_jsonb(ARRAY[
+        ast.access_priv(
+          v_priv_name := v_priv_name,
+          v_cols := to_jsonb(cols)
+        )
+      ]),
+      v_grantees := to_jsonb(ARRAY[
+        ast.role_spec(
+          v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_CSTRING'
+          ),
+          v_rolename:= v_role_name
+        )
+      ])
+    ),
+    v_stmt_len:= 1
+  ) INTO ast;
+
+  RETURN ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.cpt_own_records ( rls_schema text, role_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
@@ -2829,6 +2876,15 @@ CREATE FUNCTION ast_helpers.verify_table ( v_schema_name text, v_table_name text
   );
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.verify_table_grant ( v_schema_name text, v_table_name text, v_priv_name text, v_role_name text ) RETURNS jsonb AS $EOFCODE$
+  select ast_helpers.verify(
+    'verify_table_grant',
+    v_schema_name || '.' || v_table_name,
+    v_priv_name,
+    v_role_name
+  );
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.verify_index ( v_schema_name text, v_table_name text, v_index_name text ) RETURNS jsonb AS $EOFCODE$
   select ast_helpers.verify(
     'verify_index',
@@ -2849,15 +2905,6 @@ CREATE FUNCTION ast_helpers.verify_security ( v_schema_name text, v_table_name t
   select ast_helpers.verify(
     'verify_security',
     v_schema_name || '.' || v_table_name
-  );
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.verify_table_grant ( v_schema_name text, v_table_name text, v_privilege text, v_role text ) RETURNS jsonb AS $EOFCODE$
-  select ast_helpers.verify(
-    'verify_table_grant',
-    v_schema_name || '.' || v_table_name,
-    v_privilege,
-    v_role
   );
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
@@ -6002,7 +6049,7 @@ BEGIN
 
     IF (node->'cols') IS NOT NULL THEN
       output = array_append(output, '(');
-      output = array_append(output, deparser.list(node->'cols', ', ', context));
+      output = array_append(output, deparser.list_quotes(node->'cols', ', ', context));
       output = array_append(output, ')');
     END IF;
 

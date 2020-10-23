@@ -555,7 +555,11 @@ REVOKE EXECUTE ON FUNCTION auth.authenticate FROM anonymous;
 REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;
 GRANT SELECT, INSERT ON TABLE someschema.sometable2 TO somerole;
 GRANT UPDATE ( col2 ) ON TABLE someschema.sometable2 TO somerole;
-GRANT UPDATE ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;"
+GRANT UPDATE ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2, \\"another-column\\" ) ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2 ), UPDATE ( col2, \\"another-column\\" ), DELETE ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2, \\"another-column\\" ) ON TABLE someschema.sometable2 TO somerole;"
 `;
 
 exports[`kitchen sink grants 2`] = `
@@ -567,7 +571,11 @@ REVOKE EXECUTE ON FUNCTION auth.authenticate FROM anonymous;
 REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;
 GRANT SELECT, INSERT ON TABLE someschema.sometable2 TO somerole;
 GRANT UPDATE ( col2 ) ON TABLE someschema.sometable2 TO somerole;
-GRANT UPDATE ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;"
+GRANT UPDATE ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2, \\"another-column\\" ) ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2 ), UPDATE ( col2, \\"another-column\\" ), DELETE ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2, \\"another-column\\" ) ON TABLE someschema.sometable2 TO somerole;"
 `;
 
 exports[`kitchen sink indexes 1`] = `

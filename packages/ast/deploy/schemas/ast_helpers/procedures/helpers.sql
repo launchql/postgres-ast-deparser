@@ -542,5 +542,64 @@ $$
 LANGUAGE 'sql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.table_grant (
+  v_schema_name text,
+  v_table_name text,
+  v_priv_name text,
+  v_is_grant boolean,
+  v_role_name text,
+  v_cols text[] default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+  cols jsonb[];
+  i int;
+BEGIN
+  FOR i IN 
+  SELECT * FROM generate_series(1, cardinality(v_cols))
+  LOOP 
+    cols = array_append(cols, ast.string(v_cols[i]));
+  END LOOP;
+
+  SELECT ast.raw_stmt(
+    v_stmt := ast.grant_stmt(
+      v_is_grant := v_is_grant,
+      v_targtype := 0, -- why?
+      v_objtype := 1, --why?
+      v_objects := to_jsonb(ARRAY[
+        ast.range_var(
+          v_schemaname := v_schema_name,
+          v_relname := v_table_name,
+          v_inh := true,
+          v_relpersistence := 'p'
+        )
+      ]),
+      v_privileges := to_jsonb(ARRAY[
+        ast.access_priv(
+          v_priv_name := v_priv_name,
+          v_cols := to_jsonb(cols)
+        )
+      ]),
+      v_grantees := to_jsonb(ARRAY[
+        ast.role_spec(
+          v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_CSTRING'
+          ),
+          v_rolename:= v_role_name
+        )
+      ])
+    ),
+    v_stmt_len:= 1
+  ) INTO ast;
+
+  RETURN ast;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+
 
 COMMIT;

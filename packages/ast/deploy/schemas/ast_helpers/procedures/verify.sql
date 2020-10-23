@@ -83,6 +83,24 @@ $$
 LANGUAGE 'sql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.verify_table_grant (
+  v_schema_name text,
+  v_table_name text,
+  v_priv_name text,
+  v_role_name text
+)
+    RETURNS jsonb
+    AS $$
+  select ast_helpers.verify(
+    'verify_table_grant',
+    v_schema_name || '.' || v_table_name,
+    v_priv_name,
+    v_role_name
+  );
+$$
+LANGUAGE 'sql'
+IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.verify_index (
   v_schema_name text,
   v_table_name text,
@@ -124,24 +142,6 @@ CREATE FUNCTION ast_helpers.verify_security (
   select ast_helpers.verify(
     'verify_security',
     v_schema_name || '.' || v_table_name
-  );
-$$
-LANGUAGE 'sql'
-IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.verify_table_grant (
-  v_schema_name text,
-  v_table_name text,
-  v_privilege text,
-  v_role text
-)
-    RETURNS jsonb
-    AS $$
-  select ast_helpers.verify(
-    'verify_table_grant',
-    v_schema_name || '.' || v_table_name,
-    v_privilege,
-    v_role
   );
 $$
 LANGUAGE 'sql'
