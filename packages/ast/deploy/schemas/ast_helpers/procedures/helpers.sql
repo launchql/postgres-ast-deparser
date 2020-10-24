@@ -846,4 +846,200 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+-- NOTE we hacked this by using pg_catalog/mods trick, so NOTHING is quoted...
+-- TODO make a better, cleaner way to do this...
+CREATE FUNCTION ast_helpers.alter_table_add_column (
+  v_schema_name text,
+  v_table_name text,
+  v_column_name text,
+  v_column_type text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+    v_stmt := ast.alter_table_stmt(
+      v_relation := ast_helpers.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name
+      ),
+      v_cmds := to_jsonb(ARRAY[
+        ast.alter_table_cmd(
+          v_subtype := 0, -- TODO use constants
+          v_def := ast.column_def(
+            v_colname := v_column_name,
+            v_typeName := ast.type_name(
+              v_names := to_jsonb(ARRAY[
+                ast.string('pg_catalog'), -- HACK to trick deparser into NOT quoting ANYTHING in the next el
+                ast.string(v_column_type)
+              ])
+            ),
+            v_is_local := TRUE
+          ),
+          v_behavior := 0 
+        )
+      ]),
+      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+    ),
+    v_stmt_len:= 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+-- for control over more complex types, use this
+CREATE FUNCTION ast_helpers.alter_table_add_column (
+  v_schema_name text,
+  v_table_name text,
+  v_column_name text,
+  v_column_type jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+    v_stmt := ast.alter_table_stmt(
+      v_relation := ast_helpers.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name
+      ),
+      v_cmds := to_jsonb(ARRAY[
+        ast.alter_table_cmd(
+          v_subtype := ast_constants.alter_table_type('AT_AddColumn'),
+          v_def := ast.column_def(
+            v_colname := v_column_name,
+            v_typeName := v_column_type,
+            v_is_local := TRUE
+          ),
+          v_behavior := 0 
+        )
+      ]),
+      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+    ),
+    v_stmt_len:= 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_drop_column (
+  v_schema_name text,
+  v_table_name text,
+  v_column_name text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+    v_stmt := ast.alter_table_stmt(
+      v_relation := ast_helpers.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name
+      ),
+      v_cmds := to_jsonb(ARRAY[
+        ast.alter_table_cmd(
+          v_subtype := ast_constants.alter_table_type('AT_DropColumn'),
+          v_name := v_column_name,
+          v_behavior := 0 
+        )
+      ]),
+      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+    ),
+    v_stmt_len:= 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_rename_column (
+  v_schema_name text,
+  v_table_name text,
+  v_old_column_name text,
+  v_new_column_name text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+    v_stmt := ast.rename_stmt(
+      v_renameType := ast_constants.object_type('OBJECT_COLUMN'),
+      v_relationType := ast_constants.object_type('OBJECT_TABLE'),
+      v_relation := ast_helpers.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name
+      ),
+      v_subname := v_old_column_name,
+      v_newname := v_new_column_name
+    ),
+    v_stmt_len:= 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_set_column_data_type (
+  v_schema_name text,
+  v_table_name text,
+  v_column_name text,
+  v_old_column_type text,
+  v_new_column_type text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+    v_stmt := ast.alter_table_stmt(
+      v_relation := ast_helpers.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name
+      ),
+      v_cmds := to_jsonb(ARRAY[
+        ast.alter_table_cmd(
+          v_subtype := ast_constants.alter_table_type('AT_AlterColumnType'),
+          v_name := v_column_name,
+          v_def := ast.column_def(
+            v_typeName := ast.type_name(
+              v_names := to_jsonb(ARRAY[
+                ast.string(v_new_column_type)
+              ])
+            ),
+            v_raw_default := ast.type_cast(
+              v_arg := ast.column_ref(
+                v_fields := to_jsonb(ARRAY[
+                  ast.string(v_column_name)
+                ])
+              ),
+              v_typeName := ast.type_name(
+                v_names := to_jsonb(ARRAY[
+                  ast.string(v_new_column_type)
+                ])
+              )
+            )
+          ),
+          v_behavior := 0 
+        )
+      ]),
+      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+    ),
+    v_stmt_len:= 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 COMMIT;

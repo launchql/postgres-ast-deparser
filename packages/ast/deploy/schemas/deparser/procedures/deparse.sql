@@ -4128,9 +4128,9 @@ BEGIN
       output = array_append(output, deparser.expression(node->'relation'));
       output = array_append(output, 'RENAME');
       output = array_append(output, 'COLUMN');
-      output = array_append(output, node->>'subname');
+      output = array_append(output, quote_ident(node->>'subname'));
       output = array_append(output, 'TO');
-      output = array_append(output, node->>'newname');
+      output = array_append(output, quote_ident(node->>'newname'));
     ELSE
       RAISE EXCEPTION 'BAD_EXPRESSION % type(%)', 'RenameStmt', node->>'renameType';
     END IF;
