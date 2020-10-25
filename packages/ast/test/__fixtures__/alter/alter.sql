@@ -89,8 +89,6 @@ ALTER TABLE collections.mfield
     ADD CONSTRAINT col_field_pkey PRIMARY KEY (id);
 
 
-
-
 -- TODO MATCH after upgrading to newer engine: https://github.com/lfittl/libpg_query/issues/66
 
 -- ALTER TABLE scha.foo 
@@ -107,7 +105,6 @@ ALTER TABLE collections.mfield
 --   ADD CONSTRAINT my_constraint_fey
 --   FOREIGN KEY (a,b) REFERENCES othr.orders (c,d) MATCH PARTIAL;
 
-
 ALTER TABLE schema_name.table_name ALTER COLUMN column_name SET DATA TYPE new_column_type USING column_name::new_column_type;
 ALTER TABLE schema_name.table_name ALTER COLUMN column_name TYPE new_column_type USING column_name::new_column_type;
 
@@ -117,3 +114,23 @@ ALTER TABLE schema_name.table_name ADD COLUMN "column-name" Geometry(Polygon, 43
 ALTER TABLE schema_name.table_name ADD COLUMN column_name int;
 
 ALTER TABLE schema_name.table_name DROP COLUMN column_name;
+
+
+
+ALTER TABLE mytable OWNER TO regtest_alter_user2;
+
+ALTER FUNCTION alt_func3(int) RENAME TO alt_func4;
+ALTER FUNCTION alt_func1(int) RENAME TO alt_func4;
+ALTER FUNCTION alt_func3(int) OWNER TO regtest_alter_user2;
+ALTER FUNCTION alt_func2(int) OWNER TO regtest_alter_user3;
+ALTER FUNCTION alt_func3(int) SET SCHEMA alt_nsp2;      
+ALTER FUNCTION alt_func2(int) SET SCHEMA alt_nsp2;
+
+ALTER TABLE old_schema_name.table_name
+    SET SCHEMA new_schema_name;
+
+ALTER FOREIGN DATA WRAPPER alt_fdw1 RENAME TO alt_fdw2; 
+ALTER FOREIGN DATA WRAPPER alt_fdw1 RENAME TO alt_fdw3;  
+
+ALTER SERVER alt_fserv1 RENAME TO alt_fserv2;  
+ALTER SERVER alt_fserv1 RENAME TO alt_fserv3;   

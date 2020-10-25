@@ -1416,7 +1416,7 @@
   resolved "https://registry.npmjs.org/@launchql/db-template/-/db-template-0.2.1.tgz#17fb3738fcad6744116f03b4d5c745ec4841c105"
   integrity sha512-4pFOUkv/nFnsojS3yLwX9C75LEt954eTwK+b7X7esBGdkNiUSyafg3U+jfmgN5NjV8NeEqf6VCxBrOfTD2QNWA==
 
-"@launchql/db-testing@0.4.4", "@launchql/db-testing@^0.4.4":
+"@launchql/db-testing@0.4.4", "@launchql/db-testing@^0.4.4", "@launchql/db-testing@latest":
   version "0.4.4"
   resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-0.4.4.tgz#f910e1d729cd83ff465cd261fbccc99c3921d815"
   integrity sha512-uSFj5ivw6AvDkVuf5s710GpgtRRMsQiGYVBJsEy5umF78jlVQHmqQywjvFO7t71TISYnSpc0Lgmf+Qa9WobKVw==
@@ -1477,7 +1477,7 @@
     postgraphile-plugin-connection-filter "2.0.0"
     postgraphile-plugin-connection-filter-postgis "1.0.0-alpha.6"
 
-"@launchql/graphql-testing@0.3.21":
+"@launchql/graphql-testing@0.3.21", "@launchql/graphql-testing@latest":
   version "0.3.21"
   resolved "https://registry.npmjs.org/@launchql/graphql-testing/-/graphql-testing-0.3.21.tgz#65fd28460d1eee0da25d783e9dc5ecdbcc718191"
   integrity sha512-TedfrKwjQvbFlEKUsleqWah97FtA+v8LNWV+6s2QlfWF8Of5NjYx0KSpIrk92ebXHU3bMXSeQ5TDwq1vxyrDjA==
@@ -8320,20 +8320,20 @@ pgpass@1.x:
   dependencies:
     split "^1.0.0"
 
-pgsql-deparser@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-1.0.4.tgz#e570c2463a18525d414fabe31a1db92c68d94975"
-  integrity sha512-ruAEFuVa5XfqDgcjit2oKHGw4/ADvUk2JRBIs7FhxUpxOY5F/3lejW5sqwte1M3x2Z6aq58dxgIa6jht4HpYZA==
+pgsql-deparser@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-1.0.5.tgz#e131e3840b6c148000cdb5a8c86e81a474592077"
+  integrity sha512-SteAFasD07h3ip+lqdEbdR1ZhpJ419VfSMnE3wlZmLAWvJgD2x4vUfyFG6564f6jfbr+z4CMTbE+2Gq4WJ8CUA==
   dependencies:
     "@babel/runtime" "^7.11.2"
     dotty "0.1.0"
     lodash "4.17.20"
-    pgsql-enums "^1.0.0"
+    pgsql-enums "^1.0.1"
 
-pgsql-enums@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/pgsql-enums/-/pgsql-enums-1.0.0.tgz#b87f24af6b5608bd8025ac5ee99407cf4b801dc8"
-  integrity sha512-nrirLbZDu9y/AVfAdk1E+o/kivz+PWdkHCFJqWxRWPX5qex1BcM43vneikgw0ELz2EgWQcSQgzxKMP1IE+9ldQ==
+pgsql-enums@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/pgsql-enums/-/pgsql-enums-1.0.1.tgz#1516c510af56d35ac2ee914d1cefc685c189984f"
+  integrity sha512-wHGiFoaOSFLj6sEYSyXAAUJMQ1LAhyWPvdb+qL5WCRGrk/T9WtxA5QtNfjzGeXerXQbPf7qrpyBw79EQj9EVlg==
   dependencies:
     "@babel/runtime" "^7.4.2"
 
@@ -8348,16 +8348,16 @@ pgsql-parser@0.8.6:
     lodash "^4.17.20"
     minimist "^1.2.5"
 
-pgsql-parser@1.0.4:
-  version "1.0.4"
-  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-1.0.4.tgz#28e44560d9f5fe3e9c7db9c26334b74ebf8345b6"
-  integrity sha512-IchEfqN1SnQkaD1Y7gYQDWvzTV82GLE+bHhg+LwMbAaf6mooz43dMvCZUDONr8MkVojQskY9b8eMOtPuI/FEWw==
+pgsql-parser@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-1.0.5.tgz#878256f1d44799d967965f50a3400d3f3e20b34d"
+  integrity sha512-pQisp4IhGZ8xtvyozmNVavS5PZBPAJ8wGF/dWxa8wBBICgEzHNGp+J23k4ZC3f2VXM7rLk2Nu4eKxKMOE5UJGQ==
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@pgql/parse" "1.2.6"
     minimist "^1.2.5"
-    pgsql-deparser "^1.0.4"
-    pgsql-enums "^1.0.0"
+    pgsql-deparser "^1.0.5"
+    pgsql-enums "^1.0.1"
 
 picomatch@^2.0.4, picomatch@^2.0.5:
   version "2.2.2"

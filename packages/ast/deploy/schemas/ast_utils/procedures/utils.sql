@@ -39,6 +39,12 @@ returns text[] as $$
 $$  
 LANGUAGE 'sql' IMMUTABLE;
 
+CREATE FUNCTION ast_utils.objtype_name(typenum int)
+returns text as $$
+	select (ast_utils.objtypes())[typenum + 1];
+$$  
+LANGUAGE 'sql' IMMUTABLE;
+
 CREATE FUNCTION ast_utils.constrainttypes (contype int)
 returns text as $$
   select (CASE
