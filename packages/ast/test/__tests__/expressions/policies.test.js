@@ -64,8 +64,58 @@ SELECT deparser.deparse(ast_helpers.create_policy(
   expect(result).toMatchSnapshot();
 });
 
+const getInsertPolicyResult = async (name, vars) => {
+  const [{ deparse }] = await db.any(
+    `
+SELECT deparser.deparse(
+  ast_helpers.create_policy(
+    v_policy_name := 'v_policy_name',
+    v_schema_name := 'v_schema_name',
+    v_table_name := 'v_table_name',
+    v_roles := ARRAY['authenticated'],
+    v_cmd_name := 'INSERT',
+    v_permissive := TRUE,
+    v_with_check := ast_helpers.create_policy_template(
+        rls_schema := 'rls_schema',
+        role_fn := 'role_fn',
+        groups_fn := 'group_fn',
+        policy_template_name := $1::text,
+        policy_template_vars := $2::jsonb
+    )
+  )
+)`,
+    [name, JSON.stringify(vars)]
+  );
+  return deparse;
+};
+
+const getUpdatePolicyResult = async (name, vars) => {
+  const [{ deparse }] = await db.any(
+    `
+SELECT deparser.deparse(
+  ast_helpers.create_policy(
+    v_policy_name := 'v_policy_name',
+    v_schema_name := 'v_schema_name',
+    v_table_name := 'v_table_name',
+    v_roles := ARRAY['authenticated'],
+    v_cmd_name := 'UPDATE',
+    v_permissive := TRUE,
+    v_qual := ast_helpers.create_policy_template(
+        rls_schema := 'rls_schema',
+        role_fn := 'role_fn',
+        groups_fn := 'group_fn',
+        policy_template_name := $1::text,
+        policy_template_vars := $2::jsonb
+    )
+  )
+)`,
+    [name, JSON.stringify(vars)]
+  );
+  return deparse;
+};
+
 const getPolicyResult = async (name, vars) => {
-  const result = await db.any(
+  const [{ deparse }] = await db.any(
     `
 SELECT deparser.deparse(
   ast_helpers.create_policy_template(
@@ -77,7 +127,12 @@ SELECT deparser.deparse(
   ))`,
     [name, JSON.stringify(vars)]
   );
-  return result;
+
+  return {
+    insert: await getInsertPolicyResult(name, vars),
+    update: await getUpdatePolicyResult(name, vars),
+    policy: deparse
+  };
 };
 
 it('own_records', async () => {
@@ -103,6 +158,17 @@ it('multi_owners', async () => {
 
 it('permission_name', async () => {
   const result = await getPolicyResult('permission_name', {
+    permission_role_key: 'permission_role_key',
+    permission_schema: 'permission_schema',
+    permission_table: 'permission_table',
+    permission_name_key: 'permission_name_key',
+    this_value: 'this_value'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('policy w permission_name', async () => {
+  const result = await getInsertPolicyResult('permission_name', {
     permission_role_key: 'permission_role_key',
     permission_schema: 'permission_schema',
     permission_table: 'permission_table',
