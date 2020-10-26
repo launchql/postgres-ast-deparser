@@ -1,27 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`pure psql 1`] = `"(setweight(to_tsvector(\\"coalesce\\"(NEW.field1, '')), 'A') || setweight(to_tsvector(\\"coalesce\\"(NEW.field2, '')), 'A'))"`;
+exports[`pure psql 1`] = `"setweight(to_tsvector(COALESCE(NEW.field1, '')), 'A') || setweight(to_tsvector(COALESCE(NEW.field2, '')), 'A')"`;
 
 exports[`trigger tsvector index 1`] = `
 Object {
-  "deparse": "(setweight(to_tsvector('pg_catalog.simple', \\"coalesce\\"(array_to_string(tags::citext[], ' '), '')), 'A') || (setweight(to_tsvector('pg_catalog.simple', \\"coalesce\\"(name, '')), 'A') || (setweight(to_tsvector('english', \\"coalesce\\"(description, '')), 'B') || setweight(to_tsvector('pg_catalog.english', \\"coalesce\\"(name, '')), 'A'))))",
+  "deparse": "setweight(to_tsvector('pg_catalog.simple', COALESCE(array_to_string(tags::citext[], ' '), '')), 'A') || setweight(to_tsvector('pg_catalog.simple', COALESCE(name, '')), 'A') || setweight(to_tsvector('english', COALESCE(description, '')), 'B') || setweight(to_tsvector('pg_catalog.english', COALESCE(name, '')), 'A')",
 }
 `;
 
 exports[`tsvector 1`] = `
 Object {
-  "deparse": "to_tsvector(\\"coalesce\\"(NEW.field1, ''))",
+  "deparse": "to_tsvector(COALESCE(NEW.field1, ''))",
 }
 `;
 
 exports[`tsvector index 1`] = `
 Object {
-  "deparse": "(setweight(to_tsvector('pg_catalog.simple', \\"coalesce\\"(name, '')), 'A') || (setweight(to_tsvector('english', \\"coalesce\\"(description, '')), 'B') || setweight(to_tsvector('pg_catalog.english', \\"coalesce\\"(name, '')), 'A')))",
+  "deparse": "setweight(to_tsvector('pg_catalog.simple', COALESCE(name, '')), 'A') || setweight(to_tsvector('english', COALESCE(description, '')), 'B') || setweight(to_tsvector('pg_catalog.english', COALESCE(name, '')), 'A')",
 }
 `;
 
 exports[`tsvector with lang 1`] = `
 Object {
-  "deparse": "to_tsvector('pg_catalog.english', \\"coalesce\\"(NEW.field1, ''))",
+  "deparse": "to_tsvector('pg_catalog.english', COALESCE(NEW.field1, ''))",
 }
 `;

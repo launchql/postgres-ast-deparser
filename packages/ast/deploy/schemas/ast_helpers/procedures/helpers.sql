@@ -3,8 +3,195 @@
 -- requires: schemas/ast_helpers/schema
 -- requires: schemas/ast/procedures/types 
 
+
 BEGIN;
 
+CREATE FUNCTION ast_helpers.equals (
+  v_lexpr jsonb,
+  v_rexpr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.any (
+  v_lexpr jsonb,
+  v_rexpr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 1,
+      v_name := to_jsonb(ARRAY[
+          ast.string('=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.and (
+  variadic nodes jsonb[]
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.bool_expr(
+      v_boolop := 0,
+      v_args := to_jsonb($1)
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.or (
+  variadic nodes jsonb[]
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.bool_expr(
+      v_boolop := 1,
+      v_args := to_jsonb($1)
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.array_of_strings (
+  variadic strs text[]
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  nodes jsonb[];
+  i int;
+BEGIN
+  FOR i IN
+  SELECT * FROM generate_series(1, cardinality(strs))
+  LOOP 
+    nodes = array_append(nodes, ast.string(strs[i]));
+  END LOOP;
+
+  RETURN to_jsonb(nodes);
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.range_var (
+  v_schemaname text,
+  v_relname text,
+  v_alias jsonb default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.range_var(
+      v_schemaname := v_schemaname,
+      v_relname := v_relname,
+      v_inh := true,
+      v_relpersistence := 'p',
+      v_alias := v_alias
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.col (
+  name text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.column_ref(
+    v_fields := to_jsonb(ARRAY[
+      ast.string(name)
+    ])
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+
+CREATE FUNCTION ast_helpers.col (
+  variadic text[]
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+  flds jsonb[];
+  i int;
+BEGIN
+  ast_expr = ast.column_ref(
+    v_fields := ast_helpers.array_of_strings( variadic strs := $1 )
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+-- Helps so you NEVER use arguments when using RLS fns...
+CREATE FUNCTION ast_helpers.rls_fn (
+  v_rls_schema text,
+  v_fn_name text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.func_call(
+      v_funcname := to_jsonb(ARRAY[
+          ast.string(v_rls_schema),
+          ast.string(v_fn_name)
+      ])
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.coalesce (field text, value text default '')
     RETURNS jsonb
@@ -230,15 +417,18 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_trigger_with_fields (
-  trigger_name text,
-  schema_name text,
-  table_name text,
-  trigger_fn_schema text,
-  trigger_fn_name text,
-  fields text[],
-  timing int default 2,
-  events int default 4 | 16
+CREATE FUNCTION ast_helpers.create_trigger_distinct_fields (
+  v_trigger_name text,
+  
+  v_schema_name text,
+  v_table_name text,
+
+  v_trigger_fn_schema text,
+  v_trigger_fn_name text,
+
+  v_fields text[] default ARRAY[]::text[],
+  v_timing int default 2,
+  v_events int default 4 | 16
 )
     RETURNS jsonb
     AS $$
@@ -246,118 +436,241 @@ DECLARE
   results jsonb[];
   result jsonb;
   whenClause jsonb;
-  r jsonb;
 	i int;
-  field text;
+
+  nodes jsonb[];
 BEGIN
 
-  FOR i IN SELECT * FROM generate_subscripts(fields, 1) g(i)
-    LOOP
-      field = fields[i];
-      IF (i = 1) THEN
-        whenClause = ast_helpers.a_expr_distinct_tg_field(field);
-      ELSE
-        whenClause = ast.bool_expr( 
-          v_boolop := 1, 
-          v_args := to_jsonb(ARRAY[ast_helpers.a_expr_distinct_tg_field(field), whenClause])
-        );
-      END IF;
-    END LOOP;
+  FOR i IN SELECT * FROM generate_subscripts(v_fields, 1) g(i)
+  LOOP
+    nodes = array_append(nodes, ast_helpers.a_expr_distinct_tg_field(v_fields[i]));
+  END LOOP;
+ 
+  IF (cardinality(nodes) > 1) THEN
+    whenClause = ast_helpers.or( variadic nodes := nodes );
+  ELSEIF (cardinality(nodes) = 1) THEN
+    whenClause = nodes[1];
+  END IF;
 
   result = ast.create_trig_stmt(
-    v_trigname := trigger_name,
-    v_relation := ast.range_var(schema_name, table_name, true, 'p'),
-    v_funcname := to_jsonb(ARRAY[ ast.string(trigger_fn_schema),ast.string(trigger_fn_name) ]),
+    v_trigname := v_trigger_name,
+    v_relation := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_funcname := ast_helpers.array_of_strings(v_trigger_fn_schema, v_trigger_fn_name),
     v_row := true,
-    v_timing := timing,
-    v_events := events,
+    v_timing := v_timing,
+    v_events := v_events,
     v_whenClause := whenClause
   );
-
-
-	RETURN result;
+	RETURN ast.raw_stmt(
+    v_stmt := result,
+    v_stmt_len := 1
+  );
 END;
 $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.drop_trigger (
+  v_trigger_name text,
+
+  v_schema_name text,
+  v_table_name text,
+
+  v_cascade boolean default false
+)
+    RETURNS jsonb
+    AS $$
+  select ast.raw_stmt(
+    v_stmt := ast.drop_stmt(
+      v_objects := to_jsonb(ARRAY[ARRAY[
+        ast.string(v_schema_name),
+        ast.string(v_table_name),
+        ast.string(v_trigger_name)
+      ]]),
+      v_removeType := ast_constants.object_type('OBJECT_TRIGGER'),
+      v_behavior:= (CASE when v_cascade IS TRUE then 1 else 0 END)
+    ),
+    v_stmt_len := 1
+  );
+$$
+LANGUAGE 'sql'
+IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.create_function (
-  schema text,
-  name text,
-  type text,
-  parameters jsonb,
-  body text,
-  vol text,
-  lan text,
-  sec int
+  v_schema_name text,
+  v_function_name text,
+  v_type text,
+  v_parameters jsonb,
+  v_body text,
+  v_language text,
+  v_volatility text default null,
+  v_security int default null
 )
     RETURNS jsonb
     AS $$
 DECLARE
   ast jsonb;
+  options jsonb[];
 BEGIN
 
+  options = array_append(options, ast.def_elem(
+    'as',
+    to_jsonb(ARRAY[ast.string(v_body)])
+  ));
+  
+  options = array_append(options, ast.def_elem(
+    'language',
+    ast.string(v_language)
+  ));
+
+  IF (v_volatility IS NOT NULL) THEN 
+    options = array_append(options, ast.def_elem(
+      'volatility',
+      ast.string(v_volatility)
+    ));
+  END IF;
+
+  IF (v_security IS NOT NULL) THEN 
+    options = array_append(options, ast.def_elem(
+      'security',
+      ast.integer(v_security)
+    ));
+  END IF;
+
   select * FROM ast.create_function_stmt(
-    v_funcname := to_jsonb(ARRAY[ ast.string(schema),ast.string(name) ]),
-    v_parameters := parameters,
+    v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
+    v_parameters := v_parameters,
     v_returnType := ast.type_name( 
-        v_names := to_jsonb(ARRAY[ast.string(type)])
+        v_names := ast_helpers.array_of_strings(v_type)
     ),
-    v_options := to_jsonb(ARRAY[
-      ast.def_elem(
-        'as',
-        to_jsonb(ARRAY[ast.string(body)])
-      ),
-      ast.def_elem(
-        'volatility',
-        ast.string(vol)
-      ),
-      ast.def_elem(
-        'language',
-        ast.string(lan)
-      ),
-      ast.def_elem(
-        'security',
-        ast.integer(sec)
-      )
-    ]::jsonb[])
+    v_options := to_jsonb(options)
   ) INTO ast;
 
-  RETURN ast;
+  RETURN ast.raw_stmt(
+    v_stmt := ast,
+    v_stmt_len := 1
+  );
 
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.drop_function (
+  v_schema_name text default null,
+  v_function_name text default null
+)
+RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  ast = ast.raw_stmt(
+    v_stmt := ast.drop_stmt(
+      v_objects := to_jsonb(ARRAY[ARRAY[
+        ast.string(v_schema_name),
+        ast.string(v_function_name)
+      ]]),
+      v_removeType := ast_constants.object_type('OBJECT_FUNCTION')
+    ),
+    v_stmt_len := 1
+  );
+  RETURN ast;
 END;
 $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.create_policy (
-  name text,
-  vschema text,
-  vtable text,
-  vrole text,
-  qual jsonb,
-  cmd text,
-  with_check jsonb,
-  permissive boolean
+  v_policy_name text default null,
+  v_schema_name text default null,
+  v_table_name text default null,
+  v_roles text[] default null,
+  v_qual jsonb default null,
+  v_cmd_name text default null,
+  v_with_check jsonb default null,
+  v_permissive boolean default null
 
 )
-    RETURNS jsonb
+RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+  roles jsonb[];
+  i int;
+BEGIN
+
+  IF (v_permissive IS NULL) THEN 
+    -- Policies default to permissive
+    v_permissive = TRUE;
+  END IF;
+
+  -- if there are no roles then use PUBLIC
+  IF (v_roles IS NULL OR cardinality(v_roles) = 0) THEN 
+      roles = array_append(roles, ast.role_spec(
+        v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_PUBLIC'
+        )
+      ));
+  ELSE
+    FOR i IN 
+    SELECT * FROM generate_series(1, cardinality(v_roles))
+    LOOP
+      roles = array_append(roles, ast.role_spec(
+        v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_CSTRING'
+        ),
+        v_rolename:=v_roles[i]
+      ));
+    END LOOP;
+  END IF;
+
+  select * FROM ast.create_policy_stmt(
+    v_policy_name := v_policy_name,
+    v_table := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_roles := to_jsonb(roles),
+    v_qual := v_qual,
+    v_cmd_name := v_cmd_name,
+    v_with_check := v_with_check,
+    v_permissive := v_permissive
+  ) INTO ast;
+
+  RETURN ast.raw_stmt(
+    v_stmt := ast,
+    v_stmt_len := 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.drop_policy (
+  v_policy_name text default null,
+  v_schema_name text default null,
+  v_table_name text default null
+)
+RETURNS jsonb
     AS $$
 DECLARE
   ast jsonb;
 BEGIN
-  select * FROM ast.create_policy_stmt(
-    v_policy_name := name,
-    v_table := ast.range_var(v_schemaname := vschema, v_relname := vtable, v_inh := true, v_relpersistence := 'p'),
-    v_roles := to_jsonb(ARRAY[
-        ast.role_spec(v_roletype:=0, v_rolename:=vrole)
-    ]),
-    v_qual := qual,
-    v_cmd_name := cmd,
-    v_with_check := with_check,
-    v_permissive := permissive
-  ) INTO ast;
+  ast = ast.raw_stmt(
+    v_stmt := ast.drop_stmt(
+      v_objects := to_jsonb(ARRAY[ARRAY[
+        ast.string(v_schema_name),
+        ast.string(v_table_name),
+        ast.string(v_policy_name)
+      ]]),
+      v_removeType := ast_constants.object_type('OBJECT_POLICY')
+    ),
+    v_stmt_len := 1
+  );
   RETURN ast;
 END;
 $$
@@ -408,44 +721,6 @@ $$
 LANGUAGE 'sql'
 IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.verify_table (
-  v_schema_name text,
-  v_table_name text
-)
-    RETURNS jsonb
-    AS $$
-  select ast.raw_stmt(
-    v_stmt := ast.select_stmt(
-      v_targetList := to_jsonb(ARRAY[
-        ast.res_target(
-          v_val := ast.a_const(
-            v_val := ast.integer(
-              v_ival := 1
-            )
-          )
-        )
-      ]),
-      v_fromClause := to_jsonb(ARRAY[
-        ast.range_var(
-          v_schemaname:= v_schema_name,
-          v_relname:= v_table_name,
-          v_inh := TRUE,
-          v_relpersistence := 'p'
-        )]
-      ),
-      v_limitCount := ast.a_const(
-        v_val := ast.integer(
-          v_ival := 1
-        )
-      ),
-      v_op := 0
-    ),
-    v_stmt_len := 1
-  );
-$$
-LANGUAGE 'sql'
-IMMUTABLE;
-
 CREATE FUNCTION ast_helpers.create_index (
   v_index_name text,
   v_schema_name text,
@@ -476,11 +751,9 @@ BEGIN
   SELECT ast.raw_stmt(
     v_stmt := ast.index_stmt(
       v_idxname := v_index_name,
-      v_relation := ast.range_var(
+      v_relation := ast_helpers.range_var(
         v_schemaname := v_schema_name,
-        v_relname := v_table_name,
-        v_inh := true,
-        v_relpersistence := 'p'::text
+        v_relname := v_table_name
       ),
       v_accessMethod := v_accessMethod,
       v_indexParams := to_jsonb(parameters)
@@ -515,6 +788,258 @@ AS $$
   );
 $$
 LANGUAGE 'sql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.table_grant (
+  v_schema_name text,
+  v_table_name text,
+  v_priv_name text,
+  v_is_grant boolean,
+  v_role_name text,
+  v_cols text[] default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+  cols jsonb[];
+  i int;
+BEGIN
+  FOR i IN 
+  SELECT * FROM generate_series(1, cardinality(v_cols))
+  LOOP 
+    cols = array_append(cols, ast.string(v_cols[i]));
+  END LOOP;
+
+  SELECT ast.raw_stmt(
+    v_stmt := ast.grant_stmt(
+      v_is_grant := v_is_grant,
+      v_targtype := 0, -- why?
+      v_objtype := 1, --why?
+      v_objects := to_jsonb(ARRAY[
+        ast_helpers.range_var(
+          v_schemaname := v_schema_name,
+          v_relname := v_table_name
+        )
+      ]),
+      v_privileges := to_jsonb(ARRAY[
+        ast.access_priv(
+          v_priv_name := v_priv_name,
+          v_cols := to_jsonb(cols)
+        )
+      ]),
+      v_grantees := to_jsonb(ARRAY[
+        ast.role_spec(
+          v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_CSTRING'
+          ),
+          v_rolename:= v_role_name
+        )
+      ])
+    ),
+    v_stmt_len:= 1
+  ) INTO ast;
+
+  RETURN ast;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+-- NOTE we hacked this by using pg_catalog/mods trick, so NOTHING is quoted...
+-- TODO make a better, cleaner way to do this...
+CREATE FUNCTION ast_helpers.alter_table_add_column (
+  v_schema_name text,
+  v_table_name text,
+  v_column_name text,
+  v_column_type text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+    v_stmt := ast.alter_table_stmt(
+      v_relation := ast_helpers.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name
+      ),
+      v_cmds := to_jsonb(ARRAY[
+        ast.alter_table_cmd(
+          v_subtype := 0, -- TODO use constants
+          v_def := ast.column_def(
+            v_colname := v_column_name,
+            v_typeName := ast.type_name(
+              v_names := to_jsonb(ARRAY[
+                ast.string('pg_catalog'), -- HACK to trick deparser into NOT quoting ANYTHING in the next el
+                ast.string(v_column_type)
+              ])
+            ),
+            v_is_local := TRUE
+          ),
+          v_behavior := 0 
+        )
+      ]),
+      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+    ),
+    v_stmt_len:= 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+-- for control over more complex types, use this
+CREATE FUNCTION ast_helpers.alter_table_add_column (
+  v_schema_name text,
+  v_table_name text,
+  v_column_name text,
+  v_column_type jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+    v_stmt := ast.alter_table_stmt(
+      v_relation := ast_helpers.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name
+      ),
+      v_cmds := to_jsonb(ARRAY[
+        ast.alter_table_cmd(
+          v_subtype := ast_constants.alter_table_type('AT_AddColumn'),
+          v_def := ast.column_def(
+            v_colname := v_column_name,
+            v_typeName := v_column_type,
+            v_is_local := TRUE
+          ),
+          v_behavior := 0 
+        )
+      ]),
+      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+    ),
+    v_stmt_len:= 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_drop_column (
+  v_schema_name text,
+  v_table_name text,
+  v_column_name text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+    v_stmt := ast.alter_table_stmt(
+      v_relation := ast_helpers.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name
+      ),
+      v_cmds := to_jsonb(ARRAY[
+        ast.alter_table_cmd(
+          v_subtype := ast_constants.alter_table_type('AT_DropColumn'),
+          v_name := v_column_name,
+          v_behavior := 0 
+        )
+      ]),
+      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+    ),
+    v_stmt_len:= 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_rename_column (
+  v_schema_name text,
+  v_table_name text,
+  v_old_column_name text,
+  v_new_column_name text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+    v_stmt := ast.rename_stmt(
+      v_renameType := ast_constants.object_type('OBJECT_COLUMN'),
+      v_relationType := ast_constants.object_type('OBJECT_TABLE'),
+      v_relation := ast_helpers.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name
+      ),
+      v_subname := v_old_column_name,
+      v_newname := v_new_column_name
+    ),
+    v_stmt_len:= 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_set_column_data_type (
+  v_schema_name text,
+  v_table_name text,
+  v_column_name text,
+  v_old_column_type text,
+  v_new_column_type text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+    v_stmt := ast.alter_table_stmt(
+      v_relation := ast_helpers.range_var(
+        v_schemaname := v_schema_name,
+        v_relname := v_table_name
+      ),
+      v_cmds := to_jsonb(ARRAY[
+        ast.alter_table_cmd(
+          v_subtype := ast_constants.alter_table_type('AT_AlterColumnType'),
+          v_name := v_column_name,
+          v_def := ast.column_def(
+            v_typeName := ast.type_name(
+              v_names := to_jsonb(ARRAY[
+                ast.string(v_new_column_type)
+              ])
+            ),
+            v_raw_default := ast.type_cast(
+              v_arg := ast.column_ref(
+                v_fields := to_jsonb(ARRAY[
+                  ast.string(v_column_name)
+                ])
+              ),
+              v_typeName := ast.type_name(
+                v_names := to_jsonb(ARRAY[
+                  ast.string(v_new_column_type)
+                ])
+              )
+            )
+          ),
+          v_behavior := 0 
+        )
+      ]),
+      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+    ),
+    v_stmt_len:= 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
 IMMUTABLE;
 
 COMMIT;

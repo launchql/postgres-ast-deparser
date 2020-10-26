@@ -136,6 +136,11 @@ BEGIN
   catalog = parsed[1];
   typ = parsed[2];
 
+  -- NOT typ can be NULL
+  IF (typ IS NULL AND lower(catalog) = 'trigger') THEN 
+    RETURN 'TRIGGER';
+  END IF;
+
   IF (names->0->'String'->>'str' = 'char' ) THEN 
     	names = jsonb_set(names, '{0, String, str}', '"char"');
   END IF;
@@ -1497,6 +1502,7 @@ CREATE FUNCTION deparser.create_policy_stmt(
 ) returns text as $$
 DECLARE
   output text[];
+  permissive bool;
 BEGIN
     IF (node->'CreatePolicyStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreatePolicyStmt';
@@ -1519,6 +1525,17 @@ BEGIN
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'table'));
     END IF;
+
+
+    -- permissive is always on there and true, so if not, it's restrictive
+    permissive = (node->'permissive' IS NOT NULL AND (node->'permissive')::bool IS TRUE);
+
+    -- permissive is default so don't need to print it
+    IF (permissive IS FALSE) THEN
+      output = array_append(output, 'AS');
+      output = array_append(output, 'RESTRICTIVE');
+    END IF;
+
     IF (node->'cmd_name') IS NOT NULL THEN
       output = array_append(output, 'FOR');
       output = array_append(output, upper(node->>'cmd_name'));
@@ -2036,7 +2053,6 @@ CREATE FUNCTION deparser.comment_stmt(
 DECLARE
   output text[];
   objtype int;
-  objtypes text[];
 BEGIN
     IF (node->'CommentStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CommentStmt';
@@ -2047,11 +2063,10 @@ BEGIN
     END IF;
 
     node = node->'CommentStmt';
-    objtypes = ast_utils.objtypes();
     objtype = (node->'objtype')::int;
     output = array_append(output, 'COMMENT');
     output = array_append(output, 'ON');
-    output = array_append(output, objtypes[objtype + 1]);
+    output = array_append(output, ast_utils.objtype_name(objtype));
 
     IF (objtype = ast_constants.object_type('OBJECT_CAST')) THEN
       output = array_append(output, '(');
@@ -2546,7 +2561,11 @@ BEGIN
         END IF;
         output = array_append(output, 'ON');
         output = array_append(output, ast_utils.getgrantobject(node));
-        output = array_append(output, deparser.list(node->'objects'));
+        IF ( objtype = ast_constants.object_type('OBJECT_DOMAIN') ) THEN 
+          output = array_append(output, deparser.list(node->'objects'->0));
+        ELSE
+          output = array_append(output, deparser.list(node->'objects'));
+        END IF;
         output = array_append(output, 'FROM');
         output = array_append(output, deparser.list(node->'grantees'));
       ELSE
@@ -2675,6 +2694,7 @@ CREATE FUNCTION deparser.alter_table_cmd(
 DECLARE
   output text[];
   subtype int;
+  subtypeName text;
 BEGIN
     IF (node->'AlterTableCmd') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableCmd';
@@ -2686,13 +2706,23 @@ BEGIN
 
     node = node->'AlterTableCmd';
     subtype = (node->'subtype')::int;
+    
+    subtypeName = 'COLUMN';
+    IF ( context->>'alterType' = 'OBJECT_TYPE' ) THEN 
+      subtypeName = 'ATTRIBUTE';
+    END IF;
 
     IF (subtype = ast_constants.alter_table_type('AT_AddColumn')) THEN 
-      output = array_append(output, 'ADD COLUMN');
+      output = array_append(output, 'ADD');
+      output = array_append(output, subtypeName);
+      IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
+        output = array_append(output, 'IF NOT EXISTS');
+      END IF;
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, deparser.expression(node->'def'));
     ELSIF (subtype = ast_constants.alter_table_type('AT_ColumnDefault')) THEN
-      output = array_append(output, 'ALTER COLUMN');
+      output = array_append(output, 'ALTER');
+      output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       IF (node->'def' IS NOT NULL) THEN
         output = array_append(output, 'SET DEFAULT');
@@ -2701,11 +2731,13 @@ BEGIN
         output = array_append(output, 'DROP DEFAULT');
       END IF;
     ELSIF (subtype = ast_constants.alter_table_type('AT_DropNotNull')) THEN
-      output = array_append(output, 'ALTER COLUMN');
+      output = array_append(output, 'ALTER');
+      output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'DROP NOT NULL');
     ELSIF (subtype = ast_constants.alter_table_type('AT_SetNotNull')) THEN
-      output = array_append(output, 'ALTER COLUMN');
+      output = array_append(output, 'ALTER');
+      output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET NOT NULL');
     ELSIF (subtype = ast_constants.alter_table_type('AT_SetStatistics')) THEN
@@ -2714,7 +2746,8 @@ BEGIN
       output = array_append(output, 'SET STATISTICS');
       output = array_append(output, deparser.expression(node->'def'));
     ELSIF (subtype = ast_constants.alter_table_type('AT_SetOptions')) THEN
-      output = array_append(output, 'ALTER COLUMN');
+      output = array_append(output, 'ALTER');
+      output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
@@ -2729,7 +2762,8 @@ BEGIN
       END IF;
     ELSIF (subtype = ast_constants.alter_table_type('AT_DropColumn')) THEN
       output = array_append(output, 'DROP');
-      IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN
+      output = array_append(output, subtypeName);
+      IF ( (node->'missing_ok')::bool IS TRUE ) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
@@ -2741,15 +2775,19 @@ BEGIN
       output = array_append(output, quote_ident(node->>'name'));
     ELSIF (subtype = ast_constants.alter_table_type('AT_DropConstraint')) THEN
       output = array_append(output, 'DROP CONSTRAINT');
-      IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN
+      IF ( (node->'missing_ok')::bool IS TRUE ) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
     ELSIF (subtype = ast_constants.alter_table_type('AT_AlterColumnType')) THEN
-      output = array_append(output, 'ALTER COLUMN');
+      output = array_append(output, 'ALTER');
+      output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'TYPE');
       output = array_append(output, deparser.expression(node->'def'));
+    ELSIF (subtype = ast_constants.alter_table_type('AT_ChangeOwner')) THEN
+      output = array_append(output, 'OWNER TO');
+      output = array_append(output, deparser.expression(node->'newowner'));
     ELSIF (subtype = ast_constants.alter_table_type('AT_ClusterOn')) THEN
       output = array_append(output, 'CLUSTER ON');
       output = array_append(output, quote_ident(node->>'name'));
@@ -2771,6 +2809,11 @@ BEGIN
     ELSIF (subtype = ast_constants.alter_table_type('AT_DropInherit')) THEN
       output = array_append(output, 'NO INHERIT');
       output = array_append(output, deparser.expression(node->'def'));
+    ELSIF (subtype = ast_constants.alter_table_type('AT_AddOf')) THEN
+      output = array_append(output, 'OF');
+      output = array_append(output, deparser.expression(node->'def'));
+    ELSIF (subtype = ast_constants.alter_table_type('AT_DropOf')) THEN
+      output = array_append(output, 'NOT OF');
     ELSIF (subtype = ast_constants.alter_table_type('AT_EnableRowSecurity')) THEN
       output = array_append(output, 'ENABLE ROW LEVEL SECURITY');
     ELSIF (subtype = ast_constants.alter_table_type('AT_DisableRowSecurity')) THEN
@@ -2781,6 +2824,10 @@ BEGIN
       output = array_append(output, 'NO FORCE ROW SECURITY');
     ELSE 
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableCmd may need to implement more alter_table_type(s)';
+    END IF;
+
+    IF ( (node->'behavior')::int = 1 ) THEN
+      output = array_append(output, 'CASCADE');
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -2795,6 +2842,7 @@ CREATE FUNCTION deparser.alter_table_stmt(
 DECLARE
   output text[];
   relkind int;
+  ninh bool;
 BEGIN
     IF (node->'AlterTableStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableStmt';
@@ -2812,30 +2860,28 @@ BEGIN
     relkind = (node->'relkind')::int;
     output = array_append(output, 'ALTER');
 
-    IF (relkind = 32) THEN 
+    IF (relkind = ast_constants.object_type('OBJECT_TABLE') ) THEN 
       output = array_append(output, 'TABLE');
-    ELSIF (relkind = 42) THEN 
-      output = array_append(output, 'VIEW');
-    ELSIF (relkind = 40) THEN 
-      output = array_append(output, 'TYPE');
-    ELSE
-      output = array_append(output, 'TABLE');
-      IF (
-        node->'relation'->'RangeVar' IS NOT NULL AND
-        node->'relation'->'RangeVar'->'inh' IS NULL OR
-        (node->'relation'->'RangeVar'->'inh' IS NOT NULL AND
-        (node->'relation'->'RangeVar'->'inh')::bool IS FALSE)
-      ) THEN 
+
+      ninh = (node->'relation'->'RangeVar'->'inh')::bool;
+      IF ( ninh IS FALSE OR ninh IS NULL ) THEN 
         output = array_append(output, 'ONLY');
       END IF;
+
+    ELSEIF (relkind = ast_constants.object_type('OBJECT_TYPE')) THEN 
+      output = array_append(output, 'TYPE');
+    ELSE 
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableStmt (relkind impl)';
     END IF;
 
-    IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN 
+    IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
       output = array_append(output, 'IF EXISTS');
     END IF;
 
-    output = array_append(output, deparser.expression(node->'relation'));
-    output = array_append(output, deparser.list(node->'cmds'));
+    context = jsonb_set(context, '{alterType}', to_jsonb(ast_constants.object_type(relkind)));
+
+    output = array_append(output, deparser.expression(node->'relation', context));
+    output = array_append(output, deparser.list(node->'cmds', ', ', context));
 
     RETURN array_to_string(output, ' ');
 END;
@@ -3332,7 +3378,7 @@ BEGIN
 
     IF (node->'cols') IS NOT NULL THEN
       output = array_append(output, '(');
-      output = array_append(output, deparser.list(node->'cols', context));
+      output = array_append(output, deparser.list_quotes(node->'cols', ', ', context));
       output = array_append(output, ')');
     END IF;
 
@@ -3936,7 +3982,6 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
--- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.alter_domain_stmt(
   node jsonb,
   context jsonb default '{}'::jsonb
@@ -3953,47 +3998,62 @@ BEGIN
 
     output = array_append(output, 'ALTER DOMAIN');
  
-    subtype = node->>'subtype';
     output = array_append(output, deparser.quoted_name(node->'typeName'));
 
-    IF (node->'behavior' IS NOT NULL AND (node->'behavior')::int = 0) THEN 
-      output = array_append(output, 'CASCADE');
+    subtype = node->>'subtype';
+    IF (subtype = 'C') THEN 
+      output = array_append(output, 'ADD');
+      output = array_append(output, deparser.expression(node->'def'));
+    ELSEIF (subtype = 'V') THEN 
+      output = array_append(output, 'VALIDATE');
+      output = array_append(output, 'CONSTRAINT');
+      output = array_append(output, quote_ident(node->>'name'));
+    ELSEIF (subtype = 'X') THEN 
+      output = array_append(output, 'DROP');
+      output = array_append(output, 'CONSTRAINT');
+      output = array_append(output, quote_ident(node->>'name'));
     END IF;
 
-    -- IF (subtype = 'O') THEN 
-    --   output = array_append(output, '');
-    -- END IF;
+    IF ((node->'behavior')::int = 1) THEN 
+      output = array_append(output, 'CASCADE');
+    END IF;
 
     RETURN array_to_string(output, ' ');
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
--- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.alter_enum_stmt(
   node jsonb,
   context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
+  txt text;
 BEGIN
     IF (node->'AlterEnumStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterEnumStmt';
     END IF;
 
     node = node->'AlterEnumStmt';
-
+  
     output = array_append(output, 'ALTER TYPE');
     output = array_append(output, deparser.quoted_name(node->'typeName'));
     output = array_append(output, 'ADD VALUE');
-    output = array_append(output, '''' || (node->>'newVal') || '''');
+    txt = replace(node->>'newVal', '''', '''''');
+    output = array_append(output, '''' || txt || '''');
     IF (node->'newValNeighbor' IS NOT NULL) THEN 
       IF (node->'newValIsAfter' IS NOT NULL AND (node->'newValIsAfter')::bool IS TRUE) THEN 
         output = array_append(output, 'AFTER');
       ELSE
         output = array_append(output, 'BEFORE');
       END IF;
-      output = array_append(output, '''' || (node->>'newValNeighbor') || '''');
+      txt = replace(node->>'newValNeighbor', '''', '''''');
+      output = array_append(output, '''' || txt || '''');
+    END IF;
+
+    IF ((node->'behavior')::int = 1) THEN 
+      output = array_append(output, 'CASCADE');
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -4090,32 +4150,178 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
--- TODO never FULLY IMPLEMENTED
 CREATE FUNCTION deparser.rename_stmt(
   node jsonb,
   context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
   output text[];
-  objtype int;
+  renameType int;
+  relationType int;
+  typObj jsonb;
 BEGIN
     IF (node->'RenameStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'RenameStmt';
     END IF;
 
     node = node->'RenameStmt';
-    objtype = (node->'renameType')::int;
-    IF (objtype = ast_constants.object_type('OBJECT_COLUMN')) THEN
+    renameType = (node->'renameType')::int;
+    relationType = (node->'relationType')::int;
+    IF (
+      renameType = ast_constants.object_type('OBJECT_FUNCTION') OR
+      renameType = ast_constants.object_type('OBJECT_FOREIGN_TABLE') OR
+      renameType = ast_constants.object_type('OBJECT_FDW') OR
+      renameType = ast_constants.object_type('OBJECT_FOREIGN_SERVER')
+    ) THEN
       output = array_append(output, 'ALTER');
-      output = array_append(output, 'TABLE');
+      output = array_append(output, ast_utils.objtype_name(renameType) );
+      IF ((node->'missing_ok')::bool is TRUE) THEN
+        output = array_append(output, 'IF EXISTS');
+      END IF;
+      output = array_append(output, deparser.expression(node->'object'));
+      output = array_append(output, 'RENAME');
+      output = array_append(output, 'TO');
+      output = array_append(output, quote_ident(node->>'newname'));
+    ELSEIF ( renameType = ast_constants.object_type('OBJECT_ATTRIBUTE') ) THEN
+      output = array_append(output, 'ALTER');
+      output = array_append(output, ast_utils.objtype_name(relationType) );
+      IF ((node->'missing_ok')::bool is TRUE) THEN
+        output = array_append(output, 'IF EXISTS');
+      END IF;
       output = array_append(output, deparser.expression(node->'relation'));
       output = array_append(output, 'RENAME');
-      output = array_append(output, 'COLUMN');
-      output = array_append(output, node->>'subname');
+      output = array_append(output, ast_utils.objtype_name(renameType) );
+      output = array_append(output, quote_ident(node->>'subname'));
       output = array_append(output, 'TO');
-      output = array_append(output, node->>'newname');
+      output = array_append(output, quote_ident(node->>'newname'));
+    ELSEIF ( 
+      renameType = ast_constants.object_type('OBJECT_DOMAIN') OR
+      renameType = ast_constants.object_type('OBJECT_TYPE') 
+     ) THEN
+
+      output = array_append(output, 'ALTER');
+      output = array_append(output, ast_utils.objtype_name(renameType) );
+      IF ((node->'missing_ok')::bool is TRUE) THEN
+        output = array_append(output, 'IF EXISTS');
+      END IF;
+
+      typObj = '{"TypeName":{"names": []}}'::jsonb;
+      typObj = jsonb_set(typObj, '{TypeName, names}', node->'object');
+      output = array_append(output, deparser.expression(typObj));
+      output = array_append(output, 'RENAME');
+      output = array_append(output, 'TO');
+      output = array_append(output, quote_ident(node->>'newname'));
+
+    ELSEIF ( renameType = ast_constants.object_type('OBJECT_DOMCONSTRAINT') ) THEN
+
+      output = array_append(output, 'ALTER');
+      output = array_append(output, 'DOMAIN');
+      IF ((node->'missing_ok')::bool is TRUE) THEN
+        output = array_append(output, 'IF EXISTS');
+      END IF;
+
+      typObj = '{"TypeName":{"names": []}}'::jsonb;
+      typObj = jsonb_set(typObj, '{TypeName, names}', node->'object');
+      output = array_append(output, deparser.expression(typObj));
+      output = array_append(output, 'RENAME CONSTRAINT');
+      output = array_append(output, quote_ident(node->>'subname'));
+      output = array_append(output, 'TO');
+      output = array_append(output, quote_ident(node->>'newname'));
+
     ELSE
-      RAISE EXCEPTION 'BAD_EXPRESSION % type(%)', 'RenameStmt', node->>'renameType';
+      output = array_append(output, 'ALTER');
+      output = array_append(output, 'TABLE');
+      IF ((node->'missing_ok')::bool is TRUE) THEN
+        output = array_append(output, 'IF EXISTS');
+      END IF;
+      output = array_append(output, deparser.expression(node->'relation'));
+      output = array_append(output, 'RENAME');
+      IF (renameType = ast_constants.object_type('OBJECT_COLUMN')) THEN 
+        -- not necessary, but why not
+        output = array_append(output, 'COLUMN');
+      END IF;
+      output = array_append(output, quote_ident(node->>'subname'));
+      output = array_append(output, 'TO');
+      output = array_append(output, quote_ident(node->>'newname'));
+
+    END IF;
+
+    IF ( (node->'behavior')::int = 1 ) THEN
+      output = array_append(output, 'CASCADE');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.alter_owner_stmt(
+  node jsonb,
+  context jsonb default '{}'::jsonb
+) returns text as $$
+DECLARE
+  output text[];
+  objectType int;
+BEGIN
+    IF (node->'AlterOwnerStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterOwnerStmt';
+    END IF;
+
+    node = node->'AlterOwnerStmt';
+    objectType = (node->'objectType')::int;
+    IF (
+      objectType = ast_constants.object_type('OBJECT_FUNCTION') OR
+      objectType = ast_constants.object_type('OBJECT_FOREIGN_TABLE') OR
+      objectType = ast_constants.object_type('OBJECT_FDW') OR
+      objectType = ast_constants.object_type('OBJECT_FOREIGN_SERVER')
+    ) THEN
+      output = array_append(output, 'ALTER');
+      output = array_append(output, ast_utils.objtype_name(objectType) );
+      output = array_append(output, deparser.expression(node->'object'));
+      output = array_append(output, 'OWNER');
+      output = array_append(output, 'TO');
+      output = array_append(output, deparser.expression(node->'newowner'));
+    ELSE
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterOwnerStmt new objectType';
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.alter_object_schema_stmt(
+  node jsonb,
+  context jsonb default '{}'::jsonb
+) returns text as $$
+DECLARE
+  output text[];
+  objectType int;
+BEGIN
+    IF (node->'AlterObjectSchemaStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterObjectSchemaStmt';
+    END IF;
+
+    node = node->'AlterObjectSchemaStmt';
+    objectType = (node->'objectType')::int;
+    IF ( objectType = ast_constants.object_type('OBJECT_TABLE') ) THEN
+      output = array_append(output, 'ALTER');
+      output = array_append(output, ast_utils.objtype_name(objectType) );
+      IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
+        output = array_append(output, 'IF EXISTS');
+      END IF;
+      output = array_append(output, deparser.expression(node->'relation'));
+      output = array_append(output, 'SET SCHEMA');
+      output = array_append(output, quote_ident(node->>'newschema'));
+    ELSE
+      output = array_append(output, 'ALTER');
+      output = array_append(output, ast_utils.objtype_name(objectType) );
+      IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
+        output = array_append(output, 'IF EXISTS');
+      END IF;
+      output = array_append(output, deparser.expression(node->'object'));
+      output = array_append(output, 'SET SCHEMA');
+      output = array_append(output, quote_ident(node->>'newschema'));
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -4515,9 +4721,8 @@ BEGIN
     node = node->'DropStmt';
 
     output = array_append(output, 'DROP');
-    objtypes = ast_utils.objtypes();
     objtype = (node->'removeType')::int;
-    output = array_append(output, objtypes[objtype + 1]);
+    output = array_append(output, ast_utils.objtype_name(objtype));
     
     IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN 
       output = array_append(output, 'IF EXISTS');
@@ -4526,10 +4731,53 @@ BEGIN
     
     FOR obj IN SELECT * FROM jsonb_array_elements(node->'objects')
     LOOP
-      IF (jsonb_typeof(obj) = 'array') THEN
-        quoted = array_append(quoted, deparser.quoted_name(obj));
+      IF ( 
+        objtype = ast_constants.object_type('OBJECT_POLICY')
+        OR objtype = ast_constants.object_type('OBJECT_RULE')
+        OR objtype = ast_constants.object_type('OBJECT_TRIGGER')
+      ) THEN
+        IF (jsonb_typeof(obj) = 'array') THEN
+          IF (jsonb_array_length(obj) = 2) THEN
+            output = array_append(output, deparser.quoted_name( 
+              to_jsonb(ARRAY[
+                obj->1
+              ])
+            ));
+            output = array_append(output, 'ON');
+            output = array_append(output, deparser.quoted_name( 
+              to_jsonb(ARRAY[
+                obj->0
+              ])
+            ));
+          ELSEIF (jsonb_array_length(obj) = 3) THEN
+            output = array_append(output, deparser.quoted_name( 
+              to_jsonb(ARRAY[
+                obj->2
+              ])
+            ));
+            output = array_append(output, 'ON');
+            output = array_append(output, deparser.quoted_name( 
+              to_jsonb(ARRAY[
+                obj->0,
+                obj->1
+              ])
+            ));
+          END IF;
+        ELSE
+          RAISE EXCEPTION 'BAD_EXPRESSION %', 'DropStmt (POLICY)';
+        END IF;
+      ELSEIF (objtype = ast_constants.object_type('OBJECT_CAST')) THEN 
+        output = array_append(output, '(');
+        output = array_append(output, deparser.expression(obj->0));
+        output = array_append(output, 'AS');
+        output = array_append(output, deparser.expression(obj->1));
+        output = array_append(output, ')');
       ELSE
-        quoted = array_append(quoted, deparser.expression(obj));
+        IF (jsonb_typeof(obj) = 'array') THEN
+          quoted = array_append(quoted, deparser.quoted_name(obj));
+        ELSE
+          quoted = array_append(quoted, deparser.expression(obj));
+        END IF;
       END IF;
     END LOOP;
 
@@ -4683,11 +4931,13 @@ BEGIN
               output = array_append(output, 'LANGUAGE' );
               output = array_append(output, deparser.expression(option->'DefElem'->'arg') );
             ELSIF (defname = 'security') THEN 
-              output = array_append(output, 'SECURITY' );
               IF ((option->'DefElem'->'arg'->'Integer'->'ival')::int > 0) THEN
+                output = array_append(output, 'SECURITY' );
                 output = array_append(output, 'DEFINER' );
               ELSE
-                output = array_append(output, 'INVOKER' );
+                -- this is the default, no need to put it here...
+                -- output = array_append(output, 'SECURITY' );
+                -- output = array_append(output, 'INVOKER' );
               END IF;
             ELSIF (defname = 'leakproof') THEN 
               IF ((option->'DefElem'->'arg'->'Integer'->'ival')::int > 0) THEN
@@ -4833,6 +5083,10 @@ BEGIN
     RETURN deparser.alter_table_cmd(expr, context);
   ELSEIF (expr->>'AlterTableStmt') IS NOT NULL THEN
     RETURN deparser.alter_table_stmt(expr, context);
+  ELSEIF (expr->>'AlterOwnerStmt') IS NOT NULL THEN
+    RETURN deparser.alter_owner_stmt(expr, context);
+  ELSEIF (expr->>'AlterObjectSchemaStmt') IS NOT NULL THEN
+    RETURN deparser.alter_object_schema_stmt(expr, context);
   ELSEIF (expr->>'BitString') IS NOT NULL THEN
     RETURN deparser.bit_string(expr, context);
   ELSEIF (expr->>'BoolExpr') IS NOT NULL THEN

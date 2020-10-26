@@ -1416,13 +1416,13 @@
   resolved "https://registry.npmjs.org/@launchql/db-template/-/db-template-0.2.1.tgz#17fb3738fcad6744116f03b4d5c745ec4841c105"
   integrity sha512-4pFOUkv/nFnsojS3yLwX9C75LEt954eTwK+b7X7esBGdkNiUSyafg3U+jfmgN5NjV8NeEqf6VCxBrOfTD2QNWA==
 
-"@launchql/db-testing@0.4.3", "@launchql/db-testing@^0.4.3":
-  version "0.4.3"
-  resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-0.4.3.tgz#847581778cc4317b2790c7bc6fcea0c2973b6e4d"
-  integrity sha512-7bdzraYSWd95S/VNehTSgqfJfPmHvx2ijhE86N/nuKskn/xS4mN0lhwBAeXa0SS8w12T3b18e0uC/PWZYmZqPg==
+"@launchql/db-testing@0.4.4", "@launchql/db-testing@^0.4.4", "@launchql/db-testing@latest":
+  version "0.4.4"
+  resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-0.4.4.tgz#f910e1d729cd83ff465cd261fbccc99c3921d815"
+  integrity sha512-uSFj5ivw6AvDkVuf5s710GpgtRRMsQiGYVBJsEy5umF78jlVQHmqQywjvFO7t71TISYnSpc0Lgmf+Qa9WobKVw==
   dependencies:
     "@babel/runtime" "^7.12.1"
-    "@launchql/db-utils" "^0.4.2"
+    "@launchql/db-utils" "^0.4.3"
     envalid "6.0.2"
     pg "8.4.1"
     pg-promise "10.7.0"
@@ -1437,10 +1437,10 @@
     "@babel/runtime" "^7.12.1"
     pgsql-parser "0.8.6"
 
-"@launchql/db-utils@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.npmjs.org/@launchql/db-utils/-/db-utils-0.4.2.tgz#2608d80b7ba64386b2c48e79cf751abe57dbd8be"
-  integrity sha512-jOcQTkH7rQM/J8kOXVEB5FpRE8PCDKL1Gmt1+ls5y4mgIo9PWl4qR8zH8irGmRxAqkVWFm8DM/Fx/itkR/P6OA==
+"@launchql/db-utils@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.npmjs.org/@launchql/db-utils/-/db-utils-0.4.3.tgz#6d59a9658bf13eba5a1bfa025a4f62a50a1fcb8a"
+  integrity sha512-kiMOgJeRH7oYOZlpoPFj6ideEQqccl2KxOZ1EQiOZ59946VsLiWSDXSy9K1vx8PzKt7zY9VXmKuVwpifNoSImA==
   dependencies:
     "@babel/runtime" "^7.12.1"
     "@launchql/db-env" "^0.1.3"
@@ -1457,10 +1457,10 @@
     semver "^5.5.1"
     shelljs "^0.8.2"
 
-"@launchql/graphile-settings@^0.1.17":
-  version "0.1.17"
-  resolved "https://registry.npmjs.org/@launchql/graphile-settings/-/graphile-settings-0.1.17.tgz#58fe8ac85536d482e80d9e2d59227425ffa54044"
-  integrity sha512-ReLF8Q33Ao4QhhK2TquYkIE//+lMDRPH2/XMAzw7QXxFCqVJCHslN6U7uR366IB2dRrf4VzsYaHp4kwqkxBqdg==
+"@launchql/graphile-settings@^0.1.21":
+  version "0.1.21"
+  resolved "https://registry.npmjs.org/@launchql/graphile-settings/-/graphile-settings-0.1.21.tgz#a599483b898ea780adabd2e0fc3f81b8e9706f33"
+  integrity sha512-79hoxDrysuxIEFI/h7Vw4XUifV5gOLDanQngs/gp48aWRbCU6yQ68wLrPRCn+5paqS44mJ1CA8TVoRByOfeEsA==
   dependencies:
     "@babel/runtime" "^7.12.1"
     "@graphile-contrib/pg-many-to-many" "1.0.0"
@@ -1470,21 +1470,21 @@
     "@pyramation/upload-names" "0.1.0"
     envalid "6.0.2"
     graphile-build "4.9.0"
-    graphile-meta-schema "0.1.3"
+    graphile-meta-schema "0.2.3"
     graphile-search-plugin "0.1.1"
     graphile-simple-inflector "0.1.1"
     postgraphile-derived-upload-field "0.0.6"
     postgraphile-plugin-connection-filter "2.0.0"
     postgraphile-plugin-connection-filter-postgis "1.0.0-alpha.6"
 
-"@launchql/graphql-testing@0.3.16":
-  version "0.3.16"
-  resolved "https://registry.npmjs.org/@launchql/graphql-testing/-/graphql-testing-0.3.16.tgz#599cd3ee32e7d54533d2f73962c15365d8a8b0ca"
-  integrity sha512-jmZKu//NaOKeCwkZ9BxS3vxi1JBrj/rh8z367tDSqjsDkH+1tnd0BUYYGjIPTKVzV78X5eppft/Ce8BUwh1Ang==
+"@launchql/graphql-testing@0.3.21", "@launchql/graphql-testing@latest":
+  version "0.3.21"
+  resolved "https://registry.npmjs.org/@launchql/graphql-testing/-/graphql-testing-0.3.21.tgz#65fd28460d1eee0da25d783e9dc5ecdbcc718191"
+  integrity sha512-TedfrKwjQvbFlEKUsleqWah97FtA+v8LNWV+6s2QlfWF8Of5NjYx0KSpIrk92ebXHU3bMXSeQ5TDwq1vxyrDjA==
   dependencies:
     "@babel/runtime" "^7.12.1"
-    "@launchql/db-testing" "^0.4.3"
-    "@launchql/server" "^0.19.22"
+    "@launchql/db-testing" "^0.4.4"
+    "@launchql/server" "^0.19.26"
     envalid "6.0.2"
     graphql "^14.0.2"
     mock-req "0.2.0"
@@ -1501,13 +1501,13 @@
     lru-cache "6.0.0"
     pg "8.4.1"
 
-"@launchql/server@^0.19.22":
-  version "0.19.22"
-  resolved "https://registry.npmjs.org/@launchql/server/-/server-0.19.22.tgz#9df3b48dd27362f0bed1df83cc0ddaef9d5f9b7e"
-  integrity sha512-0PrQaQ558inAfGLVdhkXwSu5mwzlIUbtDeNH1jojZNoarl+TdCntm3jA6FoxvJoxY5AuUR/q77sFCfPBi4ngNg==
+"@launchql/server@^0.19.26":
+  version "0.19.26"
+  resolved "https://registry.npmjs.org/@launchql/server/-/server-0.19.26.tgz#4de30cb864def5bd2ff60456c1ad1cad907121cc"
+  integrity sha512-Xiexo/Xe5dF5DM9JFk/LG3lHnntEV1iaRLuNJzlhI0sy6paqlmNdvXJy8diy4jYn1HscHh12yW8VG/RI3i8MZg==
   dependencies:
     "@babel/runtime" "^7.12.1"
-    "@launchql/graphile-settings" "^0.1.17"
+    "@launchql/graphile-settings" "^0.1.21"
     "@launchql/server-utils" "^0.1.4"
     "@pyramation/crypto-keys" "0.1.1"
     "@pyramation/crypto-networks" "0.1.0"
@@ -4373,7 +4373,7 @@ dotenv@^8.2.0:
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
 
-dotty@^0.1.0:
+dotty@0.1.0, dotty@^0.1.0:
   version "0.1.0"
   resolved "https://registry.npmjs.org/dotty/-/dotty-0.1.0.tgz#da371ccd931a37282f8f7f77adada7d54539708a"
   integrity sha512-VJzcXJZEckXowvj6yGJC2JH66DLEEm1d1QOB0hik1EvlbUpULvcYt411JeFuy8rNC96FG8V2N7pMkyjvK8LYwQ==
@@ -5464,10 +5464,10 @@ graphile-build@4.9.0:
     pluralize "^7.0.0"
     semver "^6.0.0"
 
-graphile-meta-schema@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.npmjs.org/graphile-meta-schema/-/graphile-meta-schema-0.1.3.tgz#82cf76a114def8bc2aedb0271c061c10cfd7e29f"
-  integrity sha512-TARiO618B2IeeH9E/dMDomMpH44VXPVQm/zC7rgTNgXE1wdReq5AoP0SW5plpAE2tRxa2hdJceSVCq+e8zhWng==
+graphile-meta-schema@0.2.3:
+  version "0.2.3"
+  resolved "https://registry.npmjs.org/graphile-meta-schema/-/graphile-meta-schema-0.2.3.tgz#db02bf482215c817ab8f7e0bf016377cd047ac42"
+  integrity sha512-YJwGiek1+0EFladcTPq9yu2hk09NYaADbakFSy0lN8MajVv68hajrrEATkY+o4MMLGN3UJplTp0Tbhkd5Tbjig==
   dependencies:
     "@babel/runtime" "^7.4.2"
     graphile-utils "^4.9.0"
@@ -7044,7 +7044,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.npmjs.org/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-"lodash@>=4 <5", lodash@^4.13.1, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.2.1:
+lodash@4.17.20, "lodash@>=4 <5", lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.2.1:
   version "4.17.20"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
@@ -8320,15 +8320,22 @@ pgpass@1.x:
   dependencies:
     split "^1.0.0"
 
-pgsql-parser@0.7.9:
-  version "0.7.9"
-  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-0.7.9.tgz#12b579da89fe5f32941be360c58c4998786536be"
-  integrity sha512-Sv0lPWc1IhteFTsj9ScrC5C2+uUngfz9+OO3Ufma9DRrJHdtEqc4Zo7tXFin+iTucac1pyBTVQehoQ0ZDaberg==
+pgsql-deparser@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-1.0.6.tgz#ad2573149fa58533e053168a20dff9ba212d0ac9"
+  integrity sha512-DHGz+qYfQhUurvLzIK3beZNcxE7xgXbdGr6zEccaqRYpcCNAK7UwtQEFFZ0d+qR2u6mLJhzskrV/dj6fsVZd9w==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    dotty "0.1.0"
+    lodash "4.17.20"
+    pgsql-enums "^1.0.2"
+
+pgsql-enums@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/pgsql-enums/-/pgsql-enums-1.0.2.tgz#353a817e97fd1c1e0544aa8e89d141f0cb43c6df"
+  integrity sha512-Z9jpvtbPSm6L9tx1OEs4Ny4vsFHlU+WxD9MScgggmKPHbr/W3wfhL1w+Px+oqOzlcLE+loVNol1RkCN+9ToHLA==
   dependencies:
     "@babel/runtime" "^7.4.2"
-    "@pgql/parse" "1.2.6"
-    dotty "^0.1.0"
-    lodash "^4.13.1"
 
 pgsql-parser@0.8.6:
   version "0.8.6"
@@ -8340,6 +8347,17 @@ pgsql-parser@0.8.6:
     dotty "^0.1.0"
     lodash "^4.17.20"
     minimist "^1.2.5"
+
+pgsql-parser@1.0.6:
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-1.0.6.tgz#595c82b097cfb823040bfc0e7e09cb92075d6425"
+  integrity sha512-/tcT/X700XUmZ+ZCYjrkN/b0xHodShMFGneM3Pt7MbXjniIUskHdWC3akX01UuwowXQ7UqcjYX0fP+ZGU6NKtA==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    "@pgql/parse" "1.2.6"
+    minimist "^1.2.5"
+    pgsql-deparser "^1.0.6"
+    pgsql-enums "^1.0.2"
 
 picomatch@^2.0.4, picomatch@^2.0.5:
   version "2.2.2"

@@ -1,5 +1,127 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`drops 1`] = `
+"DROP POLICY policy_name ON schema_name.table_name;
+DROP POLICY policy_name ON table_name;
+REVOKE DELETE ON TABLE schema_name.table_name FROM authenticated;
+REVOKE DELETE ON TABLE table_name FROM authenticated;
+DROP TABLE table_name;
+DROP TABLE schema_name.table_name;
+ALTER TABLE schema_name.table_name DROP COLUMN column_name;
+ALTER TABLE \\"schema-name\\".table_name DROP COLUMN column_name;
+ALTER TABLE \\"schema-name\\".\\"aa-bdd\\" DROP COLUMN \\"sdf-sdf\\";
+ALTER TABLE \\"table-name\\" DROP COLUMN column_name;
+ALTER TABLE table_name DROP COLUMN column_name;
+DROP SEQUENCE IF EXISTS hsseq;
+DROP SEQUENCE IF EXISTS \\"some-thing\\".hsseq;
+ALTER TABLE schemaname.table_name RENAME COLUMN column_name1 TO new_column_name1;
+ALTER TABLE table_name RENAME COLUMN column_name1 TO new_column_name1;
+DROP TYPE test_type;
+DROP TYPE schema_name.test_type;
+DROP TYPE \\"schema-name\\".test_type;
+DROP TYPE \\"schema-name\\".\\"test-type\\";
+DROP TYPE IF EXISTS test_type_exists;
+DROP TYPE IF EXISTS \\"aa-bb\\".test_type_exists;
+DROP TYPE eitype CASCADE;
+DROP DOMAIN testdomain2b;
+DROP DOMAIN schema_name.testdomain2b;
+DROP FUNCTION testfunc5b ( testdomain1 );
+DROP FUNCTION \\"my-schema\\".testfunc5b ( testdomain1 );
+DROP FUNCTION testfunc6b ( int );
+DROP FUNCTION \\"my-schema\\".testfunc6b ( int );
+DROP FUNCTION \\"my-schema\\".\\"test-func6b\\" ( int );
+DROP FUNCTION testfunc7777;
+DROP FUNCTION \\"my-schema\\".testfunc7777;
+DROP TRIGGER trigger_name ON table_name;
+DROP TRIGGER IF EXISTS trigger_name ON table_name;
+DROP TRIGGER trigger_name ON schema_name.table_name;
+DROP TRIGGER IF EXISTS trigger_name ON schema_name.table_name;
+DROP RULE rule_name ON table_name;
+DROP RULE IF EXISTS rule_name ON table_name;
+DROP RULE rule_name ON schema_name.table_name;
+DROP RULE IF EXISTS rule_name ON schema_name.table_name;
+DROP VIEW IF EXISTS test_view_exists;
+DROP VIEW test_view_exists;
+DROP EXTENSION test_extension_exists;
+DROP EXTENSION IF EXISTS test_extension_exists;
+DROP FOREIGN DATA WRAPPER test_fdw_exists;
+DROP FOREIGN DATA WRAPPER IF EXISTS test_fdw_exists;
+DROP AGGREGATE IF EXISTS no_such_schema.foo ( int );
+DROP AGGREGATE IF EXISTS foo ( no_such_type );
+DROP AGGREGATE IF EXISTS foo ( no_such_schema.no_such_type );
+DROP CAST IF EXISTS ( int AS no_such_type2 );
+DROP CAST IF EXISTS ( no_such_type1 AS int );
+DROP CAST IF EXISTS ( int AS no_such_schema.bar );
+DROP CAST IF EXISTS ( no_such_schema.foo AS int );
+DROP COLLATION IF EXISTS no_such_schema.foo;
+DROP CONVERSION IF EXISTS no_such_schema.foo;
+DROP DOMAIN IF EXISTS no_such_schema.foo;
+DROP FOREIGN TABLE IF EXISTS no_such_schema.foo;
+DROP INDEX IF EXISTS no_such_schema.foo;
+DROP MATERIALIZED VIEW IF EXISTS no_such_schema.foo;"
+`;
+
+exports[`drops 2`] = `
+"DROP POLICY policy_name ON schema_name.table_name;
+DROP POLICY policy_name ON table_name;
+REVOKE DELETE ON TABLE schema_name.table_name FROM authenticated;
+REVOKE DELETE ON TABLE table_name FROM authenticated;
+DROP TABLE table_name;
+DROP TABLE schema_name.table_name;
+ALTER TABLE schema_name.table_name DROP COLUMN column_name;
+ALTER TABLE \\"schema-name\\".table_name DROP COLUMN column_name;
+ALTER TABLE \\"schema-name\\".\\"aa-bdd\\" DROP COLUMN \\"sdf-sdf\\";
+ALTER TABLE \\"table-name\\" DROP COLUMN column_name;
+ALTER TABLE table_name DROP COLUMN column_name;
+DROP SEQUENCE IF EXISTS hsseq;
+DROP SEQUENCE IF EXISTS \\"some-thing\\".hsseq;
+ALTER TABLE schemaname.table_name RENAME column_name1 TO new_column_name1;
+ALTER TABLE table_name RENAME column_name1 TO new_column_name1;
+DROP TYPE test_type;
+DROP TYPE schema_name.test_type;
+DROP TYPE \\"schema-name\\".test_type;
+DROP TYPE \\"schema-name\\".\\"test-type\\";
+DROP TYPE IF EXISTS test_type_exists;
+DROP TYPE IF EXISTS \\"aa-bb\\".test_type_exists;
+DROP TYPE eitype CASCADE;
+DROP DOMAIN testdomain2b;
+DROP DOMAIN schema_name.testdomain2b;
+DROP FUNCTION testfunc5b ( testdomain1 );
+DROP FUNCTION \\"my-schema\\".testfunc5b ( testdomain1 );
+DROP FUNCTION testfunc6b ( int );
+DROP FUNCTION \\"my-schema\\".testfunc6b ( int );
+DROP FUNCTION \\"my-schema\\".\\"test-func6b\\" ( int );
+DROP FUNCTION testfunc7777;
+DROP FUNCTION \\"my-schema\\".testfunc7777;
+DROP TRIGGER trigger_name ON table_name;
+DROP TRIGGER IF EXISTS trigger_name ON table_name;
+DROP TRIGGER trigger_name ON schema_name.table_name;
+DROP TRIGGER IF EXISTS trigger_name ON schema_name.table_name;
+DROP RULE rule_name ON table_name;
+DROP RULE IF EXISTS rule_name ON table_name;
+DROP RULE rule_name ON schema_name.table_name;
+DROP RULE IF EXISTS rule_name ON schema_name.table_name;
+DROP VIEW IF EXISTS test_view_exists;
+DROP VIEW test_view_exists;
+DROP EXTENSION test_extension_exists;
+DROP EXTENSION IF EXISTS test_extension_exists;
+DROP FOREIGN DATA WRAPPER test_fdw_exists;
+DROP FOREIGN DATA WRAPPER IF EXISTS test_fdw_exists;
+DROP AGGREGATE IF EXISTS no_such_schema.foo ( int );
+DROP AGGREGATE IF EXISTS foo ( no_such_type );
+DROP AGGREGATE IF EXISTS foo ( no_such_schema.no_such_type );
+DROP CAST IF EXISTS ( int AS no_such_type2 );
+DROP CAST IF EXISTS ( no_such_type1 AS int );
+DROP CAST IF EXISTS ( int AS no_such_schema.bar );
+DROP CAST IF EXISTS ( no_such_schema.foo AS int );
+DROP COLLATION IF EXISTS no_such_schema.foo;
+DROP CONVERSION IF EXISTS no_such_schema.foo;
+DROP DOMAIN IF EXISTS no_such_schema.foo;
+DROP FOREIGN TABLE IF EXISTS no_such_schema.foo;
+DROP INDEX IF EXISTS no_such_schema.foo;
+DROP MATERIALIZED VIEW IF EXISTS no_such_schema.foo;"
+`;
+
 exports[`kitchen sink alias 1`] = `
 "SELECT * FROM generate_series(1, 1) AS \\"a#b\\";
 SELECT * FROM generate_series(1, 1) AS \\"a#b\\" (\\"c#d\\");
@@ -44,7 +166,84 @@ ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (order_id) REF
 ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (a, b) REFERENCES othr.orders (c, d)   MATCH FULL;
 ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY (a, b) REFERENCES othr.orders (c, d)  ;
 ALTER TABLE ONLY collections.mfield ADD CONSTRAINT col_field_pkey PRIMARY KEY (id);
-ALTER TABLE collections.mfield ADD CONSTRAINT col_field_pkey PRIMARY KEY (id);"
+ALTER TABLE collections.mfield ADD CONSTRAINT col_field_pkey PRIMARY KEY (id);
+ALTER TABLE schema_name.table_name ALTER COLUMN column_name TYPE new_column_type USING column_name::new_column_type;
+ALTER TABLE schema_name.table_name ALTER COLUMN column_name TYPE new_column_type USING column_name::new_column_type;
+ALTER TABLE schema_name.table_name ADD COLUMN column_name column_type;
+ALTER TABLE schema_name.table_name ADD COLUMN column_name geometry(polygon, 4326);
+ALTER TABLE schema_name.table_name ADD COLUMN \\"column-name\\" geometry(polygon, 4326);
+ALTER TABLE schema_name.table_name ADD COLUMN column_name int;
+ALTER TABLE schema_name.table_name DROP COLUMN column_name;
+ALTER TABLE mytable OWNER TO regtest_alter_user2;
+ALTER FUNCTION alt_func3 ( int ) RENAME TO alt_func4;
+ALTER FUNCTION alt_func1 ( int ) RENAME TO alt_func4;
+ALTER FUNCTION alt_func3 ( int ) OWNER TO regtest_alter_user2;
+ALTER FUNCTION alt_func2 ( int ) OWNER TO regtest_alter_user3;
+ALTER FUNCTION alt_func3 ( int ) SET SCHEMA alt_nsp2;
+ALTER FUNCTION alt_func2 ( int ) SET SCHEMA alt_nsp2;
+ALTER TABLE old_schema_name.table_name SET SCHEMA new_schema_name;
+ALTER FOREIGN DATA WRAPPER alt_fdw1 RENAME TO alt_fdw2;
+ALTER FOREIGN DATA WRAPPER alt_fdw1 RENAME TO alt_fdw3;
+ALTER SERVER alt_fserv1 RENAME TO alt_fserv2;
+ALTER SERVER alt_fserv1 RENAME TO alt_fserv3;
+ALTER TYPE test_type2 ADD ATTRIBUTE c text;
+ALTER TYPE test_type2 ADD ATTRIBUTE c text CASCADE;
+ALTER TYPE test_type2 ALTER ATTRIBUTE b TYPE varchar;
+ALTER TYPE test_type2 ALTER ATTRIBUTE b TYPE varchar CASCADE;
+ALTER TYPE test_type2 DROP ATTRIBUTE b;
+ALTER TYPE test_type2 DROP ATTRIBUTE b CASCADE;
+ALTER TYPE test_type2 RENAME ATTRIBUTE a TO aa;
+ALTER TYPE test_type2 RENAME ATTRIBUTE a TO aa CASCADE;
+ALTER TYPE test_type3 DROP ATTRIBUTE a, ADD ATTRIBUTE b int;
+CREATE TYPE tt_t0 AS (z inet,x int,y numeric(8, 2));
+ALTER TYPE tt_t0 DROP ATTRIBUTE z;
+CREATE TABLE tt7 (
+x int,
+q text,
+y numeric(8, 2)
+) WITH OIDS;
+ALTER TABLE tt7 DROP COLUMN q;
+ALTER TABLE tt1 OF tt_t0;
+ALTER TABLE tt7 NOT OF;
+ALTER TABLE ONLY test_drop_constr_parent DROP CONSTRAINT test_drop_constr_parent_c_check;
+ALTER TABLE IF EXISTS tt8 ADD COLUMN f int;
+ALTER TABLE IF EXISTS tt8 ADD CONSTRAINT xxx PRIMARY KEY (f);
+ALTER TABLE IF EXISTS tt8 ADD CHECK (f BETWEEN 0 AND 10);
+ALTER TABLE IF EXISTS tt8 ALTER COLUMN f SET DEFAULT 0;
+ALTER TABLE IF EXISTS tt8 RENAME COLUMN f TO f1;
+ALTER TABLE IF EXISTS tt8 SET SCHEMA alter2;
+ALTER TABLE IF EXISTS tt8 ADD COLUMN f int;
+ALTER TABLE IF EXISTS tt8 ADD CONSTRAINT xxx PRIMARY KEY (f);
+ALTER TABLE IF EXISTS tt8 ADD CHECK (f BETWEEN 0 AND 10);
+ALTER TABLE IF EXISTS tt8 ALTER COLUMN f SET DEFAULT 0;
+ALTER TABLE IF EXISTS tt8 RENAME COLUMN f TO f1;
+ALTER TABLE IF EXISTS tt8 SET SCHEMA alter2;
+ALTER TABLE comment_test ALTER COLUMN indexed_col TYPE int;
+ALTER TABLE comment_test ALTER COLUMN indexed_col TYPE text;
+ALTER TABLE test_add_column ADD COLUMN IF NOT EXISTS c2 int, ADD COLUMN IF NOT EXISTS c3 int, ADD COLUMN c4 int;
+ALTER TYPE bogus ADD VALUE 'good';
+ALTER TYPE schemaname.bogus ADD VALUE 'good';
+ALTER TYPE \\"schema-name\\".bogus ADD VALUE 'good';
+ALTER TYPE \\"schema-name\\".\\"bog-us\\" ADD VALUE 'good';
+ALTER TYPE \\"schema-name\\".\\"bog-us\\" ADD VALUE 'goo''d';
+ALTER TYPE bogus RENAME TO bogon;
+ALTER TYPE test8b ADD ATTRIBUTE c testdomain1;
+ALTER TYPE test8b ALTER ATTRIBUTE b TYPE testdomain1;
+REVOKE ALL ON TYPE testtype1 FROM PUBLIC;
+ALTER DOMAIN things ADD CONSTRAINT meow CHECK (value < 11);
+ALTER DOMAIN things ADD CONSTRAINT meow CHECK (value < 11) NOT VALID;
+ALTER DOMAIN things VALIDATE CONSTRAINT meow;
+ALTER DOMAIN con ADD CONSTRAINT t CHECK (value < 1);
+ALTER DOMAIN con ADD CONSTRAINT t CHECK (value < 34);
+ALTER DOMAIN con ADD CHECK (value > 0);
+CREATE DOMAIN dinter AS vchar4 CHECK (pg_catalog.\\"substring\\"(value, 1, 1) = 'x');
+CREATE DOMAIN dtop AS dinter CHECK (pg_catalog.\\"substring\\"(value, 2, 1) = '1');
+ALTER DOMAIN testdomain1 RENAME TO testdomain2;
+ALTER TYPE testdomain2 RENAME TO testdomain3;
+CREATE DOMAIN testdomain1 AS int CONSTRAINT unsigned CHECK (value > 0);
+ALTER DOMAIN testdomain1 RENAME CONSTRAINT unsigned TO unsigned_foo;
+ALTER DOMAIN testdomain1 DROP CONSTRAINT unsigned_foo;
+DROP DOMAIN testdomain1;"
 `;
 
 exports[`kitchen sink alter 2`] = `
@@ -60,7 +259,7 @@ CREATE TABLE foo (
 name text,
 foo_timestamp timestampz DEFAULT ( CURRENT_DATE )
 );
-ALTER TABLE foo RENAME COLUMN name TO city;
+ALTER TABLE foo RENAME name TO city;
 ALTER TABLE foo ALTER COLUMN foo_timestamp DROP DEFAULT, ALTER COLUMN foo_timestamp TYPE pg_catalog.timestamptz USING (('epoch'::pg_catalog.timestamptz) + (((foo_timestamp) * ('1 second'::interval)))), ALTER COLUMN foo_timestamp SET DEFAULT now();
 ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id );
 ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) REFERENCES othr.orders ( id ) ON DELETE CASCADE;
@@ -77,7 +276,86 @@ ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( order_id ) R
 ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( a, b ) REFERENCES othr.orders ( c, d ) MATCH FULL;
 ALTER TABLE scha.foo ADD CONSTRAINT my_constraint_fey FOREIGN KEY ( a, b ) REFERENCES othr.orders ( c, d );
 ALTER TABLE ONLY collections.mfield ADD CONSTRAINT col_field_pkey PRIMARY KEY ( id );
-ALTER TABLE collections.mfield ADD CONSTRAINT col_field_pkey PRIMARY KEY ( id );"
+ALTER TABLE collections.mfield ADD CONSTRAINT col_field_pkey PRIMARY KEY ( id );
+ALTER TABLE schema_name.table_name ALTER COLUMN column_name TYPE new_column_type USING column_name::new_column_type;
+ALTER TABLE schema_name.table_name ALTER COLUMN column_name TYPE new_column_type USING column_name::new_column_type;
+ALTER TABLE schema_name.table_name ADD COLUMN  column_name column_type;
+ALTER TABLE schema_name.table_name ADD COLUMN  column_name geometry(polygon, 4326);
+ALTER TABLE schema_name.table_name ADD COLUMN  \\"column-name\\" geometry(polygon, 4326);
+ALTER TABLE schema_name.table_name ADD COLUMN  column_name int;
+ALTER TABLE schema_name.table_name DROP COLUMN column_name;
+ALTER TABLE mytable OWNER TO regtest_alter_user2;
+ALTER FUNCTION alt_func3 ( int ) RENAME TO alt_func4;
+ALTER FUNCTION alt_func1 ( int ) RENAME TO alt_func4;
+ALTER FUNCTION alt_func3 ( int ) OWNER TO regtest_alter_user2;
+ALTER FUNCTION alt_func2 ( int ) OWNER TO regtest_alter_user3;
+ALTER FUNCTION alt_func3 ( int ) SET SCHEMA alt_nsp2;
+ALTER FUNCTION alt_func2 ( int ) SET SCHEMA alt_nsp2;
+ALTER TABLE old_schema_name.table_name SET SCHEMA new_schema_name;
+ALTER FOREIGN DATA WRAPPER alt_fdw1 RENAME TO alt_fdw2;
+ALTER FOREIGN DATA WRAPPER alt_fdw1 RENAME TO alt_fdw3;
+ALTER SERVER alt_fserv1 RENAME TO alt_fserv2;
+ALTER SERVER alt_fserv1 RENAME TO alt_fserv3;
+ALTER TYPE test_type2 ADD ATTRIBUTE  c text;
+ALTER TYPE test_type2 ADD ATTRIBUTE  c text CASCADE;
+ALTER TYPE test_type2 ALTER ATTRIBUTE b TYPE varchar;
+ALTER TYPE test_type2 ALTER ATTRIBUTE b TYPE varchar CASCADE;
+ALTER TYPE test_type2 DROP ATTRIBUTE b;
+ALTER TYPE test_type2 DROP ATTRIBUTE b CASCADE;
+ALTER TYPE test_type2 RENAME ATTRIBUTE a TO aa;
+ALTER TYPE test_type2 RENAME ATTRIBUTE a TO aa CASCADE;
+ALTER TYPE test_type3 DROP ATTRIBUTE a, ADD ATTRIBUTE  b int;
+CREATE TYPE tt_t0 AS ( 	z inet,
+x int,
+y numeric(8, 2) );
+ALTER TYPE tt_t0 DROP ATTRIBUTE z;
+CREATE TABLE tt7 (
+x int,
+q text,
+y numeric(8, 2)
+) WITH OIDS;
+ALTER TABLE tt7 DROP COLUMN q;
+ALTER TABLE tt1 OF tt_t0;
+ALTER TABLE tt7 NOT OF;
+ALTER TABLE ONLY test_drop_constr_parent DROP CONSTRAINT test_drop_constr_parent_c_check;
+ALTER TABLE IF EXISTS tt8 ADD COLUMN  f int;
+ALTER TABLE IF EXISTS tt8 ADD CONSTRAINT xxx PRIMARY KEY ( f );
+ALTER TABLE IF EXISTS tt8 ADD CHECK ( f BETWEEN 0 AND 10 );
+ALTER TABLE IF EXISTS tt8 ALTER COLUMN f SET DEFAULT 0;
+ALTER TABLE IF EXISTS tt8 RENAME f TO f1;
+ALTER TABLE IF EXISTS tt8 SET SCHEMA alter2;
+ALTER TABLE IF EXISTS tt8 ADD COLUMN  f int;
+ALTER TABLE IF EXISTS tt8 ADD CONSTRAINT xxx PRIMARY KEY ( f );
+ALTER TABLE IF EXISTS tt8 ADD CHECK ( f BETWEEN 0 AND 10 );
+ALTER TABLE IF EXISTS tt8 ALTER COLUMN f SET DEFAULT 0;
+ALTER TABLE IF EXISTS tt8 RENAME f TO f1;
+ALTER TABLE IF EXISTS tt8 SET SCHEMA alter2;
+ALTER TABLE comment_test ALTER COLUMN indexed_col TYPE int;
+ALTER TABLE comment_test ALTER COLUMN indexed_col TYPE text;
+ALTER TABLE test_add_column ADD COLUMN IF NOT EXISTS  c2 int, ADD COLUMN IF NOT EXISTS  c3 int, ADD COLUMN  c4 int;
+ALTER TYPE bogus ADD VALUE 'good';
+ALTER TYPE schemaname.bogus ADD VALUE 'good';
+ALTER TYPE \\"schema-name\\".bogus ADD VALUE 'good';
+ALTER TYPE \\"schema-name\\".\\"bog-us\\" ADD VALUE 'good';
+ALTER TYPE \\"schema-name\\".\\"bog-us\\" ADD VALUE 'goo''d';
+ALTER TYPE bogus RENAME TO bogon;
+ALTER TYPE test8b ADD ATTRIBUTE  c testdomain1;
+ALTER TYPE test8b ALTER ATTRIBUTE b TYPE testdomain1;
+REVOKE ALL ON TYPE testtype1 FROM PUBLIC;
+ALTER DOMAIN things ADD CONSTRAINT meow CHECK ( ((value) < (11)) );
+ALTER DOMAIN things ADD CONSTRAINT meow CHECK ( ((value) < (11)) ) NOT VALID;
+ALTER DOMAIN things VALIDATE CONSTRAINT meow;
+ALTER DOMAIN con ADD CONSTRAINT t CHECK ( ((value) < (1)) );
+ALTER DOMAIN con ADD CONSTRAINT t CHECK ( ((value) < (34)) );
+ALTER DOMAIN con ADD CHECK ( ((value) > (0)) );
+CREATE DOMAIN dinter AS vchar4 CHECK ( ((pg_catalog.substring(value, 1, 1)) = ('x')) );
+CREATE DOMAIN dtop AS dinter CHECK ( ((pg_catalog.substring(value, 2, 1)) = ('1')) );
+ALTER DOMAIN testdomain1 RENAME TO testdomain2;
+ALTER TYPE testdomain2 RENAME TO testdomain3;
+CREATE DOMAIN testdomain1 AS int CONSTRAINT unsigned CHECK ( ((value) > (0)) );
+ALTER DOMAIN testdomain1 RENAME CONSTRAINT unsigned TO unsigned_foo;
+ALTER DOMAIN testdomain1 DROP CONSTRAINT unsigned_foo;
+DROP DOMAIN testdomain1;"
 `;
 
 exports[`kitchen sink conflicts 1`] = `
@@ -324,7 +602,7 @@ p.playername) AS t2 ON (((t1.player_teams) = (t2.player_teams)) AND ((t1.t1id) <
 
 exports[`kitchen sink fixtures query-002.sql 1`] = `"SELECT * FROM \\"Foo\\" AS f1 WHERE f1.\\"FooUID\\" = (SELECT f2.\\"FooUID\\" FROM \\"Foo\\" AS f2 LEFT OUTER JOIN \\"Bar\\" AS b ON f2.\\"BarUID\\" = b.\\"BarUID\\" WHERE f2.\\"BarUID\\" IS NOT NULL AND b.\\"BarUID\\" IS NULL LIMIT 1)"`;
 
-exports[`kitchen sink fixtures query-002.sql 2`] = `"SELECT * FROM \\"Foo\\" AS f1 WHERE ((f1.\\"FooUID\\") = ((SELECT f2.\\"FooUID\\" FROM \\"Foo\\" AS f2 LEFT OUTER JOIN \\"Bar\\" AS b ON ((f2.\\"BarUID\\") = (b.\\"BarUID\\")) WHERE (f2.\\"BarUID\\" IS NOT NULL AND b.\\"BarUID\\" IS NULL) LIMIT 1)));"`;
+exports[`kitchen sink fixtures query-002.sql 2`] = `"SELECT * FROM \\"Foo\\" AS f1 WHERE ((f1.\\"FooUID\\") = ((SELECT f2.\\"FooUID\\" FROM \\"Foo\\" AS f2 LEFT OUTER JOIN \\"Bar\\" AS b ON ((f2.\\"BarUID\\") = (b.\\"BarUID\\")) WHERE (f2.\\"BarUID\\" IS NOT NULL AND b.\\"BarUID\\" IS NULL) LIMIT 1)))"`;
 
 exports[`kitchen sink fixtures query-003.sql 1`] = `"SELECT ((SELECT ROW(1, 1, 1, 1)::test)::test).*;"`;
 
@@ -425,7 +703,7 @@ mytable$EOFCODE$ LANGUAGE sql VOLATILE;"
 `;
 
 exports[`kitchen sink functions returns_trigger 1`] = `
-"CREATE OR REPLACE FUNCTION helpers.some_method ( ) RETURNS trigger AS $LQLCODEZ$
+"CREATE OR REPLACE FUNCTION helpers.some_method ( ) RETURNS TRIGGER AS $LQLCODEZ$
 BEGIN
 IF tg_op = 'INSERT' THEN
 NEW.some_prop = helpers.do_magic (NEW.data);
@@ -484,7 +762,14 @@ GRANT EXECUTE ON FUNCTION auth.authenticate TO anonymous;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token TO administrator;
 REVOKE USAGE ON SCHEMA users FROM administrator;
 REVOKE EXECUTE ON FUNCTION auth.authenticate FROM anonymous;
-REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;"
+REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;
+GRANT SELECT, INSERT ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2, \\"another-column\\" ) ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2 ), UPDATE ( col2, \\"another-column\\" ), DELETE ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2, \\"another-column\\" ) ON TABLE someschema.sometable2 TO somerole;"
 `;
 
 exports[`kitchen sink grants 2`] = `
@@ -493,7 +778,14 @@ GRANT EXECUTE ON FUNCTION auth.authenticate TO anonymous;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token TO administrator;
 REVOKE USAGE ON SCHEMA users FROM administrator;
 REVOKE EXECUTE ON FUNCTION auth.authenticate FROM anonymous;
-REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;"
+REVOKE SELECT, INSERT, UPDATE, DELETE ON TABLE auth.token FROM administrator;
+GRANT SELECT, INSERT ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT UPDATE ( col2, \\"another-column\\" ) ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2 ), UPDATE ( col2, \\"another-column\\" ), DELETE ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2, col3 ) ON TABLE someschema.sometable2 TO somerole;
+GRANT INSERT ( col2, \\"another-column\\" ) ON TABLE someschema.sometable2 TO somerole;"
 `;
 
 exports[`kitchen sink indexes 1`] = `
@@ -13525,7 +13817,9 @@ CREATE POLICY select_user ON users.\\"user\\" FOR SELECT TO PUBLIC USING ( 't'::
 CREATE POLICY delete_own ON myschema.mytable FOR DELETE TO PUBLIC USING ( group_id = ANY( otherschema.my_policy_fn() ) );
 CREATE POLICY insert_own ON myschema.mytable FOR ALL TO PUBLIC WITH CHECK ( group_id = ANY( otherschema.my_policy_fn() ) );
 CREATE POLICY select_any ON myschema.mytable FOR SELECT TO PUBLIC USING ( 't'::boolean );
-CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY( otherschema.my_policy_fn() ) );"
+CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY( otherschema.my_policy_fn() ) );
+CREATE POLICY delete_pol_permissive ON users.\\"user\\" FOR DELETE TO PUBLIC WITH CHECK ( id = current_setting('user.id')::uuid );
+CREATE POLICY delete_pol_restrictive ON users.\\"user\\" AS RESTRICTIVE FOR DELETE TO PUBLIC WITH CHECK ( id = current_setting('user.id')::uuid );"
 `;
 
 exports[`kitchen sink policies 2`] = `
@@ -13537,7 +13831,9 @@ CREATE POLICY select_user ON users.\\"user\\" FOR SELECT TO PUBLIC USING ( (TRUE
 CREATE POLICY delete_own ON myschema.mytable FOR DELETE TO PUBLIC USING ( group_id = ANY (otherschema.my_policy_fn()) );
 CREATE POLICY insert_own ON myschema.mytable FOR ALL TO PUBLIC WITH CHECK ( group_id = ANY (otherschema.my_policy_fn()) );
 CREATE POLICY select_any ON myschema.mytable FOR SELECT TO PUBLIC USING ( (TRUE) );
-CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY (otherschema.my_policy_fn()) );"
+CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY (otherschema.my_policy_fn()) );
+CREATE POLICY delete_pol_permissive ON users.\\"user\\" FOR DELETE TO PUBLIC WITH CHECK ( ((id) = (current_setting('user.id')::uuid)) );
+CREATE POLICY delete_pol_restrictive ON users.\\"user\\" AS RESTRICTIVE FOR DELETE TO PUBLIC WITH CHECK ( ((id) = (current_setting('user.id')::uuid)) );"
 `;
 
 exports[`kitchen sink roles create 1`] = `
@@ -13781,7 +14077,7 @@ exports[`kitchen sink tables defaults 2`] = `
 id serial PRIMARY KEY,
 name text NOT NULL,
 effective tstzrange DEFAULT ( '[-infinity,infinity]' )
-);"
+)"
 `;
 
 exports[`kitchen sink tables exclude 1`] = `
@@ -13806,8 +14102,8 @@ CREATE TABLE customer_product_categories (
 id serial PRIMARY KEY,
 name text NOT NULL,
 effective tstzrange DEFAULT ( '[-infinity,infinity]' ),
-EXCLUDE USING gist ( lower(name) WITH = , effective WITH && )
-);"
+EXCLUDE USING gist ( lower(name) WITH =, effective WITH && )
+)"
 `;
 
 exports[`kitchen sink tables foreign 1`] = `
@@ -14207,7 +14503,7 @@ second uuid REFERENCES \\"user\\"   NOT NULL,
 created timestamptz NOT NULL DEFAULT (now()),
 UNIQUE (first, second)
 );
-CREATE FUNCTION check_friendship_symmetry ( ) RETURNS trigger AS $LQLCODEZ$
+CREATE FUNCTION check_friendship_symmetry ( ) RETURNS TRIGGER AS $LQLCODEZ$
 DECLARE
 link friendship;
 BEGIN
@@ -14308,7 +14604,7 @@ UPDATE shoelace_data SET sl_name = new.sl_name,sl_avail = new.sl_avail,sl_color 
 UPDATE something SET a = 1 RETURNING a;
 UPDATE something SET a = 1 RETURNING a AS b,c;
 UPDATE something SET a = 1 FROM b;
-UPDATE something SET a = 1,b = 'b' FROM c INNER JOIN d ON ((x) = (d.y)),(SELECT * FROM e) AS f WHERE (((something.x) = (d.x)) AND ((LEAST(something.y, 0)) = (((f.z) + (1)))));
+UPDATE something SET a = 1,b = 'b' FROM c INNER JOIN d ON ((x) = (d.y)), (SELECT * FROM e) AS f WHERE (((something.x) = (d.x)) AND ((LEAST(something.y, 0)) = (((f.z) + (1)))));
 UPDATE something SET a = 1 RETURNING b AS \\"b#1\\";
 UPDATE something SET a = 1 FROM b WHERE c RETURNING *;
 UPDATE foo SET f2 = lower(f2),f3 = DEFAULT RETURNING foo.*,((f1) + (f3)) AS sum13;"

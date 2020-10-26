@@ -51,6 +51,9 @@ gen:
 ast:
 	@cd packages/ast && lql package --version 0.0.1
 	@cd packages/ast_actions && lql package --version 0.0.1
+	@cd packages/objects && lql package --version 0.0.1
+	@cd packages/transactor && lql package --version 0.0.1
+	@cd packages/db_migrate && lql package --version 0.0.1
 	$(MAKE) install
 
 

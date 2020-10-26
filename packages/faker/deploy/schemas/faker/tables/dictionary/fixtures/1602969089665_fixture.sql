@@ -6844,9 +6844,23 @@ insert into faker.dictionary (type, word) VALUES
   ('tag', 'Spritual'),
   ('tag', 'Skateboarding'),
   ('tag', 'Kitesurfing')
-
-
 ;
+
+insert into faker.dictionary (type, word) VALUES 
+    ('cta', 'Start Your Journey'),
+    ('cta', 'Reserve your spot now'),
+    ('cta', 'Sign up'),
+    ('cta', 'Sign up to attend now'),
+    ('cta', 'Join Us!'),
+    ('cta', 'Let’s Do It!'),
+    ('cta', 'Get Started'),
+    ('cta', 'Sign up free'),
+    ('cta', 'Learn more'),
+    ('cta', 'Join now'),
+    ('cta', 'Start now'),
+    ('cta', 'Get yours now')
+;
+
 
 COMMIT;
 

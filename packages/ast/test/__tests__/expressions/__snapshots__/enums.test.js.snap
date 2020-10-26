@@ -8,7 +8,7 @@ exports[`deparse 1`] = `
 'green',
 'blue',
 'purple' 
-)"
+);"
 `;
 
 exports[`deparse 2`] = `
@@ -16,42 +16,42 @@ exports[`deparse 2`] = `
  'venus',
 'earth',
 'mars' 
-)"
+);"
 `;
 
-exports[`deparse 3`] = `"ALTER TYPE planets ADD VALUE 'uranus'"`;
+exports[`deparse 3`] = `"ALTER TYPE planets ADD VALUE 'uranus';"`;
 
-exports[`deparse 4`] = `"ALTER TYPE planets ADD VALUE 'mercury' BEFORE 'venus'"`;
+exports[`deparse 4`] = `"ALTER TYPE planets ADD VALUE 'mercury' BEFORE 'venus';"`;
 
-exports[`deparse 5`] = `"ALTER TYPE planets ADD VALUE 'neptune' AFTER 'uranus'"`;
+exports[`deparse 5`] = `"ALTER TYPE planets ADD VALUE 'neptune' AFTER 'uranus';"`;
 
-exports[`deparse 6`] = `"SELECT enum_last(NULL::planets)"`;
+exports[`deparse 6`] = `"SELECT enum_last(NULL::planets);"`;
 
 exports[`deparse 7`] = `
 "CREATE TYPE insenum AS ENUM (
  'L1',
 'L2' 
-)"
+);"
 `;
 
-exports[`deparse 8`] = `"INSERT INTO enumtest VALUES ('red'), ('orange'), ('yellow'), ('green')"`;
+exports[`deparse 8`] = `"INSERT INTO enumtest VALUES ('red'), ('orange'), ('yellow'), ('green');"`;
 
-exports[`deparse 9`] = `"CREATE DOMAIN rgb AS rainbow CHECK (value IN ( 'red', 'green', 'blue' ))"`;
+exports[`deparse 9`] = `"CREATE DOMAIN rgb AS rainbow CHECK (value IN ( 'red', 'green', 'blue' ));"`;
 
 exports[`deparse 10`] = `
 "CREATE TYPE bogus AS ENUM (
   
-)"
+);"
 `;
 
-exports[`deparse 11`] = `"DROP TABLE enumtest_child"`;
+exports[`deparse 11`] = `"DROP TABLE enumtest_child;"`;
 
-exports[`deparse 12`] = `"DROP TABLE enumtest_parent"`;
+exports[`deparse 12`] = `"DROP TABLE enumtest_parent;"`;
 
-exports[`deparse 13`] = `"DROP TABLE enumtest"`;
+exports[`deparse 13`] = `"DROP TABLE enumtest;"`;
 
-exports[`deparse 14`] = `"DROP TYPE rainbow"`;
+exports[`deparse 14`] = `"DROP TYPE rainbow;"`;
 
-exports[`deparse 15`] = `"SELECT count(*) pg_type WHERE (typname = 'rainbow')"`;
+exports[`deparse 15`] = `"SELECT count(*) FROM pg_type WHERE typname = 'rainbow';"`;
 
-exports[`deparse 16`] = `"SELECT * pg_enum WHERE NOT IN (EXISTS (SELECT 1 pg_type WHERE (pg_type.oid = enumtypid)))"`;
+exports[`deparse 16`] = `"SELECT * FROM pg_enum WHERE NOT (EXISTS (SELECT 1 FROM pg_type WHERE pg_type.oid = enumtypid));"`;

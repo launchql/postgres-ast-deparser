@@ -5,7 +5,7 @@ exports[`deparse 1`] = `
  order_id int PRIMARY KEY,
 product_no int REFERENCES products (product_no)  ,
 quantity int 
-)"
+);"
 `;
 
 exports[`deparse 2`] = `
@@ -13,7 +13,7 @@ exports[`deparse 2`] = `
  order_id int PRIMARY KEY,
 product_no int REFERENCES products  ,
 quantity int 
-)"
+);"
 `;
 
 exports[`deparse 3`] = `
@@ -22,7 +22,7 @@ exports[`deparse 3`] = `
 b int,
 c int,
 FOREIGN KEY (b, c) REFERENCES other_table (c1, c2)   
-)"
+);"
 `;
 
 exports[`deparse 4`] = `
@@ -30,14 +30,14 @@ exports[`deparse 4`] = `
  product_no int PRIMARY KEY,
 name text,
 price numeric 
-)"
+);"
 `;
 
 exports[`deparse 5`] = `
 "CREATE TABLE orders (
  order_id int PRIMARY KEY,
 shipping_address text 
-)"
+);"
 `;
 
 exports[`deparse 6`] = `
@@ -46,5 +46,5 @@ exports[`deparse 6`] = `
 order_id int REFERENCES orders  ,
 quantity int,
 PRIMARY KEY (product_no, order_id) 
-)"
+);"
 `;

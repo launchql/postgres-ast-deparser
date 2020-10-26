@@ -1,11 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ast_helpers.create_trigger_distinct_fields 1`] = `
+"CREATE TRIGGER mytrigger 
+ BEFORE INSERT OR UPDATE ON myschema.mytable 
+ FOR EACH ROW 
+ WHEN (OLD.name IS DISTINCT FROM NEW.name OR OLD.description IS DISTINCT FROM NEW.description OR OLD.hi IS DISTINCT FROM NEW.hi) 
+ EXECUTE PROCEDURE mytgfnschema.mytgfn ( );"
+`;
+
+exports[`ast_helpers.create_trigger_distinct_fields 2`] = `
+"CREATE TRIGGER mytrigger 
+ BEFORE INSERT OR UPDATE ON myschema.mytable 
+ FOR EACH ROW 
+ EXECUTE PROCEDURE mytgfnschema.mytgfn ( );"
+`;
+
 exports[`create trig stmt 1`] = `
 "CREATE TRIGGER trigger_name 
  BEFORE UPDATE ON \\"schema-name\\".table_name 
  FOR EACH ROW 
  WHEN (NEW.field_name IS DISTINCT FROM OLD.field_name) 
  EXECUTE PROCEDURE trigger_function_schema.trigger_function ( )"
+`;
+
+exports[`create_function trigger 1`] = `
+"CREATE FUNCTION v_schema_name.v_function_name ( ) RETURNS TRIGGER AS $LQLCODEZ$ 
+ RETURN NEW; 
+ $LQLCODEZ$ LANGUAGE plpgsql VOLATILE;"
+`;
+
+exports[`create_function trigger 2`] = `
+"CREATE FUNCTION v_schema_name.v_function_name ( ) RETURNS TRIGGER AS $LQLCODEZ$ 
+ NEW.field = setweight(to_tsvector('pg_catalog.english', COALESCE(NEW.sub_head, '')), 'B') || setweight(to_tsvector('pg_catalog.english', COALESCE(array_to_string(NEW.tags::citext[], ' '), '')), 'C') || setweight(to_tsvector('pg_catalog.english', COALESCE(NEW.name, '')), 'B') || setweight(to_tsvector('pg_catalog.simple', COALESCE(NEW.name, '')), 'A');
+RETURN NEW; 
+ $LQLCODEZ$ LANGUAGE plpgsql VOLATILE;"
 `;
 
 exports[`create_trigger_stmt 1`] = `
@@ -99,14 +127,16 @@ exports[`create_trigger_with_fields 1`] = `
 "CREATE TRIGGER \\"my-trigger\\" 
  BEFORE INSERT OR UPDATE ON \\"my-schema\\".\\"my-table\\" 
  FOR EACH ROW 
- WHEN ((OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name)) 
- EXECUTE PROCEDURE \\"my-tg-fn-schema\\".\\"my-tg-fn\\" ( )"
+ WHEN (OLD.name IS DISTINCT FROM NEW.name OR OLD.description IS DISTINCT FROM NEW.description) 
+ EXECUTE PROCEDURE \\"my-tg-fn-schema\\".\\"my-tg-fn\\" ( );"
 `;
 
 exports[`create_trigger_with_fields and names wo quotes 1`] = `
 "CREATE TRIGGER mytrigger 
  BEFORE INSERT OR UPDATE ON myschema.mytable 
  FOR EACH ROW 
- WHEN ((OLD.description IS DISTINCT FROM NEW.description OR OLD.name IS DISTINCT FROM NEW.name)) 
- EXECUTE PROCEDURE mytgfnschema.mytgfn ( )"
+ WHEN (OLD.name IS DISTINCT FROM NEW.name OR OLD.description IS DISTINCT FROM NEW.description) 
+ EXECUTE PROCEDURE mytgfnschema.mytgfn ( );"
 `;
+
+exports[`drop_trigger 1`] = `"DROP TRIGGER mytrigger ON myschema.mytable;"`;

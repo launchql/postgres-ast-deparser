@@ -137,10 +137,10 @@ select ast.create_function_stmt(
 it('create_function', async () => {
   const [{ create_function: result }] = await db.any(`
 SELECT ast_helpers.create_function(
-  'schema',
-  'name',
-  'text',
-  to_jsonb(ARRAY[
+  v_schema_name := 'schema',
+  v_function_name := 'name',
+  v_type := 'text',
+  v_parameters := to_jsonb(ARRAY[
     ast.function_parameter(
       v_name := 'param1',
       v_argType := ast.type_name( 
@@ -158,10 +158,10 @@ SELECT ast_helpers.create_function(
       --ast.a_const(ast.null())
     )
   ]::jsonb[]),
-  'code here',
-  'volatile',
-  'plpgsql',
-  1
+  v_body := 'code here',
+  v_volatility := 'volatile',
+  v_language := 'plpgsql',
+  v_security := 1
 )`);
   expect(result).toMatchSnapshot();
 });
@@ -169,10 +169,10 @@ SELECT ast_helpers.create_function(
 it('create_function deparse', async () => {
   const [{ deparse: result }] = await db.any(`
 SELECT deparser.deparse(ast_helpers.create_function(
-  'schema',
-  'name',
-  'text',
-  to_jsonb(ARRAY[
+  v_schema_name := 'schema',
+  v_function_name := 'name',
+  v_type := 'text',
+  v_parameters := to_jsonb(ARRAY[
     ast_helpers.simple_param(
       'param1',
       'text'
@@ -197,10 +197,58 @@ SELECT deparser.deparse(ast_helpers.create_function(
       ast.a_const(ast.null())
     )
   ]::jsonb[]),
-  'code here',
-  'volatile',
-  'plpgsql',
-  1
+  v_body := 'code here',
+  v_volatility := 'volatile',
+  v_language := 'plpgsql',
+  v_security := 1
+))`);
+  expect(result).toMatchSnapshot();
+});
+
+it('create_trigger deparse', async () => {
+  const [{ deparse: result }] = await db.any(`
+SELECT deparser.deparse(ast_helpers.create_function(
+  v_schema_name := 'schema',
+  v_function_name := 'name',
+  v_type := 'TRIGGER',
+  v_parameters := to_jsonb(ARRAY[
+    ast_helpers.simple_param(
+      'param1',
+      'text'
+    ),
+    ast_helpers.simple_param(
+      'active',
+      'bool'
+    ),
+    ast_helpers.simple_param(
+      'sid',
+      'uuid',
+      'uuid_generate_v4()'
+    ),
+    ast_helpers.simple_param(
+      'description',
+      'text',
+      'NULL'
+    ),
+    ast_helpers.simple_param(
+      'tags',
+      'text[]',
+      ast.a_const(ast.null())
+    )
+  ]::jsonb[]),
+  v_body := 'code here',
+  v_volatility := 'volatile',
+  v_language := 'plpgsql',
+  v_security := 0
+))`);
+  expect(result).toMatchSnapshot();
+});
+
+it('drop deparse', async () => {
+  const [{ deparse: result }] = await db.any(`
+SELECT deparser.deparse(ast_helpers.drop_function(
+  v_schema_name := 'schema',
+  v_function_name := 'name'
 ))`);
   expect(result).toMatchSnapshot();
 });

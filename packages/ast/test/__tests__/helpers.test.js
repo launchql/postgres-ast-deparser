@@ -1,7 +1,6 @@
 import { cleanTree, cleanLines, getConnections } from '../utils';
 import { readFileSync } from 'fs';
 import { sync as glob } from 'glob';
-import { async } from 'regenerator-runtime';
 const parser = require('pgsql-parser');
 
 const FIXTURE_DIR = `${__dirname}/../__fixtures__`;
@@ -53,6 +52,10 @@ export const check = async (file) => {
 
 it('parens', async () => {
   await check('parens.sql');
+});
+
+it('drops', async () => {
+  await check('drops.sql');
 });
 
 describe('kitchen sink', () => {

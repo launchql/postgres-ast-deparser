@@ -28,11 +28,16 @@ select deparser.deparse( '${JSON.stringify(json)}'::jsonb );
   expect(result).toMatchSnapshot();
 });
 
-it('create_trigger_stmt', async () => {
+xit('create_trigger_stmt', async () => {
   const [result] = await db.any(`
 select ast.create_trig_stmt(
     v_trigname := 'trigger',
-    v_relation := ast.range_var( v_schemaname := 'schema-name', v_relname := 'mytable', v_inh := true, v_relpersistence := 'p'),
+    v_relation := ast.range_var( 
+      v_schemaname := 'schema-name',
+      v_relname := 'mytable',
+      v_inh := true,
+      v_relpersistence := 'p'
+    ),
     v_funcname := to_jsonb(ARRAY[ ast.string('tg-schema'),ast.string('tgname') ]),
     v_row := true,
     v_timing := 2,
@@ -79,15 +84,15 @@ select deparser.deparse(
 it('create_trigger_with_fields', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse( 
-  ast_helpers.create_trigger_with_fields(
-    'my-trigger',
-    'my-schema',
-    'my-table',
-    'my-tg-fn-schema',
-    'my-tg-fn',  
-    ARRAY['name', 'description']::text[],
-    2,
-    4 | 16)
+  ast_helpers.create_trigger_distinct_fields(
+    v_trigger_name := 'my-trigger',
+    v_schema_name := 'my-schema',
+    v_table_name := 'my-table',
+    v_trigger_fn_schema := 'my-tg-fn-schema',
+    v_trigger_fn_name := 'my-tg-fn',  
+    v_fields := ARRAY['name', 'description']::text[],
+    v_timing := 2,
+    v_events := 4 | 16)
   )`);
   expect(result).toMatchSnapshot();
 });
@@ -95,15 +100,127 @@ select deparser.deparse(
 it('create_trigger_with_fields and names wo quotes', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse( 
-  ast_helpers.create_trigger_with_fields(
-    'mytrigger',
-    'myschema',
-    'mytable',
-    'mytgfnschema',
-    'mytgfn',  
-    ARRAY['name', 'description']::text[],
-    2,
-    4 | 16)
+  ast_helpers.create_trigger_distinct_fields(
+    v_trigger_name := 'mytrigger',
+    v_schema_name := 'myschema',
+    v_table_name := 'mytable',
+    v_trigger_fn_schema := 'mytgfnschema',
+    v_trigger_fn_name := 'mytgfn',  
+    v_fields := ARRAY['name', 'description']::text[],
+    v_timing := 2,
+    v_events := 4 | 16)
   )`);
+  expect(result).toMatchSnapshot();
+});
+
+it('ast_helpers.create_trigger_distinct_fields', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse( 
+  ast_helpers.create_trigger_distinct_fields(
+    v_trigger_name := 'mytrigger',
+    v_schema_name := 'myschema',
+    v_table_name := 'mytable',
+    v_trigger_fn_schema := 'mytgfnschema',
+    v_trigger_fn_name := 'mytgfn',  
+    v_fields := ARRAY['name', 'description', 'hi']::text[],
+    v_timing := 2,
+    v_events := 4 | 16)
+  )`);
+  expect(result).toMatchSnapshot();
+});
+
+it('ast_helpers.create_trigger_distinct_fields', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse( 
+  ast_helpers.create_trigger_distinct_fields(
+    v_trigger_name := 'mytrigger',
+    v_schema_name := 'myschema',
+    v_table_name := 'mytable',
+    v_trigger_fn_schema := 'mytgfnschema',
+    v_trigger_fn_name := 'mytgfn',  
+    v_timing := 2,
+    v_events := 4 | 16)
+  )`);
+  expect(result).toMatchSnapshot();
+});
+
+it('drop_trigger', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse( 
+  ast_helpers.drop_trigger(
+    v_trigger_name := 'mytrigger',
+    v_schema_name := 'myschema',
+    v_table_name := 'mytable'
+    ))`);
+  expect(result).toMatchSnapshot();
+});
+
+it('create_function trigger', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse( 
+  ast_helpers.create_function(
+    v_schema_name := 'v_schema_name'::text,
+    v_function_name := 'v_function_name'::text,
+    v_type := 'TRIGGER'::text,
+    v_parameters := NULL,
+    v_body := 'RETURN NEW;'::text,
+    v_volatility := 'volatile'::text,
+    v_language := 'plpgsql'::text,
+    v_security := 0::int
+  )
+  )`);
+  expect(result).toMatchSnapshot();
+});
+
+it('create_function trigger', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+select deparser.deparse( 
+  ast_helpers.create_function(
+    v_schema_name := 'v_schema_name'::text,
+    v_function_name := 'v_function_name'::text,
+    v_type := 'TRIGGER'::text,
+    v_parameters := NULL,
+    
+    v_body := deparser.deparse(
+        ast.raw_stmt(
+          v_stmt := ast_helpers.equals(
+              v_lexpr := ast.string('NEW.field'),
+              v_rexpr := ast_helpers.tsvector_index($1::jsonb)
+          ),
+          v_stmt_len := 1
+    )) || E'\nRETURN NEW;',
+    v_volatility := 'volatile'::text,
+    v_language := 'plpgsql'::text,
+    v_security := 0::int
+  )
+  )`,
+    [
+      JSON.stringify([
+        {
+          lang: 'pg_catalog.simple',
+          field: 'NEW.name',
+          weight: 'A'
+        },
+        {
+          lang: 'pg_catalog.english',
+          field: 'NEW.name',
+          weight: 'B'
+        },
+        {
+          lang: 'pg_catalog.english',
+          field: 'NEW.tags',
+          weight: 'C',
+          type: 'citext',
+          array: true
+        },
+        {
+          lang: 'pg_catalog.english',
+          field: 'NEW.sub_head',
+          weight: 'B'
+        }
+      ])
+    ]
+  );
   expect(result).toMatchSnapshot();
 });
