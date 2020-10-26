@@ -1,0 +1,8 @@
+# launchql-rls extension
+comment = 'launchql-rls extension'
+default_version = '0.0.1'
+module_pathname = '$libdir/launchql-rls'
+requires = 'plpgsql,uuid-ossp,citext,pgcrypto,btree_gist,dbs'
+relocatable = false
+superuser = false
+  

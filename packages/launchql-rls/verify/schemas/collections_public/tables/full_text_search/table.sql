@@ -1,0 +1,1 @@
+-- Verify schemas/collections_public/tables/full_text_search/table  on pg

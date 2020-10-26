@@ -1,0 +1,1 @@
+-- Revert schemas/collections_public/tables/rls_function/table from pg

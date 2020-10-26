@@ -1,0 +1,1 @@
+-- Verify schemas/collections_public/tables/trigger_function/table  on pg
