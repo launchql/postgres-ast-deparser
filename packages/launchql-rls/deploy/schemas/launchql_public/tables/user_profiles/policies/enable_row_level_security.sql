@@ -4,6 +4,7 @@
 -- requires: schemas/launchql_public/schema
 -- requires: schemas/launchql_public/tables/user_profiles/table
 -- requires: schemas/launchql_public/tables/user_profiles/constraints/user_profiles_user_id_key
+-- requires: schemas/launchql_public/procedures/get_current_user_id/procedure 
 
 BEGIN;
 

@@ -4,6 +4,7 @@
 -- requires: schemas/collections_public/schema
 -- requires: schemas/collections_public/tables/schema/table
 -- requires: schemas/collections_public/tables/database/grants/authenticated/delete
+-- requires: schemas/launchql_public/procedures/get_current_user_id/procedure 
 
 BEGIN;
 

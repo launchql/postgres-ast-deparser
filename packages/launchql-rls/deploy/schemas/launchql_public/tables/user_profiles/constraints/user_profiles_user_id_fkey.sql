@@ -7,6 +7,7 @@
 -- requires: schemas/launchql_public/tables/users/columns/id/column
 -- requires: schemas/launchql_public/tables/user_profiles/columns/user_id/column
 -- requires: schemas/launchql_public/tables/user_profiles/columns/user_id/alterations/alt0000000049
+-- requires: schemas/launchql_public/tables/users/constraints/users_pkey 
 
 BEGIN;
 

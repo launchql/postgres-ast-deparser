@@ -9,5 +9,5 @@
 BEGIN;
 
 ALTER TABLE "launchql_private".api_tokens 
-    ALTER COLUMN id SET DEFAULT "launchql_private".uuid_generate_v4();
+    ALTER COLUMN id SET DEFAULT uuid_generate_v4();
 COMMIT;

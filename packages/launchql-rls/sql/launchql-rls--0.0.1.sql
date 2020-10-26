@@ -51,6 +51,33 @@ ALTER TABLE launchql_public.user_profiles ADD COLUMN  id uuid;
 
 ALTER TABLE launchql_public.user_profiles ALTER COLUMN id SET NOT NULL;
 
+CREATE FUNCTION launchql_private.uuid_generate_v4 (  ) RETURNS uuid AS $EOFCODE$
+DECLARE
+    new_uuid char(36);
+    md5_str char(32);
+    md5_str2 char(32);
+    uid text;
+BEGIN
+    md5_str := md5(concat(random(), now()));
+    md5_str2 := md5(concat(random(), now()));
+    
+    new_uuid := concat(
+        LEFT (md5('launchql'), 2),
+        LEFT (md5(concat(extract(year FROM now()), extract(week FROM now()))), 2),
+        substring(md5_str, 1, 4),
+        '-',
+        substring(md5_str, 5, 4),
+        '-4',
+        substring(md5_str2, 9, 3),
+        '-',
+        substring(md5_str, 13, 4),
+        '-', 
+        substring(md5_str2, 17, 12)
+    );
+    RETURN new_uuid;
+END;
+$EOFCODE$ LANGUAGE plpgsql;
+
 ALTER TABLE launchql_public.user_profiles ALTER COLUMN id SET DEFAULT launchql_private.uuid_generate_v4();
 
 ALTER TABLE launchql_public.user_profiles ADD CONSTRAINT user_profiles_pkey PRIMARY KEY ( id );
@@ -1490,33 +1517,6 @@ WHERE
     tkn.access_token = authenticate.token_str
     AND EXTRACT(EPOCH FROM (tkn.access_token_expires_at-NOW())) > 0;
 $EOFCODE$ LANGUAGE sql STABLE SECURITY DEFINER;
-
-CREATE FUNCTION launchql_private.uuid_generate_v4 (  ) RETURNS uuid AS $EOFCODE$
-DECLARE
-    new_uuid char(36);
-    md5_str char(32);
-    md5_str2 char(32);
-    uid text;
-BEGIN
-    md5_str := md5(concat(random(), now()));
-    md5_str2 := md5(concat(random(), now()));
-    
-    new_uuid := concat(
-        LEFT (md5('launchql'), 2),
-        LEFT (md5(concat(extract(year FROM now()), extract(week FROM now()))), 2),
-        substring(md5_str, 1, 4),
-        '-',
-        substring(md5_str, 5, 4),
-        '-4',
-        substring(md5_str2, 9, 3),
-        '-',
-        substring(md5_str, 13, 4),
-        '-', 
-        substring(md5_str2, 17, 12)
-    );
-    RETURN new_uuid;
-END;
-$EOFCODE$ LANGUAGE plpgsql;
 
 CREATE FUNCTION launchql_private.uuid_generate_seeded_uuid ( seed text ) RETURNS uuid AS $EOFCODE$
 DECLARE
