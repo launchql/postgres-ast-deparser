@@ -7157,6 +7157,10 @@ BEGIN
       END IF;
       output = array_append(output, deparser.expression(node->'relation'));
       output = array_append(output, 'RENAME');
+      IF (renameType = ast_constants.object_type('OBJECT_COLUMN')) THEN 
+        -- not necessary, but why not
+        output = array_append(output, 'COLUMN');
+      END IF;
       output = array_append(output, quote_ident(node->>'subname'));
       output = array_append(output, 'TO');
       output = array_append(output, quote_ident(node->>'newname'));
