@@ -126,6 +126,12 @@ BEGIN
           )
       )
   );
+
+  policy_ast = ast.sub_link(
+    v_subLinkType := 4,
+    v_subselect := policy_ast
+  );
+
   RETURN policy_ast;
 END;
 $$
@@ -166,6 +172,11 @@ BEGIN
           v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
           v_rexpr := ast_helpers.col(policy_template_vars->>'this_object_key')
       )
+  );
+
+  policy_ast = ast.sub_link(
+    v_subLinkType := 4,
+    v_subselect := policy_ast
   );
 
   RETURN policy_ast;
@@ -224,7 +235,10 @@ BEGIN
       )
   );
 
-
+  policy_ast = ast.sub_link(
+    v_subLinkType := 4,
+    v_subselect := policy_ast
+  );
 
   RETURN policy_ast;
 END;
@@ -250,17 +264,16 @@ BEGIN
     policy_template_vars
   );
 
-  policy_ast = jsonb_set(policy_ast, '{SelectStmt, fromClause, 0, JoinExpr, quals}', ast.bool_expr(
+  policy_ast = jsonb_set(policy_ast, '{SubLink, subselect, SelectStmt, fromClause, 0, JoinExpr, quals}', ast.bool_expr(
     v_boolop := 0,
     v_args := to_jsonb(ARRAY[
-        policy_ast->'SelectStmt'->'fromClause'->0->'JoinExpr'->'quals',
+        policy_ast->'SubLink'->'subselect'->'SelectStmt'->'fromClause'->0->'JoinExpr'->'quals',
         ast_helpers.equals(
             v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
             v_rexpr := ast_helpers.col(policy_template_vars->>'this_owned_key')
         )
     ])
   ));
-
 
   RETURN policy_ast;
 END;

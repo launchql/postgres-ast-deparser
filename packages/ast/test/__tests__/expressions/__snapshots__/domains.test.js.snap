@@ -163,19 +163,19 @@ col2 dnotnulltest
 
 exports[`deparse 66`] = `"INSERT INTO domnotnull DEFAULT VALUES;"`;
 
-exports[`deparse 67`] = `"ALTER DOMAIN dnotnulltest CASCADE;"`;
+exports[`deparse 67`] = `"ALTER DOMAIN dnotnulltest;"`;
 
 exports[`deparse 68`] = `"UPDATE domnotnull SET col1 = 5;"`;
 
-exports[`deparse 69`] = `"ALTER DOMAIN dnotnulltest CASCADE;"`;
+exports[`deparse 69`] = `"ALTER DOMAIN dnotnulltest;"`;
 
 exports[`deparse 70`] = `"UPDATE domnotnull SET col2 = 6;"`;
 
-exports[`deparse 71`] = `"ALTER DOMAIN dnotnulltest CASCADE;"`;
+exports[`deparse 71`] = `"ALTER DOMAIN dnotnulltest;"`;
 
 exports[`deparse 72`] = `"UPDATE domnotnull SET col1 = NULL;"`;
 
-exports[`deparse 73`] = `"ALTER DOMAIN dnotnulltest CASCADE;"`;
+exports[`deparse 73`] = `"ALTER DOMAIN dnotnulltest;"`;
 
 exports[`deparse 74`] = `"UPDATE domnotnull SET col1 = NULL;"`;
 
@@ -191,13 +191,13 @@ exports[`deparse 77`] = `"INSERT INTO domdeftest DEFAULT VALUES;"`;
 
 exports[`deparse 78`] = `"SELECT * FROM domdeftest;"`;
 
-exports[`deparse 79`] = `"ALTER DOMAIN ddef1 CASCADE;"`;
+exports[`deparse 79`] = `"ALTER DOMAIN ddef1;"`;
 
 exports[`deparse 80`] = `"INSERT INTO domdeftest DEFAULT VALUES;"`;
 
 exports[`deparse 81`] = `"SELECT * FROM domdeftest;"`;
 
-exports[`deparse 82`] = `"ALTER DOMAIN ddef1 CASCADE;"`;
+exports[`deparse 82`] = `"ALTER DOMAIN ddef1;"`;
 
 exports[`deparse 83`] = `"INSERT INTO domdeftest DEFAULT VALUES;"`;
 
@@ -217,11 +217,11 @@ exports[`deparse 88`] = `"INSERT INTO domcontest VALUES (1);"`;
 
 exports[`deparse 89`] = `"INSERT INTO domcontest VALUES (2);"`;
 
-exports[`deparse 90`] = `"ALTER DOMAIN con CASCADE;"`;
+exports[`deparse 90`] = `"ALTER DOMAIN con ADD CONSTRAINT t CHECK (value < 1);"`;
 
-exports[`deparse 91`] = `"ALTER DOMAIN con CASCADE;"`;
+exports[`deparse 91`] = `"ALTER DOMAIN con ADD CONSTRAINT t CHECK (value < 34);"`;
 
-exports[`deparse 92`] = `"ALTER DOMAIN con CASCADE;"`;
+exports[`deparse 92`] = `"ALTER DOMAIN con ADD CHECK (value > 0);"`;
 
 exports[`deparse 93`] = `"INSERT INTO domcontest VALUES ((-5));"`;
 
@@ -229,15 +229,15 @@ exports[`deparse 94`] = `"INSERT INTO domcontest VALUES (42);"`;
 
 exports[`deparse 95`] = `"INSERT INTO domcontest VALUES (5);"`;
 
-exports[`deparse 96`] = `"ALTER DOMAIN con CASCADE;"`;
+exports[`deparse 96`] = `"ALTER DOMAIN con DROP CONSTRAINT t;"`;
 
 exports[`deparse 97`] = `"INSERT INTO domcontest VALUES ((-5));"`;
 
 exports[`deparse 98`] = `"INSERT INTO domcontest VALUES (42);"`;
 
-exports[`deparse 99`] = `"ALTER DOMAIN con CASCADE;"`;
+exports[`deparse 99`] = `"ALTER DOMAIN con DROP CONSTRAINT nonexistent;"`;
 
-exports[`deparse 100`] = `"ALTER DOMAIN con CASCADE;"`;
+exports[`deparse 100`] = `"ALTER DOMAIN con DROP CONSTRAINT nonexistent;"`;
 
 exports[`deparse 101`] = `"CREATE DOMAIN things AS int;"`;
 
@@ -249,15 +249,15 @@ exports[`deparse 102`] = `
 
 exports[`deparse 103`] = `"INSERT INTO thethings (stuff) VALUES (55);"`;
 
-exports[`deparse 104`] = `"ALTER DOMAIN things CASCADE;"`;
+exports[`deparse 104`] = `"ALTER DOMAIN things ADD CONSTRAINT meow CHECK (value < 11);"`;
 
-exports[`deparse 105`] = `"ALTER DOMAIN things CASCADE;"`;
+exports[`deparse 105`] = `"ALTER DOMAIN things ADD CONSTRAINT meow CHECK (value < 11) NOT VALID;"`;
 
-exports[`deparse 106`] = `"ALTER DOMAIN things CASCADE;"`;
+exports[`deparse 106`] = `"ALTER DOMAIN things VALIDATE CONSTRAINT meow;"`;
 
 exports[`deparse 107`] = `"UPDATE thethings SET stuff = 10;"`;
 
-exports[`deparse 108`] = `"ALTER DOMAIN things CASCADE;"`;
+exports[`deparse 108`] = `"ALTER DOMAIN things VALIDATE CONSTRAINT meow;"`;
 
 exports[`deparse 109`] = `
 "CREATE TABLE domtab (
@@ -275,19 +275,19 @@ exports[`deparse 113`] = `"INSERT INTO domtab (col1) VALUES (5);"`;
 
 exports[`deparse 114`] = `"SELECT * FROM domview;"`;
 
-exports[`deparse 115`] = `"ALTER DOMAIN dom CASCADE;"`;
+exports[`deparse 115`] = `"ALTER DOMAIN dom;"`;
 
 exports[`deparse 116`] = `"SELECT * FROM domview;"`;
 
-exports[`deparse 117`] = `"ALTER DOMAIN dom CASCADE;"`;
+exports[`deparse 117`] = `"ALTER DOMAIN dom;"`;
 
 exports[`deparse 118`] = `"SELECT * FROM domview;"`;
 
-exports[`deparse 119`] = `"ALTER DOMAIN dom CASCADE;"`;
+exports[`deparse 119`] = `"ALTER DOMAIN dom ADD CONSTRAINT domchkgt6 CHECK (value > 6);"`;
 
 exports[`deparse 120`] = `"SELECT * FROM domview;"`;
 
-exports[`deparse 121`] = `"ALTER DOMAIN dom CASCADE;"`;
+exports[`deparse 121`] = `"ALTER DOMAIN dom DROP CONSTRAINT domchkgt6;"`;
 
 exports[`deparse 122`] = `"SELECT * FROM domview;"`;
 
@@ -427,7 +427,7 @@ exports[`deparse 170`] = `
 
 exports[`deparse 171`] = `"INSERT INTO ddtest2 VALUES (ROW((-1)));"`;
 
-exports[`deparse 172`] = `"ALTER DOMAIN posint CASCADE;"`;
+exports[`deparse 172`] = `"ALTER DOMAIN posint ADD CONSTRAINT c1 CHECK (value >= 0);"`;
 
 exports[`deparse 173`] = `"DROP TABLE ddtest2;"`;
 
@@ -439,15 +439,15 @@ exports[`deparse 174`] = `
 
 exports[`deparse 175`] = `"INSERT INTO ddtest2 VALUES ('{(-1)}');"`;
 
-exports[`deparse 176`] = `"ALTER DOMAIN posint CASCADE;"`;
+exports[`deparse 176`] = `"ALTER DOMAIN posint ADD CONSTRAINT c1 CHECK (value >= 0);"`;
 
-exports[`deparse 177`] = `"ALTER DOMAIN posint CASCADE;"`;
+exports[`deparse 177`] = `"ALTER DOMAIN posint ADD CONSTRAINT c1 CHECK (value >= 0);"`;
 
 exports[`deparse 178`] = `"CREATE DOMAIN posint2 AS posint CHECK (value % 2 = 0);"`;
 
-exports[`deparse 179`] = `"ALTER DOMAIN posint CASCADE;"`;
+exports[`deparse 179`] = `"ALTER DOMAIN posint ADD CONSTRAINT c2 CHECK (value >= 10);"`;
 
-exports[`deparse 180`] = `"ALTER DOMAIN posint CASCADE;"`;
+exports[`deparse 180`] = `"ALTER DOMAIN posint ADD CONSTRAINT c2 CHECK (value > 0);"`;
 
 exports[`deparse 181`] = `"DROP TABLE ddtest2;"`;
 
@@ -463,7 +463,7 @@ exports[`deparse 186`] = `"CREATE DOMAIN orderedpair AS int[] CHECK ((value)[1] 
 
 exports[`deparse 187`] = `"CREATE DOMAIN di AS int;"`;
 
-exports[`deparse 188`] = `"ALTER DOMAIN di CASCADE;"`;
+exports[`deparse 188`] = `"ALTER DOMAIN di ADD CONSTRAINT pos CHECK (value > 0);"`;
 
 exports[`deparse 189`] = `"CREATE DOMAIN inotnull AS int CHECK (sql_is_distinct_from(value, NULL));"`;
 
@@ -471,16 +471,16 @@ exports[`deparse 190`] = `"DROP DOMAIN inotnull;"`;
 
 exports[`deparse 191`] = `"CREATE DOMAIN testdomain1 AS int;"`;
 
-exports[`deparse 192`] = `""`;
+exports[`deparse 192`] = `"ALTER DOMAIN testdomain1 RENAME TO testdomain2;"`;
 
-exports[`deparse 193`] = `""`;
+exports[`deparse 193`] = `"ALTER TYPE testdomain2 RENAME TO testdomain3;"`;
 
-exports[`deparse 194`] = `"DROP DOMAIN testdomain3 CASCADE"`;
+exports[`deparse 194`] = `"DROP DOMAIN testdomain3;"`;
 
-exports[`deparse 195`] = `"CREATE DOMAIN testdomain1 AS int CONSTRAINT unsigned CHECK (value > 0)"`;
+exports[`deparse 195`] = `"CREATE DOMAIN testdomain1 AS int CONSTRAINT unsigned CHECK (value > 0);"`;
 
-exports[`deparse 196`] = `""`;
+exports[`deparse 196`] = `"ALTER DOMAIN testdomain1 RENAME CONSTRAINT unsigned TO unsigned_foo;"`;
 
-exports[`deparse 197`] = `"ALTER DOMAIN testdomain1 CASCADE"`;
+exports[`deparse 197`] = `"ALTER DOMAIN testdomain1 DROP CONSTRAINT unsigned_foo;"`;
 
-exports[`deparse 198`] = `"DROP DOMAIN testdomain1 CASCADE"`;
+exports[`deparse 198`] = `"DROP DOMAIN testdomain1;"`;

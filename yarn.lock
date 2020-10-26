@@ -8320,20 +8320,20 @@ pgpass@1.x:
   dependencies:
     split "^1.0.0"
 
-pgsql-deparser@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-1.0.5.tgz#e131e3840b6c148000cdb5a8c86e81a474592077"
-  integrity sha512-SteAFasD07h3ip+lqdEbdR1ZhpJ419VfSMnE3wlZmLAWvJgD2x4vUfyFG6564f6jfbr+z4CMTbE+2Gq4WJ8CUA==
+pgsql-deparser@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-1.0.6.tgz#ad2573149fa58533e053168a20dff9ba212d0ac9"
+  integrity sha512-DHGz+qYfQhUurvLzIK3beZNcxE7xgXbdGr6zEccaqRYpcCNAK7UwtQEFFZ0d+qR2u6mLJhzskrV/dj6fsVZd9w==
   dependencies:
     "@babel/runtime" "^7.11.2"
     dotty "0.1.0"
     lodash "4.17.20"
-    pgsql-enums "^1.0.1"
+    pgsql-enums "^1.0.2"
 
-pgsql-enums@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/pgsql-enums/-/pgsql-enums-1.0.1.tgz#1516c510af56d35ac2ee914d1cefc685c189984f"
-  integrity sha512-wHGiFoaOSFLj6sEYSyXAAUJMQ1LAhyWPvdb+qL5WCRGrk/T9WtxA5QtNfjzGeXerXQbPf7qrpyBw79EQj9EVlg==
+pgsql-enums@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/pgsql-enums/-/pgsql-enums-1.0.2.tgz#353a817e97fd1c1e0544aa8e89d141f0cb43c6df"
+  integrity sha512-Z9jpvtbPSm6L9tx1OEs4Ny4vsFHlU+WxD9MScgggmKPHbr/W3wfhL1w+Px+oqOzlcLE+loVNol1RkCN+9ToHLA==
   dependencies:
     "@babel/runtime" "^7.4.2"
 
@@ -8348,16 +8348,16 @@ pgsql-parser@0.8.6:
     lodash "^4.17.20"
     minimist "^1.2.5"
 
-pgsql-parser@1.0.5:
-  version "1.0.5"
-  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-1.0.5.tgz#878256f1d44799d967965f50a3400d3f3e20b34d"
-  integrity sha512-pQisp4IhGZ8xtvyozmNVavS5PZBPAJ8wGF/dWxa8wBBICgEzHNGp+J23k4ZC3f2VXM7rLk2Nu4eKxKMOE5UJGQ==
+pgsql-parser@1.0.6:
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-1.0.6.tgz#595c82b097cfb823040bfc0e7e09cb92075d6425"
+  integrity sha512-/tcT/X700XUmZ+ZCYjrkN/b0xHodShMFGneM3Pt7MbXjniIUskHdWC3akX01UuwowXQ7UqcjYX0fP+ZGU6NKtA==
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@pgql/parse" "1.2.6"
     minimist "^1.2.5"
-    pgsql-deparser "^1.0.5"
-    pgsql-enums "^1.0.1"
+    pgsql-deparser "^1.0.6"
+    pgsql-enums "^1.0.2"
 
 picomatch@^2.0.4, picomatch@^2.0.5:
   version "2.2.2"
