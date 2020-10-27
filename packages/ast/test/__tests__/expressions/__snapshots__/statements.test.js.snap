@@ -26,7 +26,7 @@ exports[`drop_stmt 11`] = `"DROP FUNCTION \\"some-schema\\".\\"some-function\\" 
 
 exports[`func_call 1`] = `"dan()"`;
 
-exports[`insert_stmt 1`] = `"INSERT INTO objects.object (name, val, active, hash) VALUES ('name', 'val', 't'::boolean, 'abcdefg'), ('name', 'val', 't'::boolean, 'abcdefg'), ('name', 'val', 't'::boolean, 'abcdefg');"`;
+exports[`insert_stmt 1`] = `"INSERT INTO objects.object (name, val, active, hash) VALUES ('name', 'val', TRUE, 'abcdefg'), ('name', 'val', TRUE, 'abcdefg'), ('name', 'val', TRUE, 'abcdefg');"`;
 
 exports[`insert_stmt 2`] = `"INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name;"`;
 
@@ -36,11 +36,11 @@ exports[`insert_stmt 4`] = `"INSERT INTO yo.\\"table\\" (project_id, name, field
 
 exports[`insert_stmt 5`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT ON CONSTRAINT customers_name_key DO NOTHING;"`;
 
-exports[`insert_stmt 6`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = EXCLUDED.email || ';' || customers.email;"`;
+exports[`insert_stmt 6`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = (EXCLUDED.email || ';') || customers.email;"`;
 
-exports[`insert_stmt 7`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = EXCLUDED.email || ';' || customers.email, level = customers.level + 1, other = EXCLUDED.other;"`;
+exports[`insert_stmt 7`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = (EXCLUDED.email || ';') || customers.email, level = customers.level + 1, other = EXCLUDED.other;"`;
 
-exports[`insert_stmt 8`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (id, project_id) DO UPDATE SET email = EXCLUDED.email || ';' || customers.email, level = customers.level + 1, other = EXCLUDED.other RETURNING *;"`;
+exports[`insert_stmt 8`] = `"INSERT INTO customers (name, email) VALUES ('Microsoft', 'hotline@microsoft.com') ON CONFLICT (id, project_id) DO UPDATE SET email = (EXCLUDED.email || ';') || customers.email, level = customers.level + 1, other = EXCLUDED.other RETURNING *;"`;
 
 exports[`raw_stmt 1`] = `"NULL::text[]"`;
 
@@ -110,7 +110,7 @@ exports[`select_stmt 18`] = `
 "SELECT two,
 stringu1,
 ten,
-string4 tmp FROM onek;"
+string4 INTO tmp FROM onek;"
 `;
 
 exports[`select_stmt 19`] = `

@@ -29,11 +29,11 @@ testnumeric domainnumeric
 );"
 `;
 
-exports[`deparse 12`] = `"SELECT COALESCE(4::domainint4, 7) IN ( int4 ) AS t;"`;
+exports[`deparse 12`] = `"SELECT COALESCE(4::domainint4, 7) IS OF ( int4 ) AS t;"`;
 
-exports[`deparse 13`] = `"SELECT COALESCE(4::domainint4, 7) IN ( domainint4 ) AS f;"`;
+exports[`deparse 13`] = `"SELECT COALESCE(4::domainint4, 7) IS OF ( domainint4 ) AS f;"`;
 
-exports[`deparse 14`] = `"SELECT COALESCE(4::domainint4, 7::domainint4) IN ( domainint4 ) AS t;"`;
+exports[`deparse 14`] = `"SELECT COALESCE(4::domainint4, 7::domainint4) IS OF ( domainint4 ) AS t;"`;
 
 exports[`deparse 15`] = `"DROP TABLE basictest;"`;
 
@@ -443,7 +443,7 @@ exports[`deparse 176`] = `"ALTER DOMAIN posint ADD CONSTRAINT c1 CHECK (value >=
 
 exports[`deparse 177`] = `"ALTER DOMAIN posint ADD CONSTRAINT c1 CHECK (value >= 0);"`;
 
-exports[`deparse 178`] = `"CREATE DOMAIN posint2 AS posint CHECK (value % 2 = 0);"`;
+exports[`deparse 178`] = `"CREATE DOMAIN posint2 AS posint CHECK ((value % 2) = 0);"`;
 
 exports[`deparse 179`] = `"ALTER DOMAIN posint ADD CONSTRAINT c2 CHECK (value >= 10);"`;
 

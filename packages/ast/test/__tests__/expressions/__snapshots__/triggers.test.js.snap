@@ -31,7 +31,7 @@ exports[`create_function trigger 1`] = `
 
 exports[`create_function trigger 2`] = `
 "CREATE FUNCTION v_schema_name.v_function_name ( ) RETURNS TRIGGER AS $LQLCODEZ$ 
- NEW.field = setweight(to_tsvector('pg_catalog.english', COALESCE(NEW.sub_head, '')), 'B') || setweight(to_tsvector('pg_catalog.english', COALESCE(array_to_string(NEW.tags::citext[], ' '), '')), 'C') || setweight(to_tsvector('pg_catalog.english', COALESCE(NEW.name, '')), 'B') || setweight(to_tsvector('pg_catalog.simple', COALESCE(NEW.name, '')), 'A');
+ NEW.field = (setweight(to_tsvector('pg_catalog.english', COALESCE(NEW.sub_head, '')), 'B') || (setweight(to_tsvector('pg_catalog.english', COALESCE(array_to_string(NEW.tags::citext[], ' '), '')), 'C') || (setweight(to_tsvector('pg_catalog.english', COALESCE(NEW.name, '')), 'B') || setweight(to_tsvector('pg_catalog.simple', COALESCE(NEW.name, '')), 'A'))));
 RETURN NEW; 
  $LQLCODEZ$ LANGUAGE plpgsql VOLATILE;"
 `;

@@ -4,7 +4,7 @@ exports[`pure psql 1`] = `"setweight(to_tsvector(COALESCE(NEW.field1, '')), 'A')
 
 exports[`trigger tsvector index 1`] = `
 Object {
-  "deparse": "setweight(to_tsvector('pg_catalog.simple', COALESCE(array_to_string(tags::citext[], ' '), '')), 'A') || setweight(to_tsvector('pg_catalog.simple', COALESCE(name, '')), 'A') || setweight(to_tsvector('english', COALESCE(description, '')), 'B') || setweight(to_tsvector('pg_catalog.english', COALESCE(name, '')), 'A')",
+  "deparse": "setweight(to_tsvector('pg_catalog.simple', COALESCE(array_to_string(tags::citext[], ' '), '')), 'A') || (setweight(to_tsvector('pg_catalog.simple', COALESCE(name, '')), 'A') || (setweight(to_tsvector('english', COALESCE(description, '')), 'B') || setweight(to_tsvector('pg_catalog.english', COALESCE(name, '')), 'A')))",
 }
 `;
 
@@ -16,7 +16,7 @@ Object {
 
 exports[`tsvector index 1`] = `
 Object {
-  "deparse": "setweight(to_tsvector('pg_catalog.simple', COALESCE(name, '')), 'A') || setweight(to_tsvector('english', COALESCE(description, '')), 'B') || setweight(to_tsvector('pg_catalog.english', COALESCE(name, '')), 'A')",
+  "deparse": "setweight(to_tsvector('pg_catalog.simple', COALESCE(name, '')), 'A') || (setweight(to_tsvector('english', COALESCE(description, '')), 'B') || setweight(to_tsvector('pg_catalog.english', COALESCE(name, '')), 'A'))",
 }
 `;
 
