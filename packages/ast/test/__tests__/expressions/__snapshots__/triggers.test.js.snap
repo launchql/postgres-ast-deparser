@@ -123,6 +123,16 @@ Object {
 }
 `;
 
+exports[`create_trigger_stmt deparse 2`] = `
+Object {
+  "deparse": "CREATE TRIGGER trigger 
+ BEFORE UPDATE ON \\"schema-name\\".mytable 
+ FOR EACH ROW 
+ WHEN (OLD.\\"field-b\\" IS DISTINCT FROM NEW.\\"field-b\\") 
+ EXECUTE PROCEDURE \\"tg-schema\\".tgname ( 'tg-schema', 'tgname' )",
+}
+`;
+
 exports[`create_trigger_with_fields 1`] = `
 "CREATE TRIGGER \\"my-trigger\\" 
  BEFORE INSERT OR UPDATE ON \\"my-schema\\".\\"my-table\\" 
@@ -137,6 +147,14 @@ exports[`create_trigger_with_fields and names wo quotes 1`] = `
  FOR EACH ROW 
  WHEN (OLD.name IS DISTINCT FROM NEW.name OR OLD.description IS DISTINCT FROM NEW.description) 
  EXECUTE PROCEDURE mytgfnschema.mytgfn ( );"
+`;
+
+exports[`create_trigger_with_fields w params 1`] = `
+"CREATE TRIGGER \\"my-trigger\\" 
+ BEFORE INSERT OR UPDATE ON \\"my-schema\\".\\"my-table\\" 
+ FOR EACH ROW 
+ WHEN (OLD.name IS DISTINCT FROM NEW.name OR OLD.description IS DISTINCT FROM NEW.description) 
+ EXECUTE PROCEDURE \\"my-tg-fn-schema\\".\\"my-tg-fn\\" ( 'name', 'description' );"
 `;
 
 exports[`drop_trigger 1`] = `"DROP TRIGGER mytrigger ON myschema.mytable;"`;

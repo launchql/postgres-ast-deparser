@@ -32,6 +32,7 @@ SELECT x,
 x IS OF ( text ) AS is_text FROM q;
 SELECT x,
 x IS NOT OF ( text ) AS is_text FROM q;
+SELECT COALESCE(4::domainint4, 7::domainint4) IS OF ( domainint4 ) AS t;
 SELECT value IN (SELECT column_name FROM table_name);
 SELECT NOT (value IN (SELECT column_name FROM table_name));
 SELECT customer_id,
@@ -111,6 +112,7 @@ SELECT x,
 x IS OF (text) AS is_text FROM q;
 SELECT x,
 x IS NOT OF (text) AS is_text FROM q;
+SELECT COALESCE(4::domainint4, 7::domainint4) IS OF (domainint4) AS t;
 SELECT value IN (SELECT column_name FROM table_name);
 SELECT NOT (value IN (SELECT column_name FROM table_name));
 SELECT customer_id,

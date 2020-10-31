@@ -427,6 +427,7 @@ CREATE FUNCTION ast_helpers.create_trigger_distinct_fields (
   v_trigger_fn_name text,
 
   v_fields text[] default ARRAY[]::text[],
+  v_params text[] default ARRAY[]::text[],
   v_timing int default 2,
   v_events int default 4 | 16
 )
@@ -459,6 +460,7 @@ BEGIN
       v_relname := v_table_name
     ),
     v_funcname := ast_helpers.array_of_strings(v_trigger_fn_schema, v_trigger_fn_name),
+    v_args := ast_helpers.array_of_strings( variadic strs := v_params ),
     v_row := true,
     v_timing := v_timing,
     v_events := v_events,

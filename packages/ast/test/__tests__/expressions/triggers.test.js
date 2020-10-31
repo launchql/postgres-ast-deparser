@@ -97,6 +97,23 @@ select deparser.deparse(
   expect(result).toMatchSnapshot();
 });
 
+it('create_trigger_with_fields w params', async () => {
+  const [{ deparse: result }] = await db.any(`
+select deparser.deparse( 
+  ast_helpers.create_trigger_distinct_fields(
+    v_trigger_name := 'my-trigger',
+    v_schema_name := 'my-schema',
+    v_table_name := 'my-table',
+    v_trigger_fn_schema := 'my-tg-fn-schema',
+    v_trigger_fn_name := 'my-tg-fn',  
+    v_fields := ARRAY['name', 'description']::text[],
+    v_params := ARRAY['name', 'description']::text[],
+    v_timing := 2,
+    v_events := 4 | 16)
+  )`);
+  expect(result).toMatchSnapshot();
+});
+
 it('create_trigger_with_fields and names wo quotes', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse( 
@@ -222,5 +239,31 @@ select deparser.deparse(
       ])
     ]
   );
+  expect(result).toMatchSnapshot();
+});
+
+it('create_trigger_stmt deparse', async () => {
+  const [result] = await db.any(`
+select deparser.deparse( 
+  ast.create_trig_stmt(
+    v_trigname := 'trigger',
+    v_relation := ast.range_var( v_schemaname := 'schema-name', v_relname := 'mytable', v_inh := true, v_relpersistence := 'p'),
+    v_funcname := to_jsonb(ARRAY[ ast.string('tg-schema'),ast.string('tgname') ]),
+    v_args := to_jsonb(ARRAY[ ast.string('tg-schema'),ast.string('tgname') ]),
+    v_row := true,
+    v_timing := 2,
+    v_events := 16,
+    v_whenClause := ast.a_expr( v_kind := 3, 
+        v_lexpr := ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('old'),ast.string('field-b') ])
+        ),
+        v_name := to_jsonb(ARRAY[ast.string('=')]),
+        v_rexpr := ast.column_ref(
+          to_jsonb(ARRAY[ ast.string('new'),ast.string('field-b') ])
+        ) 
+    )
+  )
+);
+  `);
   expect(result).toMatchSnapshot();
 });

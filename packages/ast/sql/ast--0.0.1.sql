@@ -2336,7 +2336,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_trigger_distinct_fields ( v_trigger_name text, v_schema_name text, v_table_name text, v_trigger_fn_schema text, v_trigger_fn_name text, v_fields text[] DEFAULT ARRAY[]::text[], v_timing int DEFAULT 2, v_events int DEFAULT ((4) | (16)) ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.create_trigger_distinct_fields ( v_trigger_name text, v_schema_name text, v_table_name text, v_trigger_fn_schema text, v_trigger_fn_name text, v_fields text[] DEFAULT ARRAY[]::text[], v_params text[] DEFAULT ARRAY[]::text[], v_timing int DEFAULT 2, v_events int DEFAULT 4 | 16 ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   results jsonb[];
   result jsonb;
@@ -2364,6 +2364,7 @@ BEGIN
       v_relname := v_table_name
     ),
     v_funcname := ast_helpers.array_of_strings(v_trigger_fn_schema, v_trigger_fn_name),
+    v_args := ast_helpers.array_of_strings( variadic strs := v_params ),
     v_row := true,
     v_timing := v_timing,
     v_events := v_events,
@@ -2376,7 +2377,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.drop_trigger ( v_trigger_name text, v_schema_name text, v_table_name text, v_cascade boolean DEFAULT (FALSE) ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.drop_trigger ( v_trigger_name text, v_schema_name text, v_table_name text, v_cascade boolean DEFAULT FALSE ) RETURNS jsonb AS $EOFCODE$
   select ast.raw_stmt(
     v_stmt := ast.drop_stmt(
       v_objects := to_jsonb(ARRAY[ARRAY[
@@ -2542,7 +2543,7 @@ CREATE FUNCTION ast_helpers.create_table ( v_schema_name text, v_table_name text
   );
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.drop_table ( v_schema_name text, v_table_name text, v_cascade boolean DEFAULT (FALSE) ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.drop_table ( v_schema_name text, v_table_name text, v_cascade boolean DEFAULT FALSE ) RETURNS jsonb AS $EOFCODE$
   select ast.raw_stmt(
     v_stmt := ast.drop_stmt(
       v_objects := to_jsonb(ARRAY[ARRAY[
@@ -3351,7 +3352,7 @@ CREATE FUNCTION deparser.parens ( str text ) RETURNS text AS $EOFCODE$
 	select '(' || str || ')';
 $EOFCODE$ LANGUAGE sql;
 
-CREATE FUNCTION deparser.compact ( vvalues text[], usetrim boolean DEFAULT (FALSE) ) RETURNS text[] AS $EOFCODE$
+CREATE FUNCTION deparser.compact ( vvalues text[], usetrim boolean DEFAULT FALSE ) RETURNS text[] AS $EOFCODE$
 DECLARE
   value text;
   filtered text[];
