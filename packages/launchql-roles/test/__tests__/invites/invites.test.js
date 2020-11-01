@@ -12,7 +12,7 @@ const getInvite = async (conn, email) => {
   );
 };
 
-const getBlankInvite = async conn => {
+const getBlankInvite = async (conn) => {
   await conn.any(
     `INSERT INTO roles_public.invites
       ( expires_at )
@@ -155,10 +155,9 @@ describe('invites', () => {
       'jwt.claims.role_id': signupToken.role_id
     });
 
-    await conn.any(
-      'SELECT * FROM roles_public.submit_invite_code($1)',
-      [invite.invite_token]
-    );
+    await conn.any('SELECT * FROM roles_public.submit_invite_code($1)', [
+      invite.invite_token
+    ]);
 
     const secrets = await db.one(
       'SELECT * FROM roles_private.user_secrets WHERE role_id=$1',
