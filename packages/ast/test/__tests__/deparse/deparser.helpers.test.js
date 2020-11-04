@@ -204,7 +204,6 @@ it('alter_table_drop_column', async () => {
   expect(result).toMatchSnapshot();
 });
 
-// BUG
 it('alter_table_add_column', async () => {
   const [{ expression: result }] = await db.any(
     `select deparser.expression(
@@ -220,6 +219,7 @@ it('alter_table_add_column', async () => {
 });
 
 // BUG
+// this ends up scoping it as a pg_catalog type! don't do this!
 it('alter_table_add_column with complex type as string', async () => {
   const [{ expression: result }] = await db.any(
     `select deparser.expression(

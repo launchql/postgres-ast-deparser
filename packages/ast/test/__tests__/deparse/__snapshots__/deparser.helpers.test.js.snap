@@ -8,7 +8,7 @@ exports[`alter_table_add_column with complex type as jsonb 2`] = `"ALTER TABLE m
 
 exports[`alter_table_add_column with complex type as jsonb 3`] = `"ALTER TABLE \\"my-schema\\".mytable ADD COLUMN \\"my-column\\" integer;"`;
 
-exports[`alter_table_add_column with complex type as string 1`] = `"ALTER TABLE myschema.mytable ADD COLUMN mycolumn Geometry(Polygon, 4326);"`;
+exports[`alter_table_add_column with complex type as string 1`] = `"ALTER TABLE myschema.mytable ADD COLUMN mycolumn pg_catalog.Geometry(Polygon, 4326);"`;
 
 exports[`alter_table_drop_column 1`] = `"ALTER TABLE myschema.mytable DROP COLUMN mycolumn;"`;
 
