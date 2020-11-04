@@ -2658,31 +2658,18 @@ CREATE FUNCTION ast_helpers.alter_table_add_column ( v_schema_name text, v_table
 DECLARE
   ast jsonb;
 BEGIN
-  RETURN ast.raw_stmt(
-    v_stmt := ast.alter_table_stmt(
-      v_relation := ast_helpers.range_var(
-        v_schemaname := v_schema_name,
-        v_relname := v_table_name
-      ),
-      v_cmds := to_jsonb(ARRAY[
-        ast.alter_table_cmd(
-          v_subtype := 0, -- TODO use constants
-          v_def := ast.column_def(
-            v_colname := v_column_name,
-            v_typeName := ast.type_name(
-              v_names := to_jsonb(ARRAY[
-                ast.string('pg_catalog'), -- HACK to trick deparser into NOT quoting ANYTHING in the next el
-                ast.string(v_column_type)
-              ])
-            ),
-            v_is_local := TRUE
-          ),
-          v_behavior := 0 
-        )
-      ]),
-      v_relkind := ast_constants.object_type('OBJECT_TABLE')
-    ),
-    v_stmt_len:= 1
+  ast = ast.type_name(
+    v_names := to_jsonb(ARRAY[
+      ast.string('pg_catalog'),
+      ast.string(v_column_type)
+    ])
+  );
+
+  RETURN ast_helpers.alter_table_add_column(
+    v_schema_name := v_schema_name,
+    v_table_name := v_table_name,
+    v_column_name := v_column_name,
+    v_column_type := ast
   );
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
@@ -3408,7 +3395,7 @@ BEGIN
       LOOP
         out = array_append(out, (
           CASE 
-            WHEN (invl = 'second' AND cardinality(typmods) = 2) THEN 'second(' || typemods[2] || ')'
+            WHEN (invl = 'second' AND cardinality(typmods) = 2) THEN 'second(' || typmods[2] || ')'
             ELSE invl
           END
         ));
@@ -3421,70 +3408,66 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.get_pgtype ( typ text, typemods text ) RETURNS text AS $EOFCODE$
-SELECT (CASE
-WHEN (typ = 'bpchar') THEN
+CREATE FUNCTION deparser.get_pg_catalog_type ( typ text, typemods text ) RETURNS text AS $EOFCODE$
+SELECT (CASE typ
+WHEN 'bpchar' THEN
         (CASE
             WHEN (typemods IS NOT NULL) THEN 'char'
             ELSE 'pg_catalog.bpchar'
         END)
-WHEN (typ = 'varchar') THEN 'varchar'
-WHEN (typ = 'numeric') THEN 'numeric'
-WHEN (typ = 'bool') THEN 'boolean'
-WHEN (typ = 'int2') THEN 'smallint'
-WHEN (typ = 'int4') THEN 'int'
-WHEN (typ = 'int8') THEN 'bigint'
-WHEN (typ = 'real') THEN 'real'
-WHEN (typ = 'float4') THEN 'real'
-WHEN (typ = 'float8') THEN 'pg_catalog.float8'
-WHEN (typ = 'text') THEN 'text'
-WHEN (typ = 'date') THEN 'pg_catalog.date'
-WHEN (typ = 'time') THEN 'time'
-WHEN (typ = 'timetz') THEN 'pg_catalog.timetz'
-WHEN (typ = 'timestamp') THEN 'timestamp'
-WHEN (typ = 'timestamptz') THEN 'pg_catalog.timestamptz'
-WHEN (typ = 'interval') THEN 'interval'
-WHEN (typ = 'bit') THEN 'bit'
-ELSE typ
+WHEN 'bit' THEN 'bit'
+WHEN 'bool' THEN 'boolean'
+WHEN 'integer' THEN 'integer'
+WHEN 'int' THEN 'int'
+WHEN 'int2' THEN 'smallint'
+WHEN 'int4' THEN 'int'
+WHEN 'int8' THEN 'bigint'
+WHEN 'interval' THEN 'interval'
+WHEN 'numeric' THEN 'numeric'
+WHEN 'time' THEN 'time'
+WHEN 'timestamp' THEN 'timestamp'
+WHEN 'varchar' THEN 'varchar'
+ELSE 'pg_catalog.' || typ
 END);
 $EOFCODE$ LANGUAGE sql;
 
 CREATE FUNCTION deparser.parse_type ( names jsonb, typemods text ) RETURNS text AS $EOFCODE$
 DECLARE
   parsed text[];
-  catalog text;
+  first text;
   typ text;
   ctx jsonb;
+  typmod_text text = '';
 BEGIN
   parsed = deparser.expressions_array(names);
-  catalog = parsed[1];
+  first = parsed[1];
   typ = parsed[2];
 
   -- NOT typ can be NULL
-  IF (typ IS NULL AND lower(catalog) = 'trigger') THEN 
+  IF (typ IS NULL AND lower(first) = 'trigger') THEN 
     RETURN 'TRIGGER';
   END IF;
 
-  IF (names->0->'String'->>'str' = 'char' ) THEN 
-    	names = jsonb_set(names, '{0, String, str}', '"char"');
-  END IF;
-
-  IF (catalog != 'pg_catalog') THEN 
-    IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
-      ctx = '{"type": true}'::jsonb;
-      RETURN deparser.quoted_name(names, ctx) || deparser.parens(typemods);
-    ELSE
-      ctx = '{"type": true}'::jsonb;
-      RETURN deparser.quoted_name(names, ctx);
-    END IF;
-  END IF;
-
-  typ = deparser.get_pgtype(typ, typemods);
   IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
-    RETURN typ || deparser.parens(typemods);
-  ELSE
-    RETURN typ;
+    typmod_text = deparser.parens(typemods);
   END IF;
+
+  -- "char" case
+  IF (first = 'char' ) THEN 
+      RETURN '"char"' || typmod_text;
+  END IF;
+
+  IF (typ = 'char' AND first = 'pg_catalog') THEN 
+    RETURN 'pg_catalog."char"' || typmod_text;
+  END IF;
+
+  IF (first != 'pg_catalog') THEN 
+    ctx = '{"type": true}'::jsonb;
+    RETURN deparser.quoted_name(names, ctx) || typmod_text;
+  END IF;
+
+  typ = deparser.get_pg_catalog_type(typ, typemods);
+  RETURN typ || typmod_text;
 
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
@@ -3523,7 +3506,6 @@ BEGIN
     typ = array_append(typ, deparser.parse_type(
       node->'names',
       typemods
-      -- context
     ));
 
     IF (node->'arrayBounds') IS NOT NULL THEN
