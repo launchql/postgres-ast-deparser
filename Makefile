@@ -20,11 +20,11 @@ dinstall:
 	$(MAKE) docker-install
 
 docker-install:
-	docker exec launchql-postgres /sql-extensions/install.sh
+	docker exec launchql-postgres /sql-bin/install.sh
 
 k8-install:
 	$(eval POD_NAME := $(shell kubectl get pods -l app=postgres -n webinc -o jsonpath="{.items[*].metadata.name}"))
-	kubectl exec -n webinc -it $(POD_NAME) /sql-extensions/install.sh
+	kubectl exec -n webinc -it $(POD_NAME) /sql-bin/install.sh
 
 all:
 	./build.sh lql package --version 0.0.1

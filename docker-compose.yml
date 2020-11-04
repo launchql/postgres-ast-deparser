@@ -11,4 +11,6 @@ services:
     expose:
       - "5432"
     volumes:
-      - ./packages:/sql-extensions
+      - ./bin:/sql-bin
+      - ./extensions:/sql-extensions
+      - ./packages:/sql-packages
