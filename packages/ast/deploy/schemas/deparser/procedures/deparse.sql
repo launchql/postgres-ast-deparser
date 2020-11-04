@@ -75,7 +75,7 @@ BEGIN
       LOOP
         out = array_append(out, (
           CASE 
-            WHEN (invl = 'second' AND cardinality(typmods) = 2) THEN 'second(' || typemods[2] || ')'
+            WHEN (invl = 'second' AND cardinality(typmods) = 2) THEN 'second(' || typmods[2] || ')'
             ELSE invl
           END
         ));
@@ -89,7 +89,6 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
--- TODO improve this
 CREATE FUNCTION deparser.get_pgtype (
   typ text,
   typemods text
@@ -106,10 +105,10 @@ WHEN (typ = 'bool') THEN 'boolean'
 WHEN (typ = 'int2') THEN 'smallint'
 WHEN (typ = 'int4') THEN 'int'
 WHEN (typ = 'int8') THEN 'bigint'
-WHEN (typ = 'real') THEN 'real'
-WHEN (typ = 'float4') THEN 'real'
+WHEN (typ = 'real') THEN 'pg_catalog.float4'
+WHEN (typ = 'float4') THEN 'pg_catalog.float4'
 WHEN (typ = 'float8') THEN 'pg_catalog.float8'
-WHEN (typ = 'text') THEN 'text'
+WHEN (typ = 'text') THEN 'pg_catalog.text'
 WHEN (typ = 'date') THEN 'pg_catalog.date'
 WHEN (typ = 'time') THEN 'time'
 WHEN (typ = 'timetz') THEN 'pg_catalog.timetz'
@@ -117,7 +116,7 @@ WHEN (typ = 'timestamp') THEN 'timestamp'
 WHEN (typ = 'timestamptz') THEN 'pg_catalog.timestamptz'
 WHEN (typ = 'interval') THEN 'interval'
 WHEN (typ = 'bit') THEN 'bit'
-ELSE typ
+ELSE 'pg_catalog.' || typ
 END);
 $$
 LANGUAGE 'sql';
@@ -128,24 +127,37 @@ CREATE FUNCTION deparser.parse_type (
 ) returns text as $$
 DECLARE
   parsed text[];
-  catalog text;
+  first text;
   typ text;
   ctx jsonb;
 BEGIN
   parsed = deparser.expressions_array(names);
-  catalog = parsed[1];
+  first = parsed[1];
   typ = parsed[2];
 
   -- NOT typ can be NULL
-  IF (typ IS NULL AND lower(catalog) = 'trigger') THEN 
+  IF (typ IS NULL AND lower(first) = 'trigger') THEN 
     RETURN 'TRIGGER';
   END IF;
 
-  IF (names->0->'String'->>'str' = 'char' ) THEN 
-    	names = jsonb_set(names, '{0, String, str}', '"char"');
+  -- "char" case
+  IF (first = 'char' ) THEN 
+      IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
+        RETURN '"char"' || deparser.parens(typemods);
+      ELSE
+        RETURN '"char"';
+      END IF;
   END IF;
 
-  IF (catalog != 'pg_catalog') THEN 
+  IF (typ IS NOT NULL AND typ = 'char' AND first = 'pg_catalog') THEN 
+      IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
+        RETURN 'pg_catalog."char"' || deparser.parens(typemods);
+      ELSE
+        RETURN 'pg_catalog."char"';
+      END IF;
+  END IF;
+
+  IF (first != 'pg_catalog') THEN 
     IF (typemods IS NOT NULL AND character_length(typemods) > 0) THEN 
       ctx = '{"type": true}'::jsonb;
       RETURN deparser.quoted_name(names, ctx) || deparser.parens(typemods);
@@ -203,7 +215,6 @@ BEGIN
     typ = array_append(typ, deparser.parse_type(
       node->'names',
       typemods
-      -- context
     ));
 
     IF (node->'arrayBounds') IS NOT NULL THEN

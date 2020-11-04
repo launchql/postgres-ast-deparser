@@ -7466,8 +7466,8 @@ RETURN module; })(); ');"
 `;
 
 exports[`kitchen sink insert 2`] = `
-"INSERT INTO shoelace_data VALUES (1, 2, 3, 'truth', (TRUE));
-INSERT INTO shoelace_data ( id, col1, col2, val1, bl2 ) VALUES (1, 2, 3, 'truth', (TRUE));
+"INSERT INTO shoelace_data VALUES (1, 2, 3, 'truth', TRUE);
+INSERT INTO shoelace_data ( id, col1, col2, val1, bl2 ) VALUES (1, 2, 3, 'truth', TRUE);
 INSERT INTO shoelace_data DEFAULT VALUES;
 INSERT INTO v8.modules ( name, code ) VALUES ('ajv', ' (FUNCTION () { var module = { exports: { } };
 var exports = module.exports;
@@ -13987,10 +13987,10 @@ exports[`kitchen sink policies 2`] = `
 CREATE POLICY delete_user_no_to ON users.\\"user\\" FOR DELETE TO PUBLIC USING ( id = current_setting('user.id')::uuid );
 CREATE POLICY delete_user_no_to ON users.\\"user\\" FOR DELETE TO PUBLIC WITH CHECK ( id = current_setting('user.id')::uuid );
 CREATE POLICY delete_user ON users.\\"user\\" FOR DELETE TO authenticated USING ( id = current_setting('user.id')::uuid );
-CREATE POLICY select_user ON users.\\"user\\" FOR SELECT TO PUBLIC USING ( (TRUE) );
+CREATE POLICY select_user ON users.\\"user\\" FOR SELECT TO PUBLIC USING ( TRUE );
 CREATE POLICY delete_own ON myschema.mytable FOR DELETE TO PUBLIC USING ( group_id = ANY (otherschema.my_policy_fn()) );
 CREATE POLICY insert_own ON myschema.mytable FOR ALL TO PUBLIC WITH CHECK ( group_id = ANY (otherschema.my_policy_fn()) );
-CREATE POLICY select_any ON myschema.mytable FOR SELECT TO PUBLIC USING ( (TRUE) );
+CREATE POLICY select_any ON myschema.mytable FOR SELECT TO PUBLIC USING ( TRUE );
 CREATE POLICY update_own ON myschema.mytable FOR UPDATE TO PUBLIC USING ( group_id = ANY (otherschema.my_policy_fn()) );
 CREATE POLICY delete_pol_permissive ON users.\\"user\\" FOR DELETE TO PUBLIC WITH CHECK ( id = current_setting('user.id')::uuid );
 CREATE POLICY delete_pol_restrictive ON users.\\"user\\" AS RESTRICTIVE FOR DELETE TO PUBLIC WITH CHECK ( id = current_setting('user.id')::uuid );"
@@ -14155,11 +14155,11 @@ CHECK ( price > discounted_price )
 );
 CREATE TABLE boomin (
 d date,
-CHECK ( (FALSE) ) NO INHERIT NOT VALID
+CHECK ( FALSE ) NO INHERIT NOT VALID
 );
 CREATE TABLE boomin (
 d date,
-CHECK ( (TRUE) ) NO INHERIT NOT VALID
+CHECK ( TRUE ) NO INHERIT NOT VALID
 );
 ALTER TABLE checkitout ADD CHECK ( d BETWEEN '2010-01-01'::date AND '2010-12-31'::date ) NOT VALID;
 ALTER TABLE checkitout2 ADD CHECK ( d NOT BETWEEN '2010-01-01'::date AND '2010-12-31'::date ) NOT VALID;
@@ -15300,8 +15300,8 @@ DROP TABLE booltbl2;"
 
 exports[`kitchen sink upstream upstream/boolean.sql 2`] = `
 "SELECT 1 AS one;
-SELECT (TRUE) AS \\"true\\";
-SELECT (FALSE) AS \\"false\\";
+SELECT TRUE AS \\"true\\";
+SELECT FALSE AS \\"false\\";
 SELECT 't'::bool AS \\"true\\";
 SELECT '   f           '::bool AS \\"false\\";
 SELECT 'true'::bool AS \\"true\\";
@@ -15338,8 +15338,8 @@ SELECT 'TrUe'::text::boolean AS \\"true\\",
 'fAlse'::text::boolean AS \\"false\\";
 SELECT '    true   '::text::boolean AS \\"true\\",
 '     FALSE'::text::boolean AS \\"false\\";
-SELECT (TRUE)::boolean::text AS \\"true\\",
-(FALSE)::boolean::text AS \\"false\\";
+SELECT TRUE::boolean::text AS \\"true\\",
+FALSE::boolean::text AS \\"false\\";
 SELECT '  tru e '::text::boolean AS invalid;
 SELECT ''::text::boolean AS invalid;
 CREATE TABLE booltbl1 (
@@ -17208,7 +17208,7 @@ SELECT pg_switch_xlog();"
 
 exports[`kitchen sink upstream upstream/hs_standby_check.sql 1`] = `"SELECT CASE pg_is_in_recovery() WHEN FALSE THEN ('These tests are intended only for execution on a standby server that is reading ' || 'WAL from a server upon which the regression database is already created and into ') || 'which src/test/regress/sql/hs_primary_setup.sql has been run' ELSE 'Tests are running on a standby server during recovery' END;"`;
 
-exports[`kitchen sink upstream upstream/hs_standby_check.sql 2`] = `"SELECT CASE pg_is_in_recovery() WHEN (FALSE) THEN ('These tests are intended only for execution on a standby server that is reading ' || 'WAL from a server upon which the regression database is already created and into ') || 'which src/test/regress/sql/hs_primary_setup.sql has been run' ELSE 'Tests are running on a standby server during recovery' END;"`;
+exports[`kitchen sink upstream upstream/hs_standby_check.sql 2`] = `"SELECT CASE pg_is_in_recovery() WHEN FALSE THEN ('These tests are intended only for execution on a standby server that is reading ' || 'WAL from a server upon which the regression database is already created and into ') || 'which src/test/regress/sql/hs_primary_setup.sql has been run' ELSE 'Tests are running on a standby server during recovery' END;"`;
 
 exports[`kitchen sink upstream upstream/hs_standby_functions.sql 1`] = `
 "SELECT txid_current();
@@ -19569,9 +19569,9 @@ SELECT 'four: '::text || (2 + 2);
 SELECT 'four: ' || (2 + 2);
 SELECT 3 || 4.0;
 SELECT concat('one');
-SELECT concat(1, 2, 3, 'hello', (TRUE), (FALSE), to_date('20100309', 'YYYYMMDD'));
+SELECT concat(1, 2, 3, 'hello', TRUE, FALSE, to_date('20100309', 'YYYYMMDD'));
 SELECT concat_ws('#', 'one');
-SELECT concat_ws('#', 1, 2, 3, 'hello', (TRUE), (FALSE), to_date('20100309', 'YYYYMMDD'));
+SELECT concat_ws('#', 1, 2, 3, 'hello', TRUE, FALSE, to_date('20100309', 'YYYYMMDD'));
 SELECT concat_ws(',', 10, 20, NULL, 30);
 SELECT concat_ws('', 10, 20, NULL, 30);
 SELECT concat_ws(NULL, 10, 20, NULL, 30) IS NULL;
@@ -19613,8 +19613,8 @@ SELECT format('Hello %s %1$s %s', 'World', 'Hello again');
 SELECT format('Hello %s %s, %2$s %2$s', 'World', 'Hello again');
 SELECT format('%s, %s', VARIADIC ARRAY['Hello', 'World']);
 SELECT format('%s, %s', VARIADIC ARRAY[1, 2]);
-SELECT format('%s, %s', VARIADIC ARRAY[(TRUE), (FALSE)]);
-SELECT format('%s, %s', VARIADIC ARRAY[(TRUE), (FALSE)]::text[]);
+SELECT format('%s, %s', VARIADIC ARRAY[TRUE, FALSE]);
+SELECT format('%s, %s', VARIADIC ARRAY[TRUE, FALSE]::text[]);
 SELECT format('%2$s, %1$s', VARIADIC ARRAY['first', 'second']);
 SELECT format('%2$s, %1$s', VARIADIC ARRAY[1, 2]);
 SELECT format('Hello', VARIADIC NULL::int[]);
@@ -20412,4 +20412,362 @@ SELECT (a AND b AND c::bool IS TRUE) OR d OR ((e AND f) OR g) FROM t;
 SELECT (NOT ((a AND b)) AND c) OR NOT (d) FROM t;
 SELECT NOT ((a AND b)) AND c FROM t;
 SELECT NOT ((a AND b)) AND c FROM t;"
+`;
+
+exports[`pg_catalog 1`] = `
+"CREATE TABLE table_without_pg_catalog (
+bigint_type bigint,
+bigserial_type bigserial,
+bit_opt_1_type bit(1),
+bit_opt_2_type bit(2),
+bit_opt_16_type bit(16),
+bit_varying_opt_1_type varbit(1),
+bit_varying_opt_2_type varbit(2),
+bool_type bool,
+boolean_type boolean,
+box_type box,
+bytea_type bytea,
+char_opt_1_type char(1),
+char_opt_140_type char(140),
+char_opt_1000_type char(1000),
+char_type char(1),
+character_type char(1),
+character_varying_opt_1_type varchar(1),
+character_varying_opt_10_type varchar(10),
+character_varying_opt_140_type varchar(140),
+character_varying_opt_1000_type varchar(1000),
+character_varying_type varchar,
+cidr_type cidr,
+circle_type circle,
+date_type date,
+double_precision_type pg_catalog.float8,
+float_4_type float4,
+float_8_type float8,
+float_type pg_catalog.float8,
+float_opt_1_type pg_catalog.float4,
+float_opt_2_type pg_catalog.float4,
+float_opt_3_type pg_catalog.float4,
+float_opt_4_type pg_catalog.float4,
+float_opt_5_type pg_catalog.float4,
+float_opt_6_type pg_catalog.float4,
+float_opt_7_type pg_catalog.float4,
+float_opt_8_type pg_catalog.float4,
+inet_type inet,
+int_type int,
+int2_type int2,
+int4_type int4,
+int8_type int8,
+interval_year_type interval year,
+interval_month_type interval month,
+interval_day_type interval day,
+interval_hour_type interval hour,
+interval_minute_type interval minute,
+interval_type interval,
+json_type json,
+jsonb_type jsonb,
+line_type line,
+lseg_type lseg,
+macaddr_type macaddr,
+money_type money,
+numeric_type numeric,
+numeric_opt_type numeric(10, 10),
+path_type path,
+pg_lsn_type pg_lsn,
+point_type point,
+polygon_type polygon,
+real_type pg_catalog.float4,
+serial_type serial,
+serial4_type serial4,
+serial8_type serial8,
+smallint_type smallint,
+text_type text,
+time_opt_2_type time(2),
+time_type time,
+timestamp_type timestamp,
+timestamptz_type timestamptz,
+timetz_opt_2_type pg_catalog.timetz(2),
+timetz_type timetz,
+tsquery_type tsquery,
+tsvector_type tsvector,
+uuid_type uuid,
+varbit_1_type varbit(1),
+varbit_2_type varbit(2),
+varbit_16_type varbit(16),
+varbit_type varbit,
+varchar_opt_1_type varchar(1),
+varchar_opt_140_type varchar(140),
+varchar_opt_1000_type varchar(1000),
+varchar_type varchar,
+xml_type xml
+);
+CREATE TABLE table_with_pg_catalog (
+bigint_type bigint,
+bigserial_type bigserial,
+bit_opt_1_type bit(1),
+bit_opt_2_type bit(2),
+bit_opt_16_type bit(16),
+bit_varying_opt_1_type pg_catalog.varbit(1),
+bit_varying_opt_2_type pg_catalog.varbit(2),
+bool_type boolean,
+boolean_type boolean,
+box_type pg_catalog.box,
+bytea_type pg_catalog.bytea,
+char_opt_1_type char(1),
+char_opt_140_type char(140),
+char_opt_1000_type char(1000),
+char_type pg_catalog.\\"char\\",
+character_type char(1),
+character_varying_opt_1_type varchar(1),
+character_varying_opt_10_type varchar(10),
+character_varying_opt_140_type varchar(140),
+character_varying_opt_1000_type varchar(1000),
+character_varying_type varchar,
+cidr_type pg_catalog.cidr,
+circle_type pg_catalog.circle,
+date_type pg_catalog.date,
+float_4_type pg_catalog.float4,
+float_8_type pg_catalog.float8,
+float_type pg_catalog.float8,
+float_opt_1_type pg_catalog.float4,
+float_opt_2_type pg_catalog.float4,
+float_opt_3_type pg_catalog.float4,
+float_opt_4_type pg_catalog.float4,
+float_opt_5_type pg_catalog.float4,
+float_opt_6_type pg_catalog.float4,
+float_opt_7_type pg_catalog.float4,
+float_opt_8_type pg_catalog.float4,
+inet_type pg_catalog.inet,
+int_type int,
+int2_type smallint,
+int4_type int,
+int8_type bigint,
+interval_year_type interval year,
+interval_month_type interval month,
+interval_day_type interval day,
+interval_hour_type interval hour,
+interval_minute_type interval minute,
+interval_type interval,
+json_type pg_catalog.json,
+jsonb_type pg_catalog.jsonb,
+line_type pg_catalog.line,
+lseg_type pg_catalog.lseg,
+macaddr_type pg_catalog.macaddr,
+money_type pg_catalog.money,
+numeric_type numeric,
+numeric_opt_type numeric(10, 10),
+path_type pg_catalog.path,
+pg_lsn_type pg_catalog.pg_lsn,
+point_type pg_catalog.point,
+polygon_type pg_catalog.polygon,
+serial_type serial,
+serial4_type serial4,
+serial8_type serial8,
+smallint_type smallint,
+text_type pg_catalog.text,
+time_opt_2_type time(2),
+time_type time,
+time_type_mod time(2),
+timestamp_type timestamp,
+timestamptz_type pg_catalog.timestamptz,
+timetz_opt_2_type pg_catalog.timetz(2),
+timetz_type pg_catalog.timetz,
+tsquery_type pg_catalog.tsquery,
+tsvector_type pg_catalog.tsvector,
+uuid_type uuid,
+varbit_1_type pg_catalog.varbit(1),
+varbit_2_type pg_catalog.varbit(2),
+varbit_16_type pg_catalog.varbit(16),
+varbit_type pg_catalog.varbit,
+varchar_opt_1_type varchar(1),
+varchar_opt_140_type varchar(140),
+varchar_opt_1000_type varchar(1000),
+varchar_type varchar,
+xml_type pg_catalog.xml
+);
+CREATE TABLE table_with_pg_catalog_chars (
+a char(1),
+b bpchar
+);
+CREATE FUNCTION charfunc ( a pg_catalog.\\"char\\", b \\"char\\", c char(1) ) RETURNS void AS $LQLCODEZ$
+BEGIN
+END;
+$LQLCODEZ$ LANGUAGE plpgsql VOLATILE;"
+`;
+
+exports[`pg_catalog 2`] = `
+"CREATE TABLE table_without_pg_catalog (
+bigint_type bigint,
+bigserial_type bigserial,
+bit_opt_1_type bit(1),
+bit_opt_2_type bit(2),
+bit_opt_16_type bit(16),
+bit_varying_opt_1_type varbit(1),
+bit_varying_opt_2_type varbit(2),
+bool_type bool,
+boolean_type boolean,
+box_type box,
+bytea_type bytea,
+char_opt_1_type char(1),
+char_opt_140_type char(140),
+char_opt_1000_type char(1000),
+char_type char(1),
+character_type char(1),
+character_varying_opt_1_type varchar(1),
+character_varying_opt_10_type varchar(10),
+character_varying_opt_140_type varchar(140),
+character_varying_opt_1000_type varchar(1000),
+character_varying_type varchar,
+cidr_type cidr,
+circle_type circle,
+date_type date,
+double_precision_type pg_catalog.float8,
+float_4_type float4,
+float_8_type float8,
+float_type pg_catalog.float8,
+float_opt_1_type pg_catalog.float4,
+float_opt_2_type pg_catalog.float4,
+float_opt_3_type pg_catalog.float4,
+float_opt_4_type pg_catalog.float4,
+float_opt_5_type pg_catalog.float4,
+float_opt_6_type pg_catalog.float4,
+float_opt_7_type pg_catalog.float4,
+float_opt_8_type pg_catalog.float4,
+inet_type inet,
+int_type int,
+int2_type int2,
+int4_type int4,
+int8_type int8,
+interval_year_type interval year,
+interval_month_type interval month,
+interval_day_type interval day,
+interval_hour_type interval hour,
+interval_minute_type interval minute,
+interval_type interval,
+json_type json,
+jsonb_type jsonb,
+line_type line,
+lseg_type lseg,
+macaddr_type macaddr,
+money_type money,
+numeric_type numeric,
+numeric_opt_type numeric(10, 10),
+path_type path,
+pg_lsn_type pg_lsn,
+point_type point,
+polygon_type polygon,
+real_type pg_catalog.float4,
+serial_type serial,
+serial4_type serial4,
+serial8_type serial8,
+smallint_type smallint,
+text_type text,
+time_opt_2_type time(2),
+time_type time,
+timestamp_type timestamp,
+timestamptz_type timestamptz,
+timetz_opt_2_type pg_catalog.timetz(2),
+timetz_type timetz,
+tsquery_type tsquery,
+tsvector_type tsvector,
+uuid_type uuid,
+varbit_1_type varbit(1),
+varbit_2_type varbit(2),
+varbit_16_type varbit(16),
+varbit_type varbit,
+varchar_opt_1_type varchar(1),
+varchar_opt_140_type varchar(140),
+varchar_opt_1000_type varchar(1000),
+varchar_type varchar,
+xml_type xml
+);
+CREATE TABLE table_with_pg_catalog (
+bigint_type bigint,
+bigserial_type bigserial,
+bit_opt_1_type bit(1),
+bit_opt_2_type bit(2),
+bit_opt_16_type bit(16),
+bit_varying_opt_1_type pg_catalog.varbit(1),
+bit_varying_opt_2_type pg_catalog.varbit(2),
+bool_type boolean,
+boolean_type boolean,
+box_type pg_catalog.box,
+bytea_type pg_catalog.bytea,
+char_opt_1_type char(1),
+char_opt_140_type char(140),
+char_opt_1000_type char(1000),
+char_type pg_catalog.\\"char\\",
+character_type char(1),
+character_varying_opt_1_type varchar(1),
+character_varying_opt_10_type varchar(10),
+character_varying_opt_140_type varchar(140),
+character_varying_opt_1000_type varchar(1000),
+character_varying_type varchar,
+cidr_type pg_catalog.cidr,
+circle_type pg_catalog.circle,
+date_type pg_catalog.date,
+float_4_type pg_catalog.float4,
+float_8_type pg_catalog.float8,
+float_type pg_catalog.float8,
+float_opt_1_type pg_catalog.float4,
+float_opt_2_type pg_catalog.float4,
+float_opt_3_type pg_catalog.float4,
+float_opt_4_type pg_catalog.float4,
+float_opt_5_type pg_catalog.float4,
+float_opt_6_type pg_catalog.float4,
+float_opt_7_type pg_catalog.float4,
+float_opt_8_type pg_catalog.float4,
+inet_type pg_catalog.inet,
+int_type int,
+int2_type smallint,
+int4_type int,
+int8_type bigint,
+interval_year_type interval year,
+interval_month_type interval month,
+interval_day_type interval day,
+interval_hour_type interval hour,
+interval_minute_type interval minute,
+interval_type interval,
+json_type pg_catalog.json,
+jsonb_type pg_catalog.jsonb,
+line_type pg_catalog.line,
+lseg_type pg_catalog.lseg,
+macaddr_type pg_catalog.macaddr,
+money_type pg_catalog.money,
+numeric_type numeric,
+numeric_opt_type numeric(10, 10),
+path_type pg_catalog.path,
+pg_lsn_type pg_catalog.pg_lsn,
+point_type pg_catalog.point,
+polygon_type pg_catalog.polygon,
+serial_type serial,
+serial4_type serial4,
+serial8_type serial8,
+smallint_type smallint,
+text_type pg_catalog.text,
+time_opt_2_type time(2),
+time_type time,
+time_type_mod time(2),
+timestamp_type timestamp,
+timestamptz_type pg_catalog.timestamptz,
+timetz_opt_2_type pg_catalog.timetz(2),
+timetz_type pg_catalog.timetz,
+tsquery_type pg_catalog.tsquery,
+tsvector_type pg_catalog.tsvector,
+uuid_type uuid,
+varbit_1_type pg_catalog.varbit(1),
+varbit_2_type pg_catalog.varbit(2),
+varbit_16_type pg_catalog.varbit(16),
+varbit_type pg_catalog.varbit,
+varchar_opt_1_type varchar(1),
+varchar_opt_140_type varchar(140),
+varchar_opt_1000_type varchar(1000),
+varchar_type varchar,
+xml_type pg_catalog.xml
+);
+CREATE TABLE table_with_pg_catalog_chars (
+a char(1),
+b bpchar
+);
+CREATE FUNCTION charfunc ( a pg_catalog.\\"char\\", b \\"char\\", c char(1) ) RETURNS void AS $EOFCODE$BEGIN
+END;$EOFCODE$ LANGUAGE plpgsql VOLATILE;"
 `;

@@ -62,6 +62,10 @@ it('a_expr', async () => {
   await check('a_expr.sql');
 });
 
+it('pg_catalog', async () => {
+  await check('pg_catalog.sql');
+});
+
 describe('kitchen sink', () => {
   it('alter', async () => {
     await check('alter/alter.sql');
