@@ -47,15 +47,30 @@ LANGUAGE 'sql' IMMUTABLE;
 
 CREATE FUNCTION ast_utils.constrainttypes (contype int)
 returns text as $$
-  select (CASE
-WHEN (contype =  0 ) THEN 'NULL'
-WHEN (contype =  1 ) THEN 'NOT NULL'
-WHEN (contype =  2 ) THEN 'DEFAULT'
-WHEN (contype =  4 ) THEN 'CHECK'
-WHEN (contype =  5 ) THEN 'PRIMARY KEY'
-WHEN (contype =  6 ) THEN 'UNIQUE'
-WHEN (contype =  7 ) THEN 'EXCLUDE'
-WHEN (contype =  8 ) THEN 'REFERENCES'
+  select (CASE contype
+WHEN 0 THEN 'NULL'
+WHEN 1 THEN 'NOT NULL'
+WHEN 2 THEN 'DEFAULT'
+WHEN 4 THEN 'CHECK'
+WHEN 5 THEN 'PRIMARY KEY'
+WHEN 6 THEN 'UNIQUE'
+WHEN 7 THEN 'EXCLUDE'
+WHEN 8 THEN 'REFERENCES'
+END);
+$$
+LANGUAGE 'sql' IMMUTABLE;
+
+CREATE FUNCTION ast_utils.constrainttypes (contype text)
+returns int as $$
+  select (CASE contype
+WHEN 'NULL' THEN 0
+WHEN 'NOT NULL' THEN 1
+WHEN 'DEFAULT' THEN 2
+WHEN 'CHECK' THEN 4
+WHEN 'PRIMARY KEY' THEN 5
+WHEN 'UNIQUE' THEN 6
+WHEN 'EXCLUDE' THEN 7
+WHEN 'REFERENCES' THEN 8
 END);
 $$
 LANGUAGE 'sql' IMMUTABLE;

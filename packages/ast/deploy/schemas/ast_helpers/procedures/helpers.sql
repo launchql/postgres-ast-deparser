@@ -29,6 +29,98 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.gt (
+  v_lexpr jsonb,
+  v_rexpr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('>')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.lt (
+  v_lexpr jsonb,
+  v_rexpr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('<')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.gte (
+  v_lexpr jsonb,
+  v_rexpr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('>=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.lte (
+  v_lexpr jsonb,
+  v_rexpr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('<=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.any (
   v_lexpr jsonb,
   v_rexpr jsonb
@@ -81,6 +173,31 @@ BEGIN
   ast_expr = ast.bool_expr(
       v_boolop := 1,
       v_args := to_jsonb($1)
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.matches (
+  v_lexpr jsonb,
+  v_regexp text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('~*')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := ast.a_const(
+          v_val := ast.string(v_regexp)
+      )
   );
   RETURN ast_expr;
 END;
@@ -1026,6 +1143,123 @@ BEGIN
     ),
     v_stmt_len:= 1
   );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_add_check_constraint (
+  v_schema_name text,
+  v_table_name text,
+  v_constraint_name text,
+  v_constraint_expr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+        v_stmt := ast.alter_table_stmt(
+          v_relation := ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name
+          ),
+          v_cmds := to_jsonb(ARRAY[
+            ast.alter_table_cmd(
+              v_subtype := ast_constants.alter_table_type('AT_AddConstraint'),
+              v_def := ast.constraint(
+                v_contype := ast_utils.constrainttypes('CHECK'),
+                v_conname := v_constraint_name,
+                v_raw_expr := v_constraint_expr,
+                v_initially_valid := true
+              ),
+              v_behavior := 0 
+            )
+          ]),
+          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+        ),
+        v_stmt_len:= 1
+      );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_drop_constraint (
+  v_schema_name text,
+  v_table_name text,
+  v_constraint_name text
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+        v_stmt := ast.alter_table_stmt(
+          v_relation := ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name
+          ),
+          v_cmds := to_jsonb(ARRAY[
+            ast.alter_table_cmd(
+              v_subtype := ast_constants.alter_table_type('AT_DropConstraint'),
+              v_name := v_constraint_name,
+              v_behavior := 0 
+            )
+          ]),
+          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+        ),
+        v_stmt_len:= 1
+      );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+
+CREATE FUNCTION ast_helpers.alter_table_modify_check_constraint (
+  v_schema_name text,
+  v_table_name text,
+  v_constraint_name text,
+  v_constraint_expr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+        v_stmt := ast.alter_table_stmt(
+          v_relation := ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name
+          ),
+          v_cmds := to_jsonb(ARRAY[
+            -- DROP IT FIRST
+            ast.alter_table_cmd(
+              v_subtype := ast_constants.alter_table_type('AT_DropConstraint'),
+              v_name := v_constraint_name,
+              v_behavior := 0,
+              v_missing_ok := TRUE
+            ),
+            -- ADD IT BACK
+            ast.alter_table_cmd(
+              v_subtype := ast_constants.alter_table_type('AT_AddConstraint'),
+              v_def := ast.constraint(
+                v_contype := ast_utils.constrainttypes('CHECK'),
+                v_conname := v_constraint_name,
+                v_raw_expr := v_constraint_expr,
+                v_initially_valid := true
+              ),
+              v_behavior := 0 
+            )
+          ]),
+          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+        ),
+        v_stmt_len:= 1
+      );
 END;
 $$
 LANGUAGE 'plpgsql'

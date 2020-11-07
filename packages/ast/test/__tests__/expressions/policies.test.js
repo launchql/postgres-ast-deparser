@@ -189,6 +189,17 @@ it('owned_object_records', async () => {
   expect(result).toMatchSnapshot();
 });
 
+it('owned_object_records_group_array', async () => {
+  const result = await getPolicyResult('owned_object_records_group_array', {
+    owned_table_key: 'owned_table_key',
+    owned_schema: 'owned_schema',
+    owned_table: 'owned_table',
+    owned_table_ref_key: 'owned_table_ref_key',
+    this_object_key: 'this_object_key'
+  });
+  expect(result).toMatchSnapshot();
+});
+
 it('child_of_owned_object_records', async () => {
   const result = await getPolicyResult('child_of_owned_object_records', {
     owned_table_key: 'owned_table_key',
@@ -220,6 +231,26 @@ it('child_of_owned_object_records_with_ownership', async () => {
 
       // only one extra?
       this_owned_key: 'this_owned_key'
+    }
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('child_of_owned_object_records_group_array', async () => {
+  const result = await getPolicyResult(
+    'child_of_owned_object_records_group_array',
+    {
+      owned_table_key: 'owned_table_key',
+      object_schema: 'messages_schema',
+      object_table: 'messages_table',
+      owned_schema: 'groups_schema',
+      owned_table: 'groups_table',
+
+      owned_table_ref_key: 'id', // groups_pkey
+      object_table_owned_key: 'group_id',
+
+      object_table_ref_key: 'id', // message_pkey
+      this_object_key: 'id'
     }
   );
   expect(result).toMatchSnapshot();

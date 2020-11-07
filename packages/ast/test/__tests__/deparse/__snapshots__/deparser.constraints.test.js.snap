@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`alter_table_add_constraint 1`] = `"ALTER TABLE schema_name.table_name ADD CONSTRAINT constraint_name CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$');"`;
+
+exports[`alter_table_add_constraint 2`] = `"ALTER TABLE schema_name.table_name ADD CONSTRAINT constraint_name CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$' AND email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$');"`;
+
+exports[`modify_constraint 1`] = `"DROP CONSTRAINT IF EXISTS v_constraint_name"`;

@@ -1,21 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`alter_table_add_column 1`] = `"ALTER TABLE myschema.mytable ADD COLUMN mycolumn int;"`;
-
-exports[`alter_table_add_column with complex type as jsonb 1`] = `"ALTER TABLE myschema.mytable ADD COLUMN mycolumn geometry(polygon, 4326);"`;
-
-exports[`alter_table_add_column with complex type as jsonb 2`] = `"ALTER TABLE myschema.mytable ADD COLUMN mycolumn int;"`;
-
-exports[`alter_table_add_column with complex type as jsonb 3`] = `"ALTER TABLE \\"my-schema\\".mytable ADD COLUMN \\"my-column\\" integer;"`;
-
-exports[`alter_table_add_column with complex type as string 1`] = `"ALTER TABLE myschema.mytable ADD COLUMN mycolumn pg_catalog.Geometry(Polygon, 4326);"`;
-
-exports[`alter_table_drop_column 1`] = `"ALTER TABLE myschema.mytable DROP COLUMN mycolumn;"`;
-
-exports[`alter_table_rename_column 1`] = `"ALTER TABLE myschema.mytable RENAME COLUMN \\"my-column1\\" TO mycolumn2;"`;
-
-exports[`alter_table_set_column_data_type 1`] = `"ALTER TABLE myschema.mytable ALTER COLUMN mycolumn1 TYPE mycustomtype USING mycolumn1::mycustomtype;"`;
-
 exports[`insert policy (with_check) 1`] = `"CREATE POLICY mypolicy ON myschema.mytable FOR INSERT TO app_user, auth_user WITH CHECK ( roles_public.current_role_id() = role_id OR permissions_private.permitted_on_role(group_id) );"`;
 
 exports[`noCalls 1`] = `"GRANT SELECT ON TABLE myschema.mytable TO authenticated;"`;

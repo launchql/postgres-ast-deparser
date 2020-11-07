@@ -2053,6 +2053,70 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.gt ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('>')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.lt ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('<')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.gte ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('>=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.lte ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('<=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.any ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast_expr jsonb;
@@ -2088,6 +2152,24 @@ BEGIN
   ast_expr = ast.bool_expr(
       v_boolop := 1,
       v_args := to_jsonb($1)
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.matches ( v_lexpr jsonb, v_regexp text ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('~*')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := ast.a_const(
+          v_val := ast.string(v_regexp)
+      )
   );
   RETURN ast_expr;
 END;
@@ -2789,6 +2871,96 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.alter_table_add_check_constraint ( v_schema_name text, v_table_name text, v_constraint_name text, v_constraint_expr jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+        v_stmt := ast.alter_table_stmt(
+          v_relation := ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name
+          ),
+          v_cmds := to_jsonb(ARRAY[
+            ast.alter_table_cmd(
+              v_subtype := ast_constants.alter_table_type('AT_AddConstraint'),
+              v_def := ast.constraint(
+                v_contype := ast_utils.constrainttypes('CHECK'),
+                v_conname := v_constraint_name,
+                v_raw_expr := v_constraint_expr,
+                v_initially_valid := true
+              ),
+              v_behavior := 0 
+            )
+          ]),
+          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+        ),
+        v_stmt_len:= 1
+      );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_drop_constraint ( v_schema_name text, v_table_name text, v_constraint_name text ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+        v_stmt := ast.alter_table_stmt(
+          v_relation := ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name
+          ),
+          v_cmds := to_jsonb(ARRAY[
+            ast.alter_table_cmd(
+              v_subtype := ast_constants.alter_table_type('AT_DropConstraint'),
+              v_name := v_constraint_name,
+              v_behavior := 0 
+            )
+          ]),
+          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+        ),
+        v_stmt_len:= 1
+      );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_modify_check_constraint ( v_schema_name text, v_table_name text, v_constraint_name text, v_constraint_expr jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.raw_stmt(
+        v_stmt := ast.alter_table_stmt(
+          v_relation := ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name
+          ),
+          v_cmds := to_jsonb(ARRAY[
+            -- DROP IT FIRST
+            ast.alter_table_cmd(
+              v_subtype := ast_constants.alter_table_type('AT_DropConstraint'),
+              v_name := v_constraint_name,
+              v_behavior := 0,
+              v_missing_ok := TRUE
+            ),
+            -- ADD IT BACK
+            ast.alter_table_cmd(
+              v_subtype := ast_constants.alter_table_type('AT_AddConstraint'),
+              v_def := ast.constraint(
+                v_contype := ast_utils.constrainttypes('CHECK'),
+                v_conname := v_constraint_name,
+                v_raw_expr := v_constraint_expr,
+                v_initially_valid := true
+              ),
+              v_behavior := 0 
+            )
+          ]),
+          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+        ),
+        v_stmt_len:= 1
+      );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.cpt_own_records ( rls_schema text, role_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
@@ -2998,6 +3170,62 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records_group_array ( rls_schema text, role_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  policy_ast jsonb;
+BEGIN
+
+  -- Function(id), Table(id), Field(id), RefField(id), Field2(id)
+  -- SELECT db_migrate.text('policy_expression_owned_object_key_once_removed', 
+
+  policy_ast = ast.select_stmt(
+      v_op := 0,
+      v_targetList := to_jsonb(ARRAY[
+          ast.res_target(
+              v_val := ast_helpers.any(
+                  v_lexpr := ast_helpers.rls_fn(rls_schema, role_fn),
+                  v_rexpr := ast_helpers.col('g', policy_template_vars->>'owned_table_key')
+              )
+          )
+      ]),
+      v_fromClause := to_jsonb(ARRAY[
+          ast.join_expr(
+              v_jointype := 0,
+              v_larg := ast_helpers.range_var(
+                  v_schemaname := policy_template_vars->>'object_schema',
+                  v_relname := policy_template_vars->>'object_table',
+                  v_alias := ast.alias(
+                      v_aliasname := 'm'
+                  )
+              ),
+              v_rarg := ast_helpers.range_var(
+                  v_schemaname := policy_template_vars->>'owned_schema',
+                  v_relname := policy_template_vars->>'owned_table',
+                  v_alias := ast.alias(
+                      v_aliasname := 'g'
+                  )
+              ),
+              v_quals := ast_helpers.equals(
+                  v_lexpr := ast_helpers.col('g',policy_template_vars->>'owned_table_ref_key'),
+                  v_rexpr := ast_helpers.col('m',policy_template_vars->>'object_table_owned_key')
+              )
+          )
+      ]),
+      v_whereClause := ast_helpers.equals(
+          v_lexpr := ast_helpers.col('m',policy_template_vars->>'object_table_ref_key'),
+          v_rexpr := ast_helpers.col(policy_template_vars->>'this_object_key')
+      )
+  );
+
+  policy_ast = ast.sub_link(
+    v_subLinkType := 4,
+    v_subselect := policy_ast
+  );
+
+  RETURN policy_ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records_with_ownership ( rls_schema text, groups_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
@@ -3023,6 +3251,47 @@ BEGIN
         )
     ])
   ));
+
+  RETURN policy_ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.cpt_owned_object_records_group_array ( rls_schema text, role_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  policy_ast jsonb;
+BEGIN
+
+  policy_ast = ast.select_stmt(
+      v_op := 0,
+      v_targetList := to_jsonb(ARRAY[
+          ast.res_target(
+              v_val := ast_helpers.any(
+                  v_lexpr := ast_helpers.rls_fn(rls_schema, role_fn),
+                  v_rexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key')
+              )
+          )
+      ]),
+      v_fromClause := to_jsonb(ARRAY[
+          ast_helpers.range_var(
+              v_schemaname := policy_template_vars->>'owned_schema',
+              v_relname := policy_template_vars->>'owned_table',
+              v_alias := ast.alias(
+                  v_aliasname := 'p'
+              )
+          )
+      ]),
+      v_whereClause := ast_helpers.equals(
+          v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
+          v_rexpr := ast_helpers.col(
+            policy_template_vars->>'this_object_key'
+          )
+      )
+  );
+
+  policy_ast = ast.sub_link(
+    v_subLinkType := 4,
+    v_subselect := policy_ast
+  );
 
   RETURN policy_ast;
 END;
@@ -3077,6 +3346,18 @@ BEGIN
       policy_ast = ast_helpers.cpt_child_of_owned_object_records_with_ownership(
           rls_schema,
           groups_fn,
+          policy_template_vars
+      );
+  ELSEIF (policy_template_name = 'child_of_owned_object_records_group_array') THEN
+      policy_ast = ast_helpers.cpt_child_of_owned_object_records_group_array(
+          rls_schema,
+          role_fn,
+          policy_template_vars
+      );
+  ELSEIF (policy_template_name = 'owned_object_records_group_array') THEN
+      policy_ast = ast_helpers.cpt_owned_object_records_group_array(
+          rls_schema,
+          role_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'open') THEN
@@ -3266,15 +3547,28 @@ CREATE FUNCTION ast_utils.objtype_name ( typenum int ) RETURNS text AS $EOFCODE$
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_utils.constrainttypes ( contype int ) RETURNS text AS $EOFCODE$
-  select (CASE
-WHEN (contype =  0 ) THEN 'NULL'
-WHEN (contype =  1 ) THEN 'NOT NULL'
-WHEN (contype =  2 ) THEN 'DEFAULT'
-WHEN (contype =  4 ) THEN 'CHECK'
-WHEN (contype =  5 ) THEN 'PRIMARY KEY'
-WHEN (contype =  6 ) THEN 'UNIQUE'
-WHEN (contype =  7 ) THEN 'EXCLUDE'
-WHEN (contype =  8 ) THEN 'REFERENCES'
+  select (CASE contype
+WHEN 0 THEN 'NULL'
+WHEN 1 THEN 'NOT NULL'
+WHEN 2 THEN 'DEFAULT'
+WHEN 4 THEN 'CHECK'
+WHEN 5 THEN 'PRIMARY KEY'
+WHEN 6 THEN 'UNIQUE'
+WHEN 7 THEN 'EXCLUDE'
+WHEN 8 THEN 'REFERENCES'
+END);
+$EOFCODE$ LANGUAGE sql IMMUTABLE;
+
+CREATE FUNCTION ast_utils.constrainttypes ( contype text ) RETURNS int AS $EOFCODE$
+  select (CASE contype
+WHEN 'NULL' THEN 0
+WHEN 'NOT NULL' THEN 1
+WHEN 'DEFAULT' THEN 2
+WHEN 'CHECK' THEN 4
+WHEN 'PRIMARY KEY' THEN 5
+WHEN 'UNIQUE' THEN 6
+WHEN 'EXCLUDE' THEN 7
+WHEN 'REFERENCES' THEN 8
 END);
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
