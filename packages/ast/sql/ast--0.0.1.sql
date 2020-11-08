@@ -2,306 +2,306 @@
 CREATE SCHEMA ast_constants;
 
 CREATE FUNCTION ast_constants.alter_table_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('AT_AddColumn')) THEN 0
- WHEN ((val) = ('AT_AddColumnRecurse')) THEN 1
- WHEN ((val) = ('AT_AddColumnToView')) THEN 2
- WHEN ((val) = ('AT_ColumnDefault')) THEN 3
- WHEN ((val) = ('AT_DropNotNull')) THEN 4
- WHEN ((val) = ('AT_SetNotNull')) THEN 5
- WHEN ((val) = ('AT_SetStatistics')) THEN 6
- WHEN ((val) = ('AT_SetOptions')) THEN 7
- WHEN ((val) = ('AT_ResetOptions')) THEN 8
- WHEN ((val) = ('AT_SetStorage')) THEN 9
- WHEN ((val) = ('AT_DropColumn')) THEN 10
- WHEN ((val) = ('AT_DropColumnRecurse')) THEN 11
- WHEN ((val) = ('AT_AddIndex')) THEN 12
- WHEN ((val) = ('AT_ReAddIndex')) THEN 13
- WHEN ((val) = ('AT_AddConstraint')) THEN 14
- WHEN ((val) = ('AT_AddConstraintRecurse')) THEN 15
- WHEN ((val) = ('AT_ReAddConstraint')) THEN 16
- WHEN ((val) = ('AT_AlterConstraint')) THEN 17
- WHEN ((val) = ('AT_ValidateConstraint')) THEN 18
- WHEN ((val) = ('AT_ValidateConstraintRecurse')) THEN 19
- WHEN ((val) = ('AT_ProcessedConstraint')) THEN 20
- WHEN ((val) = ('AT_AddIndexConstraint')) THEN 21
- WHEN ((val) = ('AT_DropConstraint')) THEN 22
- WHEN ((val) = ('AT_DropConstraintRecurse')) THEN 23
- WHEN ((val) = ('AT_ReAddComment')) THEN 24
- WHEN ((val) = ('AT_AlterColumnType')) THEN 25
- WHEN ((val) = ('AT_AlterColumnGenericOptions')) THEN 26
- WHEN ((val) = ('AT_ChangeOwner')) THEN 27
- WHEN ((val) = ('AT_ClusterOn')) THEN 28
- WHEN ((val) = ('AT_DropCluster')) THEN 29
- WHEN ((val) = ('AT_SetLogged')) THEN 30
- WHEN ((val) = ('AT_SetUnLogged')) THEN 31
- WHEN ((val) = ('AT_AddOids')) THEN 32
- WHEN ((val) = ('AT_AddOidsRecurse')) THEN 33
- WHEN ((val) = ('AT_DropOids')) THEN 34
- WHEN ((val) = ('AT_SetTableSpace')) THEN 35
- WHEN ((val) = ('AT_SetRelOptions')) THEN 36
- WHEN ((val) = ('AT_ResetRelOptions')) THEN 37
- WHEN ((val) = ('AT_ReplaceRelOptions')) THEN 38
- WHEN ((val) = ('AT_EnableTrig')) THEN 39
- WHEN ((val) = ('AT_EnableAlwaysTrig')) THEN 40
- WHEN ((val) = ('AT_EnableReplicaTrig')) THEN 41
- WHEN ((val) = ('AT_DisableTrig')) THEN 42
- WHEN ((val) = ('AT_EnableTrigAll')) THEN 43
- WHEN ((val) = ('AT_DisableTrigAll')) THEN 44
- WHEN ((val) = ('AT_EnableTrigUser')) THEN 45
- WHEN ((val) = ('AT_DisableTrigUser')) THEN 46
- WHEN ((val) = ('AT_EnableRule')) THEN 47
- WHEN ((val) = ('AT_EnableAlwaysRule')) THEN 48
- WHEN ((val) = ('AT_EnableReplicaRule')) THEN 49
- WHEN ((val) = ('AT_DisableRule')) THEN 50
- WHEN ((val) = ('AT_AddInherit')) THEN 51
- WHEN ((val) = ('AT_DropInherit')) THEN 52
- WHEN ((val) = ('AT_AddOf')) THEN 53
- WHEN ((val) = ('AT_DropOf')) THEN 54
- WHEN ((val) = ('AT_ReplicaIdentity')) THEN 55
- WHEN ((val) = ('AT_EnableRowSecurity')) THEN 56
- WHEN ((val) = ('AT_DisableRowSecurity')) THEN 57
- WHEN ((val) = ('AT_ForceRowSecurity')) THEN 58
- WHEN ((val) = ('AT_NoForceRowSecurity')) THEN 59
- WHEN ((val) = ('AT_GenericOptions')) THEN 60
- WHEN ((val) = ('AT_AttachPartition')) THEN 61
- WHEN ((val) = ('AT_DetachPartition')) THEN 62
- WHEN ((val) = ('AT_AddIdentity')) THEN 63
- WHEN ((val) = ('AT_SetIdentity')) THEN 64
- WHEN ((val) = ('AT_DropIdentity')) THEN 65 END;
+SELECT CASE val
+ WHEN 'AT_AddColumn' THEN 0
+ WHEN 'AT_AddColumnRecurse' THEN 1
+ WHEN 'AT_AddColumnToView' THEN 2
+ WHEN 'AT_ColumnDefault' THEN 3
+ WHEN 'AT_DropNotNull' THEN 4
+ WHEN 'AT_SetNotNull' THEN 5
+ WHEN 'AT_SetStatistics' THEN 6
+ WHEN 'AT_SetOptions' THEN 7
+ WHEN 'AT_ResetOptions' THEN 8
+ WHEN 'AT_SetStorage' THEN 9
+ WHEN 'AT_DropColumn' THEN 10
+ WHEN 'AT_DropColumnRecurse' THEN 11
+ WHEN 'AT_AddIndex' THEN 12
+ WHEN 'AT_ReAddIndex' THEN 13
+ WHEN 'AT_AddConstraint' THEN 14
+ WHEN 'AT_AddConstraintRecurse' THEN 15
+ WHEN 'AT_ReAddConstraint' THEN 16
+ WHEN 'AT_AlterConstraint' THEN 17
+ WHEN 'AT_ValidateConstraint' THEN 18
+ WHEN 'AT_ValidateConstraintRecurse' THEN 19
+ WHEN 'AT_ProcessedConstraint' THEN 20
+ WHEN 'AT_AddIndexConstraint' THEN 21
+ WHEN 'AT_DropConstraint' THEN 22
+ WHEN 'AT_DropConstraintRecurse' THEN 23
+ WHEN 'AT_ReAddComment' THEN 24
+ WHEN 'AT_AlterColumnType' THEN 25
+ WHEN 'AT_AlterColumnGenericOptions' THEN 26
+ WHEN 'AT_ChangeOwner' THEN 27
+ WHEN 'AT_ClusterOn' THEN 28
+ WHEN 'AT_DropCluster' THEN 29
+ WHEN 'AT_SetLogged' THEN 30
+ WHEN 'AT_SetUnLogged' THEN 31
+ WHEN 'AT_AddOids' THEN 32
+ WHEN 'AT_AddOidsRecurse' THEN 33
+ WHEN 'AT_DropOids' THEN 34
+ WHEN 'AT_SetTableSpace' THEN 35
+ WHEN 'AT_SetRelOptions' THEN 36
+ WHEN 'AT_ResetRelOptions' THEN 37
+ WHEN 'AT_ReplaceRelOptions' THEN 38
+ WHEN 'AT_EnableTrig' THEN 39
+ WHEN 'AT_EnableAlwaysTrig' THEN 40
+ WHEN 'AT_EnableReplicaTrig' THEN 41
+ WHEN 'AT_DisableTrig' THEN 42
+ WHEN 'AT_EnableTrigAll' THEN 43
+ WHEN 'AT_DisableTrigAll' THEN 44
+ WHEN 'AT_EnableTrigUser' THEN 45
+ WHEN 'AT_DisableTrigUser' THEN 46
+ WHEN 'AT_EnableRule' THEN 47
+ WHEN 'AT_EnableAlwaysRule' THEN 48
+ WHEN 'AT_EnableReplicaRule' THEN 49
+ WHEN 'AT_DisableRule' THEN 50
+ WHEN 'AT_AddInherit' THEN 51
+ WHEN 'AT_DropInherit' THEN 52
+ WHEN 'AT_AddOf' THEN 53
+ WHEN 'AT_DropOf' THEN 54
+ WHEN 'AT_ReplicaIdentity' THEN 55
+ WHEN 'AT_EnableRowSecurity' THEN 56
+ WHEN 'AT_DisableRowSecurity' THEN 57
+ WHEN 'AT_ForceRowSecurity' THEN 58
+ WHEN 'AT_NoForceRowSecurity' THEN 59
+ WHEN 'AT_GenericOptions' THEN 60
+ WHEN 'AT_AttachPartition' THEN 61
+ WHEN 'AT_DetachPartition' THEN 62
+ WHEN 'AT_AddIdentity' THEN 63
+ WHEN 'AT_SetIdentity' THEN 64
+ WHEN 'AT_DropIdentity' THEN 65 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.join_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('JOIN_INNER')) THEN 0
- WHEN ((val) = ('JOIN_LEFT')) THEN 1
- WHEN ((val) = ('JOIN_FULL')) THEN 2
- WHEN ((val) = ('JOIN_RIGHT')) THEN 3
- WHEN ((val) = ('JOIN_SEMI')) THEN 4
- WHEN ((val) = ('JOIN_ANTI')) THEN 5
- WHEN ((val) = ('JOIN_UNIQUE_OUTER')) THEN 6
- WHEN ((val) = ('JOIN_UNIQUE_INNER')) THEN 7 END;
+SELECT CASE val
+ WHEN 'JOIN_INNER' THEN 0
+ WHEN 'JOIN_LEFT' THEN 1
+ WHEN 'JOIN_FULL' THEN 2
+ WHEN 'JOIN_RIGHT' THEN 3
+ WHEN 'JOIN_SEMI' THEN 4
+ WHEN 'JOIN_ANTI' THEN 5
+ WHEN 'JOIN_UNIQUE_OUTER' THEN 6
+ WHEN 'JOIN_UNIQUE_INNER' THEN 7 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.role_stmt_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('ROLESTMT_ROLE')) THEN 0
- WHEN ((val) = ('ROLESTMT_USER')) THEN 1
- WHEN ((val) = ('ROLESTMT_GROUP')) THEN 2 END;
+SELECT CASE val
+ WHEN 'ROLESTMT_ROLE' THEN 0
+ WHEN 'ROLESTMT_USER' THEN 1
+ WHEN 'ROLESTMT_GROUP' THEN 2 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.role_spec_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('ROLESPEC_CSTRING')) THEN 0
- WHEN ((val) = ('ROLESPEC_CURRENT_USER')) THEN 1
- WHEN ((val) = ('ROLESPEC_SESSION_USER')) THEN 2
- WHEN ((val) = ('ROLESPEC_PUBLIC')) THEN 3 END;
+SELECT CASE val
+ WHEN 'ROLESPEC_CSTRING' THEN 0
+ WHEN 'ROLESPEC_CURRENT_USER' THEN 1
+ WHEN 'ROLESPEC_SESSION_USER' THEN 2
+ WHEN 'ROLESPEC_PUBLIC' THEN 3 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.sql_value_function_op ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('SVFOP_CURRENT_DATE')) THEN 0
- WHEN ((val) = ('SVFOP_CURRENT_TIME')) THEN 1
- WHEN ((val) = ('SVFOP_CURRENT_TIME_N')) THEN 2
- WHEN ((val) = ('SVFOP_CURRENT_TIMESTAMP')) THEN 3
- WHEN ((val) = ('SVFOP_CURRENT_TIMESTAMP_N')) THEN 4
- WHEN ((val) = ('SVFOP_LOCALTIME')) THEN 5
- WHEN ((val) = ('SVFOP_LOCALTIME_N')) THEN 6
- WHEN ((val) = ('SVFOP_LOCALTIMESTAMP')) THEN 7
- WHEN ((val) = ('SVFOP_LOCALTIMESTAMP_N')) THEN 8
- WHEN ((val) = ('SVFOP_CURRENT_ROLE')) THEN 9
- WHEN ((val) = ('SVFOP_CURRENT_USER')) THEN 10
- WHEN ((val) = ('SVFOP_USER')) THEN 11
- WHEN ((val) = ('SVFOP_SESSION_USER')) THEN 12
- WHEN ((val) = ('SVFOP_CURRENT_CATALOG')) THEN 13
- WHEN ((val) = ('SVFOP_CURRENT_SCHEMA')) THEN 14 END;
+SELECT CASE val
+ WHEN 'SVFOP_CURRENT_DATE' THEN 0
+ WHEN 'SVFOP_CURRENT_TIME' THEN 1
+ WHEN 'SVFOP_CURRENT_TIME_N' THEN 2
+ WHEN 'SVFOP_CURRENT_TIMESTAMP' THEN 3
+ WHEN 'SVFOP_CURRENT_TIMESTAMP_N' THEN 4
+ WHEN 'SVFOP_LOCALTIME' THEN 5
+ WHEN 'SVFOP_LOCALTIME_N' THEN 6
+ WHEN 'SVFOP_LOCALTIMESTAMP' THEN 7
+ WHEN 'SVFOP_LOCALTIMESTAMP_N' THEN 8
+ WHEN 'SVFOP_CURRENT_ROLE' THEN 9
+ WHEN 'SVFOP_CURRENT_USER' THEN 10
+ WHEN 'SVFOP_USER' THEN 11
+ WHEN 'SVFOP_SESSION_USER' THEN 12
+ WHEN 'SVFOP_CURRENT_CATALOG' THEN 13
+ WHEN 'SVFOP_CURRENT_SCHEMA' THEN 14 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.bool_expr_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('AND_EXPR')) THEN 0
- WHEN ((val) = ('OR_EXPR')) THEN 1 END;
+SELECT CASE val
+ WHEN 'AND_EXPR' THEN 0
+ WHEN 'OR_EXPR' THEN 1 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.a_expr_kind ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('AEXPR_OP')) THEN 0
- WHEN ((val) = ('AEXPR_OP_ANY')) THEN 1
- WHEN ((val) = ('AEXPR_OP_ALL')) THEN 2
- WHEN ((val) = ('AEXPR_DISTINCT')) THEN 3
- WHEN ((val) = ('AEXPR_NOT_DISTINCT')) THEN 4
- WHEN ((val) = ('AEXPR_NULLIF')) THEN 5
- WHEN ((val) = ('AEXPR_OF')) THEN 6
- WHEN ((val) = ('AEXPR_IN')) THEN 7
- WHEN ((val) = ('AEXPR_LIKE')) THEN 8
- WHEN ((val) = ('AEXPR_ILIKE')) THEN 9
- WHEN ((val) = ('AEXPR_SIMILAR')) THEN 10
- WHEN ((val) = ('AEXPR_BETWEEN')) THEN 11
- WHEN ((val) = ('AEXPR_NOT_BETWEEN')) THEN 12
- WHEN ((val) = ('AEXPR_BETWEEN_SYM')) THEN 13
- WHEN ((val) = ('AEXPR_NOT_BETWEEN_SYM')) THEN 14
- WHEN ((val) = ('AEXPR_PAREN')) THEN 15 END;
+SELECT CASE val
+ WHEN 'AEXPR_OP' THEN 0
+ WHEN 'AEXPR_OP_ANY' THEN 1
+ WHEN 'AEXPR_OP_ALL' THEN 2
+ WHEN 'AEXPR_DISTINCT' THEN 3
+ WHEN 'AEXPR_NOT_DISTINCT' THEN 4
+ WHEN 'AEXPR_NULLIF' THEN 5
+ WHEN 'AEXPR_OF' THEN 6
+ WHEN 'AEXPR_IN' THEN 7
+ WHEN 'AEXPR_LIKE' THEN 8
+ WHEN 'AEXPR_ILIKE' THEN 9
+ WHEN 'AEXPR_SIMILAR' THEN 10
+ WHEN 'AEXPR_BETWEEN' THEN 11
+ WHEN 'AEXPR_NOT_BETWEEN' THEN 12
+ WHEN 'AEXPR_BETWEEN_SYM' THEN 13
+ WHEN 'AEXPR_NOT_BETWEEN_SYM' THEN 14
+ WHEN 'AEXPR_PAREN' THEN 15 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.null_test_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('IS_NULL')) THEN 0
- WHEN ((val) = ('IS_NOT_NULL')) THEN 1 END;
+SELECT CASE val
+ WHEN 'IS_NULL' THEN 0
+ WHEN 'IS_NOT_NULL' THEN 1 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.lock_clause_strength ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('LCS_NONE')) THEN 0
- WHEN ((val) = ('LCS_FORKEYSHARE')) THEN 1
- WHEN ((val) = ('LCS_FORSHARE')) THEN 2
- WHEN ((val) = ('LCS_FORNOKEYUPDATE')) THEN 3
- WHEN ((val) = ('LCS_FORUPDATE')) THEN 4 END;
+SELECT CASE val
+ WHEN 'LCS_NONE' THEN 0
+ WHEN 'LCS_FORKEYSHARE' THEN 1
+ WHEN 'LCS_FORSHARE' THEN 2
+ WHEN 'LCS_FORNOKEYUPDATE' THEN 3
+ WHEN 'LCS_FORUPDATE' THEN 4 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.sort_by_dir ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('SORTBY_DEFAULT')) THEN 0
- WHEN ((val) = ('SORTBY_ASC')) THEN 1
- WHEN ((val) = ('SORTBY_DESC')) THEN 2
- WHEN ((val) = ('SORTBY_USING')) THEN 3 END;
+SELECT CASE val
+ WHEN 'SORTBY_DEFAULT' THEN 0
+ WHEN 'SORTBY_ASC' THEN 1
+ WHEN 'SORTBY_DESC' THEN 2
+ WHEN 'SORTBY_USING' THEN 3 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.sort_by_nulls ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('SORTBY_NULLS_DEFAULT')) THEN 0
- WHEN ((val) = ('SORTBY_NULLS_FIRST')) THEN 1
- WHEN ((val) = ('SORTBY_NULLS_LAST')) THEN 2 END;
+SELECT CASE val
+ WHEN 'SORTBY_NULLS_DEFAULT' THEN 0
+ WHEN 'SORTBY_NULLS_FIRST' THEN 1
+ WHEN 'SORTBY_NULLS_LAST' THEN 2 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.variable_set_kind ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('VAR_SET_VALUE')) THEN 0
- WHEN ((val) = ('VAR_SET_DEFAULT')) THEN 1
- WHEN ((val) = ('VAR_SET_CURRENT')) THEN 2
- WHEN ((val) = ('VAR_SET_MULTI')) THEN 3
- WHEN ((val) = ('VAR_RESET')) THEN 4
- WHEN ((val) = ('VAR_RESET_ALL')) THEN 5 END;
+SELECT CASE val
+ WHEN 'VAR_SET_VALUE' THEN 0
+ WHEN 'VAR_SET_DEFAULT' THEN 1
+ WHEN 'VAR_SET_CURRENT' THEN 2
+ WHEN 'VAR_SET_MULTI' THEN 3
+ WHEN 'VAR_RESET' THEN 4
+ WHEN 'VAR_RESET_ALL' THEN 5 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.object_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('OBJECT_ACCESS_METHOD')) THEN 0
- WHEN ((val) = ('OBJECT_AGGREGATE')) THEN 1
- WHEN ((val) = ('OBJECT_AMOP')) THEN 2
- WHEN ((val) = ('OBJECT_AMPROC')) THEN 3
- WHEN ((val) = ('OBJECT_ATTRIBUTE')) THEN 4
- WHEN ((val) = ('OBJECT_CAST')) THEN 5
- WHEN ((val) = ('OBJECT_COLUMN')) THEN 6
- WHEN ((val) = ('OBJECT_COLLATION')) THEN 7
- WHEN ((val) = ('OBJECT_CONVERSION')) THEN 8
- WHEN ((val) = ('OBJECT_DATABASE')) THEN 9
- WHEN ((val) = ('OBJECT_DEFAULT')) THEN 10
- WHEN ((val) = ('OBJECT_DEFACL')) THEN 11
- WHEN ((val) = ('OBJECT_DOMAIN')) THEN 12
- WHEN ((val) = ('OBJECT_DOMCONSTRAINT')) THEN 13
- WHEN ((val) = ('OBJECT_EVENT_TRIGGER')) THEN 14
- WHEN ((val) = ('OBJECT_EXTENSION')) THEN 15
- WHEN ((val) = ('OBJECT_FDW')) THEN 16
- WHEN ((val) = ('OBJECT_FOREIGN_SERVER')) THEN 17
- WHEN ((val) = ('OBJECT_FOREIGN_TABLE')) THEN 18
- WHEN ((val) = ('OBJECT_FUNCTION')) THEN 19
- WHEN ((val) = ('OBJECT_INDEX')) THEN 20
- WHEN ((val) = ('OBJECT_LANGUAGE')) THEN 21
- WHEN ((val) = ('OBJECT_LARGEOBJECT')) THEN 22
- WHEN ((val) = ('OBJECT_MATVIEW')) THEN 23
- WHEN ((val) = ('OBJECT_OPCLASS')) THEN 24
- WHEN ((val) = ('OBJECT_OPERATOR')) THEN 25
- WHEN ((val) = ('OBJECT_OPFAMILY')) THEN 26
- WHEN ((val) = ('OBJECT_POLICY')) THEN 27
- WHEN ((val) = ('OBJECT_PUBLICATION')) THEN 28
- WHEN ((val) = ('OBJECT_PUBLICATION_REL')) THEN 29
- WHEN ((val) = ('OBJECT_ROLE')) THEN 30
- WHEN ((val) = ('OBJECT_RULE')) THEN 31
- WHEN ((val) = ('OBJECT_SCHEMA')) THEN 32
- WHEN ((val) = ('OBJECT_SEQUENCE')) THEN 33
- WHEN ((val) = ('OBJECT_SUBSCRIPTION')) THEN 34
- WHEN ((val) = ('OBJECT_STATISTIC_EXT')) THEN 35
- WHEN ((val) = ('OBJECT_TABCONSTRAINT')) THEN 36
- WHEN ((val) = ('OBJECT_TABLE')) THEN 37
- WHEN ((val) = ('OBJECT_TABLESPACE')) THEN 38
- WHEN ((val) = ('OBJECT_TRANSFORM')) THEN 39
- WHEN ((val) = ('OBJECT_TRIGGER')) THEN 40
- WHEN ((val) = ('OBJECT_TSCONFIGURATION')) THEN 41
- WHEN ((val) = ('OBJECT_TSDICTIONARY')) THEN 42
- WHEN ((val) = ('OBJECT_TSPARSER')) THEN 43
- WHEN ((val) = ('OBJECT_TSTEMPLATE')) THEN 44
- WHEN ((val) = ('OBJECT_TYPE')) THEN 45
- WHEN ((val) = ('OBJECT_USER_MAPPING')) THEN 46
- WHEN ((val) = ('OBJECT_VIEW')) THEN 47 END;
+SELECT CASE val
+ WHEN 'OBJECT_ACCESS_METHOD' THEN 0
+ WHEN 'OBJECT_AGGREGATE' THEN 1
+ WHEN 'OBJECT_AMOP' THEN 2
+ WHEN 'OBJECT_AMPROC' THEN 3
+ WHEN 'OBJECT_ATTRIBUTE' THEN 4
+ WHEN 'OBJECT_CAST' THEN 5
+ WHEN 'OBJECT_COLUMN' THEN 6
+ WHEN 'OBJECT_COLLATION' THEN 7
+ WHEN 'OBJECT_CONVERSION' THEN 8
+ WHEN 'OBJECT_DATABASE' THEN 9
+ WHEN 'OBJECT_DEFAULT' THEN 10
+ WHEN 'OBJECT_DEFACL' THEN 11
+ WHEN 'OBJECT_DOMAIN' THEN 12
+ WHEN 'OBJECT_DOMCONSTRAINT' THEN 13
+ WHEN 'OBJECT_EVENT_TRIGGER' THEN 14
+ WHEN 'OBJECT_EXTENSION' THEN 15
+ WHEN 'OBJECT_FDW' THEN 16
+ WHEN 'OBJECT_FOREIGN_SERVER' THEN 17
+ WHEN 'OBJECT_FOREIGN_TABLE' THEN 18
+ WHEN 'OBJECT_FUNCTION' THEN 19
+ WHEN 'OBJECT_INDEX' THEN 20
+ WHEN 'OBJECT_LANGUAGE' THEN 21
+ WHEN 'OBJECT_LARGEOBJECT' THEN 22
+ WHEN 'OBJECT_MATVIEW' THEN 23
+ WHEN 'OBJECT_OPCLASS' THEN 24
+ WHEN 'OBJECT_OPERATOR' THEN 25
+ WHEN 'OBJECT_OPFAMILY' THEN 26
+ WHEN 'OBJECT_POLICY' THEN 27
+ WHEN 'OBJECT_PUBLICATION' THEN 28
+ WHEN 'OBJECT_PUBLICATION_REL' THEN 29
+ WHEN 'OBJECT_ROLE' THEN 30
+ WHEN 'OBJECT_RULE' THEN 31
+ WHEN 'OBJECT_SCHEMA' THEN 32
+ WHEN 'OBJECT_SEQUENCE' THEN 33
+ WHEN 'OBJECT_SUBSCRIPTION' THEN 34
+ WHEN 'OBJECT_STATISTIC_EXT' THEN 35
+ WHEN 'OBJECT_TABCONSTRAINT' THEN 36
+ WHEN 'OBJECT_TABLE' THEN 37
+ WHEN 'OBJECT_TABLESPACE' THEN 38
+ WHEN 'OBJECT_TRANSFORM' THEN 39
+ WHEN 'OBJECT_TRIGGER' THEN 40
+ WHEN 'OBJECT_TSCONFIGURATION' THEN 41
+ WHEN 'OBJECT_TSDICTIONARY' THEN 42
+ WHEN 'OBJECT_TSPARSER' THEN 43
+ WHEN 'OBJECT_TSTEMPLATE' THEN 44
+ WHEN 'OBJECT_TYPE' THEN 45
+ WHEN 'OBJECT_USER_MAPPING' THEN 46
+ WHEN 'OBJECT_VIEW' THEN 47 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.object_type ( val int ) RETURNS text AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = (0)) THEN 'OBJECT_ACCESS_METHOD'
- WHEN ((val) = (1)) THEN 'OBJECT_AGGREGATE'
- WHEN ((val) = (2)) THEN 'OBJECT_AMOP'
- WHEN ((val) = (3)) THEN 'OBJECT_AMPROC'
- WHEN ((val) = (4)) THEN 'OBJECT_ATTRIBUTE'
- WHEN ((val) = (5)) THEN 'OBJECT_CAST'
- WHEN ((val) = (6)) THEN 'OBJECT_COLUMN'
- WHEN ((val) = (7)) THEN 'OBJECT_COLLATION'
- WHEN ((val) = (8)) THEN 'OBJECT_CONVERSION'
- WHEN ((val) = (9)) THEN 'OBJECT_DATABASE'
- WHEN ((val) = (10)) THEN 'OBJECT_DEFAULT'
- WHEN ((val) = (11)) THEN 'OBJECT_DEFACL'
- WHEN ((val) = (12)) THEN 'OBJECT_DOMAIN'
- WHEN ((val) = (13)) THEN 'OBJECT_DOMCONSTRAINT'
- WHEN ((val) = (14)) THEN 'OBJECT_EVENT_TRIGGER'
- WHEN ((val) = (15)) THEN 'OBJECT_EXTENSION'
- WHEN ((val) = (16)) THEN 'OBJECT_FDW'
- WHEN ((val) = (17)) THEN 'OBJECT_FOREIGN_SERVER'
- WHEN ((val) = (18)) THEN 'OBJECT_FOREIGN_TABLE'
- WHEN ((val) = (19)) THEN 'OBJECT_FUNCTION'
- WHEN ((val) = (20)) THEN 'OBJECT_INDEX'
- WHEN ((val) = (21)) THEN 'OBJECT_LANGUAGE'
- WHEN ((val) = (22)) THEN 'OBJECT_LARGEOBJECT'
- WHEN ((val) = (23)) THEN 'OBJECT_MATVIEW'
- WHEN ((val) = (24)) THEN 'OBJECT_OPCLASS'
- WHEN ((val) = (25)) THEN 'OBJECT_OPERATOR'
- WHEN ((val) = (26)) THEN 'OBJECT_OPFAMILY'
- WHEN ((val) = (27)) THEN 'OBJECT_POLICY'
- WHEN ((val) = (28)) THEN 'OBJECT_PUBLICATION'
- WHEN ((val) = (29)) THEN 'OBJECT_PUBLICATION_REL'
- WHEN ((val) = (30)) THEN 'OBJECT_ROLE'
- WHEN ((val) = (31)) THEN 'OBJECT_RULE'
- WHEN ((val) = (32)) THEN 'OBJECT_SCHEMA'
- WHEN ((val) = (33)) THEN 'OBJECT_SEQUENCE'
- WHEN ((val) = (34)) THEN 'OBJECT_SUBSCRIPTION'
- WHEN ((val) = (35)) THEN 'OBJECT_STATISTIC_EXT'
- WHEN ((val) = (36)) THEN 'OBJECT_TABCONSTRAINT'
- WHEN ((val) = (37)) THEN 'OBJECT_TABLE'
- WHEN ((val) = (38)) THEN 'OBJECT_TABLESPACE'
- WHEN ((val) = (39)) THEN 'OBJECT_TRANSFORM'
- WHEN ((val) = (40)) THEN 'OBJECT_TRIGGER'
- WHEN ((val) = (41)) THEN 'OBJECT_TSCONFIGURATION'
- WHEN ((val) = (42)) THEN 'OBJECT_TSDICTIONARY'
- WHEN ((val) = (43)) THEN 'OBJECT_TSPARSER'
- WHEN ((val) = (44)) THEN 'OBJECT_TSTEMPLATE'
- WHEN ((val) = (45)) THEN 'OBJECT_TYPE'
- WHEN ((val) = (46)) THEN 'OBJECT_USER_MAPPING'
- WHEN ((val) = (47)) THEN 'OBJECT_VIEW' END;
+SELECT CASE val
+ WHEN 0 THEN 'OBJECT_ACCESS_METHOD'
+ WHEN 1 THEN 'OBJECT_AGGREGATE'
+ WHEN 2 THEN 'OBJECT_AMOP'
+ WHEN 3 THEN 'OBJECT_AMPROC'
+ WHEN 4 THEN 'OBJECT_ATTRIBUTE'
+ WHEN 5 THEN 'OBJECT_CAST'
+ WHEN 6 THEN 'OBJECT_COLUMN'
+ WHEN 7 THEN 'OBJECT_COLLATION'
+ WHEN 8 THEN 'OBJECT_CONVERSION'
+ WHEN 9 THEN 'OBJECT_DATABASE'
+ WHEN 10 THEN 'OBJECT_DEFAULT'
+ WHEN 11 THEN 'OBJECT_DEFACL'
+ WHEN 12 THEN 'OBJECT_DOMAIN'
+ WHEN 13 THEN 'OBJECT_DOMCONSTRAINT'
+ WHEN 14 THEN 'OBJECT_EVENT_TRIGGER'
+ WHEN 15 THEN 'OBJECT_EXTENSION'
+ WHEN 16 THEN 'OBJECT_FDW'
+ WHEN 17 THEN 'OBJECT_FOREIGN_SERVER'
+ WHEN 18 THEN 'OBJECT_FOREIGN_TABLE'
+ WHEN 19 THEN 'OBJECT_FUNCTION'
+ WHEN 20 THEN 'OBJECT_INDEX'
+ WHEN 21 THEN 'OBJECT_LANGUAGE'
+ WHEN 22 THEN 'OBJECT_LARGEOBJECT'
+ WHEN 23 THEN 'OBJECT_MATVIEW'
+ WHEN 24 THEN 'OBJECT_OPCLASS'
+ WHEN 25 THEN 'OBJECT_OPERATOR'
+ WHEN 26 THEN 'OBJECT_OPFAMILY'
+ WHEN 27 THEN 'OBJECT_POLICY'
+ WHEN 28 THEN 'OBJECT_PUBLICATION'
+ WHEN 29 THEN 'OBJECT_PUBLICATION_REL'
+ WHEN 30 THEN 'OBJECT_ROLE'
+ WHEN 31 THEN 'OBJECT_RULE'
+ WHEN 32 THEN 'OBJECT_SCHEMA'
+ WHEN 33 THEN 'OBJECT_SEQUENCE'
+ WHEN 34 THEN 'OBJECT_SUBSCRIPTION'
+ WHEN 35 THEN 'OBJECT_STATISTIC_EXT'
+ WHEN 36 THEN 'OBJECT_TABCONSTRAINT'
+ WHEN 37 THEN 'OBJECT_TABLE'
+ WHEN 38 THEN 'OBJECT_TABLESPACE'
+ WHEN 39 THEN 'OBJECT_TRANSFORM'
+ WHEN 40 THEN 'OBJECT_TRIGGER'
+ WHEN 41 THEN 'OBJECT_TSCONFIGURATION'
+ WHEN 42 THEN 'OBJECT_TSDICTIONARY'
+ WHEN 43 THEN 'OBJECT_TSPARSER'
+ WHEN 44 THEN 'OBJECT_TSTEMPLATE'
+ WHEN 45 THEN 'OBJECT_TYPE'
+ WHEN 46 THEN 'OBJECT_USER_MAPPING'
+ WHEN 47 THEN 'OBJECT_VIEW' END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_constants.constr_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE
- WHEN ((val) = ('CONSTR_NULL')) THEN 0
- WHEN ((val) = ('CONSTR_NOTNULL')) THEN 1
- WHEN ((val) = ('CONSTR_DEFAULT')) THEN 2
- WHEN ((val) = ('CONSTR_IDENTITY')) THEN 3
- WHEN ((val) = ('CONSTR_CHECK')) THEN 4
- WHEN ((val) = ('CONSTR_PRIMARY')) THEN 5
- WHEN ((val) = ('CONSTR_UNIQUE')) THEN 6
- WHEN ((val) = ('CONSTR_EXCLUSION')) THEN 7
- WHEN ((val) = ('CONSTR_FOREIGN')) THEN 8
- WHEN ((val) = ('CONSTR_ATTR_DEFERRABLE')) THEN 9
- WHEN ((val) = ('CONSTR_ATTR_NOT_DEFERRABLE')) THEN 10
- WHEN ((val) = ('CONSTR_ATTR_DEFERRED')) THEN 11
- WHEN ((val) = ('CONSTR_ATTR_IMMEDIATE')) THEN 12 END;
+SELECT CASE val
+ WHEN 'CONSTR_NULL' THEN 0
+ WHEN 'CONSTR_NOTNULL' THEN 1
+ WHEN 'CONSTR_DEFAULT' THEN 2
+ WHEN 'CONSTR_IDENTITY' THEN 3
+ WHEN 'CONSTR_CHECK' THEN 4
+ WHEN 'CONSTR_PRIMARY' THEN 5
+ WHEN 'CONSTR_UNIQUE' THEN 6
+ WHEN 'CONSTR_EXCLUSION' THEN 7
+ WHEN 'CONSTR_FOREIGN' THEN 8
+ WHEN 'CONSTR_ATTR_DEFERRABLE' THEN 9
+ WHEN 'CONSTR_ATTR_NOT_DEFERRABLE' THEN 10
+ WHEN 'CONSTR_ATTR_DEFERRED' THEN 11
+ WHEN 'CONSTR_ATTR_IMMEDIATE' THEN 12 END;
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE SCHEMA ast_helpers;
@@ -2037,6 +2037,48 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.smart_comments ( tags jsonb, description text DEFAULT NULL ) RETURNS text AS $EOFCODE$
+DECLARE
+  key text;
+  value jsonb;
+  tvalue text;
+  attrs text[] = ARRAY[]::text[];
+  _key text;
+  _value text;
+BEGIN
+
+  FOR key IN SELECT jsonb_object_keys(tags)
+  LOOP
+  	value = tags->key;
+    tvalue = tags->>key;
+	IF (jsonb_typeof(value) = 'boolean') THEN
+	    IF (tvalue = 'true') THEN
+			attrs = array_append(attrs, concat('@', key));
+	    END IF;
+	ELSIF (jsonb_typeof(value) = 'array') THEN
+    FOR _value IN SELECT * FROM jsonb_array_elements(value)
+    LOOP
+      -- json text includes double quotes, so lets remove them!
+			attrs = array_append(attrs, concat('@', key, ' ', trim(both '"' from _value)));
+    END LOOP;
+	ELSE
+		attrs = array_append(attrs, concat('@', key, ' ', tvalue));
+	END IF;
+    
+  END LOOP;
+
+  IF (description IS NOT NULL) THEN
+    attrs = array_append(attrs, description);
+  END IF;
+
+  IF (array_length(attrs, 1) > 0) THEN
+    RETURN array_to_string(attrs, '\n');
+  END IF;
+
+  RETURN NULL;
+END;
+$EOFCODE$ LANGUAGE plpgsql STABLE;
+
 CREATE FUNCTION ast_helpers.equals ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast_expr jsonb;
@@ -2958,6 +3000,109 @@ BEGIN
         ),
         v_stmt_len:= 1
       );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.set_comment_on_function ( v_function_name text, v_comment text DEFAULT NULL, v_param_types text[] DEFAULT ARRAY[]::text[], v_schema_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast jsonb;
+  types jsonb[];
+  names jsonb[];
+  i int;
+BEGIN
+  FOR i IN
+  SELECT * FROM generate_series(1, cardinality(v_param_types))
+  LOOP 
+    types = array_append(types, 
+      ast.type_name(
+        v_names := to_jsonb(ARRAY[ 
+            ast.string(strs[i])
+        ])
+      )
+    );
+  END LOOP;
+
+  IF (v_schema_name IS NOT NULL) THEN 
+    names = array_append(names, ast.string(v_schema_name));
+  END IF;
+
+  names = array_append(names, ast.string(v_function_name));
+
+  RETURN ast.raw_stmt(
+        v_stmt := ast.comment_stmt(
+        v_objtype := ast_constants.object_type('OBJECT_FUNCTION'),
+        v_object := ast.object_with_args(
+                v_objname := to_jsonb(names),
+                v_objargs := to_jsonb(types)
+            ),
+            v_comment := v_comment
+        ),
+        v_stmt_len:= 1
+      );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.set_comment_on_function ( v_function_name text, v_tags jsonb DEFAULT NULL, v_description text DEFAULT NULL, v_param_types text[] DEFAULT ARRAY[]::text[], v_schema_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  v_comment text;
+BEGIN
+
+  v_comment = ast_helpers.smart_comments(
+    v_tags,
+    v_description
+  );
+
+  RETURN ast_helpers.set_comment_on_function(
+    v_function_name := v_function_name,
+    v_comment := v_comment,
+    v_param_types := v_param_types,
+    v_schema_name := v_schema_name
+  );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.set_comment ( v_objtype int, v_comment text DEFAULT NULL, VARIADIC v_name text[] DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast jsonb;
+  types jsonb[];
+  names jsonb[];
+  i int;
+BEGIN
+
+  FOR i IN
+  SELECT * FROM generate_series(1, cardinality(v_name))
+  LOOP 
+    names = array_append(names, 
+       ast.string(v_name[i])
+    );
+  END LOOP;
+
+  RETURN ast.raw_stmt(
+        v_stmt := ast.comment_stmt(
+          v_objtype := v_objtype,
+          v_object := to_jsonb(names),
+          v_comment := v_comment
+        ),
+        v_stmt_len:= 1
+      );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.set_comment ( v_objtype int, v_tags jsonb DEFAULT NULL, v_description text DEFAULT NULL, VARIADIC v_name text[] DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  v_comment text;
+BEGIN
+
+  v_comment = ast_helpers.smart_comments(
+    v_tags,
+    v_description
+  );
+
+  RETURN ast_helpers.set_comment(
+    v_objtype := v_objtype,
+    v_comment := v_comment,
+    variadic v_name := v_name
+  );
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
@@ -5403,6 +5548,8 @@ CREATE FUNCTION deparser.comment_stmt ( node jsonb, context jsonb DEFAULT '{}'::
 DECLARE
   output text[];
   objtype int;
+
+  cmt text;
 BEGIN
     IF (node->'CommentStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CommentStmt';
@@ -5452,19 +5599,18 @@ BEGIN
       output = array_append(output, deparser.expression(node->'object'->0));
     ELSIF (objtype = ast_constants.object_type('OBJECT_TABCONSTRAINT')) THEN
       IF (jsonb_array_length(node->'object') = 3) THEN 
-        output = array_append(output, deparser.expression(node->'object'->2));
+        output = array_append(output, 
+          quote_ident(deparser.expression(node->'object'->2))
+        );
         output = array_append(output, 'ON');
-        -- TODO needs quotes instead?
-          -- output = array_append(output, deparser.quoted_name(
-          --  to_jsonb(ARRAY[
-          --    node->'object'->0,
-          --    node->'object'->1
-          --  ])
-          -- ));
-        output = array_append(output, deparser.expression(node->'object'->0));
-        output = array_append(output, '.');
-        output = array_append(output, deparser.expression(node->'object'->1));
-      ELSE 
+        output = array_append(output,
+          array_to_string(ARRAY[
+            quote_ident(deparser.expression(node->'object'->0)),
+            quote_ident(deparser.expression(node->'object'->1))
+          ], '.')
+        );
+
+     ELSE 
         output = array_append(output, deparser.expression(node->'object'->1));
         output = array_append(output, 'ON');
         output = array_append(output, deparser.expression(node->'object'->0));
@@ -5494,7 +5640,14 @@ BEGIN
 
     output = array_append(output, 'IS');
     IF (node->'comment' IS NOT NULL) THEN 
-      output = array_append(output, 'E' || '''' || (node->>'comment') || '''');
+      cmt = node->>'comment';
+      IF (cmt ~* '[^a-zA-Z0-9]') THEN 
+        output = array_append(output, 'E' || '''' || cmt || '''');
+        -- output = array_append(output, 'E' || '''' || REPLACE(cmt, '\', '\\') || '''');
+      ELSE
+        output = array_append(output, '''' || cmt || '''');
+      END IF;
+
     ELSE
       output = array_append(output, 'NULL');
     END IF;

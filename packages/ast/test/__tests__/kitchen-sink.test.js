@@ -1,6 +1,5 @@
 import { cleanTree, cleanLines, getConnections } from '../utils';
 import { readFileSync } from 'fs';
-import { resolve } from 'path';
 import { sync as glob } from 'glob';
 const parser = require('pgsql-parser');
 
@@ -21,49 +20,57 @@ afterAll(async () => {
     await db.rollback();
     await db.commit();
     await teardown();
-  } catch (e) {}
+  } catch (e) {
+    // noop
+  }
 });
-
-function slugify(text) {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-    .replace(/\-\-+/g, '-') // Replace multiple - with single -
-    .replace(/^-+/, '') // Trim - from start of text
-    .replace(/-+$/, ''); // Trim - from end of text
-}
 
 export const check = async (file) => {
   const testsql = glob(`${FIXTURE_DIR}/${file}`).map((f) =>
     readFileSync(f).toString()
   )[0];
   const tree = parser.parse(testsql);
-  // expect(tree).toMatchSnapshot();
-  const sql = parser.deparse(tree);
+  const originalTree = cleanTree(tree);
 
-  const name = slugify(file);
-  await db.savepoint(name);
-  try {
-    const [{ deparse_query: result }] = await db.any(
-      `select deparser.deparse_queries( $1::jsonb );`,
-      tree
-    );
+  const sqlfromparser = parser.deparse(tree);
+  const [{ expressions_array: result }] = await db.any(
+    `select deparser.expressions_array( $1::jsonb );`,
+    JSON.stringify(tree)
+  );
+  const sql = result.join('\n');
+  // console.log(sql);
+  expect(cleanLines(sql)).toMatchSnapshot();
+  expect(cleanLines(sqlfromparser)).toMatchSnapshot();
+  // uncomment this to debug...
+  // expect(originalTree).toMatchSnapshot();
 
-    expect(result).toMatchSnapshot();
-    // console.log(result);
-  } catch (e) {
-    console.log(file);
-    console.log(e.message);
-  }
-  await db.rollback(name);
-
-  // expect(cleanLines(sql)).toMatchSnapshot();
-  expect(cleanTree(parser.parse(sql))).toEqual(cleanTree(tree));
+  // VERIFY
+  const newTree = cleanTree(parser.parse(sql));
+  expect(newTree).toEqual(originalTree);
+  expect(cleanTree(parser.parse(sqlfromparser))).toEqual(originalTree);
 };
 
-xdescribe('kitchen sink', () => {
+it('parens', async () => {
+  await check('parens.sql');
+});
+
+it('comment', async () => {
+  await check('comment.sql');
+});
+
+it('drops', async () => {
+  await check('drops.sql');
+});
+
+it('a_expr', async () => {
+  await check('a_expr.sql');
+});
+
+it('pg_catalog', async () => {
+  await check('pg_catalog.sql');
+});
+
+describe('kitchen sink', () => {
   it('alter', async () => {
     await check('alter/alter.sql');
   });
@@ -73,7 +80,7 @@ xdescribe('kitchen sink', () => {
   it('set', async () => {
     await check('set/custom.sql');
   });
-  it('comments', async () => {
+  xit('comments', async () => {
     await check('comments/custom.sql');
   });
   it('sequences', async () => {
@@ -98,31 +105,7 @@ xdescribe('kitchen sink', () => {
     await check('enums/create.sql');
   });
   it('do stmt', async () => {
-    const dosql = readFileSync(
-      resolve(__dirname + '/../__fixtures__/do/custom.sql')
-    ).toString();
-    const tree = parser.parse(dosql);
-    // expect(tree).toMatchSnapshot();
-    // const sql = parser.deparse(tree);
-    // expect(cleanLines(sql)).toMatchSnapshot();
-    // expect(cleanTree(parser.parse(cleanLines(sql)))).toEqual(
-    //   cleanTree(parser.parse(cleanLines(dosql)))
-    // );
-
-    await db.savepoint('dostatement');
-    try {
-      const [{ deparse: result }] = await db.any(
-        `select deparser.deparse( $1::jsonb );`,
-        tree
-      );
-
-      expect(result).toMatchSnapshot();
-      // console.log(result);
-    } catch (e) {
-      console.log('dostatement');
-      console.log(e.message);
-    }
-    await db.rollback('dostatement');
+    await check('do/custom.sql');
   });
   it('insert', async () => {
     await check('statements/insert.sql');
@@ -142,6 +125,7 @@ xdescribe('kitchen sink', () => {
   it('domain', async () => {
     await check('domains/create.sql');
   });
+
   describe('tables', () => {
     it('match', async () => {
       await check('tables/match.sql');
@@ -178,9 +162,6 @@ xdescribe('kitchen sink', () => {
     });
   });
   describe('functions', () => {
-    it('basic', async () => {
-      await check('functions/basic.sql');
-    });
     it('basic', async () => {
       await check('functions/basic.sql');
     });
@@ -225,6 +206,7 @@ xdescribe('kitchen sink', () => {
       await check('triggers/custom.sql');
     });
   });
+
   describe('fixtures', () => {
     it('complex.sql', async () => {
       await check('complex.sql');
@@ -248,8 +230,9 @@ xdescribe('kitchen sink', () => {
       await check('simple.sql');
     });
   });
+
   describe('upstream', () => {
-    xit('upstream/abstime.sql', async () => {
+    it('upstream/abstime.sql', async () => {
       await check('upstream/abstime.sql');
     });
     it('upstream/advisory_lock.sql', async () => {

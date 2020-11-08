@@ -2,6 +2,7 @@
 
 -- requires: schemas/ast_helpers/schema
 -- requires: schemas/ast/procedures/types 
+-- requires: schemas/ast_helpers/procedures/smart_comments 
 
 
 BEGIN;
@@ -1260,6 +1261,146 @@ BEGIN
         ),
         v_stmt_len:= 1
       );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+
+CREATE FUNCTION ast_helpers.set_comment_on_function (
+  v_function_name text,
+  v_comment text default null, 
+  v_param_types text[] default ARRAY[]::text[],
+  v_schema_name text default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+  types jsonb[];
+  names jsonb[];
+  i int;
+BEGIN
+  FOR i IN
+  SELECT * FROM generate_series(1, cardinality(v_param_types))
+  LOOP 
+    types = array_append(types, 
+      ast.type_name(
+        v_names := to_jsonb(ARRAY[ 
+            ast.string(strs[i])
+        ])
+      )
+    );
+  END LOOP;
+
+  IF (v_schema_name IS NOT NULL) THEN 
+    names = array_append(names, ast.string(v_schema_name));
+  END IF;
+
+  names = array_append(names, ast.string(v_function_name));
+
+  RETURN ast.raw_stmt(
+        v_stmt := ast.comment_stmt(
+        v_objtype := ast_constants.object_type('OBJECT_FUNCTION'),
+        v_object := ast.object_with_args(
+                v_objname := to_jsonb(names),
+                v_objargs := to_jsonb(types)
+            ),
+            v_comment := v_comment
+        ),
+        v_stmt_len:= 1
+      );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.set_comment_on_function (
+  v_function_name text,
+  v_tags jsonb default null, 
+  v_description text default null, 
+  v_param_types text[] default ARRAY[]::text[],
+  v_schema_name text default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  v_comment text;
+BEGIN
+
+  v_comment = ast_helpers.smart_comments(
+    v_tags,
+    v_description
+  );
+
+  RETURN ast_helpers.set_comment_on_function(
+    v_function_name := v_function_name,
+    v_comment := v_comment,
+    v_param_types := v_param_types,
+    v_schema_name := v_schema_name
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.set_comment (
+  v_objtype int,
+  v_comment text default null, 
+  variadic v_name text[] default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+  types jsonb[];
+  names jsonb[];
+  i int;
+BEGIN
+
+  FOR i IN
+  SELECT * FROM generate_series(1, cardinality(v_name))
+  LOOP 
+    names = array_append(names, 
+       ast.string(v_name[i])
+    );
+  END LOOP;
+
+  RETURN ast.raw_stmt(
+        v_stmt := ast.comment_stmt(
+          v_objtype := v_objtype,
+          v_object := to_jsonb(names),
+          v_comment := v_comment
+        ),
+        v_stmt_len:= 1
+      );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.set_comment (
+  v_objtype int,
+  v_tags jsonb default null, 
+  v_description text default null, 
+  variadic v_name text[] default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  v_comment text;
+BEGIN
+
+  v_comment = ast_helpers.smart_comments(
+    v_tags,
+    v_description
+  );
+
+  RETURN ast_helpers.set_comment(
+    v_objtype := v_objtype,
+    v_comment := v_comment,
+    variadic v_name := v_name
+  );
 END;
 $$
 LANGUAGE 'plpgsql'

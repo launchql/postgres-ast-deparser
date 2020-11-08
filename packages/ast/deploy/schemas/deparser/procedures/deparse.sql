@@ -2022,6 +2022,8 @@ CREATE FUNCTION deparser.comment_stmt(
 DECLARE
   output text[];
   objtype int;
+
+  cmt text;
 BEGIN
     IF (node->'CommentStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CommentStmt';
@@ -2071,19 +2073,18 @@ BEGIN
       output = array_append(output, deparser.expression(node->'object'->0));
     ELSIF (objtype = ast_constants.object_type('OBJECT_TABCONSTRAINT')) THEN
       IF (jsonb_array_length(node->'object') = 3) THEN 
-        output = array_append(output, deparser.expression(node->'object'->2));
+        output = array_append(output, 
+          quote_ident(deparser.expression(node->'object'->2))
+        );
         output = array_append(output, 'ON');
-        -- TODO needs quotes instead?
-          -- output = array_append(output, deparser.quoted_name(
-          --  to_jsonb(ARRAY[
-          --    node->'object'->0,
-          --    node->'object'->1
-          --  ])
-          -- ));
-        output = array_append(output, deparser.expression(node->'object'->0));
-        output = array_append(output, '.');
-        output = array_append(output, deparser.expression(node->'object'->1));
-      ELSE 
+        output = array_append(output,
+          array_to_string(ARRAY[
+            quote_ident(deparser.expression(node->'object'->0)),
+            quote_ident(deparser.expression(node->'object'->1))
+          ], '.')
+        );
+
+     ELSE 
         output = array_append(output, deparser.expression(node->'object'->1));
         output = array_append(output, 'ON');
         output = array_append(output, deparser.expression(node->'object'->0));
@@ -2113,7 +2114,14 @@ BEGIN
 
     output = array_append(output, 'IS');
     IF (node->'comment' IS NOT NULL) THEN 
-      output = array_append(output, 'E' || '''' || (node->>'comment') || '''');
+      cmt = node->>'comment';
+      IF (cmt ~* '[^a-zA-Z0-9]') THEN 
+        output = array_append(output, 'E' || '''' || cmt || '''');
+        -- output = array_append(output, 'E' || '''' || REPLACE(cmt, '\', '\\') || '''');
+      ELSE
+        output = array_append(output, '''' || cmt || '''');
+      END IF;
+
     ELSE
       output = array_append(output, 'NULL');
     END IF;
