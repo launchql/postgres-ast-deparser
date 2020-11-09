@@ -22,10 +22,6 @@ exports[`helpers table constraint 1`] = `"COMMENT ON CONSTRAINT my_constraint ON
 
 exports[`helpers table constraint 2`] = `"COMMENT ON CONSTRAINT my_constraint ON table_name IS 'hithere';"`;
 
-exports[`smart_comments for any complext 1`] = `"COMMENT ON CONSTRAINT my_constraint ON my_schema.my_table IS E'@type object\\\\n@required bookmarks\\\\n@properties {\\"bookmarks\\": {\\"type\\": \\"array\\", \\"items\\": {\\"type\\": \\"object\\", \\"required\\": [\\"id\\", \\"url\\", \\"title\\", \\"tags\\"], \\"properties\\": {\\"id\\": {\\"type\\": \\"number\\", \\"unique\\": true, \\"minimum\\": 1}, \\"url\\": {\\"type\\": \\"string\\", \\"faker\\": \\"internet.url\\"}, \\"tags\\": {\\"type\\": \\"string\\", \\"faker\\": \\"custom.tags\\"}, \\"title\\": {\\"type\\": \\"string\\"}}}, \\"maxItems\\": 5, \\"minItems\\": 3}}\\\\nmy description'"`;
-
-exports[`smart_comments for any object 1`] = `"COMMENT ON CONSTRAINT my_constraint ON my_schema.my_table IS E'@a 1\\\\nmy description'"`;
-
 exports[`smart_comments helpers column 1`] = `"COMMENT ON COLUMN schema_name.table_name.column_name IS E'@here wego\\\\nmy description';"`;
 
 exports[`smart_comments helpers function 1`] = `"COMMENT ON FUNCTION \\"schema-name\\".\\"function-name\\" IS E'@b 1\\\\n@c 0\\\\n@c 1\\\\n@c 2\\\\n@c 3\\\\nmy description';"`;

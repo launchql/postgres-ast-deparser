@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`smart_comments 1`] = `"@type object\\\\n@required bookmarks\\\\n@properties {\\"bookmarks\\": {\\"type\\": \\"array\\", \\"items\\": {\\"type\\": \\"object\\", \\"required\\": [\\"id\\", \\"url\\", \\"title\\", \\"tags\\"], \\"properties\\": {\\"id\\": {\\"type\\": \\"number\\", \\"unique\\": true, \\"minimum\\": 1}, \\"url\\": {\\"type\\": \\"string\\", \\"faker\\": \\"internet.url\\"}, \\"tags\\": {\\"type\\": \\"string\\", \\"faker\\": \\"custom.tags\\"}, \\"title\\": {\\"type\\": \\"string\\"}}}, \\"maxItems\\": 5, \\"minItems\\": 3}}\\\\nmy description"`;
+
+exports[`smart_comments 2`] = `
+Object {
+  "tags": Object {
+    "properties": "{\\"bookmarks\\": {\\"type\\": \\"array\\", \\"items\\": {\\"type\\": \\"object\\", \\"required\\": [\\"id\\", \\"url\\", \\"title\\", \\"tags\\"], \\"properties\\": {\\"id\\": {\\"type\\": \\"number\\", \\"unique\\": true, \\"minimum\\": 1}, \\"url\\": {\\"type\\": \\"string\\", \\"faker\\": \\"internet.url\\"}, \\"tags\\": {\\"type\\": \\"string\\", \\"faker\\": \\"custom.tags\\"}, \\"title\\": {\\"type\\": \\"string\\"}}}, \\"maxItems\\": 5, \\"minItems\\": 3}}",
+    "required": "bookmarks",
+    "type": "object",
+  },
+  "text": "my description",
+}
+`;
+
+exports[`smart_comments 3`] = `"@type object\\\\n@props id\\\\n@props url'\\\\n@props title\\\\n@props tags\\\\nmy description"`;
+
+exports[`smart_comments 4`] = `
+Object {
+  "tags": Object {
+    "props": Array [
+      "id",
+      "url'",
+      "title",
+      "tags",
+    ],
+    "type": "object",
+  },
+  "text": "my description",
+}
+`;
+
+exports[`smart_comments for any complext 1`] = `"COMMENT ON CONSTRAINT my_constraint ON my_schema.my_table IS E'@type object\\\\n@required bookmarks\\\\n@properties {\\"bookmarks\\": {\\"type\\": \\"array\\", \\"items\\": {\\"type\\": \\"object\\", \\"required\\": [\\"id\\", \\"url\\", \\"title\\", \\"tags\\"], \\"properties\\": {\\"id\\": {\\"type\\": \\"number\\", \\"unique\\": true, \\"minimum\\": 1}, \\"url\\": {\\"type\\": \\"string\\", \\"faker\\": \\"internet.url\\"}, \\"tags\\": {\\"type\\": \\"string\\", \\"faker\\": \\"custom.tags\\"}, \\"title\\": {\\"type\\": \\"string\\"}}}, \\"maxItems\\": 5, \\"minItems\\": 3}}\\\\nmy description'"`;
+
+exports[`smart_comments for any object 1`] = `"COMMENT ON CONSTRAINT my_constraint ON my_schema.my_table IS E'@a 1\\\\nmy description'"`;
