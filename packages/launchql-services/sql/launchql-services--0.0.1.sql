@@ -41,7 +41,6 @@ CREATE TABLE services_public.services (
 	dbname text,
 	role_name text,
 	anon_role text,
-	role_key text,
 	schemas text[],
 	auth text[],
 	pubkey_challenge text[],
@@ -69,4 +68,4 @@ CREATE TRIGGER ensure_domain
 
 INSERT INTO services_public.services ( subdomain, dbname, role_name, anon_role, schemas ) VALUES ('admin', current_database(), 'administrator', 'administrator', ARRAY['collections_public']), ('services', current_database(), 'administrator', 'administrator', ARRAY['services_public']);
 
-INSERT INTO services_public.services ( subdomain, dbname, role_name, anon_role, schemas, auth, role_key ) VALUES ('api', current_database(), 'authenticated', 'anonymous', ARRAY['collections_public'], ARRAY['auth_private', 'authenticate'], 'role_id');
+INSERT INTO services_public.services ( subdomain, dbname, role_name, anon_role, schemas, auth ) VALUES ('api', current_database(), 'authenticated', 'anonymous', ARRAY['collections_public'], ARRAY['auth_private', 'authenticate']);

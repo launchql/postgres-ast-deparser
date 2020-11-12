@@ -16,8 +16,8 @@ insert into services_public.services (subdomain, dbname, role_name, anon_role, s
 ;
 
 -- with auth
-insert into services_public.services (subdomain, dbname, role_name, anon_role, schemas, auth, role_key) VALUES 
-('api', current_database(), 'authenticated', 'anonymous', ARRAY['collections_public'], ARRAY['auth_private', 'authenticate'], 'role_id')
+insert into services_public.services (subdomain, dbname, role_name, anon_role, schemas, auth) VALUES 
+('api', current_database(), 'authenticated', 'anonymous', ARRAY['collections_public'], ARRAY['auth_private', 'authenticate'])
 ;
 
 COMMIT;

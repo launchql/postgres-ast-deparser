@@ -15,7 +15,6 @@ CREATE TABLE services_public.services (
     dbname text,
     role_name text,
     anon_role text,
-    role_key text,
     schemas text[],
     auth text[],
     pubkey_challenge text[],
