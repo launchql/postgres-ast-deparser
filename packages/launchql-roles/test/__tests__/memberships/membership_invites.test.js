@@ -1,11 +1,20 @@
 import { closeConnections, createUser, getConnections } from '../../utils';
 
-let db, conn, admin, user1, user2, user3, organization, anotherOrg, anotherAdmin, profiles;
+let db,
+  conn,
+  admin,
+  user1,
+  user2,
+  user3,
+  organization,
+  anotherOrg,
+  anotherAdmin,
+  profiles;
 
 const expectInvites = async (conn, user, numInvites) => {
   conn.setContext({
     role: 'authenticated',
-    'jwt.claims.role_id': user.id
+    'jwt.claims.user_id': user.id
   });
   const invites = await conn.any(
     'SELECT id, approved, accepted FROM roles_public.membership_invites'
@@ -31,7 +40,6 @@ const inviteMember = async (
   group_id,
   organization_id
 ) => {
-
   const profile_id = profiles[organization_id].Contributor.id;
   await conn.any(
     `
@@ -44,11 +52,7 @@ const inviteMember = async (
   );
 };
 
-const grantAdmin = async (
-  conn,
-  admin,
-  organization
-) => {
+const grantAdmin = async (conn, admin, organization) => {
   const profile_id = profiles[organization.id].Owner.id;
   await conn.any(
     `
@@ -71,7 +75,7 @@ describe('membership invites', () => {
     anotherAdmin = await createUser(db);
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': admin.id
+      'jwt.claims.user_id': admin.id
     });
     organization = await conn.one(
       'SELECT * FROM roles_public.register_organization($1)',
@@ -81,9 +85,7 @@ describe('membership invites', () => {
       'SELECT * FROM roles_public.register_organization($1)',
       ['another amazing organization']
     );
-    profiles = await db.many(
-      'SELECT * FROM permissions_public.profile'
-    );
+    profiles = await db.many('SELECT * FROM permissions_public.profile');
     profiles = profiles.reduce((m, profile) => {
       m[profile.organization_id] = m[profile.organization_id] || {};
       m[profile.organization_id][profile.name] = profile;
@@ -104,7 +106,6 @@ describe('membership invites', () => {
       [admin.id, organization.id]
     );
 
-    
     await inviteMember(conn, null, user1.id, organization.id, organization.id);
     // const invite = await conn.one(
     //   'SELECT id, approved FROM roles_public.membership_invites WHERE role_id=$1',
@@ -134,11 +135,16 @@ describe('membership invites', () => {
     beforeEach(async () => {
       await conn.any(
         'INSERT INTO roles_public.memberships (role_id, group_id, profile_id, organization_id) VALUES ($1, $2, $3, $4)',
-        [user1.id, organization.id, profiles[organization.id].Contributor.id, organization.id]
+        [
+          user1.id,
+          organization.id,
+          profiles[organization.id].Contributor.id,
+          organization.id
+        ]
       );
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': user1.id
+        'jwt.claims.user_id': user1.id
       });
 
       await grantAdmin(db, anotherAdmin, organization);
@@ -155,7 +161,7 @@ describe('membership invites', () => {
       beforeEach(async () => {
         conn.setContext({
           role: 'authenticated',
-          'jwt.claims.role_id': admin.id
+          'jwt.claims.user_id': admin.id
         });
         await inviteMember(
           conn,
@@ -203,7 +209,7 @@ describe('membership invites', () => {
     it('can invite a user, but requires approval', async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': admin.id
+        'jwt.claims.user_id': admin.id
       });
 
       const invite = await conn.one(
@@ -215,7 +221,7 @@ describe('membership invites', () => {
 
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': user2.id
+        'jwt.claims.user_id': user2.id
       });
       let failed = false;
       try {
@@ -242,7 +248,7 @@ describe('membership invites', () => {
       // now approval
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': admin.id
+        'jwt.claims.user_id': admin.id
       });
 
       const invite = await conn.one(
@@ -268,12 +274,15 @@ describe('membership invites', () => {
 
       const jobs = await db.any(
         'SELECT * FROM app_jobs.jobs WHERE task_identifier=$1 OR task_identifier=$2',
-        ['membership__invite_member_approval_email', 'membership__invite_member_email']
+        [
+          'membership__invite_member_approval_email',
+          'membership__invite_member_email'
+        ]
       );
 
       expect(jobs.length).toBe(2);
 
-      const [{payload}] = jobs;
+      const [{ payload }] = jobs;
       expect(payload).toEqual(
         expect.objectContaining({
           type: 'Organization'

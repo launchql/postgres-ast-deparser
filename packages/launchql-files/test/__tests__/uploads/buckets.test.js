@@ -26,7 +26,7 @@ describe('uploads', () => {
     user = await createUser(db);
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': user.id
+      'jwt.claims.user_id': user.id
     });
     organization = await conn.one(
       'SELECT * FROM roles_public.register_organization($1)',

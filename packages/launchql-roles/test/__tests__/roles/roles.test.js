@@ -11,7 +11,7 @@ describe('role types', () => {
 
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': user1.id
+      'jwt.claims.user_id': user1.id
     });
     organization = await conn.one(
       'SELECT * FROM roles_public.register_organization($1)',
@@ -77,7 +77,7 @@ describe('role types', () => {
     try {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': user2.id
+        'jwt.claims.user_id': user2.id
       });
       await conn.one('SELECT * FROM roles_public.register_team($1, $2)', [
         'design team',
@@ -96,7 +96,7 @@ describe('role types', () => {
     beforeEach(async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': user2.id
+        'jwt.claims.user_id': user2.id
       });
       ideo = await conn.one(
         'SELECT * FROM roles_public.register_organization($1)',
@@ -112,7 +112,7 @@ describe('role types', () => {
       try {
         conn.setContext({
           role: 'authenticated',
-          'jwt.claims.role_id': user1.id
+          'jwt.claims.user_id': user1.id
         });
         await conn.one('SELECT * FROM roles_public.register_team($1, $2, $3)', [
           'secret back door design team',
@@ -132,7 +132,7 @@ describe('role types', () => {
       try {
         conn.setContext({
           role: 'authenticated',
-          'jwt.claims.role_id': user1.id
+          'jwt.claims.user_id': user1.id
         });
         await conn.one('SELECT * FROM roles_public.register_team($1, $2, $3)', [
           'secret back door design team',

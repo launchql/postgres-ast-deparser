@@ -62,7 +62,7 @@ describe('signup membership invites', () => {
     objs.admin = await createUser(db);
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.admin.id
+      'jwt.claims.user_id': objs.admin.id
     });
     objs.organization1 = await conn.one(
       'SELECT * FROM roles_public.register_organization($1)',
@@ -144,7 +144,7 @@ describe('signup membership invites', () => {
 
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.admin.id
+      'jwt.claims.user_id': objs.admin.id
     });
 
     let failed = false;
@@ -178,7 +178,7 @@ describe('signup membership invites', () => {
 
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.admin.id
+      'jwt.claims.user_id': objs.admin.id
     });
     let failed = false;
     try {
@@ -237,7 +237,7 @@ describe('signup membership invites', () => {
 
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.newUser.id
+      'jwt.claims.user_id': objs.newUser.id
     });
 
     // now get invites

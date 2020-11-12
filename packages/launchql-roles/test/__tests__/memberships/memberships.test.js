@@ -12,7 +12,7 @@ describe('role types', () => {
     objs.user4 = await createUser(db);
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user1.id
+      'jwt.claims.user_id': objs.user1.id
     });
     objs.organization1 = await conn.one(
       'SELECT * FROM roles_public.register_organization($1)',
@@ -20,7 +20,7 @@ describe('role types', () => {
     );
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user2.id
+      'jwt.claims.user_id': objs.user2.id
     });
 
     objs.organization2 = await conn.one(
@@ -30,7 +30,7 @@ describe('role types', () => {
 
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user3.id
+      'jwt.claims.user_id': objs.user3.id
     });
 
     objs.organization3 = await conn.one(
@@ -40,7 +40,7 @@ describe('role types', () => {
 
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user1.id
+      'jwt.claims.user_id': objs.user1.id
     });
 
     objs.profiles = await db.many(
@@ -78,7 +78,7 @@ describe('role types', () => {
   it('cannot grant users to user roles', async () => {
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user2.id
+      'jwt.claims.user_id': objs.user2.id
     });
     let failed = false;
     try {
@@ -95,7 +95,7 @@ describe('role types', () => {
   it('can NOT create a memberships that point to another role you do not own', async () => {
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user2.id
+      'jwt.claims.user_id': objs.user2.id
     });
 
     let failed = false;
@@ -119,7 +119,7 @@ describe('role types', () => {
   it('can get recursive roles', async () => {
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user2.id
+      'jwt.claims.user_id': objs.user2.id
     });
     
     await conn.any(
@@ -128,7 +128,7 @@ describe('role types', () => {
     );
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user3.id
+      'jwt.claims.user_id': objs.user3.id
     });
 
     await conn.any(
@@ -209,7 +209,7 @@ describe('role types', () => {
     it('member can NOT grant users to organizations', async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.user2.id
+        'jwt.claims.user_id': objs.user2.id
       });
       let failed = true;
       try {
@@ -233,7 +233,7 @@ describe('role types', () => {
     it('member can NOT revoke users from organizations', async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.user2.id
+        'jwt.claims.user_id': objs.user2.id
       });
       let failed = true;
       try {
@@ -259,7 +259,7 @@ describe('role types', () => {
     it('member can revoke self from organizations', async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.user2.id
+        'jwt.claims.user_id': objs.user2.id
       });
       await conn.any(
         'DELETE FROM roles_public.memberships WHERE role_id=$1 AND group_id=$2',
@@ -315,7 +315,7 @@ describe('role types', () => {
     it('admin can revoke admins from organizations', async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.user2.id
+        'jwt.claims.user_id': objs.user2.id
       });
 
       await conn.any(
@@ -332,7 +332,7 @@ describe('role types', () => {
     it('cannot remove last admin from organization', async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.user2.id
+        'jwt.claims.user_id': objs.user2.id
       });
 
       await conn.any(

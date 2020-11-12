@@ -16,7 +16,7 @@ describe('content', () => {
     objs.user = await createUser(db);
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user.id
+      'jwt.claims.user_id': objs.user.id
     });
     objs.proj = await addRepository(conn, 'myproj');
   });

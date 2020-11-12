@@ -103,7 +103,7 @@ exports[`policy w permission_name 1`] = `"CREATE POLICY v_policy_name ON v_schem
 exports[`policyStmt 1`] = `
 Array [
   Object {
-    "deparse": "CREATE POLICY delete_the_thing ON users.\\"user\\" FOR DELETE TO PUBLIC USING ( (SELECT p.owned_table_key = ANY( current_role_fn_schema.current_role_ids_function() ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key AND p.owned_table_ref_key = this_owned_key WHERE c.object_table_ref_key = this_object_key) );",
+    "deparse": "CREATE POLICY delete_the_thing ON users.\\"user\\" FOR DELETE TO PUBLIC USING ( (SELECT p.owned_table_key = ANY( current_role_fn_schema.current_group_ids_function() ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key AND p.owned_table_ref_key = this_owned_key WHERE c.object_table_ref_key = this_object_key) );",
   },
 ]
 `;

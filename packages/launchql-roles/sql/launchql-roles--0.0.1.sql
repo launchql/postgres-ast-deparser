@@ -5,13 +5,13 @@ CREATE FUNCTION roles_public.current_role_id (  ) RETURNS uuid AS $EOFCODE$
 DECLARE
   role_id uuid;
 BEGIN
-  IF current_setting('jwt.claims.role_id', TRUE)
+  IF current_setting('jwt.claims.user_id', TRUE)
     IS NOT NULL THEN
     BEGIN
-      role_id = current_setting('jwt.claims.role_id', TRUE)::uuid;
+      role_id = current_setting('jwt.claims.user_id', TRUE)::uuid;
     EXCEPTION
       WHEN OTHERS THEN
-      RAISE NOTICE 'Invalid UUID value: "%".  Returning NULL.', current_setting('jwt.claims.role_id', TRUE);
+      RAISE NOTICE 'Invalid UUID value: "%".  Returning NULL.', current_setting('jwt.claims.user_id', TRUE);
     RETURN NULL;
     END;
     RETURN role_id;

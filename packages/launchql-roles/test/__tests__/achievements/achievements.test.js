@@ -18,7 +18,7 @@ describe('achievements', () => {
     objs.user3 = await createUser(db, undefined, 'user3');
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user1.id
+      'jwt.claims.user_id': objs.user1.id
     });
     await db.any(`
     TRUNCATE TABLE 
@@ -62,7 +62,7 @@ describe('achievements', () => {
 
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': opts.user_id
+        'jwt.claims.user_id': opts.user_id
       });
   
       const { user_achieved: res } = await conn.one(
@@ -75,7 +75,7 @@ describe('achievements', () => {
     async function tasks_required_for(opts) {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': opts.user_id
+        'jwt.claims.user_id': opts.user_id
       });
   
       const res = await conn.any(

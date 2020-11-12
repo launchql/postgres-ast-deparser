@@ -14,7 +14,7 @@ describe('roles_public.verify_email()', () => {
     it('has secrets on creation', async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': user.id
+        'jwt.claims.user_id': user.id
       });
       const email = 'dude@gmail.com';
 

@@ -10,7 +10,7 @@ describe('auth_public.create_service_token()', () => {
     user = await createUser(db);
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': user.id
+      'jwt.claims.user_id': user.id
     });
   });
   afterEach(async () => {

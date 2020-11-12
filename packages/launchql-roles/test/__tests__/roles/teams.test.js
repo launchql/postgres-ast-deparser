@@ -1,7 +1,7 @@
 import { closeConnections, createUser, getConnections } from '../../utils';
 
 let db, conn;
-let objs = {};
+const objs = {};
 let profiles;
 
 describe('role types', () => {
@@ -10,7 +10,7 @@ describe('role types', () => {
     objs.admin = await createUser(db);
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.admin.id
+      'jwt.claims.user_id': objs.admin.id
     });
     objs.webql = await conn.one(
       'SELECT * FROM roles_public.register_organization($1)',
@@ -21,15 +21,12 @@ describe('role types', () => {
       ['sinai']
     );
 
-    profiles = await db.many(
-      'SELECT * FROM permissions_public.profile'
-    );
+    profiles = await db.many('SELECT * FROM permissions_public.profile');
     profiles = profiles.reduce((m, profile) => {
       m[profile.organization_id] = m[profile.organization_id] || {};
       m[profile.organization_id][profile.name] = profile;
       return m;
     }, {});
-
 
     // design team
     objs.designer = await createUser(db);
@@ -39,7 +36,12 @@ describe('role types', () => {
     );
     await conn.any(
       'INSERT INTO roles_public.memberships (role_id, group_id, profile_id, organization_id) VALUES ($1, $2, $3, $4)',
-      [objs.designer.id, objs.designTeam.id, profiles[objs.sinai.id].Owner.id, objs.sinai.id]
+      [
+        objs.designer.id,
+        objs.designTeam.id,
+        profiles[objs.sinai.id].Owner.id,
+        objs.sinai.id
+      ]
     );
 
     // engineering team
@@ -52,11 +54,21 @@ describe('role types', () => {
     );
     await conn.any(
       'INSERT INTO roles_public.memberships (role_id, group_id, profile_id, organization_id) VALUES ($1, $2, $3, $4)',
-      [objs.VpEng.id, objs.engTeam.id, profiles[objs.sinai.id].Owner.id, objs.sinai.id]
+      [
+        objs.VpEng.id,
+        objs.engTeam.id,
+        profiles[objs.sinai.id].Owner.id,
+        objs.sinai.id
+      ]
     );
     await conn.any(
       'INSERT INTO roles_public.memberships (role_id, group_id, profile_id, organization_id) VALUES ($1, $2, $3, $4)',
-      [objs.developer.id, objs.engTeam.id, profiles[objs.sinai.id].Contributor.id, objs.sinai.id]
+      [
+        objs.developer.id,
+        objs.engTeam.id,
+        profiles[objs.sinai.id].Contributor.id,
+        objs.sinai.id
+      ]
     );
 
     // qa devs
@@ -67,7 +79,12 @@ describe('role types', () => {
     );
     await conn.any(
       'INSERT INTO roles_public.memberships (role_id, group_id, profile_id, organization_id) VALUES ($1, $2, $3, $4)',
-      [objs.qaDev.id, objs.qaTeam.id, profiles[objs.sinai.id].Contributor.id, objs.sinai.id]
+      [
+        objs.qaDev.id,
+        objs.qaTeam.id,
+        profiles[objs.sinai.id].Contributor.id,
+        objs.sinai.id
+      ]
     );
 
     // junior devs
@@ -78,7 +95,12 @@ describe('role types', () => {
     );
     await conn.any(
       'INSERT INTO roles_public.memberships (role_id, group_id, profile_id, organization_id) VALUES ($1, $2, $3, $4)',
-      [objs.juniorDev.id, objs.juniorTeam.id, profiles[objs.sinai.id].Contributor.id, objs.sinai.id]
+      [
+        objs.juniorDev.id,
+        objs.juniorTeam.id,
+        profiles[objs.sinai.id].Contributor.id,
+        objs.sinai.id
+      ]
     );
   });
   afterEach(async () => {
@@ -97,10 +119,12 @@ describe('role types', () => {
         objs.designTeam
       ];
       for (let i = 0; i < teams.length; i++) {
-        const { is_member_of: isMember } = await db.one(
-          'SELECT * FROM roles_private.is_member_of($1, $2)',
-          [objs.admin.id, teams[i].id]
-        );
+        const {
+          is_member_of: isMember
+        } = await db.one('SELECT * FROM roles_private.is_member_of($1, $2)', [
+          objs.admin.id,
+          teams[i].id
+        ]);
         expect(isMember).toBe(true);
       }
     });
@@ -112,22 +136,31 @@ describe('role types', () => {
         objs.designTeam
       ];
       for (let i = 0; i < teams.length; i++) {
-        const { is_admin_of: isAdmin } = await db.one(
-          'SELECT * FROM roles_private.is_admin_of($1, $2)',
-          [objs.admin.id, teams[i].id]
-        );
+        const {
+          is_admin_of: isAdmin
+        } = await db.one('SELECT * FROM roles_private.is_admin_of($1, $2)', [
+          objs.admin.id,
+          teams[i].id
+        ]);
         expect(isAdmin).toBe(true);
       }
     });
     it('can add members to any team', async () => {
       await conn.any(
         'INSERT INTO roles_public.memberships (role_id, group_id, profile_id, organization_id) VALUES ($1, $2, $3, $4)',
-        [objs.designer.id, objs.qaTeam.id, profiles[objs.sinai.id].Contributor.id, objs.sinai.id]
+        [
+          objs.designer.id,
+          objs.qaTeam.id,
+          profiles[objs.sinai.id].Contributor.id,
+          objs.sinai.id
+        ]
       );
-      const { is_member_of: isMember } = await db.one(
-        'SELECT * FROM roles_private.is_member_of($1, $2)',
-        [objs.designer.id, objs.qaTeam.id]
-      );
+      const {
+        is_member_of: isMember
+      } = await db.one('SELECT * FROM roles_private.is_member_of($1, $2)', [
+        objs.designer.id,
+        objs.qaTeam.id
+      ]);
       expect(isMember).toBe(true);
     });
     it('can remove members to any team', async () => {
@@ -139,14 +172,18 @@ describe('role types', () => {
         'DELETE FROM roles_public.memberships WHERE role_id=$1 AND group_id=$2 AND organization_id=$3',
         [objs.VpEng.id, objs.engTeam.id, objs.sinai.id]
       );
-      const { is_member_of: isVpEng } = await db.one(
-        'SELECT * FROM roles_private.is_member_of($1, $2)',
-        [objs.VpEng.id, objs.engTeam.id]
-      );
-      const { is_member_of: isDesigner } = await db.one(
-        'SELECT * FROM roles_private.is_member_of($1, $2)',
-        [objs.designer.id, objs.designTeam.id]
-      );
+      const {
+        is_member_of: isVpEng
+      } = await db.one('SELECT * FROM roles_private.is_member_of($1, $2)', [
+        objs.VpEng.id,
+        objs.engTeam.id
+      ]);
+      const {
+        is_member_of: isDesigner
+      } = await db.one('SELECT * FROM roles_private.is_member_of($1, $2)', [
+        objs.designer.id,
+        objs.designTeam.id
+      ]);
       expect(isVpEng).toBe(false);
       expect(isDesigner).toBe(false);
     });
@@ -214,46 +251,54 @@ describe('role types', () => {
     it('sees only n roles', async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.qaDev.id
+        'jwt.claims.user_id': objs.qaDev.id
       });
       const roles = await conn.many('SELECT * FROM roles_public.roles');
       expect(roles.length).toBe(2);
-      expect(roles.find(r => r.type === 'User').id).toEqual(objs.qaDev.id);
-      expect(roles.find(r => r.type === 'Team').id).toEqual(objs.qaTeam.id);
+      expect(roles.find((r) => r.type === 'User').id).toEqual(objs.qaDev.id);
+      expect(roles.find((r) => r.type === 'Team').id).toEqual(objs.qaTeam.id);
     });
   });
   describe('juniorDev', () => {
     beforeEach(() => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.juniorDev.id
+        'jwt.claims.user_id': objs.juniorDev.id
       });
       db.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.juniorDev.id
+        'jwt.claims.user_id': objs.juniorDev.id
       });
     });
     it('sees only n roles', async () => {
       const roles = await conn.many('SELECT * FROM roles_public.roles');
       expect(roles.length).toBe(2);
-      expect(roles.find(r => r.type === 'User').id).toEqual(objs.juniorDev.id);
-      expect(roles.find(r => r.type === 'Team').id).toEqual(objs.juniorTeam.id);
+      expect(roles.find((r) => r.type === 'User').id).toEqual(
+        objs.juniorDev.id
+      );
+      expect(roles.find((r) => r.type === 'Team').id).toEqual(
+        objs.juniorTeam.id
+      );
     });
     it('has some memberships', async () => {
       const teams = [objs.juniorTeam];
       const noteams = [objs.engTeam, objs.qaTeam, objs.designTeam];
       for (let i = 0; i < teams.length; i++) {
-        const { is_member_of: isMember } = await db.one(
-          'SELECT * FROM roles_private.is_member_of($1, $2)',
-          [objs.juniorDev.id, teams[i].id]
-        );
+        const {
+          is_member_of: isMember
+        } = await db.one('SELECT * FROM roles_private.is_member_of($1, $2)', [
+          objs.juniorDev.id,
+          teams[i].id
+        ]);
         expect(isMember).toBe(true);
       }
       for (let i = 0; i < noteams.length; i++) {
-        const { is_member_of: isMember } = await db.one(
-          'SELECT * FROM roles_private.is_member_of($1, $2)',
-          [objs.juniorDev.id, noteams[i].id]
-        );
+        const {
+          is_member_of: isMember
+        } = await db.one('SELECT * FROM roles_private.is_member_of($1, $2)', [
+          objs.juniorDev.id,
+          noteams[i].id
+        ]);
         expect(isMember).toBe(false);
       }
     });
@@ -265,10 +310,12 @@ describe('role types', () => {
         objs.designTeam
       ];
       for (let i = 0; i < teams.length; i++) {
-        const { is_admin_of: isAdmin } = await db.one(
-          'SELECT * FROM roles_private.is_admin_of($1, $2)',
-          [objs.juniorDev.id, teams[i].id]
-        );
+        const {
+          is_admin_of: isAdmin
+        } = await db.one('SELECT * FROM roles_private.is_admin_of($1, $2)', [
+          objs.juniorDev.id,
+          teams[i].id
+        ]);
         expect(isAdmin).toBe(false);
       }
     });
@@ -277,11 +324,11 @@ describe('role types', () => {
     beforeEach(() => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.VpEng.id
+        'jwt.claims.user_id': objs.VpEng.id
       });
       db.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.VpEng.id
+        'jwt.claims.user_id': objs.VpEng.id
       });
     });
     it('sees only n roles', async () => {
@@ -292,17 +339,21 @@ describe('role types', () => {
       const teams = [objs.juniorTeam, objs.engTeam, objs.qaTeam];
       const noteams = [objs.designTeam];
       for (let i = 0; i < teams.length; i++) {
-        const { is_member_of: isMember } = await db.one(
-          'SELECT * FROM roles_private.is_member_of($1, $2)',
-          [objs.VpEng.id, teams[i].id]
-        );
+        const {
+          is_member_of: isMember
+        } = await db.one('SELECT * FROM roles_private.is_member_of($1, $2)', [
+          objs.VpEng.id,
+          teams[i].id
+        ]);
         expect(isMember).toBe(true);
       }
       for (let i = 0; i < noteams.length; i++) {
-        const { is_member_of: isMember } = await db.one(
-          'SELECT * FROM roles_private.is_member_of($1, $2)',
-          [objs.VpEng.id, noteams[i].id]
-        );
+        const {
+          is_member_of: isMember
+        } = await db.one('SELECT * FROM roles_private.is_member_of($1, $2)', [
+          objs.VpEng.id,
+          noteams[i].id
+        ]);
         expect(isMember).toBe(false);
       }
     });
@@ -310,17 +361,21 @@ describe('role types', () => {
       const teams = [objs.juniorTeam, objs.engTeam, objs.qaTeam];
       const noteams = [objs.designTeam];
       for (let i = 0; i < teams.length; i++) {
-        const { is_admin_of: isAdmin } = await db.one(
-          'SELECT * FROM roles_private.is_admin_of($1, $2)',
-          [objs.VpEng.id, teams[i].id]
-        );
+        const {
+          is_admin_of: isAdmin
+        } = await db.one('SELECT * FROM roles_private.is_admin_of($1, $2)', [
+          objs.VpEng.id,
+          teams[i].id
+        ]);
         expect(isAdmin).toBe(true);
       }
       for (let i = 0; i < noteams.length; i++) {
-        const { is_admin_of: isAdmin } = await db.one(
-          'SELECT * FROM roles_private.is_admin_of($1, $2)',
-          [objs.VpEng.id, noteams[i].id]
-        );
+        const {
+          is_admin_of: isAdmin
+        } = await db.one('SELECT * FROM roles_private.is_admin_of($1, $2)', [
+          objs.VpEng.id,
+          noteams[i].id
+        ]);
         expect(isAdmin).toBe(false);
       }
     });

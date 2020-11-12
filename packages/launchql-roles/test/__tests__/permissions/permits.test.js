@@ -45,7 +45,7 @@ describe('collaboration', () => {
 
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user1.id
+      'jwt.claims.user_id': objs.user1.id
     });
 
     objs.org1 = await createOrganization('org1');

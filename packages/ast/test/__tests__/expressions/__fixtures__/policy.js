@@ -64,7 +64,7 @@ export default {
                                 },
                                 {
                                   String: {
-                                    str: 'current_role_ids_function'
+                                    str: 'current_group_ids_function'
                                   }
                                 }
                               ]

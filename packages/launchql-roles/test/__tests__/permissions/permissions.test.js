@@ -10,7 +10,7 @@ describe('permissions', () => {
     objs.user1 = await createUser(db, undefined, 'user1');
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user1.id
+      'jwt.claims.user_id': objs.user1.id
     });
     objs.organization1 = await conn.one(
       'SELECT * FROM roles_public.register_organization($1)',

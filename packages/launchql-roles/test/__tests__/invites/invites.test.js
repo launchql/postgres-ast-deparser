@@ -27,7 +27,7 @@ describe('invites', () => {
     powerUser = await createUser(db);
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': powerUser.id
+      'jwt.claims.user_id': powerUser.id
     });
     await getInvite(conn, 'dude@webql.com');
     await getBlankInvite(conn);
@@ -152,7 +152,7 @@ describe('invites', () => {
 
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': signupToken.role_id
+      'jwt.claims.user_id': signupToken.role_id
     });
 
     await conn.any('SELECT * FROM roles_public.submit_invite_code($1)', [

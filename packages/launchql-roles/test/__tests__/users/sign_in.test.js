@@ -18,7 +18,7 @@ describe('roles_public.sign_in()', () => {
     beforeEach(async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': user.id
+        'jwt.claims.user_id': user.id
       });
       await conn.any(
         "SELECT * FROM auth_private.set_multi_factor_secret('abcdef')",

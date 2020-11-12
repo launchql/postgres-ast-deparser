@@ -7,7 +7,7 @@ let profiles;
 async function expectRepos(conn, user, num) {
   conn.setContext({
     role: 'authenticated',
-    'jwt.claims.role_id': user.id
+    'jwt.claims.user_id': user.id
   });
   const projs = await conn.any(`SELECT * FROM projects_public.project`);
   expect(projs.length).toBe(num);
@@ -45,7 +45,7 @@ describe('transfer repos', () => {
     objs.otherAdmin = await createUser(db);
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.otherAdmin.id
+      'jwt.claims.user_id': objs.otherAdmin.id
     });
     objs.webql = await conn.one(
       `SELECT * FROM roles_public.register_organization($1)`,
@@ -53,7 +53,7 @@ describe('transfer repos', () => {
     );
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.admin.id
+      'jwt.claims.user_id': objs.admin.id
     });
     objs.sinai = await conn.one(
       `SELECT * FROM roles_public.register_organization($1)`,
@@ -150,7 +150,7 @@ describe('transfer repos', () => {
     beforeEach(async () => {
       conn.setContext({
         role: 'authenticated',
-        'jwt.claims.role_id': objs.VpEng.id
+        'jwt.claims.user_id': objs.VpEng.id
       });
 
       await conn.none(
@@ -210,7 +210,7 @@ describe('transfer repos', () => {
       it('owners can accept', async () => {
         conn.setContext({
           role: 'authenticated',
-          'jwt.claims.role_id': objs.juniorDev.id
+          'jwt.claims.user_id': objs.juniorDev.id
         });
         await acceptTransfer(conn, transfer.id);
         const transferAfter = await conn.one(
@@ -229,7 +229,7 @@ describe('transfer repos', () => {
       it('reject', async () => {
         conn.setContext({
           role: 'authenticated',
-          'jwt.claims.role_id': objs.juniorDev.id
+          'jwt.claims.user_id': objs.juniorDev.id
         });
         await rejectTransfer(conn, transfer.id);
 
@@ -261,7 +261,7 @@ describe('transfer repos', () => {
       it('owners can accept', async () => {
         conn.setContext({
           role: 'authenticated',
-          'jwt.claims.role_id': objs.otherAdmin.id
+          'jwt.claims.user_id': objs.otherAdmin.id
         });
         await acceptTransfer(conn, transfer.id);
 
@@ -277,7 +277,7 @@ describe('transfer repos', () => {
       it('reject', async () => {
         conn.setContext({
           role: 'authenticated',
-          'jwt.claims.role_id': objs.otherAdmin.id
+          'jwt.claims.user_id': objs.otherAdmin.id
         });
         await rejectTransfer(conn, transfer.id);
 
@@ -290,7 +290,7 @@ describe('transfer repos', () => {
       beforeEach(async () => {
         conn.setContext({
           role: 'authenticated',
-          'jwt.claims.role_id': objs.otherAdmin.id
+          'jwt.claims.user_id': objs.otherAdmin.id
         });
         proj = await conn.one(
           `INSERT INTO projects_public.project (name, owner_id) VALUES ($1, $2) RETURNING *`,
@@ -307,7 +307,7 @@ describe('transfer repos', () => {
       it('owners can accept', async () => {
         conn.setContext({
           role: 'authenticated',
-          'jwt.claims.role_id': objs.admin.id
+          'jwt.claims.user_id': objs.admin.id
         });
 
         await acceptTransfer(conn, transfer.id);
@@ -323,7 +323,7 @@ describe('transfer repos', () => {
       it('reject', async () => {
         conn.setContext({
           role: 'authenticated',
-          'jwt.claims.role_id': objs.admin.id
+          'jwt.claims.user_id': objs.admin.id
         });
         await rejectTransfer(conn, transfer.id);
         await expectRepos(conn, objs.otherAdmin, 1);

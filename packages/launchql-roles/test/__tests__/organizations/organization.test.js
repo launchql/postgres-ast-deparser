@@ -12,7 +12,7 @@ describe('Organizations', () => {
     objs.user1 = await createUser(db, undefined, 'user1');
     conn.setContext({
       role: 'authenticated',
-      'jwt.claims.role_id': objs.user1.id
+      'jwt.claims.user_id': objs.user1.id
     });
   });
   afterEach(async () => {
