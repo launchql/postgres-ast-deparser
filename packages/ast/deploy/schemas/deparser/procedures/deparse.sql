@@ -1075,9 +1075,7 @@ BEGIN
 
   node = node->'CommonTableExpr';
 
-  -- TODO needs quote?
-  output = array_append(output, node->>'ctename');
-  -- output = array_append(output, quote_ident(node->>'ctename'));
+  output = array_append(output, quote_ident(node->>'ctename'));
 
   IF (node->'aliascolnames' IS NOT NULL) THEN 
     output = array_append(output, 
@@ -2255,7 +2253,7 @@ BEGIN
 
     node = node->'WithClause';
     output = array_append(output, 'WITH');
-    IF (node->'recursive' IS NOT NULL AND (node->'recursive')::bool IS TRUE) THEN 
+    IF ((node->'recursive')::bool IS TRUE) THEN 
       output = array_append(output, 'RECURSIVE');
     END IF;
     output = array_append(output, deparser.list(node->'ctes'));
@@ -2898,14 +2896,14 @@ BEGIN
         funcs = array_append(funcs, array_to_string(calls, ' '));
       END LOOP;
 
-      IF (node->'is_rowsfrom' IS NOT NULL AND (node->'is_rowsfrom')::bool IS TRUE) THEN 
+      IF ((node->'is_rowsfrom')::bool IS TRUE) THEN 
         output = array_append(output, format('ROWS FROM (%s)', array_to_string(funcs, ', ')));
       ELSE
         output = array_append(output, array_to_string(funcs, ', '));
       END IF;
     END IF;
 
-    IF (node->'ordinality' IS NOT NULL AND (node->'ordinality')::bool IS TRUE) THEN
+    IF ((node->'ordinality')::bool IS TRUE) THEN
       output = array_append(output, 'WITH ORDINALITY');
     END IF;
 
@@ -4352,7 +4350,7 @@ BEGIN
     node = node->'SelectStmt';
 
     IF (node->'withClause') IS NOT NULL THEN 
-      output = array_append(output, deparser.expression(node->'withClause'), context);
+      output = array_append(output, deparser.expression(node->'withClause', context));
     END IF;
 
     op = (node->'op')::int;

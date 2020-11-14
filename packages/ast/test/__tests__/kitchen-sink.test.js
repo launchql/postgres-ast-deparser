@@ -113,6 +113,9 @@ describe('kitchen sink', () => {
   it('update', async () => {
     await check('statements/update.sql');
   });
+  it('select', async () => {
+    await check('statements/select.sql');
+  });
   it('conflicts', async () => {
     await check('statements/conflicts.sql');
   });
