@@ -1,1 +1,0 @@
--- Verify schemas/collections_public/tables/schema_grant/table  on pg
