@@ -9,58 +9,31 @@ GRANT CONNECT ON DATABASE "service-db" TO app_admin;
 GRANT CONNECT ON DATABASE "launchql-db-v1" TO app_user;
 GRANT CONNECT ON DATABASE "launchql-db-v1" TO app_admin;
 
-INSERT INTO services_public.services 
-(
-    subdomain,
-    domain,
-    dbname,
-    role_name,
-    anon_role,
-    schemas
-) VALUES 
-(
-    'api',
-    'lql.io',
-    'launchql-db-v1',
-    'authenticated',
-    'anonymous',
-    ARRAY['collections_public', 'modules_public']
-);
-        
-INSERT INTO services_public.services 
-(
-    subdomain,
-    domain,
-    dbname,
-    role_name,
-    anon_role,
-    schemas
-) VALUES 
-(
-    'svc',
-    'lql.io',
-    'service-db',
-    'administrator',
-    'administrator',
-    ARRAY['services_public']
+SELECT services_public.add_api_service(
+    subdomain := 'api',
+    domain := 'lql.io',
+    dbname := 'launchql-db-v1',
+    role_name := 'authenticated',
+    anon_role := 'anonymous',
+    schemas := ARRAY['collections_public', 'modules_public']
 );
 
-INSERT INTO services_public.services 
-(
-    subdomain,
-    domain,
-    dbname,
-    role_name,
-    anon_role,
-    schemas
-) VALUES 
-(
-    'admin',
-    'lql.io',
-    'launchql-db-v1',
-    'administrator',
-    'administrator',
-    ARRAY['collections_public', 'modules_public']
+SELECT services_public.add_api_service(
+    subdomain := 'svc',
+    domain := 'lql.io',
+    dbname := 'service-db',
+    role_name := 'administrator',
+    anon_role := 'administrator',
+    schemas := ARRAY['services_public']
+);
+
+SELECT services_public.add_api_service(
+    subdomain := 'admin',
+    domain := 'lql.io',
+    dbname := 'launchql-db-v1',
+    role_name := 'administrator',
+    anon_role := 'administrator',
+    schemas := ARRAY['collections_public', 'modules_public']
 );
         
 COMMIT;
