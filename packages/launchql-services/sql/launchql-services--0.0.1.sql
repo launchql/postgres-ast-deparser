@@ -65,7 +65,3 @@ CREATE TRIGGER ensure_domain
  BEFORE INSERT ON services_public.services 
  FOR EACH ROW
  EXECUTE PROCEDURE services_private. tg_ensure_domain (  );
-
-INSERT INTO services_public.services ( subdomain, dbname, role_name, anon_role, schemas ) VALUES ('admin', current_database(), 'administrator', 'administrator', ARRAY['collections_public']), ('services', current_database(), 'administrator', 'administrator', ARRAY['services_public']);
-
-INSERT INTO services_public.services ( subdomain, dbname, role_name, anon_role, schemas, auth ) VALUES ('api', current_database(), 'authenticated', 'anonymous', ARRAY['collections_public'], ARRAY['auth_private', 'authenticate']);
