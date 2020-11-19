@@ -10,30 +10,30 @@ GRANT CONNECT ON DATABASE "launchql-db-v1" TO app_user;
 GRANT CONNECT ON DATABASE "launchql-db-v1" TO app_admin;
 
 SELECT services_public.add_api_service(
-    subdomain := 'api',
-    domain := 'lql.io',
-    dbname := 'launchql-db-v1',
-    role_name := 'authenticated',
-    anon_role := 'anonymous',
-    schemas := ARRAY['collections_public', 'modules_public']
+    v_subdomain := 'api',
+    v_domain := 'lql.io',
+    v_dbname := 'launchql-db-v1',
+    v_role_name := 'authenticated',
+    v_anon_role := 'anonymous',
+    v_schemas := ARRAY['collections_public', 'modules_public']
 );
 
 SELECT services_public.add_api_service(
-    subdomain := 'svc',
-    domain := 'lql.io',
-    dbname := 'service-db',
-    role_name := 'administrator',
-    anon_role := 'administrator',
-    schemas := ARRAY['services_public']
+    v_subdomain := 'svc',
+    v_domain := 'lql.io',
+    v_dbname := 'service-db',
+    v_role_name := 'administrator',
+    v_anon_role := 'administrator',
+    v_schemas := ARRAY['services_public']
 );
 
 SELECT services_public.add_api_service(
-    subdomain := 'admin',
-    domain := 'lql.io',
-    dbname := 'launchql-db-v1',
-    role_name := 'administrator',
-    anon_role := 'administrator',
-    schemas := ARRAY['collections_public', 'modules_public']
+    v_subdomain := 'admin',
+    v_domain := 'lql.io',
+    v_dbname := 'launchql-db-v1',
+    v_role_name := 'administrator',
+    v_anon_role := 'administrator',
+    v_schemas := ARRAY['collections_public', 'modules_public']
 );
         
 COMMIT;
