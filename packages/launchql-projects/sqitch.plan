@@ -2,7 +2,7 @@
 %project=launchql-projects
 %uri=launchql-projects
   
-extensions/include [skitch-extension-default-roles:roles/authenticated/role skitch-extension-defaults:defaults/public skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view launchql-roles:schemas/status_public/tables/user_task/grants/grant_select_to_authenticated launchql-utils:schemas/public/schema launchql-types:schemas/public/domains/url] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add extensions/include
+extensions/include [launchql-ext-default-roles:roles/authenticated/role launchql-ext-defaults:defaults/public launchql-ext-utils:procedures/tg_update_timestamps launchql-ext-verify:procedures/verify_view launchql-roles:schemas/status_public/tables/user_task/grants/grant_select_to_authenticated launchql-utils:schemas/public/schema launchql-ext-types:schemas/public/domains/url] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add extensions/include
 schemas/collaboration_private/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collaboration_private/schema
 schemas/collaboration_private/procedures/collaboration_actor_role_admin_owner_authorized_profiles [schemas/collaboration_private/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/collaboration_private/procedures/collaboration_actor_role_admin_owner_authorized_profiles
 schemas/projects_public/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/projects_public/schema

@@ -2,6 +2,6 @@
 comment = 'launchql projects'
 default_version = '0.0.1'
 module_pathname = '$libdir/launchql-projects'
-requires = 'plpgsql,uuid-ossp,citext,btree_gist,skitch-extension-default-roles,skitch-extension-defaults,skitch-extension-utils,skitch-extension-verify,launchql-roles,launchql-utils,launchql-types'
+requires = 'plpgsql,uuid-ossp,citext,btree_gist,launchql-ext-default-roles,launchql-ext-defaults,launchql-ext-utils,launchql-ext-verify,launchql-roles,launchql-utils,launchql-ext-types'
 relocatable = false
 superuser = false

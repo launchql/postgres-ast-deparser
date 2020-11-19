@@ -1,7 +1,0 @@
-%syntax-version=1.0.0
-%project=skitch-extension-default-roles
-%uri=skitch-extension-default-roles
-  
-roles/administrator/role [skitch-extension-verify:procedures/verify_view skitch-extension-defaults:defaults/public] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add roles/administrator/role
-roles/anonymous/role 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add roles/anonymous/role
-roles/authenticated/role 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add roles/authenticated/role

@@ -2,7 +2,7 @@
 %project=launchql-roles
 %uri=launchql-roles
   
-schemas/roles_public/schema [skitch-extension-defaults:defaults/public skitch-extension-default-roles:roles/authenticated/role skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view skitch-extension-jobs:schemas/app_jobs/triggers/tg__add_job_for_row launchql-utils:schemas/public/schema launchql-types:schemas/public/domains/url] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/roles_public/schema
+schemas/roles_public/schema [launchql-ext-defaults:defaults/public launchql-ext-default-roles:roles/authenticated/role launchql-ext-utils:procedures/tg_update_timestamps launchql-ext-verify:procedures/verify_view launchql-ext-jobs:schemas/app_jobs/triggers/tg__add_job_for_row launchql-utils:schemas/public/schema launchql-ext-types:schemas/public/domains/url] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/roles_public/schema
 schemas/roles_public/procedures/current_role_id [schemas/roles_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/roles_public/procedures/current_role_id
 procedures/tg_update_peoplestamps [schemas/roles_public/procedures/current_role_id] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add procedures/tg_update_peoplestamps
 schemas/auth_private/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/auth_private/schema

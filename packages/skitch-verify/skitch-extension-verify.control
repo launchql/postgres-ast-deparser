@@ -1,7 +1,0 @@
-# skitch-extension-verify extension
-comment = 'PostgreSQL verification utilities'
-default_version = '0.0.1'
-module_pathname = '$libdir/skitch-extension-verify'
-requires = 'plpgsql,uuid-ossp,skitch-extension-utils'
-relocatable = false
-superuser = false

@@ -2,7 +2,7 @@
 comment = 'launchql-content extension'
 default_version = '0.0.1'
 module_pathname = '$libdir/launchql-content'
-requires = 'plpgsql,uuid-ossp,pgcrypto,citext,launchql-projects,launchql-roles,launchql-utils,launchql-types,skitch-extension-default-roles,skitch-extension-defaults,skitch-extension-jobs,skitch-extension-utils,skitch-extension-verify'
+requires = 'plpgsql,uuid-ossp,pgcrypto,citext,launchql-projects,launchql-roles,launchql-utils,launchql-ext-types,launchql-ext-default-roles,launchql-ext-defaults,launchql-ext-jobs,launchql-ext-utils,launchql-ext-verify'
 relocatable = false
 superuser = false
   

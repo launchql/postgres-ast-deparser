@@ -2,6 +2,6 @@
 comment = 'launchql users'
 default_version = '0.0.1'
 module_pathname = '$libdir/launchql-roles'
-requires = 'plpgsql,pgcrypto,citext,uuid-ossp,skitch-extension-defaults,skitch-extension-default-roles,skitch-extension-utils,skitch-extension-verify,skitch-extension-jobs,launchql-utils,launchql-types'
+requires = 'plpgsql,pgcrypto,citext,uuid-ossp,launchql-ext-defaults,launchql-ext-default-roles,launchql-ext-utils,launchql-ext-verify,launchql-ext-jobs,launchql-utils,launchql-ext-types'
 relocatable = false
 superuser = false

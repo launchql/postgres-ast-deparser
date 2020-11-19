@@ -2,7 +2,7 @@
 %project=launchql-files
 %uri=launchql-files
   
-schemas/files_private/schema [launchql-projects:schemas/projects_public/tables/project/triggers/timestamps launchql-content:schemas/content_public/tables/tag/triggers/timestamps launchql-roles:schemas/status_public/tables/user_task/grants/grant_select_to_authenticated skitch-extension-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/files_private/schema
+schemas/files_private/schema [launchql-projects:schemas/projects_public/tables/project/triggers/timestamps launchql-content:schemas/content_public/tables/tag/triggers/timestamps launchql-roles:schemas/status_public/tables/user_task/grants/grant_select_to_authenticated launchql-ext-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/files_private/schema
 schemas/files_private/grants/grant_schema_to_authenticated [schemas/files_private/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/files_private/grants/grant_schema_to_authenticated
 schemas/files_public/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/files_public/schema
 schemas/files_public/grants/grant_schema_to_authenticated [schemas/files_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/files_public/grants/grant_schema_to_authenticated

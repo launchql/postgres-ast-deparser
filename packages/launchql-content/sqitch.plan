@@ -2,7 +2,7 @@
 %project=launchql-content
 %uri=launchql-content
   
-schemas/content_private/schema [launchql-projects:schemas/projects_public/tables/project/triggers/timestamps launchql-roles:schemas/status_public/tables/user_task/grants/grant_select_to_authenticated launchql-utils:schemas/public/schema launchql-types:schemas/public/domains/url skitch-extension-default-roles:roles/authenticated/role skitch-extension-defaults:defaults/public skitch-extension-jobs:schemas/app_jobs/triggers/tg__add_job_for_row skitch-extension-utils:procedures/tg_update_timestamps skitch-extension-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/content_private/schema
+schemas/content_private/schema [launchql-projects:schemas/projects_public/tables/project/triggers/timestamps launchql-roles:schemas/status_public/tables/user_task/grants/grant_select_to_authenticated launchql-utils:schemas/public/schema launchql-ext-types:schemas/public/domains/url launchql-ext-default-roles:roles/authenticated/role launchql-ext-defaults:defaults/public launchql-ext-jobs:schemas/app_jobs/triggers/tg__add_job_for_row launchql-ext-utils:procedures/tg_update_timestamps launchql-ext-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/content_private/schema
 schemas/content_public/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/content_public/schema
 schemas/content_public/tables/tag/table [schemas/content_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/content_public/tables/tag/table
 schemas/content_public/tables/content/table [schemas/content_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/content_public/tables/content/table
