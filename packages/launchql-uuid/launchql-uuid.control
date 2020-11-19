@@ -2,7 +2,7 @@
 comment = 'launchql-uuid extension'
 default_version = '0.0.1'
 module_pathname = '$libdir/launchql-uuid'
-requires = 'plpgsql,uuid-ossp,pgcrypto,hstore,launchql-ext-default-roles,launchql-ext-defaults,launchql-ext-jobs,launchql-ext-utils,launchql-ext-verify'
+requires = 'plpgsql,uuid-ossp,pgcrypto,hstore,launchql-ext-default-roles,launchql-ext-defaults,launchql-ext-utils,launchql-ext-verify'
 relocatable = false
 superuser = false
   

@@ -7,11 +7,11 @@ schemas/ast_constants/procedures/constants [schemas/ast_constants/schema] 2017-0
 schemas/ast_helpers/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_helpers/schema
 schemas/ast/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast/schema
 schemas/ast/procedures/types [schemas/ast/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast/procedures/types
-schemas/ast_helpers/procedures/helpers [schemas/ast_helpers/schema schemas/ast/procedures/types] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_helpers/procedures/helpers
+schemas/ast_helpers/procedures/smart_comments [schemas/ast_helpers/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_helpers/procedures/smart_comments
+schemas/ast_helpers/procedures/helpers [schemas/ast_helpers/schema schemas/ast/procedures/types schemas/ast_helpers/procedures/smart_comments] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_helpers/procedures/helpers
 schemas/ast_helpers/procedures/policy_templates [schemas/ast_helpers/schema schemas/ast_helpers/procedures/helpers] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_helpers/procedures/policy_templates
 schemas/ast_helpers/procedures/verify [schemas/ast_helpers/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_helpers/procedures/verify
 schemas/ast_utils/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_utils/schema
 schemas/ast_utils/procedures/utils [schemas/ast_utils/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_utils/procedures/utils
 schemas/deparser/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/deparser/schema
 schemas/deparser/procedures/deparse [schemas/deparser/schema schemas/ast_utils/procedures/utils schemas/ast_constants/procedures/constants] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/deparser/procedures/deparse
-schemas/ast_helpers/procedures/smart_comments [schemas/ast_helpers/schema] 2020-11-08T09:02:03Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/ast_helpers/procedures/smart_comments

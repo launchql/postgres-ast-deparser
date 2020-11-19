@@ -2,7 +2,7 @@
 %project=launchql-uuid
 %uri=launchql-uuid
   
-schemas/uuids/schema [launchql-ext-default-roles:roles/authenticated/role launchql-ext-defaults:defaults/public launchql-ext-jobs:schemas/app_jobs/triggers/tg__add_job_for_row launchql-ext-utils:procedures/tg_update_timestamps launchql-ext-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/uuids/schema
+schemas/uuids/schema [launchql-ext-default-roles:@0.0.5 launchql-ext-defaults:defaults/public launchql-ext-utils:procedures/tg_update_timestamps launchql-ext-verify:procedures/verify_view] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/uuids/schema
 schemas/uuids/procedures/pseudo_order_seed_uuid [schemas/uuids/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/uuids/procedures/pseudo_order_seed_uuid
 schemas/uuids/procedures/pseudo_order_uuid [schemas/uuids/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/uuids/procedures/pseudo_order_uuid
 schemas/uuids/procedures/trigger_set_uuid_related_field [schemas/uuids/schema schemas/uuids/procedures/pseudo_order_seed_uuid] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/uuids/procedures/trigger_set_uuid_related_field

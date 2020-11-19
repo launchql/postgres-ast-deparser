@@ -1,9 +1,0 @@
-%syntax-version=1.0.0
-%project=launchql-website
-%uri=launchql-website
-  
-schemas/website_private/schema [launchql-ext-defaults:defaults/public launchql-ext-default-roles:roles/authenticated/role launchql-ext-utils:procedures/tg_update_timestamps launchql-ext-verify:procedures/verify_view launchql-ext-jobs:schemas/app_jobs/triggers/tg__add_job_for_row launchql-utils:schemas/public/schema launchql-ext-types:schemas/public/domains/url] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/website_private/schema
-schemas/website_private/tables/contact_form_message/table [schemas/website_private/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/website_private/tables/contact_form_message/table
-schemas/website_private/tables/contact_form_message/triggers/timestamps [schemas/website_private/schema schemas/website_private/tables/contact_form_message/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/website_private/tables/contact_form_message/triggers/timestamps
-schemas/website_public/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/website_public/schema
-schemas/website_public/procedures/submit_contact_form [schemas/website_public/schema schemas/website_private/tables/contact_form_message/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/website_public/procedures/submit_contact_form
