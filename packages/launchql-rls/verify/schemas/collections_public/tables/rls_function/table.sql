@@ -1,1 +1,0 @@
--- Verify schemas/collections_public/tables/rls_function/table  on pg

@@ -1,1 +1,0 @@
--- Revert schemas/collections_public/tables/table_grant/table from pg

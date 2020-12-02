@@ -1,1 +1,0 @@
--- Revert schemas/collections_public/tables/trigger_function/table from pg

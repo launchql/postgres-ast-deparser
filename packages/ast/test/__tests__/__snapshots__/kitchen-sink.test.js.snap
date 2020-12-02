@@ -14112,6 +14112,32 @@ CREATE RULE log_shoelace AS ON UPDATE TO shoelace_data WHERE new.sl_avail <> old
 CREATE RULE shoelace_ins AS ON INSERT TO shoelace DO INSTEAD INSERT INTO shoelace_data VALUES (new.sl_name, new.sl_avail, new.sl_color, new.sl_len, new.sl_unit);"
 `;
 
+exports[`kitchen sink select 1`] = `
+"WITH regional_sales AS (SELECT region,
+sum(amount) AS total_sales FROM orders GROUP BY region), top_regions AS (SELECT region FROM regional_sales WHERE total_sales > (SELECT sum(total_sales) / 10 FROM regional_sales)) SELECT region,
+product,
+sum(quantity) AS product_units,
+sum(amount) AS product_sales FROM orders WHERE region IN (SELECT region FROM top_regions) GROUP BY region,
+product;
+WITH chars2bits AS (SELECT \\"character\\",
+(index - 1)::bit(5)::text AS index FROM unnest('{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,2,3,4,5,6,7}'::text[]) WITH ORDINALITY AS t (\\"character\\", index)) SELECT string_agg(c.index, '') FROM regexp_split_to_table('abcde', '') AS s INNER JOIN chars2bits AS c ON s = c.\\"character\\";
+SELECT \\"character\\",
+(index - 1)::bit(5)::text AS index FROM unnest('{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,2,3,4,5,6,7}'::text[]) WITH ORDINALITY AS t (\\"character\\", index);"
+`;
+
+exports[`kitchen sink select 2`] = `
+"WITH regional_sales AS (SELECT region,
+sum(amount) AS total_sales FROM orders GROUP BY region), top_regions AS (SELECT region FROM regional_sales WHERE total_sales > (SELECT sum(total_sales) / 10 FROM regional_sales)) SELECT region,
+product,
+sum(quantity) AS product_units,
+sum(amount) AS product_sales FROM orders WHERE region IN (SELECT region FROM top_regions) GROUP BY region,
+product;
+WITH chars2bits AS (SELECT character,
+(index - 1)::bit(5)::text AS index FROM unnest('{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,2,3,4,5,6,7}'::text[]) WITH ORDINALITY AS t(character, index)) SELECT string_agg(c.index, '') FROM regexp_split_to_table('abcde', '') AS s INNER JOIN chars2bits AS c ON s = c.character;
+SELECT character,
+(index - 1)::bit(5)::text AS index FROM unnest('{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,2,3,4,5,6,7}'::text[]) WITH ORDINALITY AS t(character, index);"
+`;
+
 exports[`kitchen sink sequences 1`] = `
 "CREATE SEQUENCE foo.bar;
 CREATE SEQUENCE mysequence increment 5 start 100;

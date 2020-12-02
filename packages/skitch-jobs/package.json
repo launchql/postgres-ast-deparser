@@ -1,6 +1,0 @@
-{
-  "name": "skitch-extension-jobs",
-  "version": "0.0.1",
-  "description": "An asynchronous job queue schema for ACID compliant job creation",
-  "author": "Dan Lynch <pyramation@gmail.com>"
-}

@@ -33,10 +33,14 @@ all:
 dump:
 	lql dump --deps --project dbs --path $(WEBINC_PATH)/services/packages/graphql-server-service/bootstrap/app.sql
 
+seed:
+	createdb launchql
+	lql deploy --recursive --database launchql --yes --project db_modules
+	lql deploy --recursive --database launchql --yes --project lql-svc-local
+
 deploy:
 	@echo lql deploy --recursive --createdb --yes --project dbs --database launchql-db
-	@echo lql deploy --recursive --createdb --yes --project ast --database ast-db
-	@echo lql deploy --recursive --createdb --yes --project launchql-rls --database ast-db
+	@echo lql deploy --recursive --createdb --yes --project db_modules --database webinc-db
 
 generate:
 	@cd packages/db_text && ./generate/generate.js

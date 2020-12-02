@@ -1,1 +1,0 @@
--- Revert schemas/collections_public/tables/full_text_search/table from pg

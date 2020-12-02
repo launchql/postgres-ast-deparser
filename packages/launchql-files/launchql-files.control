@@ -1,8 +1,0 @@
-# launchql-files extension
-comment = 'launchql-files extension'
-default_version = '0.0.1'
-module_pathname = '$libdir/launchql-files'
-requires = 'plpgsql,uuid-ossp,launchql-projects,launchql-content,launchql-roles,skitch-extension-verify'
-relocatable = false
-superuser = false
-  
