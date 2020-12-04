@@ -1,8 +1,0 @@
-# casing extension
-comment = 'casing extension'
-default_version = '0.0.1'
-module_pathname = '$libdir/casing'
-requires = 'plpgsql,unaccent,launchql-ext-utils,launchql-ext-verify'
-relocatable = false
-superuser = false
-  
