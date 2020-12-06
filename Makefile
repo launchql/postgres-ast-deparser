@@ -38,6 +38,10 @@ seed:
 	# lql deploy --recursive --database launchql --yes --project db_modules
 	lql deploy --recursive --database launchql --yes --project lql-svc-local
 
+mods:
+	createdb db-mods
+	lql deploy --recursive --database db-mods --yes --project launchql-meta-modules
+
 deploy:
 	@echo lql deploy --recursive --createdb --yes --project dbs --database launchql-db
 	@echo lql deploy --recursive --createdb --yes --project db_modules --database webinc-db

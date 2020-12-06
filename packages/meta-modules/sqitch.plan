@@ -1,0 +1,13 @@
+%syntax-version=1.0.0
+%project=launchql-meta-modules
+%uri=launchql-meta-modules
+  
+schemas/meta_public/schema 2020-12-06T10:17:56Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/meta_public/schema
+schemas/meta_private/schema 2020-12-06T10:18:03Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/meta_private/schema
+schemas/meta_public/tables/apis/table [schemas/meta_public/schema] 2020-12-06T10:19:23Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/meta_public/tables/apis/table
+schemas/meta_public/tables/sites/table [schemas/meta_public/schema] 2020-12-06T10:19:33Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/meta_public/tables/sites/table
+schemas/meta_public/tables/jobs_module/table [schemas/meta_public/schema] 2020-12-06T10:22:48Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/meta_public/tables/jobs_module/table
+schemas/meta_public/tables/default_ids_module/table [schemas/meta_public/schema] 2020-12-06T10:23:30Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/meta_public/tables/default_ids_module/table
+schemas/meta_public/tables/users_module/table [schemas/meta_public/schema] 2020-12-06T10:23:45Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/meta_public/tables/users_module/table
+schemas/meta_public/tables/rls_module/table [schemas/meta_public/schema] 2020-12-06T10:33:47Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/meta_public/tables/rls_module/table
+schemas/meta_public/tables/user_auth_module/table [schemas/meta_public/schema] 2020-12-06T10:37:07Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/meta_public/tables/user_auth_module/table
