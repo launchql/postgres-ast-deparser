@@ -1,4 +1,24 @@
-# start the postgres db process
+# LaunchQL 
+
+## API info
+
+If you're on the mobile dev team, this is probably useful!
+
+* [API info](docs/readme.md)
+
+## Cloud Functions
+
+* [Cloud Functions](docs/cloud-fns.md)
+
+* [Cloud Functions Quickstart](docs/cloud-functions-quickstart.md)
+
+## postgres
+
+* [Postgres Testing](docs/postgres.md)
+
+# Development
+
+## start the postgres db process
 
 First you'll want to start the postgres docker (you can also just use `docker-compose up -d`):
 
@@ -6,7 +26,7 @@ First you'll want to start the postgres docker (you can also just use `docker-co
 make up
 ```
 
-# install modules
+## install modules
 
 Install modules
 
@@ -14,7 +34,7 @@ Install modules
 yarn install
 ```
 
-# install the Postgres extensions
+## install the Postgres extensions
 
 Now that the postgres process is running, install the extensions:
 
@@ -24,7 +44,7 @@ make install
 
 This basically `ssh`s into the postgres instance with the `packages/` folder mounted as a volume, and installs the bundled sql code as pgxn extensions.
 
-# testing
+## testing
 
 Testing will load all your latest sql changes and create fresh, populated databases for each sqitch module in `packages/`.
 
@@ -32,7 +52,7 @@ Testing will load all your latest sql changes and create fresh, populated databa
 yarn test:watch
 ```
 
-# building new modules
+## building new modules
 
 Create a new folder in `packages/`
 
@@ -53,11 +73,11 @@ lql generate schema --schema myschema
 lql generate table --schema myschema --table mytable
 ```
 
-# deploy code as extensions
+## deploy code as extensions
 
 `cd` into `packages/<module>`, and run `lql package`. This will make an sql file in `packages/<module>/sql/` used for `CREATE EXTENSION` calls to install your sqitch module as an extension.
 
-# recursive deploy
+## recursive deploy
 
 You can also deploy all modules utilizing versioning as sqtich modules. Remove `--createdb` if you already created your db:
 
