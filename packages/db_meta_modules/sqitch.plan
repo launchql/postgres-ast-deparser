@@ -1,0 +1,10 @@
+%syntax-version=1.0.0
+%project=db_meta_modules
+%uri=db_meta_modules
+  
+schemas/meta_private/schema [db_meta:schemas/meta_public/tables/site_themes/table] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/meta_private/schema
+schemas/meta_public/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/meta_public/schema
+schemas/meta_public/tables/apis/table [schemas/meta_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/meta_public/tables/apis/table
+schemas/meta_public/tables/rls_module/table [schemas/meta_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/meta_public/tables/rls_module/table
+schemas/meta_public/tables/sites/table [schemas/meta_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/meta_public/tables/sites/table
+schemas/meta_public/tables/user_auth_module/table [schemas/meta_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/meta_public/tables/user_auth_module/table
