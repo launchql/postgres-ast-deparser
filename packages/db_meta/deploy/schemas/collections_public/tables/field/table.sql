@@ -54,4 +54,6 @@ CREATE TABLE collections_public.field (
   UNIQUE (table_id, name)
 );
 
+CREATE INDEX field_database_id_idx ON collections_public.field ( database_id );
+
 COMMIT;

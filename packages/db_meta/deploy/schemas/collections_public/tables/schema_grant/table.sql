@@ -12,4 +12,6 @@ CREATE TABLE collections_public.schema_grant (
     grantee_name text NOT NULL
 );
 
+CREATE INDEX schema_grant_database_id_idx ON collections_public.schema_grant ( database_id );
+
 COMMIT;

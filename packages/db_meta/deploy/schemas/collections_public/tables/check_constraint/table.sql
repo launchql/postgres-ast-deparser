@@ -18,4 +18,6 @@ CREATE TABLE collections_public.check_constraint (
   CHECK (field_ids <> '{}')
 );
 
+CREATE INDEX check_constraint_database_id_idx ON collections_public.check_constraint ( database_id );
+
 COMMIT;

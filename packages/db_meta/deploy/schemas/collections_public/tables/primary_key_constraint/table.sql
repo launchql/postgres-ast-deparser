@@ -15,4 +15,6 @@ CREATE TABLE collections_public.primary_key_constraint (
   CHECK (field_ids <> '{}')
 );
 
+CREATE INDEX primary_key_constraint_database_id_idx ON collections_public.primary_key_constraint ( database_id );
+
 COMMIT;

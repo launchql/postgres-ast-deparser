@@ -25,4 +25,6 @@ CREATE TABLE collections_public.policy (
   UNIQUE (table_id, name)
 );
 
+CREATE INDEX policy_database_id_idx ON collections_public.policy ( database_id );
+
 COMMIT;

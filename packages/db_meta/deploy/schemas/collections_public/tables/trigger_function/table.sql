@@ -13,4 +13,6 @@ CREATE TABLE collections_public.trigger_function (
   UNIQUE (database_id, name)
 );
 
+CREATE INDEX trigger_function_database_id_idx ON collections_public.trigger_function ( database_id );
+
 COMMIT;

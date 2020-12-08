@@ -26,5 +26,7 @@ CREATE TABLE collections_public.table (
 ALTER TABLE collections_public.table ADD COLUMN
     inherits_id uuid NULL REFERENCES collections_public.table(id);
 
+CREATE INDEX table_database_id_idx ON collections_public.table ( database_id );
+
 COMMIT;
 

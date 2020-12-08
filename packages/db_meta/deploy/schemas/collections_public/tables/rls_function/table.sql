@@ -18,4 +18,6 @@ CREATE TABLE collections_public.rls_function (
   UNIQUE (database_id, name)
 );
 
+CREATE INDEX rls_function_database_id_idx ON collections_public.rls_function ( database_id );
+
 COMMIT;

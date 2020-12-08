@@ -24,4 +24,6 @@ CREATE TABLE collections_public.foreign_key_constraint (
     CHECK (ref_field_ids <> '{}')
 );
 
+CREATE INDEX foreign_key_constraint_database_id_idx ON collections_public.foreign_key_constraint ( database_id );
+
 COMMIT;

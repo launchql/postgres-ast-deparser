@@ -15,4 +15,6 @@ CREATE TABLE collections_public.table_grant (
     unique(table_id, privilege, role_name)
 );
 
+CREATE INDEX table_grant_database_id_idx ON collections_public.table_grant ( database_id );
+
 COMMIT;

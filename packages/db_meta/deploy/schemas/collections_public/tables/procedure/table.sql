@@ -22,4 +22,6 @@ CREATE TABLE collections_public.procedure (
   UNIQUE (database_id, name)
 );
 
+CREATE INDEX procedure_database_id_idx ON collections_public.procedure ( database_id );
+
 COMMIT;

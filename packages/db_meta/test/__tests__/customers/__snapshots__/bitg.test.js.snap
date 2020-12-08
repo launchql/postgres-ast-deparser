@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`bitg db 1`] = `"abcde"`;
-
-exports[`bitg db 2`] = `"abcdef"`;
-
-exports[`bitg db 3`] = `"halo"`;

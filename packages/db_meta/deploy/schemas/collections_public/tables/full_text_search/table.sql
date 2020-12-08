@@ -15,4 +15,6 @@ CREATE TABLE collections_public.full_text_search (
     CHECK (cardinality(field_ids) = cardinality(weights) AND cardinality(weights) = cardinality(langs))
 );
 
+CREATE INDEX full_text_search_database_id_idx ON collections_public.full_text_search ( database_id );
+
 COMMIT;

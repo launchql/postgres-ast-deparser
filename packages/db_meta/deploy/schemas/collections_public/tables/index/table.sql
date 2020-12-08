@@ -17,4 +17,6 @@ CREATE TABLE collections_public.index (
   UNIQUE (database_id, name)
 );
 
+CREATE INDEX index_database_id_idx ON collections_public.index ( database_id );
+
 COMMIT;

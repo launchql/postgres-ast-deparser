@@ -17,4 +17,6 @@ CREATE TABLE collections_public.trigger (
   UNIQUE(table_id, name)
 );
 
+CREATE INDEX trigger_database_id_idx ON collections_public.trigger ( database_id );
+
 COMMIT;

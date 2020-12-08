@@ -1,7 +1,7 @@
 {
-  "name": "dbs",
+  "name": "db_meta",
   "version": "0.0.1",
-  "description": "dbs",
+  "description": "db_meta",
   "author": "Dan Lynch <pyramation@gmail.com>",
   "private": true,
   "scripts": {

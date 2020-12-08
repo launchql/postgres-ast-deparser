@@ -21,4 +21,6 @@ CREATE TABLE collections_public.schema (
 ALTER TABLE collections_public.schema
   ADD CONSTRAINT schema_namechk CHECK (char_length(name) > 2);
 
+CREATE INDEX schema_database_id_idx ON collections_public.schema ( database_id );
+
 COMMIT;

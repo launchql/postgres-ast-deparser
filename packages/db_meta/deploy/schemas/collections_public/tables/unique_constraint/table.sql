@@ -21,4 +21,6 @@ CREATE TABLE collections_public.unique_constraint (
   CHECK (field_ids <> '{}')
 );
 
+CREATE INDEX unique_constraint_database_id_idx ON collections_public.unique_constraint ( database_id );
+
 COMMIT;
