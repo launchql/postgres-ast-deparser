@@ -1,0 +1,213 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`email invites signs in and registers token 1`] = `
+Object {
+  "created_at": "[DATE]",
+  "email": "dan@3daet.com",
+  "expires_at": "[DATE]",
+  "id": "[ID]",
+  "invite_count": 0,
+  "invite_limit": -1,
+  "invite_token": "[token]",
+  "invite_valid": true,
+  "multiple": false,
+  "sender_id": "[ID]",
+}
+`;
+
+exports[`email invites signs in and registers token 2`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "id": "[ID]",
+    "receiver_id": "[ID]",
+    "sender_id": "[ID]",
+  },
+]
+`;
+
+exports[`email invites signs in and registers token after its expired 1`] = `
+Object {
+  "created_at": "[DATE]",
+  "email": "dan@3daet.com",
+  "expires_at": "[DATE]",
+  "id": "[ID]",
+  "invite_count": 0,
+  "invite_limit": -1,
+  "invite_token": "[token]",
+  "invite_valid": true,
+  "multiple": false,
+  "sender_id": "[ID]",
+}
+`;
+
+exports[`email invites signs in and registers token with wrong email 1`] = `
+Object {
+  "created_at": "[DATE]",
+  "email": "dan@3daet.com",
+  "expires_at": "[DATE]",
+  "id": "[ID]",
+  "invite_count": 0,
+  "invite_limit": -1,
+  "invite_token": "[token]",
+  "invite_valid": true,
+  "multiple": false,
+  "sender_id": "[ID]",
+}
+`;
+
+exports[`multiple invites hit invite limit 1`] = `
+Object {
+  "created_at": "[DATE]",
+  "email": null,
+  "expires_at": "[DATE]",
+  "id": "[ID]",
+  "invite_count": 0,
+  "invite_limit": 3,
+  "invite_token": "[token]",
+  "invite_valid": true,
+  "multiple": true,
+  "sender_id": "[ID]",
+}
+`;
+
+exports[`multiple invites hit invite limit 2`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "id": "[ID]",
+    "receiver_id": "[ID]",
+    "sender_id": "[ID]",
+  },
+]
+`;
+
+exports[`multiple invites hit invite limit 3`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "id": "[ID]",
+    "receiver_id": "[ID]",
+    "sender_id": "[ID]",
+  },
+]
+`;
+
+exports[`multiple invites hit invite limit 4`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "id": "[ID]",
+    "receiver_id": "[ID]",
+    "sender_id": "[ID]",
+  },
+]
+`;
+
+exports[`multiple invites hit invite limit 5`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "email": null,
+    "expires_at": "[DATE]",
+    "id": "[ID]",
+    "invite_count": 3,
+    "invite_limit": 3,
+    "invite_token": "[token]",
+    "invite_valid": true,
+    "multiple": true,
+    "sender_id": "[ID]",
+  },
+]
+`;
+
+exports[`multiple invites signs in and registers token 1`] = `
+Object {
+  "created_at": "[DATE]",
+  "email": null,
+  "expires_at": "[DATE]",
+  "id": "[ID]",
+  "invite_count": 0,
+  "invite_limit": 3,
+  "invite_token": "[token]",
+  "invite_valid": true,
+  "multiple": true,
+  "sender_id": "[ID]",
+}
+`;
+
+exports[`multiple invites signs in and registers token 2`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "id": "[ID]",
+    "receiver_id": "[ID]",
+    "sender_id": "[ID]",
+  },
+]
+`;
+
+exports[`multiple invites signs in and registers token 3`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "id": "[ID]",
+    "receiver_id": "[ID]",
+    "sender_id": "[ID]",
+  },
+]
+`;
+
+exports[`multiple invites signs in and registers token 4`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "id": "[ID]",
+    "receiver_id": "[ID]",
+    "sender_id": "[ID]",
+  },
+]
+`;
+
+exports[`multiple invites signs in and registers token 5`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "email": null,
+    "expires_at": "[DATE]",
+    "id": "[ID]",
+    "invite_count": 3,
+    "invite_limit": 3,
+    "invite_token": "[token]",
+    "invite_valid": true,
+    "multiple": true,
+    "sender_id": "[ID]",
+  },
+]
+`;
+
+exports[`single blank invites signs in and registers token 1`] = `
+Object {
+  "created_at": "[DATE]",
+  "email": null,
+  "expires_at": "[DATE]",
+  "id": "[ID]",
+  "invite_count": 0,
+  "invite_limit": -1,
+  "invite_token": "[token]",
+  "invite_valid": true,
+  "multiple": false,
+  "sender_id": "[ID]",
+}
+`;
+
+exports[`single blank invites signs in and registers token 2`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "id": "[ID]",
+    "receiver_id": "[ID]",
+    "sender_id": "[ID]",
+  },
+]
+`;

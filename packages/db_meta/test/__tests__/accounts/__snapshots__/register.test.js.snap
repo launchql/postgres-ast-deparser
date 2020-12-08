@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`email exists 1`] = `
+Array [
+  Object {
+    "email": "pyramation@gmail.com",
+    "id": "[ID]",
+    "is_verified": false,
+    "user_id": "[ID]",
+  },
+]
+`;
+
+exports[`login 1`] = `
+Array [
+  Object {
+    "access_token": "[token]",
+    "access_token_expires_at": "[DATE]",
+    "id": "[ID]",
+    "user_id": "[ID]",
+  },
+]
+`;
+
+exports[`register user 1`] = `
+Object {
+  "access_token": "[token]",
+  "access_token_expires_at": "[DATE]",
+  "id": "[ID]",
+  "user_id": "[ID]",
+}
+`;

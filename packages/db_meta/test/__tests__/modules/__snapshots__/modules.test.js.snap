@@ -1,0 +1,179 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create_serial_table_module 1`] = `
+Object {
+  "id": 3,
+}
+`;
+
+exports[`crypto_module 1`] = `
+Object {
+  "crypto_network": "BITG",
+  "schema": "[schemahash]",
+  "sign_in_record_failure": "sign_in_record_failure",
+  "sign_in_request_challenge": "sign_in_request_challenge",
+  "sign_in_with_challenge": "sign_in_with_challenge",
+  "sign_up_unique_key": "sign_up_with_bitg_address",
+  "user_field": "bitg_address",
+}
+`;
+
+exports[`emails_module 1`] = `
+Object {
+  "emails_table": "emails",
+  "table_id": "[ID]",
+}
+`;
+
+exports[`encrypted_secrets_encrypt_field_module 1`] = `"hello-encryption"`;
+
+exports[`encrypted_secrets_encrypt_field_module 2`] = `"hello-encryption"`;
+
+exports[`encrypted_secrets_module 1`] = `
+Object {
+  "encrypt_schema": "[schemahash]",
+  "secrets_table": "encrypted_secrets",
+  "table_id": "[ID]",
+  "upsert_schema": "[schemahash]",
+}
+`;
+
+exports[`encrypted_secrets_utils_module 1`] = `
+Object {
+  "encrypted_schema": "[schemahash]",
+}
+`;
+
+exports[`immutable_field_module 1`] = `
+Array [
+  Object {
+    "id": 1,
+    "null_on_insert": null,
+    "value_on_insert": "test-immutable",
+  },
+]
+`;
+
+exports[`immutable_field_module 2`] = `
+Array [
+  Object {
+    "id": 1,
+    "null_on_insert": "updated-value",
+    "value_on_insert": "test-immutable",
+  },
+]
+`;
+
+exports[`immutable_field_utils_module 1`] = `
+Object {
+  "trigger_function": "immutable_field_tg",
+  "trigger_schema": "[schemahash]",
+}
+`;
+
+exports[`invites_module 1`] = `
+Object {
+  "claimed_invites_table": "claimed_invites",
+  "invites_schema": "[schemahash]",
+  "invites_table": "invites",
+}
+`;
+
+exports[`jobs_module 1`] = `
+Object {
+  "jobs_schema": "[schemahash]",
+}
+`;
+
+exports[`jobs_trigger_module 1`] = `
+Object {
+  "event_type": "INSERT",
+  "table_id": "[ID]",
+  "trigger_function": "tg_add_job_with_row",
+  "trigger_name": "jobs_trigger_table_insert_job_tg",
+}
+`;
+
+exports[`list deps 1`] = `
+Array [
+  "crypto_auth_module",
+  "secrets_module",
+  "tokens_module",
+  "users_module",
+]
+`;
+
+exports[`peoplestamps 1`] = `
+Object {
+  "created_by_column": "updated_by",
+  "trigger_name": "tg_peoplestamps",
+  "trigger_schema": "[schemahash]",
+  "updated_by_column": "created_by",
+}
+`;
+
+exports[`peoplestamps table 1`] = `Object {}`;
+
+exports[`rls 1`] = `
+Object {
+  "authenticate": "authenticate",
+  "authenticate_schema": "[schemahash]",
+  "current_group_ids": "current_group_ids",
+  "current_role": "current_user",
+  "current_role_id": "[ID]",
+  "role_schema": "[schemahash]",
+}
+`;
+
+exports[`secrets_module 1`] = `
+Object {
+  "secrets_schema": "[schemahash]",
+  "secrets_table": "user_secrets",
+  "table_id": "[ID]",
+}
+`;
+
+exports[`timestamps 1`] = `
+Object {
+  "created_at_column": "created_at",
+  "trigger_name": "tg_timestamps",
+  "trigger_schema": "[schemahash]",
+  "updated_at_column": "updated_at",
+}
+`;
+
+exports[`timestamps table 1`] = `Object {}`;
+
+exports[`tokens_module 1`] = `
+Object {
+  "table_id": "[ID]",
+}
+`;
+
+exports[`user_auth_module 1`] = `
+Object {
+  "auth_schema": "[schemahash]",
+  "forgot_password": "forgot_password",
+  "reset_password": "reset_password",
+  "send_verification_email": "send_verification_email",
+  "set_password": "set_password",
+  "sign_in": "login",
+  "sign_up": "register",
+  "verify_email": "verify_email",
+}
+`;
+
+exports[`users_modules 1`] = `
+Object {
+  "table_id": "[ID]",
+}
+`;
+
+exports[`uuid_module 1`] = `
+Object {
+  "seeded_uuid_function": "uuid_generate_v4",
+  "seeded_uuid_function_with_args": "uuid_generate_seeded_uuid",
+  "seeded_uuid_related_trigger": "seeded_uuid_related_trigger",
+  "uuid_schema": "[schemahash]",
+}
+`;

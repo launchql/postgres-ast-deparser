@@ -1,0 +1,132 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` 1`] = `"(((verified = false) AND (user_id = \\"app_public\\".get_current_user_id())) OR (verifier_id = \\"app_public\\".get_current_user_id()))"`;
+
+exports[`create actions with tags 1`] = `
+Array [
+  Object {
+    "activity_feed_text": null,
+    "already_completed_action_text": null,
+    "approved": false,
+    "call_to_action": null,
+    "completed_action_text": null,
+    "created_at": "[DATE]",
+    "created_by": "[peoplestamp]",
+    "description": "here is the action you wanted",
+    "discovery_description": null,
+    "discovery_header": null,
+    "enable_notifications": false,
+    "enable_notifications_text": null,
+    "end_date": null,
+    "id": "[ID]",
+    "location": null,
+    "location_radius": null,
+    "owner_id": "[ID]",
+    "photo": null,
+    "reward_amount": null,
+    "search": "'action':6B,8A,12C 'appl':1B 'apples':3A 'my':7A 'orang':2B 'oranges':4A 'want':14C",
+    "slug": "my-action",
+    "start_date": null,
+    "tags": "{apples,oranges}",
+    "time_required": null,
+    "title": "My Action",
+    "updated_at": "[DATE]",
+    "updated_by": "[peoplestamp]",
+  },
+]
+`;
+
+exports[`create actions without tags 1`] = `
+Array [
+  Object {
+    "activity_feed_text": null,
+    "already_completed_action_text": null,
+    "approved": false,
+    "call_to_action": null,
+    "completed_action_text": null,
+    "created_at": "[DATE]",
+    "created_by": "[peoplestamp]",
+    "description": "cheers to the future",
+    "discovery_description": null,
+    "discovery_header": null,
+    "enable_notifications": false,
+    "enable_notifications_text": null,
+    "end_date": null,
+    "id": "[ID]",
+    "location": null,
+    "location_radius": null,
+    "owner_id": "[ID]",
+    "photo": null,
+    "reward_amount": null,
+    "search": "'a':5A 'cheer':7C 'futur':10C 'step':3B,6A 'take':1B,4A",
+    "slug": "heaven-is-here",
+    "start_date": null,
+    "tags": null,
+    "time_required": null,
+    "title": "take a step",
+    "updated_at": "[DATE]",
+    "updated_by": "[peoplestamp]",
+  },
+]
+`;
+
+exports[`get settings 1`] = `
+Array [
+  Object {
+    "created_at": "[DATE]",
+    "created_by": "[peoplestamp]",
+    "first_name": null,
+    "id": "[ID]",
+    "last_name": null,
+    "location": "0101000020E6100000355EBA490C9E5D40AE47E17A14FE4040",
+    "search_radius": null,
+    "updated_at": "[DATE]",
+    "updated_by": "[peoplestamp]",
+    "user_id": "[ID]",
+    "zip": null,
+  },
+]
+`;
+
+exports[`register user 1`] = `
+Object {
+  "access_token": "[token]",
+  "access_token_expires_at": "[DATE]",
+  "id": "[ID]",
+  "user_id": "[ID]",
+}
+`;
+
+exports[`register user 2`] = `
+Object {
+  "access_token": "[token]",
+  "access_token_expires_at": "[DATE]",
+  "id": "[ID]",
+  "user_id": "[ID]",
+}
+`;
+
+exports[`register user 3`] = `
+Object {
+  "access_token": "[token]",
+  "access_token_expires_at": "[DATE]",
+  "id": "[ID]",
+  "user_id": "[ID]",
+}
+`;
+
+exports[`set lat/lng 1`] = `
+Object {
+  "created_at": "[DATE]",
+  "created_by": "[peoplestamp]",
+  "first_name": null,
+  "id": "[ID]",
+  "last_name": null,
+  "location": "0101000020E6100000355EBA490C9E5D40AE47E17A14FE4040",
+  "search_radius": null,
+  "updated_at": "[DATE]",
+  "updated_by": "[peoplestamp]",
+  "user_id": "[ID]",
+  "zip": null,
+}
+`;

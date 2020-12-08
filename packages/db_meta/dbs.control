@@ -1,0 +1,8 @@
+# dbs extension
+comment = 'dbs extension'
+default_version = '0.0.1'
+module_pathname = '$libdir/dbs'
+requires = 'ast,ast_actions,citext,db_migrate,db_utils,hstore,inflection_db,launchql-inflection,launchql-ext-jobs,launchql-meta,launchql-ext-services,launchql-ext-types,launchql-uuid,objects,pgcrypto,plpgsql,postgis,launchql-ext-default-roles,launchql-ext-defaults,launchql-ext-utils,launchql-ext-verify,unique-names,uuid-ossp'
+relocatable = false
+superuser = false
+  

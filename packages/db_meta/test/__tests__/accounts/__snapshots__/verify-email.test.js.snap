@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`send_verification_email after min duration between new tokens 1`] = `
+Object {
+  "attempts": 0,
+  "created_at": "[DATE]",
+  "id": "[ID]",
+  "key": null,
+  "last_error": null,
+  "locked_at": null,
+  "locked_by": null,
+  "max_attempts": 25,
+  "payload": Object {
+    "email": "pyramation@gmail.com",
+    "email_id": "[ID]",
+    "verification_token": "[token]",
+  },
+  "priority": 0,
+  "queue_name": null,
+  "run_at": "[DATE]",
+  "task_identifier": "user_emails__send_verification",
+  "updated_at": "[DATE]",
+}
+`;
+
+exports[`send_verification_email before min duration between emails 1`] = `
+Object {
+  "attempts": 0,
+  "created_at": "[DATE]",
+  "id": "[ID]",
+  "key": null,
+  "last_error": null,
+  "locked_at": null,
+  "locked_by": null,
+  "max_attempts": 25,
+  "payload": Object {
+    "email": "pyramation@gmail.com",
+    "email_id": "[ID]",
+    "verification_token": "[token]",
+  },
+  "priority": 0,
+  "queue_name": null,
+  "run_at": "[DATE]",
+  "task_identifier": "user_emails__send_verification",
+  "updated_at": "[DATE]",
+}
+`;
+
+exports[`send_verification_email before min duration between new tokens 1`] = `
+Object {
+  "attempts": 0,
+  "created_at": "[DATE]",
+  "id": "[ID]",
+  "key": null,
+  "last_error": null,
+  "locked_at": null,
+  "locked_by": null,
+  "max_attempts": 25,
+  "payload": Object {
+    "email": "pyramation@gmail.com",
+    "email_id": "[ID]",
+    "verification_token": "[token]",
+  },
+  "priority": 0,
+  "queue_name": null,
+  "run_at": "[DATE]",
+  "task_identifier": "user_emails__send_verification",
+  "updated_at": "[DATE]",
+}
+`;
+
+exports[`send_verification_email verify after expires 1`] = `
+Object {
+  "attempts": 0,
+  "created_at": "[DATE]",
+  "id": "[ID]",
+  "key": null,
+  "last_error": null,
+  "locked_at": null,
+  "locked_by": null,
+  "max_attempts": 25,
+  "payload": Object {
+    "email": "pyramation@gmail.com",
+    "email_id": "[ID]",
+    "verification_token": "[token]",
+  },
+  "priority": 0,
+  "queue_name": null,
+  "run_at": "[DATE]",
+  "task_identifier": "user_emails__send_verification",
+  "updated_at": "[DATE]",
+}
+`;
+
+exports[`send_verification_email within range 1`] = `
+Object {
+  "attempts": 0,
+  "created_at": "[DATE]",
+  "id": "[ID]",
+  "key": null,
+  "last_error": null,
+  "locked_at": null,
+  "locked_by": null,
+  "max_attempts": 25,
+  "payload": Object {
+    "email": "pyramation@gmail.com",
+    "email_id": "[ID]",
+    "verification_token": "[token]",
+  },
+  "priority": 0,
+  "queue_name": null,
+  "run_at": "[DATE]",
+  "task_identifier": "user_emails__send_verification",
+  "updated_at": "[DATE]",
+}
+`;

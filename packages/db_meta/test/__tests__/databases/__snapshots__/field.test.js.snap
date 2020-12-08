@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can add tags to fields 1`] = `"Customer Profile Image"`;
+
+exports[`can add tags to fields 2`] = `
+"@mimetypes image/jpg
+@mimetypes image/png
+@attachment
+Customer Profile Image"
+`;
+
+exports[`can create an array field 1`] = `
+Object {
+  "chk": null,
+  "chk_expr": null,
+  "created_at": "[DATE]",
+  "database_id": "[ID]",
+  "default_value": null,
+  "description": null,
+  "field_order": 2,
+  "id": "[ID]",
+  "is_hidden": false,
+  "is_required": false,
+  "max": null,
+  "min": null,
+  "name": "tags",
+  "regexp": null,
+  "smart_tags": null,
+  "table_id": "[ID]",
+  "type": "text[]",
+  "updated_at": "[DATE]",
+}
+`;
+
+exports[`can create an array field 2`] = `
+Object {
+  "chk": null,
+  "chk_expr": null,
+  "created_at": "[DATE]",
+  "database_id": "[ID]",
+  "default_value": null,
+  "description": null,
+  "field_order": 3,
+  "id": "[ID]",
+  "is_hidden": false,
+  "is_required": false,
+  "max": null,
+  "min": null,
+  "name": "cats",
+  "regexp": null,
+  "smart_tags": null,
+  "table_id": "[ID]",
+  "type": "text [ ]",
+  "updated_at": "[DATE]",
+}
+`;
+
+exports[`can create an array field 3`] = `
+Array [
+  Object {
+    "name": "{dude,yo,hi}",
+  },
+  Object {
+    "name": "{james,c,christiansen}",
+  },
+]
+`;
+
+exports[`can delete fields 1`] = `
+Array [
+  Object {
+    "name": "name",
+    "type": "text",
+  },
+  Object {
+    "name": "id",
+    "type": "uuid",
+  },
+]
+`;
