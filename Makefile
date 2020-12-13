@@ -11,7 +11,7 @@ down:
 	docker-compose down -v
 
 ssh:
-	docker exec -it postgres /bin/bash
+	docker exec -it launchql-postgres /bin/bash
 
 install:
 	$(MAKE) docker-install || $(MAKE) k8-install
@@ -48,21 +48,21 @@ deploy:
 
 generate:
 	@cd packages/db_text && ./generate/generate.js
-	@cd packages/db_text && lql package --version 0.0.1
-	@cd packages/db_utils && lql package --version 0.0.1
-	@cd packages/db_deps && lql package --version 0.0.1
-	@cd packages/db_migrate && lql package --version 0.0.1
+	@cd packages/db_text && lql package 
+	@cd packages/db_utils && lql package 
+	@cd packages/db_deps && lql package 
+	@cd packages/db_migrate && lql plan && lql package 
 	$(MAKE) install
 
 gen:
 	@cd packages/db_text && ./generate/generate.js
 
 ast:
-	@cd packages/ast && lql package --version 0.0.1
-	@cd packages/ast_actions && lql package --version 0.0.1
-	@cd packages/objects && lql package --version 0.0.1
-	@cd packages/transactor && lql package --version 0.0.1
-	@cd packages/db_migrate && lql package --version 0.0.1
+	@cd packages/ast && lql package 
+	@cd packages/ast_actions && lql package 
+	@cd packages/objects && lql package 
+	@cd packages/transactor && lql package 
+	@cd packages/db_migrate && lql package 
 	$(MAKE) install
 
 
