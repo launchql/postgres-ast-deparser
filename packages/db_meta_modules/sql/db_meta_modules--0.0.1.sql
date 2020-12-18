@@ -1,6 +1,8 @@
 \echo Use "CREATE EXTENSION db_meta_modules" to load this file. \quit
 CREATE TABLE meta_public.rls_module (
  	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
+	user_module_id uuid,
+	tokens_module_id uuid,
 	database_id uuid NOT NULL REFERENCES collections_public.database ( id ),
 	api_id uuid NOT NULL REFERENCES meta_public.apis ( id ),
 	authenticate text NOT NULL DEFAULT ( 'authenticate' ),
@@ -14,6 +16,12 @@ CREATE TABLE meta_public.rls_module (
 
 CREATE TABLE meta_public.user_auth_module (
  	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
+	user_module_id uuid,
+	encrypted_secrets_module_id uuid,
+	secrets_module_id uuid,
+	tokens_module_id uuid,
+	rls_module_id uuid,
+	emails_module_id uuid,
 	database_id uuid NOT NULL REFERENCES collections_public.database ( id ),
 	api_id uuid NOT NULL REFERENCES meta_public.apis ( id ),
 	sign_in_function text NOT NULL DEFAULT ( 'login' ),
