@@ -6,6 +6,12 @@ BEGIN;
 
 CREATE TABLE meta_public.rls_module (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
+
+    -- requires!
+    user_module_id uuid, -- TODO
+    tokens_module_id uuid, -- TODO
+    --
+
     database_id uuid NOT NULL REFERENCES collections_public.database (id),
     api_id uuid NOT NULL REFERENCES meta_public.apis (id),
     authenticate text NOT NULL DEFAULT 'authenticate',

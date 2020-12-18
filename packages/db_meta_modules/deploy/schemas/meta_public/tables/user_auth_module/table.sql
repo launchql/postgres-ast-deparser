@@ -6,6 +6,16 @@ BEGIN;
 
 CREATE TABLE meta_public.user_auth_module (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
+
+    -- requires!
+    user_module_id uuid, -- TODO
+    encrypted_secrets_module_id uuid,
+    secrets_module_id uuid,
+    tokens_module_id uuid, -- TODO
+    rls_module_id uuid, -- TODO
+    emails_module_id uuid, -- TODO
+    --
+
     database_id uuid NOT NULL REFERENCES collections_public.database (id),
     api_id uuid NOT NULL REFERENCES meta_public.apis (id),
     sign_in_function text NOT NULL DEFAULT 'login',
