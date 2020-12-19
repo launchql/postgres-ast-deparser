@@ -1,4 +1,8 @@
 \echo Use "CREATE EXTENSION db_meta_modules" to load this file. \quit
+CREATE TABLE meta_public.default_ids_module (
+ 	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ) 
+);
+
 CREATE TABLE meta_public.emails_module (
  	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
 	database_id uuid NOT NULL,
@@ -18,6 +22,14 @@ COMMENT ON CONSTRAINT table_fkey ON meta_public.emails_module IS E'@omit manyToM
 COMMENT ON CONSTRAINT db_fkey ON meta_public.emails_module IS E'@omit manyToMany';
 
 CREATE INDEX emails_module_database_id_idx ON meta_public.emails_module ( database_id );
+
+CREATE TABLE meta_public.encrypted_secrets_module (
+ 	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ) 
+);
+
+COMMENT ON TABLE meta_public.encrypted_secrets_module IS E'A comment.';
+
+COMMENT ON COLUMN meta_public.encrypted_secrets_module.id IS E'The primary unique identifier for the encrypted_secrets_module table.';
 
 CREATE TABLE meta_public.invites_module (
  	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
@@ -86,6 +98,19 @@ COMMENT ON CONSTRAINT pschema_fkey ON meta_public.rls_module IS E'@omit manyToMa
 
 CREATE INDEX rls_module_database_id_idx ON meta_public.rls_module ( database_id );
 
+CREATE TABLE meta_public.secrets_module (
+ 	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ) 
+);
+
+COMMENT ON TABLE meta_public.secrets_module IS E'A comment.';
+
+COMMENT ON COLUMN meta_public.secrets_module.id IS E'The primary unique identifier for the secrets_module table.';
+
+CREATE TABLE meta_public.tokens_module (
+ 	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
+	schema_id uuid NOT NULL 
+);
+
 CREATE TABLE meta_public.user_auth_module (
  	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
 	database_id uuid NOT NULL,
@@ -127,6 +152,14 @@ COMMENT ON CONSTRAINT secrets_table_fkey ON meta_public.user_auth_module IS E'@o
 COMMENT ON CONSTRAINT encrypted_table_fkey ON meta_public.user_auth_module IS E'@omit manyToMany';
 
 COMMENT ON CONSTRAINT tokens_table_fkey ON meta_public.user_auth_module IS E'@omit manyToMany';
+
+CREATE TABLE meta_public.users_module (
+ 	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ) 
+);
+
+COMMENT ON TABLE meta_public.users_module IS E'A comment.';
+
+COMMENT ON COLUMN meta_public.users_module.id IS E'The primary unique identifier for the users_module table.';
 
 CREATE TABLE meta_public.uuid_module (
  	id uuid PRIMARY KEY DEFAULT ( uuid_generate_v4() ),
