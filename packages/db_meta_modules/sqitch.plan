@@ -8,3 +8,4 @@ schemas/meta_public/tables/apis/table [schemas/meta_public/schema] 2017-08-11T08
 schemas/meta_public/tables/rls_module/table [schemas/meta_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/meta_public/tables/rls_module/table
 schemas/meta_public/tables/sites/table [schemas/meta_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/meta_public/tables/sites/table
 schemas/meta_public/tables/user_auth_module/table [schemas/meta_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/meta_public/tables/user_auth_module/table
+schemas/meta_public/tables/uuid_module/table [schemas/meta_public/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/meta_public/tables/uuid_module/table
