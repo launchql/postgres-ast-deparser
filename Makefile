@@ -1,7 +1,7 @@
 
 def:
 	./build.sh lql plan
-	./build.sh lql package --version 0.0.1
+	./build.sh lql package
 	make install
 
 up:
@@ -25,10 +25,6 @@ docker-install:
 k8-install:
 	$(eval POD_NAME := $(shell kubectl get pods -l app=postgres -n webinc -o jsonpath="{.items[*].metadata.name}"))
 	kubectl exec -n webinc -it $(POD_NAME) /sql-bin/install.sh
-
-all:
-	./build.sh lql package --version 0.0.1
-	./build.sh lql plan
 
 dump:
 	lql dump --deps --project dbs --path $(WEBINC_PATH)/services/packages/graphql-server-service/bootstrap/app.sql
