@@ -16,7 +16,7 @@
     "@babel/plugin-proposal-object-rest-spread": "7.10.4",
     "@babel/plugin-transform-runtime": "7.10.4",
     "@babel/preset-env": "7.10.4",
-    "@launchql/db-testing": "0.4.4",
+    "@launchql/db-testing": "^1.2.4",
     "@launchql/graphql-testing": "0.3.21",
     "babel-eslint": "10.1.0",
     "babel-jest": "26.1.0",

@@ -1411,12 +1411,25 @@
     "@babel/runtime" "^7.12.1"
     envalid "^6.0.2"
 
+"@launchql/db-env@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/@launchql/db-env/-/db-env-0.1.4.tgz#558ca5b98c018c2a80cdcecedfe0cd354ec45340"
+  integrity sha512-VXWkDuTbjToHg26S5qwp3uArGEbwzSVbyeFqZnBgNOHUoip8QAsStnebLnUf7fAcoFgOiF8VAi3zO6an7mgm0A==
+  dependencies:
+    "@babel/runtime" "^7.12.1"
+    envalid "^6.0.2"
+
 "@launchql/db-template@^0.2.1":
   version "0.2.1"
   resolved "https://registry.npmjs.org/@launchql/db-template/-/db-template-0.2.1.tgz#17fb3738fcad6744116f03b4d5c745ec4841c105"
   integrity sha512-4pFOUkv/nFnsojS3yLwX9C75LEt954eTwK+b7X7esBGdkNiUSyafg3U+jfmgN5NjV8NeEqf6VCxBrOfTD2QNWA==
 
-"@launchql/db-testing@0.4.4", "@launchql/db-testing@^0.4.4", "@launchql/db-testing@latest":
+"@launchql/db-template@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@launchql/db-template/-/db-template-1.0.2.tgz#79280f9720c35f9711907b5536afa53095ffe7e3"
+  integrity sha512-1FDpaEbedeSpkxK5vqOYsS4gbISPznVs2ftCHK3OcXYsgCWvgrgg6S5qjVRt3LQWhZ/7F/Mw7CusEEvZMVX0HA==
+
+"@launchql/db-testing@^0.4.4":
   version "0.4.4"
   resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-0.4.4.tgz#f910e1d729cd83ff465cd261fbccc99c3921d815"
   integrity sha512-uSFj5ivw6AvDkVuf5s710GpgtRRMsQiGYVBJsEy5umF78jlVQHmqQywjvFO7t71TISYnSpc0Lgmf+Qa9WobKVw==
@@ -1429,6 +1442,19 @@
     streamify-string "1.0.1"
     uuid "8.3.1"
 
+"@launchql/db-testing@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-1.2.4.tgz#b0fa9469a12047a81ea3577ab110f7dd8d14cb60"
+  integrity sha512-fI90qoL7dEAPb6yBjRXMLasirpNkYK0B9YK/K2/hzVpZtQCndg1ZoN944Rq85LATByt2fKoM3lu68xLwrFB/1A==
+  dependencies:
+    "@babel/runtime" "^7.12.1"
+    "@launchql/db-utils" "^1.2.1"
+    envalid "6.0.2"
+    pg "8.4.2"
+    pg-promise "10.7.1"
+    streamify-string "1.0.1"
+    uuid "8.3.1"
+
 "@launchql/db-transform@^0.3.1":
   version "0.3.1"
   resolved "https://registry.npmjs.org/@launchql/db-transform/-/db-transform-0.3.1.tgz#a1eb12f586d730c8a7da890e160dc5bf4e721a83"
@@ -1436,6 +1462,14 @@
   dependencies:
     "@babel/runtime" "^7.12.1"
     pgsql-parser "0.8.6"
+
+"@launchql/db-transform@^0.3.5":
+  version "0.3.5"
+  resolved "https://registry.npmjs.org/@launchql/db-transform/-/db-transform-0.3.5.tgz#2e311b42e6a3baa1e499931c53dcc62c6d4b7166"
+  integrity sha512-RBW0VGuaUqsxX38nagCccl/My36J6ujV1viL/Qvy8laLKvKrl9jTCMjRIdvX8qYWK/V8DCfuayj3RiGhZSEi9A==
+  dependencies:
+    "@babel/runtime" "^7.12.1"
+    pgsql-parser "1.2.2"
 
 "@launchql/db-utils@^0.4.3":
   version "0.4.3"
@@ -1453,6 +1487,27 @@
     node-walkup "^1.1.1"
     pg "^8.4.0"
     pgsql-parser "0.8.6"
+    rimraf "^3.0.2"
+    semver "^5.5.1"
+    shelljs "^0.8.2"
+
+"@launchql/db-utils@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/@launchql/db-utils/-/db-utils-1.2.1.tgz#c1a7cfa031b8b8cc2d1ba58518f2859bf33a2097"
+  integrity sha512-aYWMFUwj32zaggu1FA1rQknqqIKJvtCl89W7hGgj2b7ZWQZf5oyKgVimLs8k8gTPjIP5WDZ1Ccb7FAfCXt9aFQ==
+  dependencies:
+    "@babel/runtime" "^7.12.1"
+    "@launchql/db-env" "^0.1.4"
+    "@launchql/db-template" "^1.0.2"
+    "@launchql/db-transform" "^0.3.5"
+    envalid "6.0.2"
+    fuzzy "0.1.3"
+    glob "7.1.6"
+    mkdirp "^1.0.4"
+    node-walkup "^1.1.1"
+    parse-package-name "0.1.0"
+    pg "^8.4.2"
+    pgsql-parser "1.2.2"
     rimraf "^3.0.2"
     semver "^5.5.1"
     shelljs "^0.8.2"
@@ -7596,11 +7651,6 @@ node-modules-regexp@^1.0.0:
   resolved "https://registry.npmjs.org/node-modules-regexp/-/node-modules-regexp-1.0.0.tgz#8d9dbe28964a4ac5712e9131642107c71e90ec40"
   integrity sha1-jZ2+KJZKSsVxLpExZCEHxx6Q7EA=
 
-node-moment@2.5.1:
-  version "2.5.1"
-  resolved "https://registry.npmjs.org/node-moment/-/node-moment-2.5.1.tgz#397270e8cae5182802c2520f1ec6cdd7e40e198a"
-  integrity sha1-OXJw6MrlGCgCwlIPHsbN1+QOGYo=
-
 node-notifier@^8.0.0:
   version "8.0.0"
   resolved "https://registry.npmjs.org/node-notifier/-/node-notifier-8.0.0.tgz#a7eee2d51da6d0f7ff5094bc7108c911240c1620"
@@ -8055,6 +8105,11 @@ parse-json@^5.0.0:
     json-parse-even-better-errors "^2.3.0"
     lines-and-columns "^1.1.6"
 
+parse-package-name@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/parse-package-name/-/parse-package-name-0.1.0.tgz#3f44dd838feb4c2be4bf318bae4477d7706bade4"
+  integrity sha1-P0Tdg4/rTCvkvzGLrkR313BrreQ=
+
 parse-path@^4.0.0:
   version "4.0.2"
   resolved "https://registry.npmjs.org/parse-path/-/parse-path-4.0.2.tgz#ef14f0d3d77bae8dd4bc66563a4c151aac9e65aa"
@@ -8209,6 +8264,11 @@ pg-pool@^3.2.1:
   resolved "https://registry.npmjs.org/pg-pool/-/pg-pool-3.2.1.tgz#5f4afc0f58063659aeefa952d36af49fa28b30e0"
   integrity sha512-BQDPWUeKenVrMMDN9opfns/kZo4lxmSWhIqo+cSAF7+lfi9ZclQbr9vfnlNaPr8wYF3UYjm5X0yPAhbcgqNOdA==
 
+pg-pool@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.npmjs.org/pg-pool/-/pg-pool-3.2.2.tgz#a560e433443ed4ad946b84d774b3f22452694dff"
+  integrity sha512-ORJoFxAlmmros8igi608iVEbQNNZlp89diFVx6yV5v+ehmpMY9sK6QgpmgoXbmkNaBAx8cOOZh9g80kJv1ooyA==
+
 pg-promise@10.7.0:
   version "10.7.0"
   resolved "https://registry.npmjs.org/pg-promise/-/pg-promise-10.7.0.tgz#35ce847fd77c7aad68d2d222b828df3d64c60894"
@@ -8216,6 +8276,16 @@ pg-promise@10.7.0:
   dependencies:
     assert-options "0.6.2"
     pg "8.4.0"
+    pg-minify "1.6.1"
+    spex "3.0.2"
+
+pg-promise@10.7.1:
+  version "10.7.1"
+  resolved "https://registry.npmjs.org/pg-promise/-/pg-promise-10.7.1.tgz#46ad28514ae9ceba28903156e51f67bfc6874993"
+  integrity sha512-WP+FP+g5t4GGHVFsWVMOuC5VCM4GbVeZgQDlfS79yMzRKUliwpRaHN/MMO0r/OiA23sfL4gQgH4WPTKNjyvCHw==
+  dependencies:
+    assert-options "0.6.2"
+    pg "8.4.1"
     pg-minify "1.6.1"
     spex "3.0.2"
 
@@ -8228,6 +8298,11 @@ pg-protocol@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.3.0.tgz#3c8fb7ca34dbbfcc42776ce34ac5f537d6e34770"
   integrity sha512-64/bYByMrhWULUaCd+6/72c9PMWhiVFs3EVxl9Ct6a3v/U8+rKgqP2w+kKg/BIGgMJyB+Bk/eNivT32Al+Jghw==
+
+pg-protocol@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.4.0.tgz#43a71a92f6fe3ac559952555aa3335c8cb4908be"
+  integrity sha512-El+aXWcwG/8wuFICMQjM5ZSAm6OWiJicFdNYo+VY3QP+8vI4SvLIWVe51PppTzMhikUJR+PsyIFKqfdXPz/yxA==
 
 pg-query-string@0.1.7:
   version "0.1.7"
@@ -8299,6 +8374,19 @@ pg@8.4.1, pg@^8.4.0:
     pg-types "^2.1.0"
     pgpass "1.x"
 
+pg@8.4.2:
+  version "8.4.2"
+  resolved "https://registry.npmjs.org/pg/-/pg-8.4.2.tgz#2aa58166a23391e91d56a7ea57c6d99931c0642a"
+  integrity sha512-E9FlUrrc7w3+sbRmL1CSw99vifACzB2TjhMM9J5w9D1LIg+6un0jKkpHS1EQf2CWhKhec2bhrBLVMmUBDbjPRQ==
+  dependencies:
+    buffer-writer "2.0.0"
+    packet-reader "1.0.0"
+    pg-connection-string "^2.4.0"
+    pg-pool "^3.2.2"
+    pg-protocol "^1.3.0"
+    pg-types "^2.1.0"
+    pgpass "1.x"
+
 "pg@>=6.1.0 <9":
   version "8.3.3"
   resolved "https://registry.npmjs.org/pg/-/pg-8.3.3.tgz#0338631ca3c39b4fb425b699d494cab17f5bb7eb"
@@ -8313,6 +8401,19 @@ pg@8.4.1, pg@^8.4.0:
     pgpass "1.x"
     semver "4.3.2"
 
+pg@^8.4.2:
+  version "8.5.1"
+  resolved "https://registry.npmjs.org/pg/-/pg-8.5.1.tgz#34dcb15f6db4a29c702bf5031ef2e1e25a06a120"
+  integrity sha512-9wm3yX9lCfjvA98ybCyw2pADUivyNWT/yIP4ZcDVpMN0og70BUWYEGXPCTAQdGTAqnytfRADb7NERrY1qxhIqw==
+  dependencies:
+    buffer-writer "2.0.0"
+    packet-reader "1.0.0"
+    pg-connection-string "^2.4.0"
+    pg-pool "^3.2.2"
+    pg-protocol "^1.4.0"
+    pg-types "^2.1.0"
+    pgpass "1.x"
+
 pgpass@1.x:
   version "1.0.2"
   resolved "https://registry.npmjs.org/pgpass/-/pgpass-1.0.2.tgz#2a7bb41b6065b67907e91da1b07c1847c877b306"
@@ -8320,7 +8421,7 @@ pgpass@1.x:
   dependencies:
     split "^1.0.0"
 
-pgsql-deparser@^1.2.3:
+pgsql-deparser@^1.2.2, pgsql-deparser@^1.2.3:
   version "1.2.3"
   resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-1.2.3.tgz#b426f7cc25e273690ff030701e833fcfed10ef50"
   integrity sha512-0EBrmPqevIkS+zlV4eqa8Pjds5LXFXGKzRJUG8Ca0kI097fxOBcJWiY4qIwWNjmJMpixqu2K6aBW6Di6rxFhiQ==
@@ -8347,6 +8448,17 @@ pgsql-parser@0.8.6:
     dotty "^0.1.0"
     lodash "^4.17.20"
     minimist "^1.2.5"
+
+pgsql-parser@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-1.2.2.tgz#6d7282ec278daac5ce87504fb54133a6513c0fad"
+  integrity sha512-l5wXf2qxe1uRq/D7LXoAY65Eg5WaGPv1aVgm9rY8Dfaq0BRA0jURtMwZ3l/YUntQ0SqXIJfHwiK7R7ArkDKnng==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    "@pgql/parse" "1.2.6"
+    minimist "^1.2.5"
+    pgsql-deparser "^1.2.2"
+    pgsql-enums "^1.0.2"
 
 pgsql-parser@1.2.3:
   version "1.2.3"
