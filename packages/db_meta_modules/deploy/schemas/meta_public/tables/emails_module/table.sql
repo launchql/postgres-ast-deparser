@@ -7,7 +7,8 @@ BEGIN;
 CREATE TABLE meta_public.emails_module (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
     database_id uuid NOT NULL,
-    schema_id uuid NOT NULL,
+    
+    schema_id uuid,
     table_id uuid,
 
     emails_table text,

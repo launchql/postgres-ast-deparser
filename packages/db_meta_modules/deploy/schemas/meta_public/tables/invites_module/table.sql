@@ -7,8 +7,9 @@ BEGIN;
 CREATE TABLE meta_public.invites_module (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
     database_id uuid NOT NULL,
-    schema_id uuid NOT NULL,
-    private_schema_id uuid NOT NULL,
+    
+    schema_id uuid,
+    private_schema_id uuid,
 
     emails_table_id uuid,
     users_table_id uuid,

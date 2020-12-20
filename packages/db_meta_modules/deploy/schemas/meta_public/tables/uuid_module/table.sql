@@ -7,7 +7,8 @@ BEGIN;
 CREATE TABLE meta_public.uuid_module (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
     database_id uuid NOT NULL,
-    schema_id uuid NOT NULL,
+    --
+    schema_id uuid,
     uuid_function text NOT NULL DEFAULT 'uuid_generate_v4',
     uuid_seed text NOT NULL,
     --

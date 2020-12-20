@@ -7,16 +7,13 @@ BEGIN;
 CREATE TABLE meta_public.user_auth_module (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
     database_id uuid NOT NULL,
-    schema_id uuid NOT NULL,
 
-    -- requires!
-    -- user_module_id uuid, -- TODO
-    -- encrypted_secrets_module_id uuid,
-    -- secrets_module_id uuid,
-    -- tokens_module_id uuid, -- TODO
-    -- rls_module_id uuid, -- TODO
-    -- emails_module_id uuid, -- TODO
-    --
+    schema_id uuid,
+    emails_table_id uuid,
+    users_table_id uuid,
+    secrets_table_id uuid,
+    encrypted_table_id uuid,
+    tokens_table_id uuid,
 
     -- api_id uuid NOT NULL REFERENCES meta_public.apis (id),
 
@@ -28,13 +25,7 @@ CREATE TABLE meta_public.user_auth_module (
     forgot_password_function text NOT NULL DEFAULT 'forgot_password',
     send_verification_email_function text NOT NULL DEFAULT 'send_verification_email',
     verify_email_function text NOT NULL DEFAULT 'verify_email',
-    --
-    emails_table_id uuid NOT NULL,
-    users_table_id uuid NOT NULL,
-    secrets_table_id uuid NOT NULL,
-    encrypted_table_id uuid NOT NULL,
-    tokens_table_id uuid NOT NULL,
-    --
+
     -- UNIQUE(api_id),
 
     CONSTRAINT db_fkey FOREIGN KEY (database_id) REFERENCES collections_public.database (id),

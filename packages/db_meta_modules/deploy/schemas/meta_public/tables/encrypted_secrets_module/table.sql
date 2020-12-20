@@ -7,11 +7,13 @@ BEGIN;
 CREATE TABLE meta_public.encrypted_secrets_module (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
     database_id uuid NOT NULL,
+
     --
     schema_id uuid,
     table_id uuid,
     table_name text NOT NULL DEFAULT 'encrypted_secrets',
     -- 
+    
     CONSTRAINT db_fkey FOREIGN KEY (database_id) REFERENCES collections_public.database (id),
     CONSTRAINT schema_fkey FOREIGN KEY (schema_id) REFERENCES collections_public.schema (id),
     CONSTRAINT table_fkey FOREIGN KEY (table_id) REFERENCES collections_public.table (id)
