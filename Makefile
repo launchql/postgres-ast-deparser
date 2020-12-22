@@ -52,7 +52,6 @@ generate:
 	@cd packages/db_text && lql package 
 	@cd packages/db_utils && lql package 
 	@cd packages/db_deps && lql package 
-	@cd packages/db_meta_modules && lql plan && lql package 
 	@cd packages/db_meta_snippets && lql plan && lql package 
 	@cd packages/db_migrate && lql plan && lql package 
 	$(MAKE) install
