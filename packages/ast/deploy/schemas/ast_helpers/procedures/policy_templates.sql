@@ -184,6 +184,74 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.cpt_administrator_records(
+  rls_schema text,
+  groups_fn text,
+  policy_template_vars jsonb
+) returns jsonb as $$
+DECLARE
+  policy_ast jsonb;
+BEGIN
+
+  policy_ast = ast.select_stmt(
+      v_op := 0,
+      v_targetList := to_jsonb(ARRAY[
+          ast.res_target(
+              v_val := ast_helpers.any(
+                  v_lexpr := ast_helpers.col('d', 'owner_id'),
+                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+              )
+          )
+      ]),
+      v_fromClause := to_jsonb(ARRAY[
+          ast.join_expr(
+              v_jointype := 0,
+              v_larg := ast_helpers.range_var(
+                  v_schemaname := 'collections_public',
+                  v_relname := 'table',
+                  v_alias := ast.alias(
+                      v_aliasname := 't'
+                  )
+              ),
+              v_rarg := ast_helpers.range_var(
+                  v_schemaname := 'collections_public',
+                  v_relname := 'database',
+                  v_alias := ast.alias(
+                      v_aliasname := 'd'
+                  )
+              ),
+              v_quals := ast_helpers.equals(
+                  v_lexpr := ast_helpers.col('t', 'database_id'),
+                  v_rexpr := ast_helpers.col('d', 'id') 
+              )
+          )
+      ]),
+      v_whereClause := ast_helpers.and(
+          ast_helpers.equals(
+              v_lexpr := ast_helpers.col('t', 'database_id'),
+              v_rexpr := ast.a_const( 
+                v_val := ast.string( policy_template_vars->>'database_id' )
+              )
+          ),
+          ast_helpers.equals(
+              v_lexpr := ast_helpers.col('t', 'id'),
+              v_rexpr := ast.a_const( 
+                v_val := ast.string( policy_template_vars->>'table_id' )
+              )
+          )
+      )
+  );
+
+  policy_ast = ast.sub_link(
+    v_subLinkType := 4,
+    v_subselect := policy_ast
+  );
+
+  RETURN policy_ast;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records(
   rls_schema text,
   groups_fn text,
@@ -455,6 +523,12 @@ BEGIN
       policy_ast = ast_helpers.cpt_owned_object_records_group_array(
           rls_schema,
           role_fn,
+          policy_template_vars
+      );
+  ELSEIF (policy_template_name = 'administrator_records') THEN
+      policy_ast = ast_helpers.cpt_administrator_records(
+          rls_schema,
+          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'open') THEN
