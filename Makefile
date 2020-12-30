@@ -31,7 +31,7 @@ dump:
 
 seed:
 	createdb launchql
-	# lql deploy --recursive --database launchql --yes --project db_modules
+	lql deploy --recursive --database launchql --yes --project dbs
 	lql deploy --recursive --database launchql --yes --project lql-svc-local
 
 mods:
