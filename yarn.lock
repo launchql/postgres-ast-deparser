@@ -1442,7 +1442,7 @@
     streamify-string "1.0.1"
     uuid "8.3.1"
 
-"@launchql/db-testing@^1.2.4":
+"@launchql/db-testing@^1.2.4", "@launchql/db-testing@latest":
   version "1.2.4"
   resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-1.2.4.tgz#b0fa9469a12047a81ea3577ab110f7dd8d14cb60"
   integrity sha512-fI90qoL7dEAPb6yBjRXMLasirpNkYK0B9YK/K2/hzVpZtQCndg1ZoN944Rq85LATByt2fKoM3lu68xLwrFB/1A==
@@ -5708,6 +5708,11 @@ hash.js@^1.0.0, hash.js@^1.0.3:
   dependencies:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
+
+hi-base32@0.5.0:
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/hi-base32/-/hi-base32-0.5.0.tgz#61329f76a31f31008533f1c36f2473e259d64571"
+  integrity sha512-DDRmxSyoYuvjUb9EnXdoiMChBZ7ZcUVJsK5Frd3kqMhuBxvmZdnBeynAVfj7/ECbn++CekcoprvC/rprHPAtow==
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
