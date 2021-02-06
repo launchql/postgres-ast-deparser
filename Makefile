@@ -67,4 +67,8 @@ ast:
 	@cd packages/db_migrate && lql package 
 	$(MAKE) install
 
+objects:
+	@cd packages/objects && lql package 
+	@cd packages/transactor && lql package 
+	$(MAKE) install
 
