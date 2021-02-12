@@ -15,3 +15,4 @@ schemas/ast_utils/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add
 schemas/ast_utils/procedures/utils [schemas/ast_utils/schema] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/ast_utils/procedures/utils
 schemas/deparser/schema 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/deparser/schema
 schemas/deparser/procedures/deparse [schemas/deparser/schema schemas/ast_utils/procedures/utils schemas/ast_constants/procedures/constants] 2017-08-11T08:11:51Z skitch <skitch@5b0c196eeb62> # add schemas/deparser/procedures/deparse
+schemas/ast_helpers/procedures/fixtures [schemas/ast_helpers/schema] 2021-02-12T05:15:42Z Dan Lynch <dlynch@Dans-MacBook-Pro-3.local> # add schemas/ast_helpers/procedures/fixtures

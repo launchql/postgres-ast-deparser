@@ -1,6 +1,11 @@
 \echo Use "CREATE EXTENSION ast" to load this file. \quit
 CREATE SCHEMA ast_constants;
 
+GRANT USAGE ON SCHEMA ast_constants TO PUBLIC;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA ast_constants 
+ GRANT EXECUTE ON FUNCTIONS  TO PUBLIC;
+
 CREATE FUNCTION ast_constants.alter_table_type ( val text ) RETURNS int AS $EOFCODE$
 SELECT CASE val
  WHEN 'AT_AddColumn' THEN 0
@@ -306,7 +311,17 @@ $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE SCHEMA ast_helpers;
 
+GRANT USAGE ON SCHEMA ast_helpers TO PUBLIC;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA ast_helpers 
+ GRANT EXECUTE ON FUNCTIONS  TO PUBLIC;
+
 CREATE SCHEMA ast;
+
+GRANT USAGE ON SCHEMA ast TO PUBLIC;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA ast 
+ GRANT EXECUTE ON FUNCTIONS  TO PUBLIC;
 
 CREATE FUNCTION ast.jsonb_set ( result jsonb, path text[], new_value jsonb ) RETURNS jsonb AS $EOFCODE$
 BEGIN
@@ -3735,6 +3750,11 @@ $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE SCHEMA ast_utils;
 
+GRANT USAGE ON SCHEMA ast_utils TO PUBLIC;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA ast_utils 
+ GRANT EXECUTE ON FUNCTIONS  TO PUBLIC;
+
 CREATE FUNCTION ast_utils.interval ( n int ) RETURNS text[] AS $EOFCODE$
 	select (CASE 
 WHEN ( n = 2 ) THEN ARRAY[ 'month' ]
@@ -3848,6 +3868,11 @@ END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE SCHEMA deparser;
+
+GRANT USAGE ON SCHEMA deparser TO PUBLIC;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA deparser 
+ GRANT EXECUTE ON FUNCTIONS  TO PUBLIC;
 
 CREATE FUNCTION deparser.parens ( str text ) RETURNS text AS $EOFCODE$
 	select '(' || str || ')';
@@ -8551,5 +8576,35 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.deparse ( ast jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
 	RETURN deparser.expression(ast);
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.create_insert ( v_schema text, v_table text, v_cols text[], v_values jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+  i int;
+  cols jsonb[];
+BEGIN
+
+  -- cols
+  FOR i IN 1 .. cardinality(v_cols) LOOP
+    cols = array_append(cols, ast.res_target(
+      v_name := v_cols[i]
+    ));
+  END LOOP;
+
+  ast_expr = ast.insert_stmt(
+    v_relation := ast_helpers.range_var(
+      v_schemaname := v_schema,
+      v_relname := v_table
+    ),
+    v_cols := to_jsonb(cols),
+    v_selectStmt := ast.select_stmt(
+      v_valuesLists := v_values,
+      v_op := 0
+    ),
+    v_override := 0
+  );
+  RETURN ast_expr;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
