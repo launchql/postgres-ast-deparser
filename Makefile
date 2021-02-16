@@ -43,6 +43,7 @@ deploy:
 	@echo lql deploy --recursive --createdb --yes --project db_modules --database webinc-db
 
 meta:
+	@cd packages/db_meta_utils && lql package 
 	@cd packages/db_meta_snippets && lql plan && lql package 
 	$(MAKE) install
 
