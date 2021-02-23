@@ -38,7 +38,11 @@ BEGIN
     ),
     v_override := 0
   );
-  RETURN ast_expr;
+
+  RETURN ast.raw_stmt (
+    v_stmt := ast_expr,
+    v_stmt_len := 1
+  );
 END;
 $$
 LANGUAGE 'plpgsql'
