@@ -17,7 +17,7 @@ BEGIN
 
   policy_ast = ast_helpers.equals(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role')
+      v_rexpr := policy_template_vars->'current_user_ast'
   );
 
   RETURN policy_ast;
@@ -39,17 +39,17 @@ BEGIN
   policy_ast = ast_helpers.or(
     ast_helpers.equals(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role')
+      v_rexpr := policy_template_vars->'current_user_ast'
     ),
     ast_helpers.any(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+      v_rexpr := policy_template_vars->'current_groups_ast'
     )
   );
 
   -- policy_ast = ast_helpers.any(
   --   v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-  --   v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+  --   v_rexpr := policy_template_vars->'current_groups_ast'
   -- );
 
   RETURN policy_ast;
@@ -74,7 +74,7 @@ BEGIN
       -- this just gets the root path unescaped.... a nice hack
       -- https://dba.stackexchange.com/questions/207984/unquoting-json-strings-print-json-strings-without-quotes
       v_lexpr := ast_helpers.col(item#>>'{}'),
-      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role')
+      v_rexpr := policy_template_vars->'current_user_ast'
     ));
   END LOOP;
 
@@ -97,7 +97,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'permission_role_key'),
-                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
@@ -144,7 +144,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key'),
-                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
@@ -186,7 +186,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('d', 'owner_id'),
-                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
@@ -255,7 +255,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key'),
-                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
@@ -313,7 +313,7 @@ BEGIN
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
-                  v_lexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role'),
+                  v_lexpr := policy_template_vars->'current_user_ast',
                   v_rexpr := ast_helpers.col('g', policy_template_vars->>'owned_table_key')
               )
           )
@@ -400,7 +400,7 @@ BEGIN
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
-                  v_lexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role'),
+                  v_lexpr := policy_template_vars->'current_user_ast',
                   v_rexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key')
               )
           )
@@ -452,6 +452,24 @@ BEGIN
     policy_template_vars = jsonb_set(policy_template_vars, '{rls_groups_schema}', to_jsonb('jwt_public'::text));
     policy_template_vars = jsonb_set(policy_template_vars, '{rls_groups}', to_jsonb('current_group_ids'::text));
   END IF;
+
+  IF (policy_template_vars->'current_groups_ast' IS NULL) THEN 
+      policy_template_vars = jsonb_set(policy_template_vars, '{current_groups_ast}', 
+        ast_helpers.rls_fn(
+          policy_template_vars->>'rls_groups_schema',
+          policy_template_vars->>'rls_groups'
+        )
+      );
+  END IF;
+
+  IF (policy_template_vars->'current_user_ast' IS NULL) THEN 
+      policy_template_vars = jsonb_set(policy_template_vars, '{current_user_ast}', 
+        ast_helpers.rls_fn(
+          policy_template_vars->>'rls_role_schema',
+          policy_template_vars->>'rls_role')
+      );
+  END IF;
+
 
   -- Tag some functions, allow them to be "RLS functions"
   -- so they show up in the RLS UI
