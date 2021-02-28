@@ -76,9 +76,6 @@ SELECT deparser.deparse(
     v_cmd_name := 'INSERT',
     v_permissive := TRUE,
     v_with_check := ast_helpers.create_policy_template(
-        rls_schema := 'rls_schema',
-        role_fn := 'role_fn',
-        groups_fn := 'group_fn',
         policy_template_name := $1::text,
         policy_template_vars := $2::jsonb
     )
@@ -101,9 +98,6 @@ SELECT deparser.deparse(
     v_cmd_name := 'UPDATE',
     v_permissive := TRUE,
     v_qual := ast_helpers.create_policy_template(
-        rls_schema := 'rls_schema',
-        role_fn := 'role_fn',
-        groups_fn := 'group_fn',
         policy_template_name := $1::text,
         policy_template_vars := $2::jsonb
     )
@@ -119,9 +113,6 @@ const getPolicyResult = async (name, vars) => {
     `
 SELECT deparser.deparse(
   ast_helpers.create_policy_template(
-  rls_schema := 'rls_schema',
-  role_fn := 'role_fn',
-  groups_fn := 'group_fn',
   policy_template_name := $1::text,
   policy_template_vars := $2::jsonb
   ))`,
@@ -137,12 +128,32 @@ SELECT deparser.deparse(
 
 it('own_records', async () => {
   const result = await getPolicyResult('own_records', {
-    role_key: 'role_key'
+    role_key: 'role_key',
+    rls_role_schema: 'rls_schema',
+    rls_role: 'role_fn'
   });
   expect(result).toMatchSnapshot();
 });
 
 it('owned_records', async () => {
+  const result = await getPolicyResult('owned_records', {
+    role_key: 'role_key',
+    rls_groups_schema: 'rls_schema',
+    rls_groups: 'group_fn',
+    rls_role_schema: 'rls_schema',
+    rls_role: 'role_fn'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('own_records defaults', async () => {
+  const result = await getPolicyResult('own_records', {
+    role_key: 'role_key'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('owned_records defaults', async () => {
   const result = await getPolicyResult('owned_records', {
     role_key: 'role_key'
   });
@@ -151,7 +162,9 @@ it('owned_records', async () => {
 
 it('multi_owners', async () => {
   const result = await getPolicyResult('multi_owners', {
-    role_keys: ['requester_id', 'responder_id', 'verifier_id']
+    role_keys: ['requester_id', 'responder_id', 'verifier_id'],
+    rls_role_schema: 'rls_schema',
+    rls_role: 'role_fn'
   });
   expect(result).toMatchSnapshot();
 });
@@ -162,7 +175,9 @@ it('permission_name', async () => {
     permission_schema: 'permission_schema',
     permission_table: 'permission_table',
     permission_name_key: 'permission_name_key',
-    this_value: 'this_value'
+    this_value: 'this_value',
+    rls_groups_schema: 'rls_schema',
+    rls_groups: 'group_fn'
   });
   expect(result).toMatchSnapshot();
 });
@@ -173,7 +188,9 @@ it('policy w permission_name', async () => {
     permission_schema: 'permission_schema',
     permission_table: 'permission_table',
     permission_name_key: 'permission_name_key',
-    this_value: 'this_value'
+    this_value: 'this_value',
+    rls_groups_schema: 'rls_schema',
+    rls_groups: 'group_fn'
   });
   expect(result).toMatchSnapshot();
 });
@@ -184,7 +201,11 @@ it('owned_object_records', async () => {
     owned_schema: 'owned_schema',
     owned_table: 'owned_table',
     owned_table_ref_key: 'owned_table_ref_key',
-    this_object_key: 'this_object_key'
+    this_object_key: 'this_object_key',
+    rls_groups_schema: 'rls_schema',
+    rls_groups: 'group_fn',
+    rls_role_schema: 'rls_schema',
+    rls_role: 'role_fn'
   });
   expect(result).toMatchSnapshot();
 });
@@ -195,7 +216,11 @@ it('owned_object_records_group_array', async () => {
     owned_schema: 'owned_schema',
     owned_table: 'owned_table',
     owned_table_ref_key: 'owned_table_ref_key',
-    this_object_key: 'this_object_key'
+    this_object_key: 'this_object_key',
+    rls_groups_schema: 'rls_schema',
+    rls_groups: 'group_fn',
+    rls_role_schema: 'rls_schema',
+    rls_role: 'role_fn'
   });
   expect(result).toMatchSnapshot();
 });
@@ -210,7 +235,11 @@ it('child_of_owned_object_records', async () => {
     owned_table_ref_key: 'owned_table_ref_key',
     object_table_owned_key: 'object_table_owned_key',
     object_table_ref_key: 'object_table_ref_key',
-    this_object_key: 'this_object_key'
+    this_object_key: 'this_object_key',
+    rls_groups_schema: 'rls_schema',
+    rls_groups: 'group_fn',
+    rls_role_schema: 'rls_schema',
+    rls_role: 'role_fn'
   });
   expect(result).toMatchSnapshot();
 });
@@ -230,7 +259,11 @@ it('child_of_owned_object_records_with_ownership', async () => {
       this_object_key: 'this_object_key',
 
       // only one extra?
-      this_owned_key: 'this_owned_key'
+      this_owned_key: 'this_owned_key',
+      rls_groups_schema: 'rls_schema',
+      rls_groups: 'group_fn',
+      rls_role_schema: 'rls_schema',
+      rls_role: 'role_fn'
     }
   );
   expect(result).toMatchSnapshot();
@@ -250,7 +283,11 @@ it('child_of_owned_object_records_group_array', async () => {
       object_table_owned_key: 'group_id',
 
       object_table_ref_key: 'id', // message_pkey
-      this_object_key: 'id'
+      this_object_key: 'id',
+      rls_groups_schema: 'rls_schema',
+      rls_groups: 'group_fn',
+      rls_role_schema: 'rls_schema',
+      rls_role: 'role_fn'
     }
   );
   expect(result).toMatchSnapshot();

@@ -58,6 +58,14 @@ Object {
 }
 `;
 
+exports[`own_records defaults 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = jwt_public.current_user_id() );",
+  "policy": "role_key = jwt_public.current_user_id()",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = jwt_public.current_user_id() );",
+}
+`;
+
 exports[`owned_object_records 1`] = `
 Object {
   "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key) );",
@@ -79,6 +87,14 @@ Object {
   "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = rls_schema.role_fn() OR role_key = ANY( rls_schema.group_fn() ) );",
   "policy": "role_key = rls_schema.role_fn() OR role_key = ANY( rls_schema.group_fn() )",
   "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = rls_schema.role_fn() OR role_key = ANY( rls_schema.group_fn() ) );",
+}
+`;
+
+exports[`owned_records defaults 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = jwt_public.current_user_id() OR role_key = ANY( jwt_public.current_group_ids() ) );",
+  "policy": "role_key = jwt_public.current_user_id() OR role_key = ANY( jwt_public.current_group_ids() )",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = jwt_public.current_user_id() OR role_key = ANY( jwt_public.current_group_ids() ) );",
 }
 `;
 

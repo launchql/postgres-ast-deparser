@@ -6,8 +6,6 @@
 BEGIN;
 
 CREATE FUNCTION ast_helpers.cpt_own_records(
-  rls_schema text,
-  role_fn text,
   policy_template_vars jsonb
 ) returns jsonb as $$
 DECLARE
@@ -19,7 +17,7 @@ BEGIN
 
   policy_ast = ast_helpers.equals(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(rls_schema, role_fn)
+      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role')
   );
 
   RETURN policy_ast;
@@ -28,9 +26,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.cpt_owned_records(
-  rls_schema text,
-  role_fn text,
-  groups_fn text,
   policy_template_vars jsonb
 ) returns jsonb as $$
 DECLARE
@@ -44,17 +39,17 @@ BEGIN
   policy_ast = ast_helpers.or(
     ast_helpers.equals(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(rls_schema, role_fn)
+      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role')
     ),
     ast_helpers.any(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
     )
   );
 
   -- policy_ast = ast_helpers.any(
   --   v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-  --   v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+  --   v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
   -- );
 
   RETURN policy_ast;
@@ -63,8 +58,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.cpt_multi_owners(
-  rls_schema text,
-  role_fn text,
   policy_template_vars jsonb
 ) returns jsonb as $$
 DECLARE
@@ -81,7 +74,7 @@ BEGIN
       -- this just gets the root path unescaped.... a nice hack
       -- https://dba.stackexchange.com/questions/207984/unquoting-json-strings-print-json-strings-without-quotes
       v_lexpr := ast_helpers.col(item#>>'{}'),
-      v_rexpr := ast_helpers.rls_fn(rls_schema, role_fn)
+      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role')
     ));
   END LOOP;
 
@@ -93,8 +86,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.cpt_permission_name(
-  rls_schema text,
-  groups_fn text,
   policy_template_vars jsonb
 ) returns jsonb as $$
 DECLARE
@@ -106,7 +97,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'permission_role_key'),
-                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
               )
           )
       ]),
@@ -138,8 +129,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.cpt_owned_object_records(
-  rls_schema text,
-  groups_fn text,
   policy_template_vars jsonb
 ) returns jsonb as $$
 DECLARE
@@ -155,7 +144,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key'),
-                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
               )
           )
       ]),
@@ -185,8 +174,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.cpt_administrator_records(
-  rls_schema text,
-  groups_fn text,
   policy_template_vars jsonb
 ) returns jsonb as $$
 DECLARE
@@ -199,7 +186,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('d', 'owner_id'),
-                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
               )
           )
       ]),
@@ -253,8 +240,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records(
-  rls_schema text,
-  groups_fn text,
   policy_template_vars jsonb
 ) returns jsonb as $$
 DECLARE
@@ -270,7 +255,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key'),
-                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
               )
           )
       ]),
@@ -314,8 +299,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records_group_array(
-  rls_schema text,
-  role_fn text,
   policy_template_vars jsonb
 ) returns jsonb as $$
 DECLARE
@@ -330,7 +313,7 @@ BEGIN
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
-                  v_lexpr := ast_helpers.rls_fn(rls_schema, role_fn),
+                  v_lexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role'),
                   v_rexpr := ast_helpers.col('g', policy_template_vars->>'owned_table_key')
               )
           )
@@ -375,8 +358,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records_with_ownership(
-  rls_schema text,
-  groups_fn text,
   policy_template_vars jsonb
 ) returns jsonb as $$
 DECLARE
@@ -388,8 +369,6 @@ BEGIN
   -- SELECT db_migrate.text('policy_expression_owned_object_key_once_removed_with_ownership', 
 
   policy_ast = ast_helpers.cpt_child_of_owned_object_records(
-    rls_schema,
-    groups_fn,
     policy_template_vars
   );
 
@@ -410,8 +389,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.cpt_owned_object_records_group_array(
-  rls_schema text,
-  role_fn text,
   policy_template_vars jsonb
 ) returns jsonb as $$
 DECLARE
@@ -423,7 +400,7 @@ BEGIN
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
-                  v_lexpr := ast_helpers.rls_fn(rls_schema, role_fn),
+                  v_lexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role'),
                   v_rexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key')
               )
           )
@@ -457,9 +434,6 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 
 CREATE FUNCTION ast_helpers.create_policy_template(
-  rls_schema text,
-  role_fn text,
-  groups_fn text,
   policy_template_name text,
   policy_template_vars jsonb
 ) returns jsonb as $$
@@ -467,68 +441,59 @@ DECLARE
   policy_ast jsonb;
 BEGIN
 
+  -- TODO for safety, keep defaults. However, group_ids() should only return array of current_user_id()
+
+  IF (policy_template_vars->>'rls_role' IS NULL OR policy_template_vars->>'rls_role_schema' IS NULL) THEN 
+    policy_template_vars = jsonb_set(policy_template_vars, '{rls_role_schema}', to_jsonb('jwt_public'::text));
+    policy_template_vars = jsonb_set(policy_template_vars, '{rls_role}', to_jsonb('current_user_id'::text));
+  END IF;
+
+  IF (policy_template_vars->>'rls_groups' IS NULL OR policy_template_vars->>'rls_groups_schema' IS NULL) THEN 
+    policy_template_vars = jsonb_set(policy_template_vars, '{rls_groups_schema}', to_jsonb('jwt_public'::text));
+    policy_template_vars = jsonb_set(policy_template_vars, '{rls_groups}', to_jsonb('current_group_ids'::text));
+  END IF;
+
   -- Tag some functions, allow them to be "RLS functions"
   -- so they show up in the RLS UI
 
   IF (policy_template_name = 'own_records') THEN
       policy_ast = ast_helpers.cpt_own_records(
-          rls_schema,
-          role_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'owned_records') THEN
       policy_ast = ast_helpers.cpt_owned_records(
-          rls_schema,
-          role_fn,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'multi_owners') THEN
       policy_ast = ast_helpers.cpt_multi_owners(
-          rls_schema,
-          role_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'permission_name') THEN
       policy_ast = ast_helpers.cpt_permission_name(
-          rls_schema,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'owned_object_records') THEN
       policy_ast = ast_helpers.cpt_owned_object_records(
-          rls_schema,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'child_of_owned_object_records') THEN
       policy_ast = ast_helpers.cpt_child_of_owned_object_records(
-          rls_schema,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'child_of_owned_object_records_with_ownership') THEN
       policy_ast = ast_helpers.cpt_child_of_owned_object_records_with_ownership(
-          rls_schema,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'child_of_owned_object_records_group_array') THEN
       policy_ast = ast_helpers.cpt_child_of_owned_object_records_group_array(
-          rls_schema,
-          role_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'owned_object_records_group_array') THEN
       policy_ast = ast_helpers.cpt_owned_object_records_group_array(
-          rls_schema,
-          role_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'administrator_records') THEN
       policy_ast = ast_helpers.cpt_administrator_records(
-          rls_schema,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'open') THEN
