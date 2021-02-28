@@ -940,7 +940,7 @@ BEGIN
   END IF;
 
   IF (node->'A_ArrayExpr'->'elements') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_ArrayExpr';
+    RETURN format('ARRAY[]');
   END IF;
 
   node = node->'A_ArrayExpr';
