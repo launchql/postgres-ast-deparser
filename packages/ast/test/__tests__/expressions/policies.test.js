@@ -29,6 +29,104 @@ const current_groups_ast = {
   }
 };
 
+const current_groups_ast2 = {
+  "FuncCall": {
+    "funcname": [
+      {
+        "String": {
+          "str": "array_append"
+        }
+      }
+    ],
+    "args": [
+      {
+        "CoalesceExpr": {
+          "args": [
+            {
+              "FuncCall": {
+                "funcname": [
+                  {
+                    "String": {
+                      "str": "memberships_private"
+                    }
+                  },
+                  {
+                    "String": {
+                      "str": "org_memberships_perm_ids"
+                    }
+                  }
+                ],
+                "args": [
+                  {
+                    "A_Const": {
+                      "val": {
+                        "String": {
+                          "str": "10000011111"
+                        }
+                      },
+                      "location": 92
+                    }
+                  }
+                ],
+                "location": 47
+              }
+            },
+            {
+              "TypeCast": {
+                "arg": {
+                  "A_ArrayExpr": {
+                    "location": 117
+                  }
+                },
+                "typeName": {
+                  "TypeName": {
+                    "names": [
+                      {
+                        "String": {
+                          "str": "uuid"
+                        }
+                      }
+                    ],
+                    "typemod": -1,
+                    "arrayBounds": [
+                      {
+                        "Integer": {
+                          "ival": -1
+                        }
+                      }
+                    ],
+                    "location": 126
+                  }
+                },
+                "location": 124
+              }
+            }
+          ],
+          "location": 28
+        }
+      },
+      {
+        "FuncCall": {
+          "funcname": [
+            {
+              "String": {
+                "str": "jwt_public"
+              }
+            },
+            {
+              "String": {
+                "str": "current_user_id"
+              }
+            }
+          ],
+          "location": 146
+        }
+      }
+    ],
+    "location": 8
+  }
+}
+
 const current_user_ast = {
   "FuncCall": {
     "funcname": [
@@ -199,6 +297,18 @@ it('owned_records w bits', async () => {
     rls_role_schema: 'rls_schema',
     rls_role: 'role_fn',
     current_groups_ast
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('owned_records w bits', async () => {
+  const result = await getPolicyResult('owned_records', {
+    role_key: 'role_key',
+    rls_groups_schema: 'rls_schema',
+    rls_groups: 'group_fn',
+    rls_role_schema: 'rls_schema',
+    rls_role: 'role_fn',
+    current_groups_ast: current_groups_ast2
   });
   expect(result).toMatchSnapshot();
 });

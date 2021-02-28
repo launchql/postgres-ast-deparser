@@ -146,6 +146,14 @@ Object {
 }
 `;
 
+exports[`owned_records w bits 2`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = rls_schema.role_fn() OR role_key = ANY( array_append(COALESCE(memberships_private.org_memberships_perm_ids('10000011111'), ARRAY[]::uuid[]), jwt_public.current_user_id()) ) );",
+  "policy": "role_key = rls_schema.role_fn() OR role_key = ANY( array_append(COALESCE(memberships_private.org_memberships_perm_ids('10000011111'), ARRAY[]::uuid[]), jwt_public.current_user_id()) )",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = rls_schema.role_fn() OR role_key = ANY( array_append(COALESCE(memberships_private.org_memberships_perm_ids('10000011111'), ARRAY[]::uuid[]), jwt_public.current_user_id()) ) );",
+}
+`;
+
 exports[`permission_name 1`] = `
 Object {
   "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.permission_role_key = ANY( rls_schema.group_fn() ) FROM permission_schema.permission_table AS p WHERE p.permission_name_key = 'this_value') );",
