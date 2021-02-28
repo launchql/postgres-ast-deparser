@@ -29,6 +29,24 @@ const current_groups_ast = {
   }
 };
 
+const current_user_ast = {
+  "FuncCall": {
+    "funcname": [
+      {
+        "String": {
+          "str": "super_secret"
+        }
+      },
+      {
+        "String": {
+          "str": "current_user_id"
+        }
+      }
+    ],
+    "args": [ ],
+  }
+};
+
 let db, teardown;
 const objs = {
   tables: {}
@@ -259,6 +277,7 @@ it('owned_object_records', async () => {
     rls_groups: 'group_fn',
     rls_role_schema: 'rls_schema',
     rls_role: 'role_fn'
+    
   });
   expect(result).toMatchSnapshot();
 });
@@ -305,7 +324,8 @@ it('owned_object_records_group_array bits', async () => {
     rls_groups: 'group_fn',
     rls_role_schema: 'rls_schema',
     rls_role: 'role_fn',
-    current_groups_ast
+    current_groups_ast,
+    current_user_ast
   });
   expect(result).toMatchSnapshot();
 });
