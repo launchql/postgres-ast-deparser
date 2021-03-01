@@ -433,6 +433,131 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
 
+CREATE FUNCTION ast_helpers.cpt_entity_acl(
+  policy_template_vars jsonb
+) returns jsonb as $$
+DECLARE
+  policy_ast jsonb;
+  array_ast jsonb;
+BEGIN
+
+  array_ast = ast.sub_link(
+    v_subLinkType := 6,
+    v_subselect := ast.select_stmt(
+      v_op := 0,
+      v_targetList := to_jsonb(ARRAY[
+          ast.res_target(
+              v_val := ast_helpers.col('acl', 'entity_id')
+          )
+      ]),
+      v_fromClause := to_jsonb(ARRAY[
+          ast_helpers.range_var(
+              v_schemaname := policy_template_vars->>'acl_schema',
+              v_relname := policy_template_vars->>'acl_table',
+              v_alias := ast.alias(
+                  v_aliasname := 'acl'
+              )
+          )
+      ]),
+      v_whereClause := ast_helpers.acl_where_clause(policy_template_vars)
+    )
+  );
+
+  IF ((policy_template_vars->'include_current_user_id')::bool IS TRUE) THEN 
+    -- DO WE NEED TO CAST THE possible ARRAY(...)::uuid[] ?
+    -- postgres=# select array_append(NULL, 'sdf');
+    -- ERROR:  could not determine polymorphic type because input has type unknown
+    policy_ast = ast_helpers.any(
+      v_lexpr := ast_helpers.col(policy_template_vars->>'entity_field'),
+      v_rexpr := ast.func_call(
+        v_funcname := ast_helpers.array_of_strings('array_append'),
+        v_args := to_jsonb(ARRAY[
+          array_ast,
+          policy_template_vars->'current_user_ast'
+        ])
+      )
+    );
+  ELSE
+    policy_ast = ast_helpers.any(
+      v_lexpr := ast_helpers.col(policy_template_vars->>'entity_field'),
+      v_rexpr := array_ast
+    );
+  END IF;
+
+  RETURN policy_ast;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.acl_where_clause(
+  policy_template_vars jsonb
+) returns jsonb as $$
+BEGIN
+  RETURN (CASE WHEN policy_template_vars->'mask' IS NULL THEN
+      ast_helpers.equals(
+          v_lexpr := ast_helpers.col('acl', 'actor_id'),
+          v_rexpr := policy_template_vars->'current_user_ast'
+      )
+    ELSE
+      ast.bool_expr(
+        v_boolop := 0,
+        v_args := to_jsonb(ARRAY[
+          ast_helpers.equals(
+              v_lexpr := ast.a_expr(
+                v_kind := 0,
+                v_name := to_jsonb(ARRAY[ast.string('&')]),
+                v_lexpr := ast_helpers.col('acl', 'permissions'),
+                v_rexpr := ast.a_const(v_val := ast.string(policy_template_vars->>'mask'))
+              ),
+              v_rexpr := ast.a_const(v_val := ast.string(policy_template_vars->>'mask'))
+          ),
+          ast_helpers.equals(
+              v_lexpr := ast_helpers.col('acl', 'actor_id'),
+              v_rexpr := policy_template_vars->'current_user_ast'
+          )
+        ]) 
+      )
+    END);
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.cpt_acl(
+  policy_template_vars jsonb
+) returns jsonb as $$
+DECLARE
+  policy_ast jsonb;
+BEGIN
+
+  policy_ast = ast.sub_link (
+    v_subLinkType := 0,
+    v_subselect := ast.select_stmt(
+       v_op := 0,
+       v_targetList := to_jsonb(ARRAY[
+         ast.res_target(
+            v_val := ast.a_const(ast.integer(1))
+         )
+       ]),
+       v_fromClause := to_jsonb(ARRAY[
+          ast_helpers.range_var(
+              v_schemaname := policy_template_vars->>'acl_schema',
+              v_relname := policy_template_vars->>'acl_table',
+              v_alias := ast.alias(
+                  v_aliasname := 'acl'
+              )
+          )
+      ]),
+      v_whereClause := ast_helpers.acl_where_clause(
+        policy_template_vars
+      )
+    )
+  );
+
+  RETURN policy_ast;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.create_policy_template(
   policy_template_name text,
   policy_template_vars jsonb
@@ -512,6 +637,14 @@ BEGIN
       );
   ELSEIF (policy_template_name = 'administrator_records') THEN
       policy_ast = ast_helpers.cpt_administrator_records(
+          policy_template_vars
+      );
+  ELSEIF (policy_template_name = 'entity_acl') THEN
+      policy_ast = ast_helpers.cpt_entity_acl(
+          policy_template_vars
+      );
+  ELSEIF (policy_template_name = 'acl') THEN
+      policy_ast = ast_helpers.cpt_acl(
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'open') THEN

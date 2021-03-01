@@ -2,146 +2,137 @@ import { getConnections } from '../../utils';
 import { policies } from './__fixtures__/policies';
 import policyStmt from './__fixtures__/policy';
 const current_groups_ast = {
-  "FuncCall": {
-    "funcname": [
+  FuncCall: {
+    funcname: [
       {
-        "String": {
-          "str": "memberships_private"
+        String: {
+          str: 'memberships_private'
         }
       },
       {
-        "String": {
-          "str": "org_memberships_perm_ids"
+        String: {
+          str: 'org_memberships_perm_ids'
         }
       }
     ],
-    "args": [
+    args: [
       {
-        "A_Const": {
-          "val": {
-            "String": {
-              "str": "10000011111"
+        A_Const: {
+          val: {
+            String: {
+              str: '10000011111'
             }
-          },
+          }
         }
       }
-    ],
+    ]
   }
 };
 
 const current_groups_ast2 = {
-  "FuncCall": {
-    "funcname": [
+  FuncCall: {
+    funcname: [
       {
-        "String": {
-          "str": "array_append"
+        String: {
+          str: 'array_append'
         }
       }
     ],
-    "args": [
+    args: [
       {
-        "CoalesceExpr": {
-          "args": [
+        CoalesceExpr: {
+          args: [
             {
-              "FuncCall": {
-                "funcname": [
+              FuncCall: {
+                funcname: [
                   {
-                    "String": {
-                      "str": "memberships_private"
+                    String: {
+                      str: 'memberships_private'
                     }
                   },
                   {
-                    "String": {
-                      "str": "org_memberships_perm_ids"
+                    String: {
+                      str: 'org_memberships_perm_ids'
                     }
                   }
                 ],
-                "args": [
+                args: [
                   {
-                    "A_Const": {
-                      "val": {
-                        "String": {
-                          "str": "10000011111"
+                    A_Const: {
+                      val: {
+                        String: {
+                          str: '10000011111'
                         }
-                      },
-                      "location": 92
+                      }
                     }
                   }
-                ],
-                "location": 47
+                ]
               }
             },
             {
-              "TypeCast": {
-                "arg": {
-                  "A_ArrayExpr": {
-                    "location": 117
-                  }
+              TypeCast: {
+                arg: {
+                  A_ArrayExpr: {}
                 },
-                "typeName": {
-                  "TypeName": {
-                    "names": [
+                typeName: {
+                  TypeName: {
+                    names: [
                       {
-                        "String": {
-                          "str": "uuid"
+                        String: {
+                          str: 'uuid'
                         }
                       }
                     ],
-                    "typemod": -1,
-                    "arrayBounds": [
+                    typemod: -1,
+                    arrayBounds: [
                       {
-                        "Integer": {
-                          "ival": -1
+                        Integer: {
+                          ival: -1
                         }
                       }
-                    ],
-                    "location": 126
+                    ]
                   }
-                },
-                "location": 124
+                }
               }
             }
-          ],
-          "location": 28
+          ]
         }
       },
       {
-        "FuncCall": {
-          "funcname": [
+        FuncCall: {
+          funcname: [
             {
-              "String": {
-                "str": "jwt_public"
+              String: {
+                str: 'jwt_public'
               }
             },
             {
-              "String": {
-                "str": "current_user_id"
+              String: {
+                str: 'current_user_id'
               }
             }
-          ],
-          "location": 146
+          ]
         }
       }
-    ],
-    "location": 8
+    ]
   }
-}
+};
 
 const current_user_ast = {
-  "FuncCall": {
-    "funcname": [
+  FuncCall: {
+    funcname: [
       {
-        "String": {
-          "str": "super_secret"
+        String: {
+          str: 'super_secret'
         }
       },
       {
-        "String": {
-          "str": "current_user_id"
+        String: {
+          str: 'current_user_id'
         }
       }
     ],
-    "args": [ ],
+    args: []
   }
 };
 
@@ -387,7 +378,6 @@ it('owned_object_records', async () => {
     rls_groups: 'group_fn',
     rls_role_schema: 'rls_schema',
     rls_role: 'role_fn'
-    
   });
   expect(result).toMatchSnapshot();
 });
@@ -576,6 +566,63 @@ it('child_of_owned_object_records_group_array bits', async () => {
       current_groups_ast
     }
   );
+  expect(result).toMatchSnapshot();
+});
+
+it('acl', async () => {
+  const result = await getPolicyResult('acl', {
+    acl_schema: 'acl_schema',
+    acl_table: 'acl_table'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('acl mask', async () => {
+  const result = await getPolicyResult('acl', {
+    acl_schema: 'acl_schema',
+    acl_table: 'acl_table',
+    mask: '1010101111'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('entity_acl', async () => {
+  const result = await getPolicyResult('entity_acl', {
+    entity_field: 'entity_id',
+    acl_schema: 'acl_schema',
+    acl_table: 'acl_table'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('entity_acl include user', async () => {
+  const result = await getPolicyResult('entity_acl', {
+    include_current_user_id: true,
+    entity_field: 'entity_id',
+    acl_schema: 'acl_schema',
+    acl_table: 'acl_table'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('entity_acl_mask', async () => {
+  const result = await getPolicyResult('entity_acl', {
+    entity_field: 'entity_id',
+    acl_schema: 'acl_schema',
+    acl_table: 'acl_table',
+    mask: '1010010100101010111111'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('entity_acl_mask include user', async () => {
+  const result = await getPolicyResult('entity_acl', {
+    include_current_user_id: true,
+    entity_field: 'entity_id',
+    acl_schema: 'acl_schema',
+    acl_table: 'acl_table',
+    mask: '1010010100101010111111'
+  });
   expect(result).toMatchSnapshot();
 });
 

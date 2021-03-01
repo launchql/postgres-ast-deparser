@@ -3137,7 +3137,7 @@ BEGIN
 
   policy_ast = ast_helpers.equals(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role')
+      v_rexpr := policy_template_vars->'current_user_ast'
   );
 
   RETURN policy_ast;
@@ -3156,17 +3156,17 @@ BEGIN
   policy_ast = ast_helpers.or(
     ast_helpers.equals(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role')
+      v_rexpr := policy_template_vars->'current_user_ast'
     ),
     ast_helpers.any(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+      v_rexpr := policy_template_vars->'current_groups_ast'
     )
   );
 
   -- policy_ast = ast_helpers.any(
   --   v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-  --   v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+  --   v_rexpr := policy_template_vars->'current_groups_ast'
   -- );
 
   RETURN policy_ast;
@@ -3188,7 +3188,7 @@ BEGIN
       -- this just gets the root path unescaped.... a nice hack
       -- https://dba.stackexchange.com/questions/207984/unquoting-json-strings-print-json-strings-without-quotes
       v_lexpr := ast_helpers.col(item#>>'{}'),
-      v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role')
+      v_rexpr := policy_template_vars->'current_user_ast'
     ));
   END LOOP;
 
@@ -3208,7 +3208,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'permission_role_key'),
-                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
@@ -3252,7 +3252,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key'),
-                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
@@ -3291,7 +3291,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('d', 'owner_id'),
-                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
@@ -3357,7 +3357,7 @@ BEGIN
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key'),
-                  v_rexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_groups_schema', policy_template_vars->>'rls_groups')
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
@@ -3412,7 +3412,7 @@ BEGIN
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
-                  v_lexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role'),
+                  v_lexpr := policy_template_vars->'current_user_ast',
                   v_rexpr := ast_helpers.col('g', policy_template_vars->>'owned_table_key')
               )
           )
@@ -3493,7 +3493,7 @@ BEGIN
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
-                  v_lexpr := ast_helpers.rls_fn(policy_template_vars->>'rls_role_schema', policy_template_vars->>'rls_role'),
+                  v_lexpr := policy_template_vars->'current_user_ast',
                   v_rexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key')
               )
           )
@@ -3524,10 +3524,128 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.cpt_entity_acl ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  policy_ast jsonb;
+  array_ast jsonb;
+BEGIN
+
+  array_ast = ast.sub_link(
+    v_subLinkType := 6,
+    v_subselect := ast.select_stmt(
+      v_op := 0,
+      v_targetList := to_jsonb(ARRAY[
+          ast.res_target(
+              v_val := ast_helpers.col('acl', 'entity_id')
+          )
+      ]),
+      v_fromClause := to_jsonb(ARRAY[
+          ast_helpers.range_var(
+              v_schemaname := policy_template_vars->>'acl_schema',
+              v_relname := policy_template_vars->>'acl_table',
+              v_alias := ast.alias(
+                  v_aliasname := 'acl'
+              )
+          )
+      ]),
+      v_whereClause := ast_helpers.acl_where_clause(policy_template_vars)
+    )
+  );
+
+  IF ((policy_template_vars->'include_current_user_id')::bool IS TRUE) THEN 
+    -- DO WE NEED TO CAST THE possible ARRAY(...)::uuid[] ?
+    -- postgres=# select array_append(NULL, 'sdf');
+    -- ERROR:  could not determine polymorphic type because input has type unknown
+    policy_ast = ast_helpers.any(
+      v_lexpr := ast_helpers.col(policy_template_vars->>'entity_field'),
+      v_rexpr := ast.func_call(
+        v_funcname := ast_helpers.array_of_strings('array_append'),
+        v_args := to_jsonb(ARRAY[
+          array_ast,
+          policy_template_vars->'current_user_ast'
+        ])
+      )
+    );
+  ELSE
+    policy_ast = ast_helpers.any(
+      v_lexpr := ast_helpers.col(policy_template_vars->>'entity_field'),
+      v_rexpr := array_ast
+    );
+  END IF;
+
+  RETURN policy_ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.acl_where_clause ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+BEGIN
+  RETURN (CASE WHEN policy_template_vars->'mask' IS NULL THEN
+      ast_helpers.equals(
+          v_lexpr := ast_helpers.col('acl', 'actor_id'),
+          v_rexpr := policy_template_vars->'current_user_ast'
+      )
+    ELSE
+      ast.bool_expr(
+        v_boolop := 0,
+        v_args := to_jsonb(ARRAY[
+          ast_helpers.equals(
+              v_lexpr := ast.a_expr(
+                v_kind := 0,
+                v_name := to_jsonb(ARRAY[ast.string('&')]),
+                v_lexpr := ast_helpers.col('acl', 'permissions'),
+                v_rexpr := ast.a_const(v_val := ast.string(policy_template_vars->>'mask'))
+              ),
+              v_rexpr := ast.a_const(v_val := ast.string(policy_template_vars->>'mask'))
+          ),
+          ast_helpers.equals(
+              v_lexpr := ast_helpers.col('acl', 'actor_id'),
+              v_rexpr := policy_template_vars->'current_user_ast'
+          )
+        ]) 
+      )
+    END);
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.cpt_acl ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  policy_ast jsonb;
+BEGIN
+
+  policy_ast = ast.sub_link (
+    v_subLinkType := 0,
+    v_subselect := ast.select_stmt(
+       v_op := 0,
+       v_targetList := to_jsonb(ARRAY[
+         ast.res_target(
+            v_val := ast.a_const(ast.integer(1))
+         )
+       ]),
+       v_fromClause := to_jsonb(ARRAY[
+          ast_helpers.range_var(
+              v_schemaname := policy_template_vars->>'acl_schema',
+              v_relname := policy_template_vars->>'acl_table',
+              v_alias := ast.alias(
+                  v_aliasname := 'acl'
+              )
+          )
+      ]),
+      v_whereClause := ast_helpers.acl_where_clause(
+        policy_template_vars
+      )
+    )
+  );
+
+  RETURN policy_ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.create_policy_template ( policy_template_name text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
+
+  -- TODO for safety, keep defaults. However, group_ids() should only return array of current_user_id()
 
   IF (policy_template_vars->>'rls_role' IS NULL OR policy_template_vars->>'rls_role_schema' IS NULL) THEN 
     policy_template_vars = jsonb_set(policy_template_vars, '{rls_role_schema}', to_jsonb('jwt_public'::text));
@@ -3538,6 +3656,24 @@ BEGIN
     policy_template_vars = jsonb_set(policy_template_vars, '{rls_groups_schema}', to_jsonb('jwt_public'::text));
     policy_template_vars = jsonb_set(policy_template_vars, '{rls_groups}', to_jsonb('current_group_ids'::text));
   END IF;
+
+  IF (policy_template_vars->'current_groups_ast' IS NULL) THEN 
+      policy_template_vars = jsonb_set(policy_template_vars, '{current_groups_ast}', 
+        ast_helpers.rls_fn(
+          policy_template_vars->>'rls_groups_schema',
+          policy_template_vars->>'rls_groups'
+        )
+      );
+  END IF;
+
+  IF (policy_template_vars->'current_user_ast' IS NULL) THEN 
+      policy_template_vars = jsonb_set(policy_template_vars, '{current_user_ast}', 
+        ast_helpers.rls_fn(
+          policy_template_vars->>'rls_role_schema',
+          policy_template_vars->>'rls_role')
+      );
+  END IF;
+
 
   -- Tag some functions, allow them to be "RLS functions"
   -- so they show up in the RLS UI
@@ -3580,6 +3716,14 @@ BEGIN
       );
   ELSEIF (policy_template_name = 'administrator_records') THEN
       policy_ast = ast_helpers.cpt_administrator_records(
+          policy_template_vars
+      );
+  ELSEIF (policy_template_name = 'entity_acl') THEN
+      policy_ast = ast_helpers.cpt_entity_acl(
+          policy_template_vars
+      );
+  ELSEIF (policy_template_name = 'acl') THEN
+      policy_ast = ast_helpers.cpt_acl(
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'open') THEN
@@ -4669,7 +4813,7 @@ BEGIN
   END IF;
 
   IF (node->'A_ArrayExpr'->'elements') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_ArrayExpr';
+    RETURN format('ARRAY[]');
   END IF;
 
   node = node->'A_ArrayExpr';
