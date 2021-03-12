@@ -36,6 +36,26 @@ RETURN NEW;
  $LQLCODEZ$ LANGUAGE plpgsql VOLATILE;"
 `;
 
+exports[`create_trigger deparse 1`] = `
+Object {
+  "deparse": "CREATE TRIGGER v_trigger_name 
+ BEFORE INSERT ON v_schema_name.v_table_name 
+ FOR EACH ROW 
+ WHEN (NEW.type <> 0) 
+ EXECUTE PROCEDURE v_trigger_fn_schema.v_trigger_fn_name ( );",
+}
+`;
+
+exports[`create_trigger_distinct_fields deparse 1`] = `
+Object {
+  "deparse": "CREATE TRIGGER v_trigger_name 
+ BEFORE INSERT ON v_schema_name.v_table_name 
+ FOR EACH ROW 
+ WHEN (OLD.field1 IS DISTINCT FROM NEW.field1 OR OLD.field2 IS DISTINCT FROM NEW.field2) 
+ EXECUTE PROCEDURE v_trigger_fn_schema.v_trigger_fn_name ( );",
+}
+`;
+
 exports[`create_trigger_stmt 1`] = `
 Object {
   "create_trig_stmt": Object {

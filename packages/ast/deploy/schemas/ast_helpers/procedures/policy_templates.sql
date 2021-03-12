@@ -15,7 +15,7 @@ BEGIN
   -- Function(id), Field(id)
   -- SELECT db_migrate.text('policy_expression_current_role', 
 
-  policy_ast = ast_helpers.equals(
+  policy_ast = ast_helpers.eq(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
       v_rexpr := policy_template_vars->'current_user_ast'
   );
@@ -37,7 +37,7 @@ BEGIN
 
   -- SELECT db_migrate.text('policy_expression_current_roles', 
   policy_ast = ast_helpers.or(
-    ast_helpers.equals(
+    ast_helpers.eq(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
       v_rexpr := policy_template_vars->'current_user_ast'
     ),
@@ -69,7 +69,7 @@ BEGIN
   FOR item IN
     SELECT * FROM jsonb_array_elements(policy_template_vars->'role_keys')
     LOOP 
-    key_asts = array_append(key_asts, ast_helpers.equals(
+    key_asts = array_append(key_asts, ast_helpers.eq(
       -- NOTE if you have a string JSON element, item::text will keep " around it
       -- this just gets the root path unescaped.... a nice hack
       -- https://dba.stackexchange.com/questions/207984/unquoting-json-strings-print-json-strings-without-quotes
@@ -110,7 +110,7 @@ BEGIN
               )
           )
       ]),
-      v_whereClause := ast_helpers.equals(
+      v_whereClause := ast_helpers.eq(
           v_lexpr := ast_helpers.col('p', policy_template_vars->>'permission_name_key'),
           v_rexpr := ast.a_const(
               v_val := ast.string(policy_template_vars->>'this_value')
@@ -157,7 +157,7 @@ BEGIN
               )
           )
       ]),
-      v_whereClause := ast_helpers.equals(
+      v_whereClause := ast_helpers.eq(
           v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
           v_rexpr := ast_helpers.col(policy_template_vars->>'this_object_key')
       )
@@ -207,20 +207,20 @@ BEGIN
                       v_aliasname := 'd'
                   )
               ),
-              v_quals := ast_helpers.equals(
+              v_quals := ast_helpers.eq(
                   v_lexpr := ast_helpers.col('t', 'database_id'),
                   v_rexpr := ast_helpers.col('d', 'id') 
               )
           )
       ]),
       v_whereClause := ast_helpers.and(
-          ast_helpers.equals(
+          ast_helpers.eq(
               v_lexpr := ast_helpers.col('t', 'database_id'),
               v_rexpr := ast.a_const( 
                 v_val := ast.string( policy_template_vars->>'database_id' )
               )
           ),
-          ast_helpers.equals(
+          ast_helpers.eq(
               v_lexpr := ast_helpers.col('t', 'id'),
               v_rexpr := ast.a_const( 
                 v_val := ast.string( policy_template_vars->>'table_id' )
@@ -276,13 +276,13 @@ BEGIN
                       v_aliasname := 'p'
                   )
               ),
-              v_quals := ast_helpers.equals(
+              v_quals := ast_helpers.eq(
                   v_lexpr := ast_helpers.col('p',policy_template_vars->>'owned_table_ref_key'),
                   v_rexpr := ast_helpers.col('c',policy_template_vars->>'object_table_owned_key')
               )
           )
       ]),
-      v_whereClause := ast_helpers.equals(
+      v_whereClause := ast_helpers.eq(
           v_lexpr := ast_helpers.col('c',policy_template_vars->>'object_table_ref_key'),
           v_rexpr := ast_helpers.col(policy_template_vars->>'this_object_key')
       )
@@ -335,13 +335,13 @@ BEGIN
                       v_aliasname := 'g'
                   )
               ),
-              v_quals := ast_helpers.equals(
+              v_quals := ast_helpers.eq(
                   v_lexpr := ast_helpers.col('g',policy_template_vars->>'owned_table_ref_key'),
                   v_rexpr := ast_helpers.col('m',policy_template_vars->>'object_table_owned_key')
               )
           )
       ]),
-      v_whereClause := ast_helpers.equals(
+      v_whereClause := ast_helpers.eq(
           v_lexpr := ast_helpers.col('m',policy_template_vars->>'object_table_ref_key'),
           v_rexpr := ast_helpers.col(policy_template_vars->>'this_object_key')
       )
@@ -376,7 +376,7 @@ BEGIN
     v_boolop := 0,
     v_args := to_jsonb(ARRAY[
         policy_ast->'SubLink'->'subselect'->'SelectStmt'->'fromClause'->0->'JoinExpr'->'quals',
-        ast_helpers.equals(
+        ast_helpers.eq(
             v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
             v_rexpr := ast_helpers.col(policy_template_vars->>'this_owned_key')
         )
@@ -414,7 +414,7 @@ BEGIN
               )
           )
       ]),
-      v_whereClause := ast_helpers.equals(
+      v_whereClause := ast_helpers.eq(
           v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
           v_rexpr := ast_helpers.col(
             policy_template_vars->>'this_object_key'
@@ -494,7 +494,7 @@ CREATE FUNCTION ast_helpers.acl_where_clause(
 ) returns jsonb as $$
 BEGIN
   RETURN (CASE WHEN policy_template_vars->'mask' IS NULL THEN
-      ast_helpers.equals(
+      ast_helpers.eq(
           v_lexpr := ast_helpers.col('acl', 'actor_id'),
           v_rexpr := policy_template_vars->'current_user_ast'
       )
@@ -502,7 +502,7 @@ BEGIN
       ast.bool_expr(
         v_boolop := 0,
         v_args := to_jsonb(ARRAY[
-          ast_helpers.equals(
+          ast_helpers.eq(
               v_lexpr := ast.a_expr(
                 v_kind := 0,
                 v_name := to_jsonb(ARRAY[ast.string('&')]),
@@ -511,7 +511,7 @@ BEGIN
               ),
               v_rexpr := ast.a_const(v_val := ast.string(policy_template_vars->>'mask'))
           ),
-          ast_helpers.equals(
+          ast_helpers.eq(
               v_lexpr := ast_helpers.col('acl', 'actor_id'),
               v_rexpr := policy_template_vars->'current_user_ast'
           )
