@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create_trigger deparse 1`] = `
+Object {
+  "deparse": "CREATE TRIGGER v_trigger_name 
+ BEFORE INSERT ON v_schema_name.v_table_name 
+ FOR EACH ROW 
+ WHEN (NEW.type <> 0) 
+ EXECUTE PROCEDURE v_trigger_fn_schema.v_trigger_fn_name ( );",
+}
+`;
