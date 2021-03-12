@@ -2116,6 +2116,22 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.neq ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 0,
+      v_name := to_jsonb(ARRAY[
+          ast.string('<>')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.gt ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast_expr jsonb;
@@ -2481,27 +2497,10 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_trigger_distinct_fields ( v_trigger_name text, v_schema_name text, v_table_name text, v_trigger_fn_schema text, v_trigger_fn_name text, v_fields text[] DEFAULT ARRAY[]::text[], v_params text[] DEFAULT ARRAY[]::text[], v_timing int DEFAULT 2, v_events int DEFAULT 4 | 16 ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.create_trigger ( v_trigger_name text, v_schema_name text, v_table_name text, v_trigger_fn_schema text, v_trigger_fn_name text, v_whenclause jsonb DEFAULT NULL, v_params text[] DEFAULT ARRAY[]::text[], v_timing int DEFAULT 2, v_events int DEFAULT 4 | 16 ) RETURNS jsonb AS $EOFCODE$
 DECLARE
-  results jsonb[];
   result jsonb;
-  whenClause jsonb;
-	i int;
-
-  nodes jsonb[];
 BEGIN
-
-  FOR i IN SELECT * FROM generate_subscripts(v_fields, 1) g(i)
-  LOOP
-    nodes = array_append(nodes, ast_helpers.a_expr_distinct_tg_field(v_fields[i]));
-  END LOOP;
- 
-  IF (cardinality(nodes) > 1) THEN
-    whenClause = ast_helpers.or( variadic nodes := nodes );
-  ELSEIF (cardinality(nodes) = 1) THEN
-    whenClause = nodes[1];
-  END IF;
-
   result = ast.create_trig_stmt(
     v_trigname := v_trigger_name,
     v_relation := ast_helpers.range_var(
@@ -2513,11 +2512,47 @@ BEGIN
     v_row := true,
     v_timing := v_timing,
     v_events := v_events,
-    v_whenClause := whenClause
+    v_whenClause := v_whenClause
   );
 	RETURN ast.raw_stmt(
     v_stmt := result,
     v_stmt_len := 1
+  );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.create_trigger_distinct_fields ( v_trigger_name text, v_schema_name text, v_table_name text, v_trigger_fn_schema text, v_trigger_fn_name text, v_fields text[] DEFAULT ARRAY[]::text[], v_params text[] DEFAULT ARRAY[]::text[], v_timing int DEFAULT 2, v_events int DEFAULT 4 | 16 ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  whenClause jsonb;
+	i int;
+  nodes jsonb[];
+BEGIN
+
+  FOR i IN SELECT * FROM generate_subscripts(v_fields, 1) g(i)
+  LOOP
+    -- OLD.field <> NEW.field
+    nodes = array_append(nodes, ast_helpers.a_expr_distinct_tg_field(v_fields[i]));
+  END LOOP;
+ 
+  IF (cardinality(nodes) > 1) THEN
+    whenClause = ast_helpers.or( variadic nodes := nodes );
+  ELSEIF (cardinality(nodes) = 1) THEN
+    whenClause = nodes[1];
+  END IF;
+
+  RETURN ast_helpers.create_trigger(
+    v_trigger_name := v_trigger_name,
+    
+    v_schema_name := v_schema_name,
+    v_table_name := v_table_name,
+
+    v_trigger_fn_schema := v_trigger_fn_schema,
+    v_trigger_fn_name := v_trigger_fn_name,
+
+    v_whenClause := whenClause,
+    v_params := v_params,
+    v_timing := v_timing,
+    v_events := v_events
   );
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
