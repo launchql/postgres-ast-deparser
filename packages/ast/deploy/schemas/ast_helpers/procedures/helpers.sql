@@ -829,6 +829,56 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.alter_policy (
+  v_policy_name text default null,
+  v_schema_name text default null,
+  v_table_name text default null,
+  v_roles text[] default null,
+  v_qual jsonb default null,
+  v_with_check jsonb default null
+)
+RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+  roles jsonb[];
+  i int;
+BEGIN
+
+  -- if there are no roles then use PUBLIC
+  IF (v_roles IS NOT NULL OR cardinality(v_roles) > 0) THEN 
+    FOR i IN 
+    SELECT * FROM generate_series(1, cardinality(v_roles))
+    LOOP
+      roles = array_append(roles, ast.role_spec(
+        v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_CSTRING'
+        ),
+        v_rolename:=v_roles[i]
+      ));
+    END LOOP;
+  END IF;
+
+  select * FROM ast.alter_policy_stmt(
+    v_policy_name := v_policy_name,
+    v_table := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_roles := to_jsonb(roles),
+    v_qual := v_qual,
+    v_with_check := v_with_check
+  ) INTO ast;
+
+  RETURN ast.raw_stmt(
+    v_stmt := ast,
+    v_stmt_len := 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.drop_policy (
   v_policy_name text default null,
   v_schema_name text default null,

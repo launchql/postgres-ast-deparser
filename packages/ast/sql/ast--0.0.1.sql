@@ -1767,12 +1767,14 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.alter_policy_stmt ( v_policy_name text DEFAULT NULL, v_table jsonb DEFAULT NULL, v_qual jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast.alter_policy_stmt ( v_policy_name text DEFAULT NULL, v_table jsonb DEFAULT NULL, v_roles jsonb DEFAULT NULL, v_qual jsonb DEFAULT NULL, v_with_check jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
 DECLARE
     result jsonb = '{"AlterPolicyStmt":{}}'::jsonb;
 BEGIN
     result = ast.jsonb_set(result, '{AlterPolicyStmt, policy_name}', to_jsonb(v_policy_name));
     result = ast.jsonb_set(result, '{AlterPolicyStmt, table}', v_table);
+    result = ast.jsonb_set(result, '{AlterPolicyStmt, roles}', v_roles);
+    result = ast.jsonb_set(result, '{AlterPolicyStmt, with_check}', v_with_check);
     result = ast.jsonb_set(result, '{AlterPolicyStmt, qual}', v_qual);
     RETURN result;
 END;
@@ -2680,6 +2682,45 @@ BEGIN
     v_cmd_name := v_cmd_name,
     v_with_check := v_with_check,
     v_permissive := v_permissive
+  ) INTO ast;
+
+  RETURN ast.raw_stmt(
+    v_stmt := ast,
+    v_stmt_len := 1
+  );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_policy ( v_policy_name text DEFAULT NULL, v_schema_name text DEFAULT NULL, v_table_name text DEFAULT NULL, v_roles text[] DEFAULT NULL, v_qual jsonb DEFAULT NULL, v_with_check jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast jsonb;
+  roles jsonb[];
+  i int;
+BEGIN
+
+  -- if there are no roles then use PUBLIC
+  IF (v_roles IS NOT NULL OR cardinality(v_roles) > 0) THEN 
+    FOR i IN 
+    SELECT * FROM generate_series(1, cardinality(v_roles))
+    LOOP
+      roles = array_append(roles, ast.role_spec(
+        v_roletype:=ast_constants.role_spec_type(
+          'ROLESPEC_CSTRING'
+        ),
+        v_rolename:=v_roles[i]
+      ));
+    END LOOP;
+  END IF;
+
+  select * FROM ast.alter_policy_stmt(
+    v_policy_name := v_policy_name,
+    v_table := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_roles := to_jsonb(roles),
+    v_qual := v_qual,
+    v_with_check := v_with_check
   ) INTO ast;
 
   RETURN ast.raw_stmt(
@@ -5351,15 +5392,65 @@ BEGIN
     output = array_append(output, 'TO');
     output = array_append(output, deparser.list(node->'roles'));
 
+    IF (node->'qual') IS NOT NULL THEN
+      output = array_append(output, 'USING');
+      output = array_append(output, '(');
+      output = array_append(output, deparser.expression(node->'qual'));
+      output = array_append(output, ')');
+    END IF;
+
     IF (node->'with_check') IS NOT NULL THEN
       output = array_append(output, 'WITH CHECK');
       output = array_append(output, '(');
       output = array_append(output, deparser.expression(node->'with_check'));
       output = array_append(output, ')');
-    ELSE 
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION deparser.alter_policy_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  permissive bool;
+BEGIN
+    IF (node->'AlterPolicyStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterPolicyStmt';
+    END IF;
+
+    IF (node->'AlterPolicyStmt'->'policy_name') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterPolicyStmt';
+    END IF;
+
+    node = node->'AlterPolicyStmt';
+
+    output = array_append(output, 'ALTER');
+    output = array_append(output, 'POLICY');
+    output = array_append(output, quote_ident(node->>'policy_name'));
+
+    IF (node->'table') IS NOT NULL THEN
+      output = array_append(output, 'ON');
+      output = array_append(output, deparser.expression(node->'table'));
+    END IF;
+
+    IF (node->'roles') IS NOT NULL THEN
+      output = array_append(output, 'TO');
+      output = array_append(output, deparser.list(node->'roles'));
+    END IF;
+
+   IF (node->'qual') IS NOT NULL THEN
       output = array_append(output, 'USING');
       output = array_append(output, '(');
       output = array_append(output, deparser.expression(node->'qual'));
+      output = array_append(output, ')');
+    END IF;
+
+    IF (node->'with_check') IS NOT NULL THEN
+      output = array_append(output, 'WITH CHECK');
+      output = array_append(output, '(');
+      output = array_append(output, deparser.expression(node->'with_check'));
       output = array_append(output, ')');
     END IF;
 
@@ -8554,6 +8645,8 @@ BEGIN
     RETURN deparser.alter_domain_stmt(expr, context);
   ELSEIF (expr->>'AlterEnumStmt') IS NOT NULL THEN
     RETURN deparser.alter_enum_stmt(expr, context);
+  ELSEIF (expr->>'AlterPolicyStmt') IS NOT NULL THEN
+    RETURN deparser.alter_policy_stmt(expr, context);
   ELSEIF (expr->>'AlterTableCmd') IS NOT NULL THEN
     RETURN deparser.alter_table_cmd(expr, context);
   ELSEIF (expr->>'AlterTableStmt') IS NOT NULL THEN

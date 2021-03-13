@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`policy deparse 1`] = `
+Array [
+  Object {
+    "deparse": "ALTER POLICY mypolicy ON schemanamed.mytable TO authenticated USING ( responder_id = dbe.get_uid(c, b) OR requester_id = dbe.get_other_uid(c, b) );",
+  },
+]
+`;
