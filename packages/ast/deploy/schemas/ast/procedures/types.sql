@@ -2037,13 +2037,17 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION ast.alter_policy_stmt (
     v_policy_name text DEFAULT NULL,
     v_table jsonb DEFAULT NULL,
-    v_qual jsonb DEFAULT NULL
+    v_roles jsonb DEFAULT NULL,
+    v_qual jsonb DEFAULT NULL,
+    v_with_check jsonb DEFAULT NULL
 ) RETURNS jsonb AS $EOFCODE$
 DECLARE
     result jsonb = '{"AlterPolicyStmt":{}}'::jsonb;
 BEGIN
     result = ast.jsonb_set(result, '{AlterPolicyStmt, policy_name}', to_jsonb(v_policy_name));
     result = ast.jsonb_set(result, '{AlterPolicyStmt, table}', v_table);
+    result = ast.jsonb_set(result, '{AlterPolicyStmt, roles}', v_roles);
+    result = ast.jsonb_set(result, '{AlterPolicyStmt, with_check}', v_with_check);
     result = ast.jsonb_set(result, '{AlterPolicyStmt, qual}', v_qual);
     RETURN result;
 END;

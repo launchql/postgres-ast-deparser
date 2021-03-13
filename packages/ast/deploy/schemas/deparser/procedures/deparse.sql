@@ -1511,15 +1511,17 @@ BEGIN
     output = array_append(output, 'TO');
     output = array_append(output, deparser.list(node->'roles'));
 
+    IF (node->'qual') IS NOT NULL THEN
+      output = array_append(output, 'USING');
+      output = array_append(output, '(');
+      output = array_append(output, deparser.expression(node->'qual'));
+      output = array_append(output, ')');
+    END IF;
+
     IF (node->'with_check') IS NOT NULL THEN
       output = array_append(output, 'WITH CHECK');
       output = array_append(output, '(');
       output = array_append(output, deparser.expression(node->'with_check'));
-      output = array_append(output, ')');
-    ELSE 
-      output = array_append(output, 'USING');
-      output = array_append(output, '(');
-      output = array_append(output, deparser.expression(node->'qual'));
       output = array_append(output, ')');
     END IF;
 
@@ -1528,6 +1530,59 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE FUNCTION deparser.alter_policy_stmt(
+  node jsonb,
+  context jsonb default '{}'::jsonb
+) returns text as $$
+DECLARE
+  output text[];
+  permissive bool;
+BEGIN
+    IF (node->'AlterPolicyStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterPolicyStmt';
+    END IF;
+
+    IF (node->'AlterPolicyStmt'->'policy_name') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterPolicyStmt';
+    END IF;
+
+    node = node->'AlterPolicyStmt';
+
+    output = array_append(output, 'ALTER');
+    output = array_append(output, 'POLICY');
+    output = array_append(output, quote_ident(node->>'policy_name'));
+
+    IF (node->'table') IS NOT NULL THEN
+      output = array_append(output, 'ON');
+      output = array_append(output, deparser.expression(node->'table'));
+    END IF;
+
+    IF (node->'roles') IS NOT NULL THEN
+      output = array_append(output, 'TO');
+      output = array_append(output, deparser.list(node->'roles'));
+    END IF;
+
+   IF (node->'qual') IS NOT NULL THEN
+      output = array_append(output, 'USING');
+      output = array_append(output, '(');
+      output = array_append(output, deparser.expression(node->'qual'));
+      output = array_append(output, ')');
+    END IF;
+
+    IF (node->'with_check') IS NOT NULL THEN
+      output = array_append(output, 'WITH CHECK');
+      output = array_append(output, '(');
+      output = array_append(output, deparser.expression(node->'with_check'));
+      output = array_append(output, ')');
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 
 CREATE FUNCTION deparser.role_spec(
   node jsonb,
@@ -5055,6 +5110,8 @@ BEGIN
     RETURN deparser.alter_domain_stmt(expr, context);
   ELSEIF (expr->>'AlterEnumStmt') IS NOT NULL THEN
     RETURN deparser.alter_enum_stmt(expr, context);
+  ELSEIF (expr->>'AlterPolicyStmt') IS NOT NULL THEN
+    RETURN deparser.alter_policy_stmt(expr, context);
   ELSEIF (expr->>'AlterTableCmd') IS NOT NULL THEN
     RETURN deparser.alter_table_cmd(expr, context);
   ELSEIF (expr->>'AlterTableStmt') IS NOT NULL THEN

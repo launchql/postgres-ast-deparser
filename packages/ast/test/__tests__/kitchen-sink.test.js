@@ -39,6 +39,7 @@ export const check = async (file) => {
   );
   const sql = result.join('\n');
   // console.log(sql);
+
   expect(cleanLines(sql)).toMatchSnapshot();
   expect(cleanLines(sqlfromparser)).toMatchSnapshot();
   // uncomment this to debug...
