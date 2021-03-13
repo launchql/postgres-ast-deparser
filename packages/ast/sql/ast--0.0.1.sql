@@ -3804,6 +3804,8 @@ BEGIN
       );
   ELSEIF (policy_template_name = 'open') THEN
       policy_ast = ast.string('TRUE');
+  ELSEIF (policy_template_name = 'closed') THEN
+      policy_ast = ast.string('FALSE');
   ELSE 
       RAISE EXCEPTION 'UNSUPPORTED POLICY';
   END IF;
