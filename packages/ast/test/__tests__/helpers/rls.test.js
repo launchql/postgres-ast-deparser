@@ -21,25 +21,39 @@ afterAll(async () => {
   }
 });
 
-it('create_trigger deparse', async () => {
+it('rls_membership_type_select', async () => {
   const [result] = await db.any(`
 select deparser.deparse( 
-  ast_helpers.create_trigger(
-    v_trigger_name := 'v_trigger_name',
-    
+  ast_helpers.rls_membership_type_select(
     v_schema_name := 'v_schema_name',
     v_table_name := 'v_table_name',
+    v_membership_type_name := 'Organization'
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
 
-    v_trigger_fn_schema := 'v_trigger_fn_schema',
-    v_trigger_fn_name := 'v_trigger_fn_name',
+it('rls_policy_permission_mask_select', async () => {
+  const [result] = await db.any(`
+select deparser.deparse( 
+  ast_helpers.rls_policy_permission_mask_select(
+    v_schema_name := 'v_schema_name',
+    v_function_name := 'v_function_name',
+    v_permission := 'Can I do this?'
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
 
-    v_whenClause := ast_helpers.neq(
-      v_lexpr := ast_helpers.col('new', 'type'),
-      v_rexpr := ast.a_const( v_val := ast.integer(0) )
-    ),
-    v_params := NULL,
-    v_timing := 2,
-    v_events := 4
+it('rls_policy_permission_mask_select', async () => {
+  const [result] = await db.any(`
+select deparser.deparse( 
+  ast_helpers.rls_policy_permission_mask_select(
+    v_schema_name := 'v_schema_name',
+    v_function_name := 'v_function_name',
+    v_permissions := ARRAY['Can I do this?', 'Can I also do this']
   )
 );
   `);

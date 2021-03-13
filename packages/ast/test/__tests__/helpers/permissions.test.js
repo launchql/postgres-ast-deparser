@@ -21,10 +21,24 @@ afterAll(async () => {
   }
 });
 
-it('create_trigger deparse', async () => {
+it('alter_perm_table_bitlen', async () => {
   const [result] = await db.any(`
 select deparser.deparse( 
-  ast_helpers.update_table_permission_bitlen(
+  ast_helpers.alter_perm_table_bitlen(
+    v_schema_name := 'v_schema_name',
+    v_table_name := 'v_table_name',
+    v_field_name := 'v_field_name',
+    v_bitlen := 123
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('alter_perm_table_bitlen_default', async () => {
+  const [result] = await db.any(`
+select deparser.deparse( 
+  ast_helpers.alter_perm_table_bitlen_default(
     v_schema_name := 'v_schema_name',
     v_table_name := 'v_table_name',
     v_field_name := 'v_field_name',

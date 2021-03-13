@@ -1,11 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`create_trigger deparse 1`] = `
+exports[`rls_membership_type_select 1`] = `
 Object {
-  "deparse": "CREATE TRIGGER v_trigger_name 
- BEFORE INSERT ON v_schema_name.v_table_name 
- FOR EACH ROW 
- WHEN (NEW.type <> 0) 
- EXECUTE PROCEDURE v_trigger_fn_schema.v_trigger_fn_name ( );",
+  "deparse": "SELECT mt.id FROM v_schema_name.v_table_name AS mt WHERE mt.name = 'Organization'",
+}
+`;
+
+exports[`rls_policy_permission_mask_select 1`] = `
+Object {
+  "deparse": "SELECT v_schema_name.v_function_name(ARRAY['Can I do this?']::citext[])",
+}
+`;
+
+exports[`rls_policy_permission_mask_select 2`] = `
+Object {
+  "deparse": "SELECT v_schema_name.v_function_name(ARRAY['Can I do this?', 'Can I also do this']::citext[])",
+}
+`;
+
+exports[`rls_policy_permission_select 1`] = `
+Object {
+  "deparse": "SELECT v_schema_name.v_function_name(ARRAY['Can I do this?']::citext[])",
+}
+`;
+
+exports[`rls_policy_permission_select 2`] = `
+Object {
+  "deparse": "SELECT v_schema_name.v_function_name(ARRAY['Can I do this?', 'Can I also do this']::citext[])",
 }
 `;
