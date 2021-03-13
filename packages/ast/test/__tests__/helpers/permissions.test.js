@@ -21,10 +21,10 @@ afterAll(async () => {
   }
 });
 
-it('alter_perm_table_bitlen', async () => {
+it('alter_table_perm_bitlen', async () => {
   const [result] = await db.any(`
 select deparser.deparse( 
-  ast_helpers.alter_perm_table_bitlen(
+  ast_helpers.alter_table_perm_bitlen(
     v_schema_name := 'v_schema_name',
     v_table_name := 'v_table_name',
     v_field_name := 'v_field_name',
@@ -35,10 +35,10 @@ select deparser.deparse(
   expect(result).toMatchSnapshot();
 });
 
-it('alter_perm_table_bitlen_default', async () => {
+it('alter_table_perm_bitlen_default', async () => {
   const [result] = await db.any(`
 select deparser.deparse( 
-  ast_helpers.alter_perm_table_bitlen_default(
+  ast_helpers.alter_table_perm_bitlen_default(
     v_schema_name := 'v_schema_name',
     v_table_name := 'v_table_name',
     v_field_name := 'v_field_name',

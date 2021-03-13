@@ -8991,7 +8991,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.alter_perm_table_bitlen ( v_schema_name text, v_table_name text, v_field_name text, v_bitlen int ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.alter_table_perm_bitlen ( v_schema_name text, v_table_name text, v_field_name text, v_bitlen int ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast_expr jsonb;
 BEGIN
@@ -9057,7 +9057,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.alter_perm_table_bitlen_default ( v_schema_name text, v_table_name text, v_field_name text, v_bitlen int ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.alter_table_perm_bitlen_default ( v_schema_name text, v_table_name text, v_field_name text, v_bitlen int ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast_expr jsonb;
 BEGIN

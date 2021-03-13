@@ -6,7 +6,7 @@
 
 BEGIN;
 
-CREATE FUNCTION ast_helpers.alter_perm_table_bitlen (
+CREATE FUNCTION ast_helpers.alter_table_perm_bitlen (
   v_schema_name text,
   v_table_name text,
   v_field_name text,
@@ -82,7 +82,7 @@ LANGUAGE 'plpgsql'
 IMMUTABLE;
 
 
-CREATE FUNCTION ast_helpers.alter_perm_table_bitlen_default (
+CREATE FUNCTION ast_helpers.alter_table_perm_bitlen_default (
   v_schema_name text,
   v_table_name text,
   v_field_name text,
