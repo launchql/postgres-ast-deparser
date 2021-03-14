@@ -1,20 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`alter_perm_table_bitlen 1`] = `
-Object {
-  "deparse": "ALTER TABLE v_schema_name.v_table_name ALTER COLUMN v_field_name TYPE bit(123) USING lpad(v_field_name::text, 123, '0')::bit(123)",
-}
-`;
-
-exports[`alter_perm_table_bitlen_default 1`] = `
-Object {
-  "deparse": "ALTER TABLE v_schema_name.v_table_name ALTER COLUMN v_field_name SET DEFAULT lpad('', 123, '0')::bit(123)",
-}
-`;
-
 exports[`alter_table_perm_bitlen 1`] = `
 Object {
-  "deparse": "ALTER TABLE v_schema_name.v_table_name ALTER COLUMN v_field_name TYPE bit(123) USING lpad(v_field_name::text, 123, '0')::bit(123)",
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ALTER COLUMN v_field_name TYPE bit(123) USING utils.bitmask_pad(v_field_name, 123, '0')::bit(123)",
 }
 `;
 

@@ -9021,16 +9021,11 @@ BEGIN
           v_raw_default := ast.type_cast (
             v_arg := ast.func_call(
               v_funcname := to_jsonb(ARRAY[
-                ast.string('lpad')
+                ast.string('utils'),
+                ast.string('bitmask_pad')
               ]),
               v_args := to_jsonb(ARRAY[
-                ast.type_cast(
-                  v_arg := ast_helpers.col(v_field_name),
-                  v_typeName := ast.type_name(
-                    v_names := ast_helpers.array_of_strings('text'),
-                    v_typemod := -1
-                  )
-                ),
+                ast_helpers.col(v_field_name),
                 ast.a_const(
                   v_val := ast.integer( v_bitlen )
                 ),
