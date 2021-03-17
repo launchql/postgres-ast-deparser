@@ -440,63 +440,6 @@ it('child_of_owned_object_records_group_array bits', async () => {
   expect(result).toMatchSnapshot();
 });
 
-it('acl', async () => {
-  const result = await getPolicyResult('acl', {
-    acl_schema: 'acl_schema',
-    acl_table: 'acl_table'
-  });
-  expect(result).toMatchSnapshot();
-});
-
-it('acl mask', async () => {
-  const result = await getPolicyResult('acl', {
-    acl_schema: 'acl_schema',
-    acl_table: 'acl_table',
-    mask: '1010101111'
-  });
-  expect(result).toMatchSnapshot();
-});
-
-it('entity_acl', async () => {
-  const result = await getPolicyResult('entity_acl', {
-    entity_field: 'entity_id',
-    acl_schema: 'acl_schema',
-    acl_table: 'acl_table'
-  });
-  expect(result).toMatchSnapshot();
-});
-
-it('entity_acl include user', async () => {
-  const result = await getPolicyResult('entity_acl', {
-    include_current_user_id: true,
-    entity_field: 'entity_id',
-    acl_schema: 'acl_schema',
-    acl_table: 'acl_table'
-  });
-  expect(result).toMatchSnapshot();
-});
-
-it('entity_acl_mask', async () => {
-  const result = await getPolicyResult('entity_acl', {
-    entity_field: 'entity_id',
-    acl_schema: 'acl_schema',
-    acl_table: 'acl_table',
-    mask: '1010010100101010111111'
-  });
-  expect(result).toMatchSnapshot();
-});
-
-it('entity_acl_mask include user', async () => {
-  const result = await getPolicyResult('entity_acl', {
-    include_current_user_id: true,
-    entity_field: 'entity_id',
-    acl_schema: 'acl_schema',
-    acl_table: 'acl_table',
-    mask: '1010010100101010111111'
-  });
-  expect(result).toMatchSnapshot();
-});
-
 it('open', async () => {
   const result = await getPolicyResult('open', {});
   expect(result).toMatchSnapshot();
