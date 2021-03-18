@@ -5658,6 +5658,34 @@ DECLARE
   constrainttype text;
 BEGIN
   contype = (node->'contype')::int;
+
+  IF (contype = 3) THEN
+    output = array_append(output, 'GENERATED');
+    IF (node->>'generated_when' = 'a') THEN 
+      output = array_append(output, 'ALWAYS AS');
+    ELSE
+      output = array_append(output, 'BY DEFAULT AS');
+    END IF;
+    output = array_append(output, 'IDENTIFY');
+    IF (node->'options' IS NOT NULL) THEN 
+      output = array_append(output, 
+        deparser.parens(deparser.list(node->'options', ' ', 
+          jsonb_set(context, '{generated}', to_jsonb(TRUE))
+        ))
+      );
+    END IF;
+    RETURN array_to_string(output, ' ');
+
+  ELSIF (contype = 13) THEN
+    -- NOTE: 13 IS NOT the real number... it's just future PG 13
+    output = array_append(output, 'GENERATED');
+    IF (node->>'generated_when' = 'a') THEN 
+      output = array_append(output, 'ALWAYS AS');
+    END IF;
+    RETURN array_to_string(output, ' ');
+
+  END IF;
+
   constrainttype = ast_utils.constrainttypes(contype);
   IF (node->'conname' IS NOT NULL) THEN
     output = array_append(output, 'CONSTRAINT');
@@ -5784,6 +5812,9 @@ BEGIN
 
     IF (node->'raw_expr' IS NOT NULL) THEN 
       output = array_append(output, deparser.parens(deparser.expression(node->'raw_expr')));
+      IF (contype = 13) THEN 
+        output = array_append(output, 'STORED');
+      END IF;
     END IF;
 
     IF (node->'fk_del_action' IS NOT NULL) THEN 
@@ -5869,6 +5900,16 @@ BEGIN
     IF (node->'defnamespace' IS NOT NULL) THEN 
       -- TODO needs quotes?
       defname = node->>'defnamespace' || '.' || node->>'defname';
+    END IF;
+
+    IF ((context->'generated')::bool IS TRUE) THEN
+      IF (defname = 'start') THEN 
+        RETURN 'START WITH ' || deparser.expression(node->'arg');
+      ELSIF (defname = 'increment') THEN 
+        RETURN 'INCREMENT BY ' || deparser.expression(node->'arg');
+      ELSE 
+        RAISE EXCEPTION 'BAD_EXPRESSION %', 'DefElem (generated)';
+      END IF;
     END IF;
 
     IF ((context->'sequence')::bool IS TRUE) THEN
@@ -6777,6 +6818,11 @@ BEGIN
 
     IF (node->'indexParams' IS NOT NULL AND jsonb_array_length(node->'indexParams') > 0) THEN 
       output = array_append(output, deparser.parens(deparser.list(node->'indexParams')));
+    END IF; 
+
+    IF (node->'indexIncludingParams' IS NOT NULL AND jsonb_array_length(node->'indexIncludingParams') > 0) THEN 
+      output = array_append(output, 'INCLUDE');
+      output = array_append(output, deparser.parens(deparser.list(node->'indexIncludingParams')));
     END IF; 
 
     IF (node->'whereClause' IS NOT NULL) THEN 
