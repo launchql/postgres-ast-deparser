@@ -5150,11 +5150,9 @@ DECLARE
   lastname jsonb;
   typ text[];
 BEGIN
-    IF (node->'TypeName') IS NULL THEN  
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeName';
+    IF (node->'TypeName') IS NOT NULL THEN  
+      node = node->'TypeName';
     END IF;
-
-    node = node->'TypeName';
 
     IF (node->'names') IS NULL THEN  
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeName';
@@ -5194,17 +5192,15 @@ DECLARE
   type text;
   arg text;
 BEGIN
-    IF (node->'TypeCast') IS NULL THEN  
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeCast';
+    IF (node->'TypeCast') IS NOT NULL THEN  
+      node = node->'TypeCast';
     END IF;
-
-    node = node->'TypeCast';
 
     IF (node->'typeName') IS NULL THEN  
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeCast';
     END IF;
 
-    type = deparser.expression(node->'typeName', context);
+    type = deparser.type_name(node->'typeName', context);
 
     -- PARENS
     IF (node#>'{arg, A_Expr}' IS NOT NULL) THEN 
@@ -5262,11 +5258,9 @@ DECLARE
   output text[];
     
 BEGIN
-    IF (node->'RangeVar') IS NULL THEN  
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RangeVar';
+    IF (node->'RangeVar') IS NOT NULL THEN  
+      node = node->'RangeVar';
     END IF;
-
-    node = node->'RangeVar';
 
     IF ((node->'inh')::bool = FALSE) THEN
       output = array_append(output, 'ONLY');
@@ -5287,7 +5281,7 @@ BEGIN
     END IF;
 
     IF (node->'alias') IS NOT NULL THEN
-      output = array_append(output, deparser.expression(node->'alias', context));
+      output = array_append(output, deparser.alias(node->'alias', context));
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -5412,23 +5406,23 @@ BEGIN
   left_expr = deparser.expression(expr->'lexpr', context);
   operator = deparser.expression(expr->'name'->0, context);
 
-  IF (operator = '!~') THEN
-    IF (expr->'rexpr'->'FuncCall'->'args'->1->'Null') IS NOT NULL THEN
-      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
-      RETURN format('%s NOT SIMILAR TO %s', left_expr, right_expr);
-    ELSE 
-      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
-      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->1, context) INTO right_expr2;
-      RETURN format('%s NOT SIMILAR TO %s ESCAPE %s', left_expr, right_expr, right_expr2);
-    END IF;
-  ELSE
-    IF (expr->'rexpr'->'FuncCall'->'args'->1->'Null') IS NOT NULL THEN
-      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
-      RETURN format('%s SIMILAR TO %s', left_expr, right_expr);
-    ELSE 
+  IF (operator = '~') THEN
+    IF ( jsonb_array_length( expr->'rexpr'->'FuncCall'->'args' ) > 1 ) THEN
       SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
       SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->1, context) INTO right_expr2;
       RETURN format('%s SIMILAR TO %s ESCAPE %s', left_expr, right_expr, right_expr2);
+    ELSE 
+      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
+      RETURN format('%s SIMILAR TO %s', left_expr, right_expr);
+    END IF;
+  ELSE
+    IF ( jsonb_array_length( expr->'rexpr'->'FuncCall'->'args' ) > 1) THEN
+      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
+      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->1, context) INTO right_expr2;
+      RETURN format('%s NOT SIMILAR TO %s ESCAPE %s', left_expr, right_expr, right_expr2);
+    ELSE 
+      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
+      RETURN format('%s NOT SIMILAR TO %s', left_expr, right_expr);
     END IF;
   END IF;
 
@@ -5842,7 +5836,7 @@ BEGIN
     output = array_append(output, quote_ident(node->>'colname'));
   END IF;
 
-  output = array_append(output, deparser.expression(node->'typeName', context));
+  output = array_append(output, deparser.type_name(node->'typeName', context));
 
   IF (node->'raw_default') IS NOT NULL THEN
     output = array_append(output, 'USING');
@@ -5855,7 +5849,7 @@ BEGIN
 
   IF (node->'collClause') IS NOT NULL THEN
     output = array_append(output, 'COLLATE');
-    output = array_append(output, quote_ident(node->'collClause'->'CollateClause'->'collname'->0->'String'->>'str'));
+    output = array_append(output, quote_ident(node->'collClause'->'collname'->0->'String'->>'str'));
   END IF;
 
   RETURN array_to_string(output, ' ');
@@ -6119,7 +6113,7 @@ BEGIN
 
   -- on
   output = array_append(output, 'ON');
-  output = array_append(output, deparser.expression(node->'relation', context));
+  output = array_append(output, deparser.range_var(node->'relation', context));
   output = array_append(output, chr(10));
 
   -- transitionRels
@@ -6296,7 +6290,7 @@ BEGIN
 
     IF (node->'table') IS NOT NULL THEN
       output = array_append(output, 'ON');
-      output = array_append(output, deparser.expression(node->'table'));
+      output = array_append(output, deparser.range_var(node->'table'));
     END IF;
 
 
@@ -6357,7 +6351,7 @@ BEGIN
 
     IF (node->'table') IS NOT NULL THEN
       output = array_append(output, 'ON');
-      output = array_append(output, deparser.expression(node->'table'));
+      output = array_append(output, deparser.range_var(node->'table'));
     END IF;
 
     IF (node->'roles') IS NOT NULL THEN
@@ -6388,15 +6382,14 @@ CREATE FUNCTION deparser.role_spec ( node jsonb, context jsonb DEFAULT '{}'::jso
 DECLARE
   roletype text;
 BEGIN
-    IF (node->'RoleSpec') IS NULL THEN
+    IF (node->'RoleSpec') IS NOT NULL THEN
+      node = node->'RoleSpec';
+    END IF;
+
+    IF (node->'roletype') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'RoleSpec';
     END IF;
 
-    IF (node->'RoleSpec'->'roletype') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RoleSpec';
-    END IF;
-
-    node = node->'RoleSpec';
     roletype = node->>'roletype';
 
     IF (roletype = 'ROLESPEC_CSTRING') THEN
@@ -6428,7 +6421,7 @@ BEGIN
     node = node->'InsertStmt';
 
     output = array_append(output, 'INSERT INTO');
-    output = array_append(output, deparser.expression(node->'relation'));
+    output = array_append(output, deparser.range_var(node->'relation'));
 
     IF (node->'cols' IS NOT NULL AND jsonb_array_length(node->'cols') > 0) THEN 
       output = array_append(output, deparser.parens(deparser.list(node->'cols')));
@@ -6441,7 +6434,7 @@ BEGIN
     END IF;
 
     IF (node->'onConflictClause') IS NOT NULL THEN
-      output = array_append(output, deparser.expression(node->'onConflictClause'));
+      output = array_append(output, deparser.on_conflict_clause(node->'onConflictClause'));
     END IF;
 
     IF (node->'returningList' IS NOT NULL) THEN 
@@ -6549,11 +6542,11 @@ BEGIN
       output = array_append(output, 'FOREIGN KEY');
       output = array_append(output, deparser.parens(deparser.list_quotes(node->'fk_attrs')));
       output = array_append(output, 'REFERENCES');
-      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.range_var(node->'pktable'));
       output = array_append(output, deparser.parens(deparser.list_quotes(node->'pk_attrs')));
     ELSIF (has_pk_attrs) THEN 
       output = array_append(output, deparser.constraint_stmt(node));
-      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.range_var(node->'pktable'));
       output = array_append(output, deparser.parens(deparser.list_quotes(node->'pk_attrs')));
     ELSIF (has_fk_attrs) THEN 
       IF (node->'conname' IS NOT NULL) THEN
@@ -6564,10 +6557,10 @@ BEGIN
       output = array_append(output, 'FOREIGN KEY');
       output = array_append(output, deparser.parens(deparser.list_quotes(node->'fk_attrs')));
       output = array_append(output, 'REFERENCES');
-      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.range_var(node->'pktable'));
     ELSE 
       output = array_append(output, deparser.constraint_stmt(node));
-      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.range_var(node->'pktable'));
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -6589,7 +6582,7 @@ BEGIN
     ELSE
       output = array_append(output, 'BY DEFAULT AS');
     END IF;
-    output = array_append(output, 'IDENTIFY');
+    output = array_append(output, 'IDENTITY');
     IF (node->'options' IS NOT NULL) THEN 
       output = array_append(output, 
         deparser.parens(deparser.list(node->'options', ' ', 
@@ -6638,7 +6631,7 @@ BEGIN
     node = node->'CreateSeqStmt';
 
     output = array_append(output, 'CREATE SEQUENCE');
-    output = array_append(output, deparser.expression(node->'sequence'));
+    output = array_append(output, deparser.range_var(node->'sequence'));
 
     IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
       output = array_append(output, deparser.list(node->'options', ' ', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
@@ -6697,7 +6690,7 @@ BEGIN
     node = node->'CreateTableAsStmt';
 
     output = array_append(output, 'CREATE MATERIALIZED VIEW');
-    output = array_append(output, deparser.expression(node->'into'));
+    output = array_append(output, deparser.into_clause(node->'into'));
     output = array_append(output, 'AS');
     output = array_append(output, deparser.expression(node->'query'));
 
@@ -7009,7 +7002,7 @@ BEGIN
       END IF;
     END IF;
 
-    output = array_append(output, deparser.expression(node->'action'));
+    output = array_append(output, deparser.grant_stmt(node->'action'));
 
     RETURN array_to_string(output, ' ');
 END;
@@ -7075,15 +7068,14 @@ CREATE FUNCTION deparser.with_clause ( node jsonb, context jsonb DEFAULT '{}'::j
 DECLARE
   output text[];
 BEGIN
-    IF (node->'WithClause') IS NULL THEN
+    IF (node->'WithClause') IS NOT NULL THEN
+      node = node->'WithClause';
+    END IF;
+
+    IF (node->'ctes') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'WithClause';
     END IF;
 
-    IF (node->'WithClause'->'ctes') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'WithClause';
-    END IF;
-
-    node = node->'WithClause';
     output = array_append(output, 'WITH');
     IF ((node->'recursive')::bool IS TRUE) THEN 
       output = array_append(output, 'RECURSIVE');
@@ -7163,15 +7155,13 @@ CREATE FUNCTION deparser.alias ( node jsonb, context jsonb DEFAULT '{}'::jsonb )
 DECLARE
   output text[];
 BEGIN
-    IF (node->'Alias') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'Alias';
+    IF (node->'Alias') IS NOT NULL THEN
+      node = node->'Alias';
     END IF;
 
-    IF (node->'Alias'->'aliasname') IS NULL THEN
+    IF (node->'aliasname') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'Alias';
     END IF;
-
-    node = node->'Alias';
 
     output = array_append(output, 'AS');
     output = array_append(output, quote_ident(node->>'aliasname'));
@@ -7206,7 +7196,7 @@ BEGIN
     output = array_append(output, deparser.parens(deparser.expression(node->'subquery')));
 
     IF (node->'alias' IS NOT NULL) THEN 
-      output = array_append(output, deparser.expression(node->'alias'));
+      output = array_append(output, deparser.alias(node->'alias'));
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -7229,7 +7219,7 @@ BEGIN
 
     output = array_append(output, 'DELETE');
     output = array_append(output, 'FROM');
-    output = array_append(output, deparser.expression(node->'relation'));
+    output = array_append(output, deparser.range_var(node->'relation'));
 
     IF (node->'whereClause' IS NOT NULL) THEN 
       output = array_append(output, 'WHERE');
@@ -7296,7 +7286,7 @@ BEGIN
 
     output = array_append(output, deparser.quoted_name(node->'domainname'));
     output = array_append(output, 'AS');
-    output = array_append(output, deparser.expression(node->'typeName'));
+    output = array_append(output, deparser.type_name(node->'typeName'));
 
     IF (node->'constraints' IS NOT NULL) THEN 
       output = array_append(output, deparser.list(node->'constraints'));
@@ -7311,19 +7301,16 @@ DECLARE
   output text[];
   objtype text;
 BEGIN
-    IF (node->'GrantStmt') IS NULL THEN
+    IF (node->'GrantStmt') IS NOT NULL THEN
+      node = node->'GrantStmt';
+    END IF;
+
+    IF (node->'objtype') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantStmt';
     END IF;
 
-    IF (node->'GrantStmt'->'objtype') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantStmt';
-    END IF;
-
-    node = node->'GrantStmt';
     objtype = node->>'objtype';
 
-    -- TODO NAMING
-    -- IF (objtype != 0) THEN 
     IF (objtype != 'OBJECT_ACCESS_METHOD') THEN 
       IF (node->'is_grant' IS NULL OR (node->'is_grant')::bool IS FALSE) THEN 
         output = array_append(output, 'REVOKE');
@@ -7339,6 +7326,8 @@ BEGIN
         output = array_append(output, 'ON');
         output = array_append(output, ast_utils.getgrantobject(node));
         IF ( objtype = 'OBJECT_DOMAIN' ) THEN 
+          output = array_append(output, deparser.list(node->'objects'->0));
+        ELSIF (jsonb_typeof (node->'objects'->0) = 'array') THEN 
           output = array_append(output, deparser.list(node->'objects'->0));
         ELSE
           output = array_append(output, deparser.list(node->'objects'));
@@ -7392,7 +7381,7 @@ BEGIN
 
     output = array_append(output, 'CREATE');
     output = array_append(output, 'TYPE');
-    output = array_append(output, deparser.expression(node->'typevar'));
+    output = array_append(output, deparser.range_var(node->'typevar', context));
     output = array_append(output, 'AS');
     output = array_append(output, deparser.parens(
       deparser.list(node->'coldeflist', E',')
@@ -7548,7 +7537,7 @@ BEGIN
       output = array_append(output, deparser.expression(node->'def'));
     ELSIF (subtype = 'AT_ChangeOwner') THEN
       output = array_append(output, 'OWNER TO');
-      output = array_append(output, deparser.expression(node->'newowner'));
+      output = array_append(output, deparser.role_spec(node->'newowner'));
     ELSIF (subtype = 'AT_ClusterOn') THEN
       output = array_append(output, 'CLUSTER ON');
       output = array_append(output, quote_ident(node->>'name'));
@@ -7620,7 +7609,12 @@ BEGIN
     IF (relkind = 'OBJECT_TABLE' ) THEN 
       output = array_append(output, 'TABLE');
 
-      ninh = (node->'relation'->'RangeVar'->'inh')::bool;
+      -- MARKED AS backwards compat (RangeVar/no RangeVar)
+      IF (node->'relation'->'RangeVar' IS NOT NULL) THEN 
+        ninh = (node->'relation'->'RangeVar'->'inh')::bool;
+      ELSE
+        ninh = (node->'relation'->'inh')::bool;
+      END IF;
       IF ( ninh IS FALSE OR ninh IS NULL ) THEN 
         output = array_append(output, 'ONLY');
       END IF;
@@ -7637,7 +7631,7 @@ BEGIN
 
     context = jsonb_set(context, '{alterType}', to_jsonb(relkind));
 
-    output = array_append(output, deparser.expression(node->'relation', context));
+    output = array_append(output, deparser.range_var(node->'relation', context));
     output = array_append(output, deparser.list(node->'cmds', ', ', context));
 
     RETURN array_to_string(output, ' ');
@@ -7686,7 +7680,7 @@ BEGIN
     END IF;
 
     IF (node->'alias' IS NOT NULL) THEN
-      output = array_append(output, deparser.expression(node->'alias'));
+      output = array_append(output, deparser.alias(node->'alias'));
     END IF;
 
     IF (node->'coldeflist' IS NOT NULL AND jsonb_array_length(node->'coldeflist') > 0) THEN
@@ -7732,7 +7726,7 @@ BEGIN
     END IF;
 
     output = array_append(output, 'ON');
-    output = array_append(output, deparser.expression(node->'relation'));
+    output = array_append(output, deparser.range_var(node->'relation'));
 
     -- BTREE is default, don't need to explicitly put it there
     IF (node->'accessMethod' IS NOT NULL AND upper(node->>'accessMethod') != 'BTREE') THEN
@@ -7778,7 +7772,7 @@ BEGIN
   
     output = array_append(output, 'UPDATE');
     IF (node->'relation' IS NOT NULL) THEN 
-      output = array_append(output, deparser.expression(node->'relation'));
+      output = array_append(output, deparser.range_var(node->'relation'));
     END IF;
     output = array_append(output, 'SET');
 
@@ -7939,7 +7933,7 @@ BEGIN
     END IF;
 
     IF (node->'alias' IS NOT NULL) THEN 
-      wrapped = wrapped || ' ' || deparser.expression(node->'alias');
+      wrapped = wrapped || ' ' || deparser.alias(node->'alias');
     END IF;
 
     RETURN wrapped;
@@ -8227,7 +8221,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.rule_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  event int;
+  event text;
 BEGIN
     IF (node->'RuleStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'RuleStmt';
@@ -8255,14 +8249,14 @@ BEGIN
     output = array_append(output, 'ON');
 
     -- events
-    event = (node->'event')::int;
-    IF (event = 1) THEN
+    event = node->>'event';
+    IF (event = 'CMD_SELECT') THEN
       output = array_append(output, 'SELECT');
-    ELSIF (event = 2) THEN 
+    ELSIF (event = 'CMD_UPDATE') THEN 
       output = array_append(output, 'UPDATE');
-    ELSIF (event = 3) THEN 
+    ELSIF (event = 'CMD_INSERT') THEN 
       output = array_append(output, 'INSERT');
-    ELSIF (event = 4) THEN 
+    ELSIF (event = 'CMD_DELETE') THEN 
       output = array_append(output, 'DELETE');
     ELSE
       RAISE EXCEPTION 'event type not yet implemented for RuleStmt';
@@ -8271,7 +8265,7 @@ BEGIN
     -- relation
 
     output = array_append(output, 'TO');
-    output = array_append(output, deparser.expression(node->'relation', context));
+    output = array_append(output, deparser.range_var(node->'relation', context));
 
     IF (node->'instead') IS NOT NULL THEN 
       output = array_append(output, 'DO');
@@ -8350,7 +8344,7 @@ BEGIN
           output = array_append(output, deparser.list(option->'DefElem'->'arg'));
         ELSEIF (defname = 'password') THEN
           output = array_append(output, 'PASSWORD');
-          output = array_append(output, deparser.expression(option->'DefElem'->'arg'));
+          output = array_append(output, '''' || deparser.expression(option->'DefElem'->'arg') || '''' );
         ELSEIF (defname = 'adminmembers') THEN
           output = array_append(output, 'ADMIN');
           output = array_append(output, deparser.list(option->'DefElem'->'arg'));
@@ -8420,7 +8414,13 @@ BEGIN
 
     node = node->'CreateStmt';
 
-    relpersistence = node#>>'{relation, RangeVar, relpersistence}';
+    -- MARKED AS backwar
+          -- MARKED AS backwards compat (RangeVar/no RangeVar)ds compat (RangeVar/no RangeVar)
+    IF (node->'relation'->'RangeVar' IS NOT NULL) THEN 
+      relpersistence = node#>>'{relation, RangeVar, relpersistence}';
+    ELSE
+      relpersistence = node#>>'{relation, relpersistence}';
+    END IF;
 
     IF (relpersistence = 't') THEN 
       output = array_append(output, 'CREATE');
@@ -8428,7 +8428,7 @@ BEGIN
       output = array_append(output, 'CREATE TABLE');
     END IF;
 
-    output = array_append(output, deparser.expression(node->'relation', context));
+    output = array_append(output, deparser.range_var(node->'relation', context));
     output = array_append(output, E'(\n');
     -- TODO add tabs (see pgsql-parser)
     output = array_append(output, deparser.list(node->'tableElts', E',\n', context));
@@ -8525,7 +8525,7 @@ BEGIN
 
     node = node->'ViewStmt';
     output = array_append(output, 'CREATE VIEW');
-    output = array_append(output, deparser.expression(node->'view', context));
+    output = array_append(output, deparser.range_var(node->'view', context));
     output = array_append(output, 'AS');
     output = array_append(output, deparser.expression(node->'query', context));
     RETURN array_to_string(output, ' ');
@@ -8635,7 +8635,7 @@ BEGIN
       output = array_append(output, '(');
       FOR item in SELECT * FROM jsonb_array_elements(node->'objargs')
       LOOP 
-        IF (item IS NULL) THEN
+        IF (item IS NULL OR item = '{}'::jsonb) THEN
           rets = array_append(rets, 'NONE');
         ELSE
           rets = array_append(rets, deparser.expression(item));
@@ -8784,11 +8784,10 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.into_clause ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
-    IF (node->'IntoClause') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'IntoClause';
+    IF (node->'IntoClause') IS NOT NULL THEN
+      node = node->'IntoClause';
     END IF;
-    node = node->'IntoClause';
-    RETURN deparser.expression(node->'rel');
+    RETURN deparser.range_var(node->'rel');
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
@@ -8827,7 +8826,7 @@ BEGIN
       IF ((node->'missing_ok')::bool is TRUE) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
-      output = array_append(output, deparser.expression(node->'relation'));
+      output = array_append(output, deparser.range_var(node->'relation'));
       output = array_append(output, 'RENAME');
       output = array_append(output, ast_utils.objtype_name(renameType) );
       output = array_append(output, quote_ident(node->>'subname'));
@@ -8873,7 +8872,7 @@ BEGIN
       IF ((node->'missing_ok')::bool is TRUE) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
-      output = array_append(output, deparser.expression(node->'relation'));
+      output = array_append(output, deparser.range_var(node->'relation'));
       output = array_append(output, 'RENAME');
       IF (renameType = 'OBJECT_COLUMN') THEN 
         -- not necessary, but why not
@@ -8915,7 +8914,7 @@ BEGIN
       output = array_append(output, deparser.expression(node->'object'));
       output = array_append(output, 'OWNER');
       output = array_append(output, 'TO');
-      output = array_append(output, deparser.expression(node->'newowner'));
+      output = array_append(output, deparser.role_spec(node->'newowner'));
     ELSE
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterOwnerStmt new objectType';
     END IF;
@@ -8941,7 +8940,7 @@ BEGIN
       IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
         output = array_append(output, 'IF EXISTS');
       END IF;
-      output = array_append(output, deparser.expression(node->'relation'));
+      output = array_append(output, deparser.range_var(node->'relation'));
       output = array_append(output, 'SET SCHEMA');
       output = array_append(output, quote_ident(node->>'newschema'));
     ELSE
@@ -8985,18 +8984,16 @@ DECLARE
   valueSet jsonb;
   valueArr text[];
 BEGIN
-    IF (node->'SelectStmt') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt';
+    IF (node->'SelectStmt') IS NOT NULL THEN
+      node = node->'SelectStmt';
     END IF;
 
-    IF (node->'SelectStmt'->'op') IS NULL THEN
+    IF (node->'op') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt';
     END IF;
-
-    node = node->'SelectStmt';
 
     IF (node->'withClause') IS NOT NULL THEN 
-      output = array_append(output, deparser.expression(node->'withClause', context));
+      output = array_append(output, deparser.with_clause(node->'withClause', context));
     END IF;
 
     op = node->>'op';
@@ -9007,7 +9004,7 @@ BEGIN
        END IF;
     ELSE 
         output = array_append(output, '(');
-        output = array_append(output, deparser.expression(node->'larg', context));
+        output = array_append(output, deparser.select_stmt(node->'larg', context));
         output = array_append(output, ')');
 
         IF (op = 'SETOP_NONE') THEN 
@@ -9029,14 +9026,18 @@ BEGIN
 
         -- rarg
         output = array_append(output, '(');
-        output = array_append(output, deparser.expression(node->'rarg', context));
+        output = array_append(output, deparser.select_stmt(node->'rarg', context));
         output = array_append(output, ')');
     END IF;
 
     -- distinct
     IF (node->'distinctClause') IS NOT NULL THEN 
       IF (node->'distinctClause'->0 IS NOT NULL) THEN 
-        IF (jsonb_typeof(node->'distinctClause'->0) = 'null') THEN 
+        IF (
+           jsonb_typeof(node->'distinctClause'->0) = 'null' 
+           OR 
+           node->'distinctClause'->0 = '{}'::jsonb
+        ) THEN 
           -- fix for custom.sql test case
           output = array_append(output, 'DISTINCT');
         ELSE
@@ -9058,7 +9059,7 @@ BEGIN
     -- into
     IF (node->'intoClause') IS NOT NULL THEN 
       output = array_append(output, 'INTO');
-      output = array_append(output, deparser.expression(node->'intoClause', context));
+      output = array_append(output, deparser.into_clause(node->'intoClause', context));
     END IF;
 
     -- from
@@ -9399,11 +9400,10 @@ DECLARE
   output text[];
   action int;
 BEGIN
-    IF (node->'InferClause') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'InferClause';
+    IF (node->'InferClause') IS NOT NULL THEN
+      node = node->'InferClause';
     END IF;
 
-    node = node->'InferClause';
 
     IF (node->'indexElems' IS NOT NULL) THEN
       output = array_append(output, deparser.parens(deparser.list(node->'indexElems')));
@@ -9421,18 +9421,20 @@ DECLARE
   output text[];
   action text;
 BEGIN
-    IF (node->'OnConflictClause') IS NULL THEN
+    IF (node->'OnConflictClause') IS NOT NULL THEN
+      node = node->'OnConflictClause';
+    END IF;
+
+    IF (node->'infer') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'OnConflictClause';
     END IF;
 
-    IF (node->'OnConflictClause'->'infer') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'OnConflictClause';
-    END IF;
-
-    node = node->'OnConflictClause';
 
     output = array_append(output, 'ON CONFLICT');
-    output = array_append(output, deparser.expression(node->'infer'));
+
+    IF (node->'infer' IS NOT NULL) THEN
+      output = array_append(output, deparser.infer_clause(node->'infer'));
+    END IF;
 
     action = node->>'action';
     IF (action = 'ONCONFLICT_NOTHING') THEN 
@@ -9499,7 +9501,7 @@ BEGIN
       output = array_append(output, ')');      
     ELSE
       output = array_append(output, 'RETURNS');
-      output = array_append(output, deparser.expression(node->'returnType'));
+      output = array_append(output, deparser.type_name(node->'returnType'));
     END IF;
 
     -- options
@@ -9581,7 +9583,7 @@ BEGIN
     END IF;
 
     output = array_append(output, quote_ident(node->>'name'));
-    output = array_append(output, deparser.expression(node->'argType'));
+    output = array_append(output, deparser.type_name(node->'argType'));
 
     IF (node->'defexpr') IS NOT NULL THEN
       output = array_append(output, 'DEFAULT');
