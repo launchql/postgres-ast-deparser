@@ -2924,7 +2924,12 @@ BEGIN
     IF (relkind = 'OBJECT_TABLE' ) THEN 
       output = array_append(output, 'TABLE');
 
-      ninh = (node->'relation'->'inh')::bool;
+      -- MARKED AS backwards compat (RangeVar/no RangeVar)
+      IF (node->'relation'->'RangeVar' IS NOT NULL) THEN 
+        ninh = (node->'relation'->'RangeVar'->'inh')::bool;
+      ELSE
+        ninh = (node->'relation'->'inh')::bool;
+      END IF;
       IF ( ninh IS FALSE OR ninh IS NULL ) THEN 
         output = array_append(output, 'ONLY');
       END IF;
@@ -3796,7 +3801,13 @@ BEGIN
 
     node = node->'CreateStmt';
 
-    relpersistence = node#>>'{relation, relpersistence}';
+    -- MARKED AS backwar
+          -- MARKED AS backwards compat (RangeVar/no RangeVar)ds compat (RangeVar/no RangeVar)
+    IF (node->'relation'->'RangeVar' IS NOT NULL) THEN 
+      relpersistence = node#>>'{relation, RangeVar, relpersistence}';
+    ELSE
+      relpersistence = node#>>'{relation, relpersistence}';
+    END IF;
 
     IF (relpersistence = 't') THEN 
       output = array_append(output, 'CREATE');
