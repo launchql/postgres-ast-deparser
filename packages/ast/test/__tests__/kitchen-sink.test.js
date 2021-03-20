@@ -2,6 +2,7 @@ import { cleanTree, cleanLines, getConnections } from '../utils';
 import { readFileSync } from 'fs';
 import { sync as glob } from 'glob';
 const parser = require('pgsql-parser');
+const { preparse } = require('pgsql-deparser');
 
 const FIXTURE_DIR = `${__dirname}/../__fixtures__`;
 let db, teardown;
@@ -31,11 +32,11 @@ export const check = async (file) => {
   )[0];
   const tree = parser.parse(testsql);
   const originalTree = cleanTree(tree);
-
+  const parseTree = preparse(tree);
   const sqlfromparser = parser.deparse(tree);
   const [{ expressions_array: result }] = await db.any(
     `select deparser.expressions_array( $1::jsonb );`,
-    JSON.stringify(tree)
+    JSON.stringify(parseTree)
   );
   const sql = result.join('\n');
   // console.log(sql);
