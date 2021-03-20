@@ -27,6 +27,57 @@ IMMUTABLE;
 --- CUSTOM (helpers)
 ---
 
+CREATE FUNCTION ast.bool_expr (
+  v_boolop text DEFAULT NULL, 
+  v_args jsonb DEFAULT NULL
+)
+  RETURNS jsonb
+  AS $EOFCODE$
+DECLARE
+  result jsonb = '{"BoolExpr":{}}'::jsonb;
+BEGIN
+  result = ast.jsonb_set(result, '{BoolExpr, boolop}', to_jsonb (v_boolop));
+  result = ast.jsonb_set(result, '{BoolExpr, args}', v_args);
+  RETURN result;
+END;
+$EOFCODE$
+LANGUAGE plpgsql
+IMMUTABLE;
+
+
+CREATE FUNCTION ast.column_ref (
+  v_fields jsonb DEFAULT NULL
+)
+  RETURNS jsonb
+  AS $EOFCODE$
+DECLARE
+  result jsonb = '{"ColumnRef":{}}'::jsonb;
+BEGIN
+  result = ast.jsonb_set(result, '{ColumnRef, fields}', v_fields);
+  RETURN result;
+END;
+$EOFCODE$
+LANGUAGE plpgsql
+IMMUTABLE;
+
+
+CREATE FUNCTION ast.raw_stmt (
+  v_stmt jsonb DEFAULT NULL, 
+  v_stmt_len int DEFAULT NULL
+)
+  RETURNS jsonb
+  AS $EOFCODE$
+DECLARE
+  result jsonb = '{"RawStmt":{}}'::jsonb;
+BEGIN
+  result = ast.jsonb_set(result, '{RawStmt, stmt}', v_stmt);
+  result = ast.jsonb_set(result, '{RawStmt, stmt_len}', to_jsonb (v_stmt_len));
+  RETURN result;
+END;
+$EOFCODE$
+LANGUAGE plpgsql
+IMMUTABLE;
+
 CREATE FUNCTION ast.integer (
   v_ival int DEFAULT NULL -- bigint below
 )
@@ -559,26 +610,26 @@ $EOFCODE$
 LANGUAGE plpgsql
 IMMUTABLE;
 
-CREATE FUNCTION ast.bool_expr (
-  v_xpr jsonb DEFAULT NULL, 
-  v_boolop text DEFAULT NULL, 
-  v_args jsonb DEFAULT NULL, 
-  v_location int DEFAULT NULL
-)
-  RETURNS jsonb
-  AS $EOFCODE$
-DECLARE
-  result jsonb = '{"BoolExpr":{}}'::jsonb;
-BEGIN
-  result = ast.jsonb_set(result, '{BoolExpr, xpr}', v_xpr);
-  result = ast.jsonb_set(result, '{BoolExpr, boolop}', to_jsonb (v_boolop));
-  result = ast.jsonb_set(result, '{BoolExpr, args}', v_args);
-  result = ast.jsonb_set(result, '{BoolExpr, location}', to_jsonb (v_location));
-  RETURN result;
-END;
-$EOFCODE$
-LANGUAGE plpgsql
-IMMUTABLE;
+-- CREATE FUNCTION ast.bool_expr (
+--   v_xpr jsonb DEFAULT NULL, 
+--   v_boolop text DEFAULT NULL, 
+--   v_args jsonb DEFAULT NULL, 
+--   v_location int DEFAULT NULL
+-- )
+--   RETURNS jsonb
+--   AS $EOFCODE$
+-- DECLARE
+--   result jsonb = '{"BoolExpr":{}}'::jsonb;
+-- BEGIN
+--   result = ast.jsonb_set(result, '{BoolExpr, xpr}', v_xpr);
+--   result = ast.jsonb_set(result, '{BoolExpr, boolop}', to_jsonb (v_boolop));
+--   result = ast.jsonb_set(result, '{BoolExpr, args}', v_args);
+--   result = ast.jsonb_set(result, '{BoolExpr, location}', to_jsonb (v_location));
+--   RETURN result;
+-- END;
+-- $EOFCODE$
+-- LANGUAGE plpgsql
+-- IMMUTABLE;
 
 CREATE FUNCTION ast.sub_link (
   v_xpr jsonb DEFAULT NULL, 
@@ -1523,24 +1574,24 @@ $EOFCODE$
 LANGUAGE plpgsql
 IMMUTABLE;
 
-CREATE FUNCTION ast.column_ref (
-  v_type text DEFAULT NULL, 
-  v_fields jsonb DEFAULT NULL, 
-  v_location int DEFAULT NULL
-)
-  RETURNS jsonb
-  AS $EOFCODE$
-DECLARE
-  result jsonb = '{"ColumnRef":{}}'::jsonb;
-BEGIN
-  result = ast.jsonb_set(result, '{ColumnRef, type}', to_jsonb (v_type));
-  result = ast.jsonb_set(result, '{ColumnRef, fields}', v_fields);
-  result = ast.jsonb_set(result, '{ColumnRef, location}', to_jsonb (v_location));
-  RETURN result;
-END;
-$EOFCODE$
-LANGUAGE plpgsql
-IMMUTABLE;
+-- CREATE FUNCTION ast.column_ref (
+--   v_type text DEFAULT NULL, 
+--   v_fields jsonb DEFAULT NULL, 
+--   v_location int DEFAULT NULL
+-- )
+--   RETURNS jsonb
+--   AS $EOFCODE$
+-- DECLARE
+--   result jsonb = '{"ColumnRef":{}}'::jsonb;
+-- BEGIN
+--   result = ast.jsonb_set(result, '{ColumnRef, type}', to_jsonb (v_type));
+--   result = ast.jsonb_set(result, '{ColumnRef, fields}', v_fields);
+--   result = ast.jsonb_set(result, '{ColumnRef, location}', to_jsonb (v_location));
+--   RETURN result;
+-- END;
+-- $EOFCODE$
+-- LANGUAGE plpgsql
+-- IMMUTABLE;
 
 CREATE FUNCTION ast.param_ref (
   v_type text DEFAULT NULL, 
@@ -1586,24 +1637,24 @@ $EOFCODE$
 LANGUAGE plpgsql
 IMMUTABLE;
 
-CREATE FUNCTION ast.a_const (
-  v_type text DEFAULT NULL, 
-  v_val jsonb DEFAULT NULL, 
-  v_location int DEFAULT NULL
-)
-  RETURNS jsonb
-  AS $EOFCODE$
-DECLARE
-  result jsonb = '{"A_Const":{}}'::jsonb;
-BEGIN
-  result = ast.jsonb_set(result, '{A_Const, type}', to_jsonb (v_type));
-  result = ast.jsonb_set(result, '{A_Const, val}', v_val);
-  result = ast.jsonb_set(result, '{A_Const, location}', to_jsonb (v_location));
-  RETURN result;
-END;
-$EOFCODE$
-LANGUAGE plpgsql
-IMMUTABLE;
+-- CREATE FUNCTION ast.a_const (
+--   v_type text DEFAULT NULL, 
+--   v_val jsonb DEFAULT NULL, 
+--   v_location int DEFAULT NULL
+-- )
+--   RETURNS jsonb
+--   AS $EOFCODE$
+-- DECLARE
+--   result jsonb = '{"A_Const":{}}'::jsonb;
+-- BEGIN
+--   result = ast.jsonb_set(result, '{A_Const, type}', to_jsonb (v_type));
+--   result = ast.jsonb_set(result, '{A_Const, val}', v_val);
+--   result = ast.jsonb_set(result, '{A_Const, location}', to_jsonb (v_location));
+--   RETURN result;
+-- END;
+-- $EOFCODE$
+-- LANGUAGE plpgsql
+-- IMMUTABLE;
 
 CREATE FUNCTION ast.type_cast (
   v_type text DEFAULT NULL, 
@@ -2694,26 +2745,26 @@ $EOFCODE$
 LANGUAGE plpgsql
 IMMUTABLE;
 
-CREATE FUNCTION ast.raw_stmt (
-  v_type text DEFAULT NULL, 
-  v_stmt jsonb DEFAULT NULL, 
-  v_stmt_location int DEFAULT NULL, 
-  v_stmt_len int DEFAULT NULL
-)
-  RETURNS jsonb
-  AS $EOFCODE$
-DECLARE
-  result jsonb = '{"RawStmt":{}}'::jsonb;
-BEGIN
-  result = ast.jsonb_set(result, '{RawStmt, type}', to_jsonb (v_type));
-  result = ast.jsonb_set(result, '{RawStmt, stmt}', v_stmt);
-  result = ast.jsonb_set(result, '{RawStmt, stmt_location}', to_jsonb (v_stmt_location));
-  result = ast.jsonb_set(result, '{RawStmt, stmt_len}', to_jsonb (v_stmt_len));
-  RETURN result;
-END;
-$EOFCODE$
-LANGUAGE plpgsql
-IMMUTABLE;
+-- CREATE FUNCTION ast.raw_stmt (
+--   v_type text DEFAULT NULL, 
+--   v_stmt jsonb DEFAULT NULL, 
+--   v_stmt_location int DEFAULT NULL, 
+--   v_stmt_len int DEFAULT NULL
+-- )
+--   RETURNS jsonb
+--   AS $EOFCODE$
+-- DECLARE
+--   result jsonb = '{"RawStmt":{}}'::jsonb;
+-- BEGIN
+--   result = ast.jsonb_set(result, '{RawStmt, type}', to_jsonb (v_type));
+--   result = ast.jsonb_set(result, '{RawStmt, stmt}', v_stmt);
+--   result = ast.jsonb_set(result, '{RawStmt, stmt_location}', to_jsonb (v_stmt_location));
+--   result = ast.jsonb_set(result, '{RawStmt, stmt_len}', to_jsonb (v_stmt_len));
+--   RETURN result;
+-- END;
+-- $EOFCODE$
+-- LANGUAGE plpgsql
+-- IMMUTABLE;
 
 CREATE FUNCTION ast.insert_stmt (
   v_type text DEFAULT NULL, 
