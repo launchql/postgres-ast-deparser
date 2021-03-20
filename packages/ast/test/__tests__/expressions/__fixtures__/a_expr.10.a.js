@@ -1,11 +1,11 @@
 module.exports = {
   A_Expr: {
-    kind: 10,
+    kind: 'AEXPR_SIMILAR',
     lexpr: {
       A_Const: {
         val: {
           String: {
-            str: "abc"
+            str: 'abc'
           }
         }
       }
@@ -13,7 +13,7 @@ module.exports = {
     name: [
       {
         String: {
-          str: "~"
+          str: '~'
         }
       }
     ],
@@ -27,7 +27,7 @@ module.exports = {
                   A_Const: {
                     val: {
                       String: {
-                        str: "test"
+                        str: 'test'
                       }
                     }
                   }
@@ -36,10 +36,10 @@ module.exports = {
               funcname: [
                 {
                   String: {
-                    str: "test"
+                    str: 'test'
                   }
                 }
-              ],
+              ]
             }
           },
           {
@@ -53,15 +53,15 @@ module.exports = {
         funcname: [
           {
             String: {
-              str: "pg_catalog"
+              str: 'pg_catalog'
             }
           },
           {
             String: {
-              str: "similar_escape"
+              str: 'similar_escape'
             }
           }
-        ],
+        ]
       }
     }
   }

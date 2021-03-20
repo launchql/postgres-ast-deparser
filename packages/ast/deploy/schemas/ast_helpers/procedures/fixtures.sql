@@ -34,9 +34,9 @@ BEGIN
     v_cols := to_jsonb(cols),
     v_selectStmt := ast.select_stmt(
       v_valuesLists := v_values,
-      v_op := 0
+      v_op := 'SETOP_NONE'
     ),
-    v_override := 0
+    v_override := 'OVERRIDING_NOT_SET'
   );
 
   RETURN ast.raw_stmt (

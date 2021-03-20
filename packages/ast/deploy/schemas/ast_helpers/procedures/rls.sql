@@ -21,7 +21,7 @@ DECLARE
 BEGIN
 
   ast_expr = ast.select_stmt(
-    v_op := 0,
+    v_op := 'SETOP_NONE',
     v_targetList := to_jsonb(ARRAY[
         ast.res_target(
             v_val := ast_helpers.col('mt', 'id')
@@ -64,7 +64,7 @@ DECLARE
 BEGIN
 
   ast_expr = ast.select_stmt(
-    v_op := 0,
+    v_op := 'SETOP_NONE',
     v_targetList := to_jsonb(ARRAY[
         ast.res_target(
             v_val := ast.func_call (
@@ -126,7 +126,7 @@ BEGIN
 
 
   ast_expr = ast.select_stmt(
-    v_op := 0,
+    v_op := 'SETOP_NONE',
     v_targetList := to_jsonb(ARRAY[
         ast.res_target(
             v_val := ast.func_call (

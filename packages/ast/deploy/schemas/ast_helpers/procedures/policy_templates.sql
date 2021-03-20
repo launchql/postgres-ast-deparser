@@ -92,7 +92,7 @@ DECLARE
   policy_ast jsonb;
 BEGIN
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
@@ -139,7 +139,7 @@ BEGIN
   -- SELECT db_migrate.text('policy_expression_owned_object_key', 
 
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
@@ -181,7 +181,7 @@ DECLARE
 BEGIN
 
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
@@ -250,7 +250,7 @@ BEGIN
   -- SELECT db_migrate.text('policy_expression_owned_object_key_once_removed', 
 
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
@@ -309,7 +309,7 @@ BEGIN
   -- SELECT db_migrate.text('policy_expression_owned_object_key_once_removed', 
 
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
@@ -373,7 +373,7 @@ BEGIN
   );
 
   policy_ast = jsonb_set(policy_ast, '{SubLink, subselect, SelectStmt, fromClause, 0, JoinExpr, quals}', ast.bool_expr(
-    v_boolop := 0,
+    v_boolop := 'AND_EXPR',
     v_args := to_jsonb(ARRAY[
         policy_ast->'SubLink'->'subselect'->'SelectStmt'->'fromClause'->0->'JoinExpr'->'quals',
         ast_helpers.eq(
@@ -396,7 +396,7 @@ DECLARE
 BEGIN
 
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
@@ -442,9 +442,9 @@ DECLARE
 BEGIN
 
   array_ast = ast.sub_link(
-    v_subLinkType := 6,
+    v_subLinkType := 'ARRAY_SUBLINK',
     v_subselect := ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.col('acl', 'entity_id')
@@ -500,11 +500,11 @@ BEGIN
       )
     ELSE
       ast.bool_expr(
-        v_boolop := 0,
+        v_boolop := 'AND_EXPR',
         v_args := to_jsonb(ARRAY[
           ast_helpers.eq(
               v_lexpr := ast.a_expr(
-                v_kind := 0,
+                v_kind := 'AEXPR_OP',
                 v_name := to_jsonb(ARRAY[ast.string('&')]),
                 v_lexpr := ast_helpers.col('acl', 'permissions'),
                 v_rexpr := ast.a_const(v_val := ast.string(policy_template_vars->>'mask'))
@@ -530,9 +530,9 @@ DECLARE
 BEGIN
 
   policy_ast = ast.sub_link (
-    v_subLinkType := 0,
+    v_subLinkType := 'EXISTS_SUBLINK',
     v_subselect := ast.select_stmt(
-       v_op := 0,
+       v_op := 'SETOP_NONE',
        v_targetList := to_jsonb(ARRAY[
          ast.res_target(
             v_val := ast.a_const(ast.integer(1))

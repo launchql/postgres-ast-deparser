@@ -45,7 +45,7 @@ BEGIN
           )
         )
       ]),
-      v_op := 0
+      v_op := 'SETOP_NONE'
     ),
     v_stmt_len := 1
   ) INTO ast;

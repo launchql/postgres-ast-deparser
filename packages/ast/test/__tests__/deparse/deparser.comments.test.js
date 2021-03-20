@@ -26,7 +26,7 @@ afterAll(async () => {
 it('OBJECT_FUNCTION comment', async () => {
   const [{ expression: result }] = await db.any(`select deparser.expression(
     ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_FUNCTION'),
+        v_objtype := 'OBJECT_FUNCTION',
         v_object := ast.object_with_args(
             v_objname := to_jsonb(ARRAY[
                 ast.string('my_function')
@@ -78,7 +78,7 @@ it('smart_comments helpers function', async () => {
 it('helpers table', async () => {
   const [{ expression: result }] = await db.any(`select deparser.expression(
     ast_helpers.set_comment(
-          v_objtype := ast_constants.object_type('OBJECT_TABLE'),
+          v_objtype := 'OBJECT_TABLE',
           v_comment := 'hithere',
           variadic v_name := ARRAY[
               'schema-name',
@@ -93,7 +93,7 @@ it('smart_comments helpers table', async () => {
   const [{ expression: result }] = await db.any(
     `select deparser.expression(
     ast_helpers.set_comment(
-          v_objtype := ast_constants.object_type('OBJECT_TABLE'),
+          v_objtype := 'OBJECT_TABLE',
           v_tags := $1::jsonb,
           v_description := $2,
           variadic v_name := ARRAY[
@@ -116,7 +116,7 @@ it('smart_comments helpers table', async () => {
   const [{ expression: result }] = await db.any(
     `select deparser.expression(
     ast_helpers.set_comment(
-          v_objtype := ast_constants.object_type('OBJECT_TABLE'),
+          v_objtype := 'OBJECT_TABLE',
           v_tags := $1::jsonb,
           v_description := $2,
           variadic v_name := ARRAY[
@@ -139,7 +139,7 @@ it('smart_comments helpers table', async () => {
   const [{ expression: result }] = await db.any(
     `select deparser.expression(
     ast_helpers.set_comment(
-          v_objtype := ast_constants.object_type('OBJECT_TABLE'),
+          v_objtype := 'OBJECT_TABLE',
           v_tags := $1::jsonb,
           v_description := $2,
           variadic v_name := ARRAY[
@@ -157,7 +157,7 @@ it('smart_comments helpers table', async () => {
   const [{ expression: result }] = await db.any(
     `select deparser.expression(
     ast_helpers.set_comment(
-          v_objtype := ast_constants.object_type('OBJECT_TABLE'),
+          v_objtype := 'OBJECT_TABLE',
           v_tags := $1::jsonb,
           v_description := $2,
           variadic v_name := ARRAY[
@@ -175,7 +175,7 @@ it('smart_comments helpers column', async () => {
   const [{ expression: result }] = await db.any(
     `select deparser.expression(
     ast_helpers.set_comment(
-          v_objtype := ast_constants.object_type('OBJECT_COLUMN'),
+          v_objtype := 'OBJECT_COLUMN',
           v_tags := $1::jsonb,
           v_description := $2,
           variadic v_name := ARRAY[
@@ -198,7 +198,7 @@ it('smart_comments helpers column', async () => {
 it('helpers table constraint', async () => {
   const [{ expression: result }] = await db.any(`select deparser.expression(
     ast_helpers.set_comment(
-          v_objtype := ast_constants.object_type('OBJECT_TABCONSTRAINT'),
+          v_objtype := 'OBJECT_TABCONSTRAINT',
           v_comment := 'hithere',
           variadic v_name := ARRAY[
               'schema-name',
@@ -213,7 +213,7 @@ it('helpers table constraint', async () => {
 it('helpers table constraint', async () => {
   const [{ expression: result }] = await db.any(`select deparser.expression(
     ast_helpers.set_comment(
-          v_objtype := ast_constants.object_type('OBJECT_TABCONSTRAINT'),
+          v_objtype := 'OBJECT_TABCONSTRAINT',
           v_comment := 'hithere',
           variadic v_name := ARRAY[
               'table_name',
@@ -227,7 +227,7 @@ it('helpers table constraint', async () => {
 it('OBJECT_COLUMN comment', async () => {
   const [{ expression: result }] = await db.any(`select deparser.expression(
     ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_COLUMN'),
+        v_objtype := 'OBJECT_COLUMN',
         v_object := to_jsonb(ARRAY[
             ast.string('my_schema'),
             ast.string('my_table'),
@@ -242,7 +242,7 @@ it('OBJECT_COLUMN comment', async () => {
 it('OBJECT_TABLE comment', async () => {
   const [{ expression: result }] = await db.any(`select deparser.expression(
     ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_TABLE'),
+        v_objtype := 'OBJECT_TABLE',
         v_object := to_jsonb(ARRAY[
             ast.string('my_schema'),
             ast.string('my_table')
@@ -256,7 +256,7 @@ it('OBJECT_TABLE comment', async () => {
 it('OBJECT_VIEW comment', async () => {
   const [{ expression: result }] = await db.any(`select deparser.expression(
     ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_VIEW'),
+        v_objtype := 'OBJECT_VIEW',
         v_object := to_jsonb(ARRAY[
             ast.string('my_schema'),
             ast.string('my_view')
@@ -270,7 +270,7 @@ it('OBJECT_VIEW comment', async () => {
 it('OBJECT_MATVIEW comment', async () => {
   const [{ expression: result }] = await db.any(`select deparser.expression(
     ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_MATVIEW'),
+        v_objtype := 'OBJECT_MATVIEW',
         v_object := to_jsonb(ARRAY[
             ast.string('my_schema'),
             ast.string('my_view')
@@ -284,7 +284,7 @@ it('OBJECT_MATVIEW comment', async () => {
 it('OBJECT_TYPE comment', async () => {
   const [{ expression: result }] = await db.any(`select deparser.expression(
     ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_TYPE'),
+        v_objtype := 'OBJECT_TYPE',
         v_object := to_jsonb(ARRAY[
             ast.string('my_schema'),
             ast.string('my_type')
@@ -298,7 +298,7 @@ it('OBJECT_TYPE comment', async () => {
 it('OBJECT_TABCONSTRAINT comment', async () => {
   const [{ expression: result }] = await db.any(`select deparser.expression(
     ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_TABCONSTRAINT'),
+        v_objtype := 'OBJECT_TABCONSTRAINT',
         v_object := to_jsonb(ARRAY[
             ast.string('my_schema'),
             ast.string('my_table'),

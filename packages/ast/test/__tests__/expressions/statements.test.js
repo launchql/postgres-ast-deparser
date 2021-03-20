@@ -32,7 +32,7 @@ select deparser.deparse( ast.func_call(
 it('a_expr', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse( ast.a_expr(
-  v_kind  := 0,
+  v_kind  := 'AEXPR_OP',
   v_lexpr := ast.string('a'),
   v_name  := to_jsonb(ARRAY[ast.string('=')]),
   v_rexpr := ast.string('b'))
@@ -1561,8 +1561,8 @@ select deparser.deparse(
 
 it('drop_stmt', async () => {
   for (const obj of [
-    ['my-schema', 'my-function', 0],
-    ['myschema', 'myfunction', 0]
+    ['my-schema', 'my-function', 'DROP_RESTRICT'],
+    ['myschema', 'myfunction', 'DROP_RESTRICT']
   ]) {
     const [schema_name, index_name, behavior] = obj;
 
@@ -1575,7 +1575,7 @@ it('drop_stmt', async () => {
             ast.string($2::text)
           ])
         ]),
-        v_removeType:= ast_constants.object_type('OBJECT_INDEX'),
+        v_removeType:= 'OBJECT_INDEX',
         v_behavior:= $3
       )
 );
@@ -1588,8 +1588,8 @@ it('drop_stmt', async () => {
 
 it('drop_stmt', async () => {
   for (const obj of [
-    ['my-schema', 'my-table', 0],
-    ['myschema', 'mytable', 0]
+    ['my-schema', 'my-table', 'DROP_RESTRICT'],
+    ['myschema', 'mytable', 'DROP_RESTRICT']
   ]) {
     const [schema_name, table_name, behavior] = obj;
 
@@ -1602,7 +1602,7 @@ it('drop_stmt', async () => {
             ast.string($2::text)
           ])
         ]),
-        v_removeType:= ast_constants.object_type('OBJECT_TABLE'),
+        v_removeType:= 'OBJECT_TABLE',
         v_behavior:= $3
       )
 );
@@ -1629,7 +1629,7 @@ it('drop_stmt', async () => {
       ],
       1
     ],
-    [[['myschema', 'mytable']], 0]
+    [[['myschema', 'mytable']], 'DROP_RESTRICT']
   ]) {
     const [relations, behavior] = obj;
 
@@ -1637,7 +1637,7 @@ it('drop_stmt', async () => {
       `select deparser.deparse(
       ast.drop_stmt(
         v_objects:= $1::jsonb,
-        v_removeType:= ast_constants.object_type('OBJECT_TABLE'),
+        v_removeType:= 'OBJECT_TABLE',
         v_behavior:= $2
       )
 );
@@ -1660,9 +1660,9 @@ it('drop_stmt', async () => {
 
 it('drop_stmt', async () => {
   for (const obj of [
-    ['schema-name', 'my-func', 'int', 0],
-    ['schema-name', 'myfunction', 'int', 0],
-    ['schemaname', 'my-func', 'int', 0]
+    ['schema-name', 'my-func', 'int', 'DROP_RESTRICT'],
+    ['schema-name', 'myfunction', 'int', 'DROP_RESTRICT'],
+    ['schemaname', 'my-func', 'int', 'DROP_RESTRICT']
   ]) {
     const [schema_name, function_name, param_type, behavior] = obj;
 
@@ -1679,7 +1679,7 @@ it('drop_stmt', async () => {
           ])  
         )
       ]),
-      v_removeType:= ast_constants.object_type('OBJECT_FUNCTION'),
+      v_removeType:= 'OBJECT_FUNCTION',
       v_behavior:= $4
     )
 );
@@ -1724,7 +1724,7 @@ it('drop_stmt', async () => {
         [null, 'somefunction', []],
         [null, 'some-function', ['text[]']]
       ],
-      1
+      'DROP_CASCADE'
     ],
     [
       [
@@ -1733,7 +1733,7 @@ it('drop_stmt', async () => {
         [null, 'somefunction', []],
         [null, 'somefunction', ['text[]']]
       ],
-      0
+      'DROP_RESTRICT'
     ]
   ]) {
     const [fns, behavior] = obj;
@@ -1741,7 +1741,7 @@ it('drop_stmt', async () => {
       `select deparser.deparse(
       ast.drop_stmt(
         v_objects:= $1::jsonb,
-        v_removeType:= ast_constants.object_type('OBJECT_FUNCTION'),
+        v_removeType:= 'OBJECT_FUNCTION',
         v_behavior:= $2
       )
 );

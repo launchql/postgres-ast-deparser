@@ -19,8 +19,7 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 29
+              typemod: -1
             }
           }
         }
@@ -32,7 +31,7 @@ export const domains = [
     RawStmt: {
       stmt: {
         CommentStmt: {
-          objtype: 12,
+          objtype: 'OBJECT_DOMAIN',
           object: {
             TypeName: {
               names: [
@@ -42,14 +41,12 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 53
+              typemod: -1
             }
           },
           comment: 'About to drop this..'
         }
       },
-      stmt_location: 34,
       stmt_len: 59
     }
   },
@@ -73,13 +70,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 127
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 94,
       stmt_len: 47
     }
   },
@@ -97,16 +92,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 155
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 142,
       stmt_len: 27
     }
   },
@@ -124,16 +117,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 183
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 1
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_CASCADE'
         }
       },
-      stmt_location: 170,
       stmt_len: 35
     }
   },
@@ -151,16 +142,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 219
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 1
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_CASCADE'
         }
       },
-      stmt_location: 206,
       stmt_len: 35
     }
   },
@@ -196,18 +185,15 @@ export const domains = [
                       Integer: {
                         ival: 5
                       }
-                    },
-                    location: 279
+                    }
                   }
                 }
               ],
-              typemod: -1,
-              location: 271
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 242,
       stmt_len: 39
     }
   },
@@ -243,8 +229,7 @@ export const domains = [
                       Integer: {
                         ival: 8
                       }
-                    },
-                    location: 319
+                    }
                   }
                 },
                 {
@@ -253,18 +238,15 @@ export const domains = [
                       Integer: {
                         ival: 2
                       }
-                    },
-                    location: 321
+                    }
                   }
                 }
               ],
-              typemod: -1,
-              location: 311
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 282,
       stmt_len: 41
     }
   },
@@ -288,13 +270,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 350
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 324,
       stmt_len: 30
     }
   },
@@ -318,13 +298,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 381
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 355,
       stmt_len: 30
     }
   },
@@ -336,8 +314,7 @@ export const domains = [
             RangeVar: {
               relname: 'basictest',
               inh: true,
-              relpersistence: 'p',
-              location: 400
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -353,12 +330,10 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 432
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 423
+                is_local: true
               }
             },
             {
@@ -373,12 +348,10 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 465
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 456
+                is_local: true
               }
             },
             {
@@ -393,12 +366,10 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 501
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 489
+                is_local: true
               }
             },
             {
@@ -413,19 +384,16 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 540
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 528
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 386,
       stmt_len: 180
     }
   },
@@ -439,7 +407,7 @@ export const domains = [
                 name: 't',
                 val: {
                   A_Expr: {
-                    kind: 6,
+                    kind: 'AEXPR_OF',
                     name: [
                       {
                         String: {
@@ -458,8 +426,7 @@ export const domains = [
                                     Integer: {
                                       ival: 4
                                     }
-                                  },
-                                  location: 660
+                                  }
                                 }
                               },
                               typeName: {
@@ -471,11 +438,9 @@ export const domains = [
                                       }
                                     }
                                   ],
-                                  typemod: -1,
-                                  location: 663
+                                  typemod: -1
                                 }
-                              },
-                              location: 661
+                              }
                             }
                           },
                           {
@@ -484,12 +449,10 @@ export const domains = [
                                 Integer: {
                                   ival: 7
                                 }
-                              },
-                              location: 675
+                              }
                             }
                           }
-                        ],
-                        location: 651
+                        ]
                       }
                     },
                     rexpr: [
@@ -502,22 +465,18 @@ export const domains = [
                               }
                             }
                           ],
-                          typemod: -1,
-                          location: 685
+                          typemod: -1
                         }
                       }
-                    ],
-                    location: 678
+                    ]
                   }
-                },
-                location: 651
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 567,
       stmt_len: 128
     }
   },
@@ -531,7 +490,7 @@ export const domains = [
                 name: 'f',
                 val: {
                   A_Expr: {
-                    kind: 6,
+                    kind: 'AEXPR_OF',
                     name: [
                       {
                         String: {
@@ -550,8 +509,7 @@ export const domains = [
                                     Integer: {
                                       ival: 4
                                     }
-                                  },
-                                  location: 713
+                                  }
                                 }
                               },
                               typeName: {
@@ -563,11 +521,9 @@ export const domains = [
                                       }
                                     }
                                   ],
-                                  typemod: -1,
-                                  location: 716
+                                  typemod: -1
                                 }
-                              },
-                              location: 714
+                              }
                             }
                           },
                           {
@@ -576,12 +532,10 @@ export const domains = [
                                 Integer: {
                                   ival: 7
                                 }
-                              },
-                              location: 728
+                              }
                             }
                           }
-                        ],
-                        location: 704
+                        ]
                       }
                     },
                     rexpr: [
@@ -594,22 +548,18 @@ export const domains = [
                               }
                             }
                           ],
-                          typemod: -1,
-                          location: 738
+                          typemod: -1
                         }
                       }
-                    ],
-                    location: 731
+                    ]
                   }
-                },
-                location: 704
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 696,
       stmt_len: 58
     }
   },
@@ -623,7 +573,7 @@ export const domains = [
                 name: 't',
                 val: {
                   A_Expr: {
-                    kind: 6,
+                    kind: 'AEXPR_OF',
                     name: [
                       {
                         String: {
@@ -642,8 +592,7 @@ export const domains = [
                                     Integer: {
                                       ival: 4
                                     }
-                                  },
-                                  location: 772
+                                  }
                                 }
                               },
                               typeName: {
@@ -655,11 +604,9 @@ export const domains = [
                                       }
                                     }
                                   ],
-                                  typemod: -1,
-                                  location: 775
+                                  typemod: -1
                                 }
-                              },
-                              location: 773
+                              }
                             }
                           },
                           {
@@ -670,8 +617,7 @@ export const domains = [
                                     Integer: {
                                       ival: 7
                                     }
-                                  },
-                                  location: 787
+                                  }
                                 }
                               },
                               typeName: {
@@ -683,15 +629,12 @@ export const domains = [
                                       }
                                     }
                                   ],
-                                  typemod: -1,
-                                  location: 790
+                                  typemod: -1
                                 }
-                              },
-                              location: 788
+                              }
                             }
                           }
-                        ],
-                        location: 763
+                        ]
                       }
                     },
                     rexpr: [
@@ -704,22 +647,18 @@ export const domains = [
                               }
                             }
                           ],
-                          typemod: -1,
-                          location: 809
+                          typemod: -1
                         }
                       }
-                    ],
-                    location: 802
+                    ]
                   }
-                },
-                location: 763
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 755,
       stmt_len: 70
     }
   },
@@ -736,11 +675,10 @@ export const domains = [
               }
             ]
           ],
-          removeType: 37,
-          behavior: 0
+          removeType: 'OBJECT_TABLE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 826,
       stmt_len: 22
     }
   },
@@ -758,16 +696,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 862
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 849,
       stmt_len: 35
     }
   },
@@ -785,16 +721,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 898
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 885,
       stmt_len: 35
     }
   },
@@ -812,16 +746,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 934
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 921,
       stmt_len: 32
     }
   },
@@ -839,16 +771,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 967
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 954,
       stmt_len: 23
     }
   },
@@ -879,13 +809,11 @@ export const domains = [
                     ival: 1
                   }
                 }
-              ],
-              location: 1043
+              ]
             }
           }
         }
       },
-      stmt_location: 978,
       stmt_len: 72
     }
   },
@@ -921,8 +849,7 @@ export const domains = [
                       Integer: {
                         ival: 4
                       }
-                    },
-                    location: 1089
+                    }
                   }
                 }
               ],
@@ -938,13 +865,11 @@ export const domains = [
                     ival: 3
                   }
                 }
-              ],
-              location: 1081
+              ]
             }
           }
         }
       },
-      stmt_location: 1051,
       stmt_len: 46
     }
   },
@@ -962,16 +887,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 1112
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 1098,
       stmt_len: 36
     }
   },
@@ -989,16 +912,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 1148
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 1135,
       stmt_len: 36
     }
   },
@@ -1034,13 +955,11 @@ export const domains = [
                     ival: -1
                   }
                 }
-              ],
-              location: 1195
+              ]
             }
           }
         }
       },
-      stmt_location: 1172,
       stmt_len: 28
     }
   },
@@ -1058,16 +977,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 1214
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 1201,
       stmt_len: 16
     }
   },
@@ -1103,26 +1020,22 @@ export const domains = [
                       Integer: {
                         ival: 15
                       }
-                    },
-                    location: 1251
+                    }
                   }
                 }
               ],
-              typemod: -1,
-              location: 1243
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 1,
-                location: 1255
+                contype: 'CONSTR_NOTNULL'
               }
             }
           ]
         }
       },
-      stmt_location: 1218,
       stmt_len: 45
     }
   },
@@ -1158,18 +1071,15 @@ export const domains = [
                       Integer: {
                         ival: 15
                       }
-                    },
-                    location: 1296
+                    }
                   }
                 }
               ],
-              typemod: -1,
-              location: 1288
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 1264,
       stmt_len: 35
     }
   },
@@ -1205,33 +1115,29 @@ export const domains = [
                       Integer: {
                         ival: 15
                       }
-                    },
-                    location: 1332
+                    }
                   }
                 }
               ],
-              typemod: -1,
-              location: 1324
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 1,
-                location: 1336
+                contype: 'CONSTR_NOTNULL'
               }
             },
             {
               Constraint: {
-                contype: 4,
-                location: 1345,
+                contype: 'CONSTR_CHECK',
                 raw_expr: {
                   BoolExpr: {
-                    boolop: 1,
+                    boolop: 'OR_EXPR',
                     args: [
                       {
                         A_Expr: {
-                          kind: 0,
+                          kind: 'AEXPR_OP',
                           name: [
                             {
                               String: {
@@ -1247,8 +1153,7 @@ export const domains = [
                                     str: 'value'
                                   }
                                 }
-                              ],
-                              location: 1352
+                              ]
                             }
                           },
                           rexpr: {
@@ -1257,16 +1162,14 @@ export const domains = [
                                 String: {
                                   str: 'a'
                                 }
-                              },
-                              location: 1360
+                              }
                             }
-                          },
-                          location: 1358
+                          }
                         }
                       },
                       {
                         A_Expr: {
-                          kind: 0,
+                          kind: 'AEXPR_OP',
                           name: [
                             {
                               String: {
@@ -1282,8 +1185,7 @@ export const domains = [
                                     str: 'value'
                                   }
                                 }
-                              ],
-                              location: 1367
+                              ]
                             }
                           },
                           rexpr: {
@@ -1292,16 +1194,14 @@ export const domains = [
                                 String: {
                                   str: 'c'
                                 }
-                              },
-                              location: 1375
+                              }
                             }
-                          },
-                          location: 1373
+                          }
                         }
                       },
                       {
                         A_Expr: {
-                          kind: 0,
+                          kind: 'AEXPR_OP',
                           name: [
                             {
                               String: {
@@ -1317,8 +1217,7 @@ export const domains = [
                                     str: 'value'
                                   }
                                 }
-                              ],
-                              location: 1382
+                              ]
                             }
                           },
                           rexpr: {
@@ -1327,15 +1226,12 @@ export const domains = [
                                 String: {
                                   str: 'd'
                                 }
-                              },
-                              location: 1390
+                              }
                             }
-                          },
-                          location: 1388
+                          }
                         }
                       }
-                    ],
-                    location: 1364
+                    ]
                   }
                 },
                 initially_valid: true
@@ -1344,7 +1240,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 1300,
       stmt_len: 94
     }
   },
@@ -1356,8 +1251,7 @@ export const domains = [
             RangeVar: {
               relname: 'nulltest',
               inh: true,
-              relpersistence: 'p',
-              location: 1410
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -1373,12 +1267,10 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 1437
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 1432
+                is_local: true
               }
             },
             {
@@ -1393,20 +1285,17 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 1464
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 0,
-                      location: 1473
+                      contype: 'CONSTR_NULL'
                     }
                   }
-                ],
-                location: 1459
+                ]
               }
             },
             {
@@ -1421,20 +1310,17 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 1544
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 1,
-                      location: 1553
+                      contype: 'CONSTR_NOTNULL'
                     }
                   }
-                ],
-                location: 1539
+                ]
               }
             },
             {
@@ -1449,12 +1335,10 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 1580
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 1575
+                is_local: true
               }
             },
             {
@@ -1469,19 +1353,17 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 1604
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 4,
-                      location: 1611,
+                      contype: 'CONSTR_CHECK',
                       raw_expr: {
                         A_Expr: {
-                          kind: 7,
+                          kind: 'AEXPR_IN',
                           name: [
                             {
                               String: {
@@ -1497,8 +1379,7 @@ export const domains = [
                                     str: 'col5'
                                   }
                                 }
-                              ],
-                              location: 1618
+                              ]
                             }
                           },
                           rexpr: [
@@ -1508,8 +1389,7 @@ export const domains = [
                                   String: {
                                     str: 'c'
                                   }
-                                },
-                                location: 1627
+                                }
                               }
                             },
                             {
@@ -1518,26 +1398,22 @@ export const domains = [
                                   String: {
                                     str: 'd'
                                   }
-                                },
-                                location: 1632
+                                }
                               }
                             }
-                          ],
-                          location: 1623
+                          ]
                         }
                       },
                       initially_valid: true
                     }
                   }
-                ],
-                location: 1599
+                ]
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 1395,
       stmt_len: 255
     }
   },
@@ -1549,14 +1425,12 @@ export const domains = [
             RangeVar: {
               relname: 'nulltest',
               inh: true,
-              relpersistence: 'p',
-              location: 1664
+              relpersistence: 'p'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 1651,
       stmt_len: 36
     }
   },
@@ -1568,8 +1442,7 @@ export const domains = [
             RangeVar: {
               relname: 'nulltest',
               inh: true,
-              relpersistence: 'p',
-              location: 1701
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -1582,8 +1455,7 @@ export const domains = [
                         String: {
                           str: 'a'
                         }
-                      },
-                      location: 1718
+                      }
                     }
                   },
                   {
@@ -1592,8 +1464,7 @@ export const domains = [
                         String: {
                           str: 'b'
                         }
-                      },
-                      location: 1723
+                      }
                     }
                   },
                   {
@@ -1602,8 +1473,7 @@ export const domains = [
                         String: {
                           str: 'c'
                         }
-                      },
-                      location: 1728
+                      }
                     }
                   },
                   {
@@ -1612,8 +1482,7 @@ export const domains = [
                         String: {
                           str: 'd'
                         }
-                      },
-                      location: 1733
+                      }
                     }
                   },
                   {
@@ -1622,19 +1491,17 @@ export const domains = [
                         String: {
                           str: 'c'
                         }
-                      },
-                      location: 1738
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 1688,
       stmt_len: 54
     }
   },
@@ -1646,8 +1513,7 @@ export const domains = [
             RangeVar: {
               relname: 'nulltest',
               inh: true,
-              relpersistence: 'p',
-              location: 1765
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -1660,8 +1526,7 @@ export const domains = [
                         String: {
                           str: 'a'
                         }
-                      },
-                      location: 1782
+                      }
                     }
                   },
                   {
@@ -1670,8 +1535,7 @@ export const domains = [
                         String: {
                           str: 'b'
                         }
-                      },
-                      location: 1787
+                      }
                     }
                   },
                   {
@@ -1680,8 +1544,7 @@ export const domains = [
                         String: {
                           str: 'c'
                         }
-                      },
-                      location: 1792
+                      }
                     }
                   },
                   {
@@ -1690,27 +1553,24 @@ export const domains = [
                         String: {
                           str: 'd'
                         }
-                      },
-                      location: 1797
+                      }
                     }
                   },
                   {
                     A_Const: {
                       val: {
                         Null: {}
-                      },
-                      location: 1802
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 1743,
       stmt_len: 64
     }
   },
@@ -1722,8 +1582,7 @@ export const domains = [
             RangeVar: {
               relname: 'nulltest',
               inh: true,
-              relpersistence: 'p',
-              location: 1821
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -1736,8 +1595,7 @@ export const domains = [
                         String: {
                           str: 'a'
                         }
-                      },
-                      location: 1838
+                      }
                     }
                   },
                   {
@@ -1746,8 +1604,7 @@ export const domains = [
                         String: {
                           str: 'b'
                         }
-                      },
-                      location: 1843
+                      }
                     }
                   },
                   {
@@ -1756,8 +1613,7 @@ export const domains = [
                         String: {
                           str: 'c'
                         }
-                      },
-                      location: 1848
+                      }
                     }
                   },
                   {
@@ -1766,8 +1622,7 @@ export const domains = [
                         String: {
                           str: 'd'
                         }
-                      },
-                      location: 1853
+                      }
                     }
                   },
                   {
@@ -1776,19 +1631,17 @@ export const domains = [
                         String: {
                           str: 'a'
                         }
-                      },
-                      location: 1858
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 1808,
       stmt_len: 54
     }
   },
@@ -1800,8 +1653,7 @@ export const domains = [
             RangeVar: {
               relname: 'nulltest',
               inh: true,
-              relpersistence: 'p',
-              location: 1876
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -1812,8 +1664,7 @@ export const domains = [
                     A_Const: {
                       val: {
                         Null: {}
-                      },
-                      location: 1893
+                      }
                     }
                   },
                   {
@@ -1822,8 +1673,7 @@ export const domains = [
                         String: {
                           str: 'b'
                         }
-                      },
-                      location: 1899
+                      }
                     }
                   },
                   {
@@ -1832,8 +1682,7 @@ export const domains = [
                         String: {
                           str: 'c'
                         }
-                      },
-                      location: 1904
+                      }
                     }
                   },
                   {
@@ -1842,8 +1691,7 @@ export const domains = [
                         String: {
                           str: 'd'
                         }
-                      },
-                      location: 1909
+                      }
                     }
                   },
                   {
@@ -1852,19 +1700,17 @@ export const domains = [
                         String: {
                           str: 'd'
                         }
-                      },
-                      location: 1914
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 1863,
       stmt_len: 55
     }
   },
@@ -1876,8 +1722,7 @@ export const domains = [
             RangeVar: {
               relname: 'nulltest',
               inh: true,
-              relpersistence: 'p',
-              location: 1932
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -1890,16 +1735,14 @@ export const domains = [
                         String: {
                           str: 'a'
                         }
-                      },
-                      location: 1949
+                      }
                     }
                   },
                   {
                     A_Const: {
                       val: {
                         Null: {}
-                      },
-                      location: 1954
+                      }
                     }
                   },
                   {
@@ -1908,8 +1751,7 @@ export const domains = [
                         String: {
                           str: 'c'
                         }
-                      },
-                      location: 1960
+                      }
                     }
                   },
                   {
@@ -1918,8 +1760,7 @@ export const domains = [
                         String: {
                           str: 'd'
                         }
-                      },
-                      location: 1965
+                      }
                     }
                   },
                   {
@@ -1928,19 +1769,17 @@ export const domains = [
                         String: {
                           str: 'c'
                         }
-                      },
-                      location: 1970
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 1919,
       stmt_len: 55
     }
   },
@@ -1952,8 +1791,7 @@ export const domains = [
             RangeVar: {
               relname: 'nulltest',
               inh: true,
-              relpersistence: 'p',
-              location: 1988
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -1966,8 +1804,7 @@ export const domains = [
                         String: {
                           str: 'a'
                         }
-                      },
-                      location: 2005
+                      }
                     }
                   },
                   {
@@ -1976,16 +1813,14 @@ export const domains = [
                         String: {
                           str: 'b'
                         }
-                      },
-                      location: 2010
+                      }
                     }
                   },
                   {
                     A_Const: {
                       val: {
                         Null: {}
-                      },
-                      location: 2015
+                      }
                     }
                   },
                   {
@@ -1994,8 +1829,7 @@ export const domains = [
                         String: {
                           str: 'd'
                         }
-                      },
-                      location: 2021
+                      }
                     }
                   },
                   {
@@ -2004,19 +1838,17 @@ export const domains = [
                         String: {
                           str: 'c'
                         }
-                      },
-                      location: 2026
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 1975,
       stmt_len: 55
     }
   },
@@ -2028,8 +1860,7 @@ export const domains = [
             RangeVar: {
               relname: 'nulltest',
               inh: true,
-              relpersistence: 'p',
-              location: 2044
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -2042,8 +1873,7 @@ export const domains = [
                         String: {
                           str: 'a'
                         }
-                      },
-                      location: 2061
+                      }
                     }
                   },
                   {
@@ -2052,8 +1882,7 @@ export const domains = [
                         String: {
                           str: 'b'
                         }
-                      },
-                      location: 2066
+                      }
                     }
                   },
                   {
@@ -2062,16 +1891,14 @@ export const domains = [
                         String: {
                           str: 'c'
                         }
-                      },
-                      location: 2071
+                      }
                     }
                   },
                   {
                     A_Const: {
                       val: {
                         Null: {}
-                      },
-                      location: 2076
+                      }
                     }
                   },
                   {
@@ -2080,19 +1907,17 @@ export const domains = [
                         String: {
                           str: 'd'
                         }
-                      },
-                      location: 2082
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 2031,
       stmt_len: 55
     }
   },
@@ -2109,11 +1934,9 @@ export const domains = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 2104
+                    ]
                   }
-                },
-                location: 2104
+                }
               }
             }
           ],
@@ -2122,15 +1945,13 @@ export const domains = [
               RangeVar: {
                 relname: 'nulltest',
                 inh: true,
-                relpersistence: 'p',
-                location: 2111
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 2087,
       stmt_len: 32
     }
   },
@@ -2149,8 +1970,7 @@ export const domains = [
                           String: {
                             str: '1'
                           }
-                        },
-                        location: 2175
+                        }
                       }
                     },
                     typeName: {
@@ -2162,21 +1982,17 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 2182
+                        typemod: -1
                       }
-                    },
-                    location: 2170
+                    }
                   }
-                },
-                location: 2170
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 2120,
       stmt_len: 71
     }
   },
@@ -2193,8 +2009,7 @@ export const domains = [
                       A_Const: {
                         val: {
                           Null: {}
-                        },
-                        location: 2205
+                        }
                       }
                     },
                     typeName: {
@@ -2206,21 +2021,17 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 2213
+                        typemod: -1
                       }
-                    },
-                    location: 2200
+                    }
                   }
-                },
-                location: 2200
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 2192,
       stmt_len: 30
     }
   },
@@ -2239,8 +2050,7 @@ export const domains = [
                           A_Const: {
                             val: {
                               Null: {}
-                            },
-                            location: 2249
+                            }
                           }
                         },
                         typeName: {
@@ -2252,11 +2062,9 @@ export const domains = [
                                 }
                               }
                             ],
-                            typemod: -1,
-                            location: 2257
+                            typemod: -1
                           }
-                        },
-                        location: 2244
+                        }
                       }
                     },
                     typeName: {
@@ -2268,21 +2076,17 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 2267
+                        typemod: -1
                       }
-                    },
-                    location: 2239
+                    }
                   }
-                },
-                location: 2239
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 2223,
       stmt_len: 53
     }
   },
@@ -2303,8 +2107,7 @@ export const domains = [
                               str: 'col4'
                             }
                           }
-                        ],
-                        location: 2298
+                        ]
                       }
                     },
                     typeName: {
@@ -2316,14 +2119,11 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 2306
+                        typemod: -1
                       }
-                    },
-                    location: 2293
+                    }
                   }
-                },
-                location: 2293
+                }
               }
             }
           ],
@@ -2332,15 +2132,13 @@ export const domains = [
               RangeVar: {
                 relname: 'nulltest',
                 inh: true,
-                relpersistence: 'p',
-                location: 2321
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 2277,
       stmt_len: 52
     }
   },
@@ -2357,11 +2155,10 @@ export const domains = [
               }
             ]
           ],
-          removeType: 37,
-          behavior: 0
+          removeType: 'OBJECT_TABLE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 2330,
       stmt_len: 40
     }
   },
@@ -2379,16 +2176,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 2384
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 2371,
       stmt_len: 30
     }
   },
@@ -2406,16 +2201,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 2415
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 2402,
       stmt_len: 27
     }
   },
@@ -2433,16 +2226,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 2443
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 2430,
       stmt_len: 28
     }
   },
@@ -2466,23 +2257,20 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 2482
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 2,
-                location: 2487,
+                contype: 'CONSTR_DEFAULT',
                 raw_expr: {
                   A_Const: {
                     val: {
                       Integer: {
                         ival: 3
                       }
-                    },
-                    location: 2495
+                    }
                   }
                 }
               }
@@ -2490,7 +2278,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 2459,
       stmt_len: 37
     }
   },
@@ -2514,23 +2301,20 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 2518
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 2,
-                location: 2522,
+                contype: 'CONSTR_DEFAULT',
                 raw_expr: {
                   A_Const: {
                     val: {
                       String: {
                         str: '12'
                       }
-                    },
-                    location: 2530
+                    }
                   }
                 }
               }
@@ -2538,7 +2322,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 2497,
       stmt_len: 37
     }
   },
@@ -2562,23 +2345,20 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 2594
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 2,
-                location: 2599,
+                contype: 'CONSTR_DEFAULT',
                 raw_expr: {
                   A_Const: {
                     val: {
                       Integer: {
                         ival: 5
                       }
-                    },
-                    location: 2607
+                    }
                   }
                 }
               }
@@ -2586,7 +2366,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 2535,
       stmt_len: 73
     }
   },
@@ -2598,13 +2377,11 @@ export const domains = [
             RangeVar: {
               relname: 'ddef4_seq',
               inh: true,
-              relpersistence: 'p',
-              location: 2626
+              relpersistence: 'p'
             }
           }
         }
       },
-      stmt_location: 2609,
       stmt_len: 26
     }
   },
@@ -2628,15 +2405,13 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 2657
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 2,
-                location: 2662,
+                contype: 'CONSTR_DEFAULT',
                 raw_expr: {
                   FuncCall: {
                     funcname: [
@@ -2653,12 +2428,10 @@ export const domains = [
                             String: {
                               str: 'ddef4_seq'
                             }
-                          },
-                          location: 2678
+                          }
                         }
                       }
-                    ],
-                    location: 2670
+                    ]
                   }
                 }
               }
@@ -2666,7 +2439,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 2636,
       stmt_len: 54
     }
   },
@@ -2702,8 +2474,7 @@ export const domains = [
                       Integer: {
                         ival: 8
                       }
-                    },
-                    location: 2720
+                    }
                   }
                 },
                 {
@@ -2712,34 +2483,29 @@ export const domains = [
                       Integer: {
                         ival: 2
                       }
-                    },
-                    location: 2722
+                    }
                   }
                 }
               ],
-              typemod: -1,
-              location: 2712
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 1,
-                location: 2725
+                contype: 'CONSTR_NOTNULL'
               }
             },
             {
               Constraint: {
-                contype: 2,
-                location: 2734,
+                contype: 'CONSTR_DEFAULT',
                 raw_expr: {
                   A_Const: {
                     val: {
                       String: {
                         str: '12.12'
                       }
-                    },
-                    location: 2742
+                    }
                   }
                 }
               }
@@ -2747,7 +2513,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 2691,
       stmt_len: 58
     }
   },
@@ -2759,8 +2524,7 @@ export const domains = [
             RangeVar: {
               relname: 'defaulttest',
               inh: true,
-              relpersistence: 'p',
-              location: 2765
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -2776,12 +2540,10 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 2796
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 2791
+                is_local: true
               }
             },
             {
@@ -2796,12 +2558,10 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 2821
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 2816
+                is_local: true
               }
             },
             {
@@ -2816,12 +2576,10 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 2846
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 2841
+                is_local: true
               }
             },
             {
@@ -2836,20 +2594,17 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 2871
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 5,
-                      location: 2877
+                      contype: 'CONSTR_PRIMARY'
                     }
                   }
-                ],
-                location: 2866
+                ]
               }
             },
             {
@@ -2864,34 +2619,29 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 2908
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 1,
-                      location: 2914
+                      contype: 'CONSTR_NOTNULL'
                     }
                   },
                   {
                     Constraint: {
-                      contype: 2,
-                      location: 2923,
+                      contype: 'CONSTR_DEFAULT',
                       raw_expr: {
                         A_Const: {
                           val: {
                             Null: {}
-                          },
-                          location: 2931
+                          }
                         }
                       }
                     }
                   }
-                ],
-                location: 2903
+                ]
               }
             },
             {
@@ -2906,30 +2656,26 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 2955
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 2,
-                      location: 2961,
+                      contype: 'CONSTR_DEFAULT',
                       raw_expr: {
                         A_Const: {
                           val: {
                             String: {
                               str: '88'
                             }
-                          },
-                          location: 2969
+                          }
                         }
                       }
                     }
                   }
-                ],
-                location: 2950
+                ]
               }
             },
             {
@@ -2944,30 +2690,26 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 2993
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 2,
-                      location: 2999,
+                      contype: 'CONSTR_DEFAULT',
                       raw_expr: {
                         A_Const: {
                           val: {
                             Integer: {
                               ival: 8000
                             }
-                          },
-                          location: 3007
+                          }
                         }
                       }
                     }
                   }
-                ],
-                location: 2988
+                ]
               }
             },
             {
@@ -2982,19 +2724,16 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 3031
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 3026
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 2750,
       stmt_len: 300
     }
   },
@@ -3006,15 +2745,13 @@ export const domains = [
             RangeVar: {
               relname: 'defaulttest',
               inh: true,
-              relpersistence: 'p',
-              location: 3064
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'col4',
-                location: 3076
+                name: 'col4'
               }
             }
           ],
@@ -3028,19 +2765,17 @@ export const domains = [
                         Integer: {
                           ival: 0
                         }
-                      },
-                      location: 3089
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 3051,
       stmt_len: 40
     }
   },
@@ -3052,23 +2787,21 @@ export const domains = [
             RangeVar: {
               relname: 'defaulttest',
               inh: true,
-              relpersistence: 'p',
-              location: 3137
+              relpersistence: 'p'
             }
           },
           cmds: [
             {
               AlterTableCmd: {
-                subtype: 3,
+                subtype: 'AT_ColumnDefault',
                 name: 'col5',
-                behavior: 0
+                behavior: 'DROP_RESTRICT'
               }
             }
           ],
-          relkind: 37
+          relkind: 'OBJECT_TABLE'
         }
       },
-      stmt_location: 3092,
       stmt_len: 87
     }
   },
@@ -3080,14 +2813,12 @@ export const domains = [
             RangeVar: {
               relname: 'defaulttest',
               inh: true,
-              relpersistence: 'p',
-              location: 3193
+              relpersistence: 'p'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 3180,
       stmt_len: 39
     }
   },
@@ -3099,31 +2830,28 @@ export const domains = [
             RangeVar: {
               relname: 'defaulttest',
               inh: true,
-              relpersistence: 'p',
-              location: 3343
+              relpersistence: 'p'
             }
           },
           cmds: [
             {
               AlterTableCmd: {
-                subtype: 3,
+                subtype: 'AT_ColumnDefault',
                 name: 'col5',
                 def: {
                   A_Const: {
                     val: {
                       Null: {}
-                    },
-                    location: 3385
+                    }
                   }
                 },
-                behavior: 0
+                behavior: 'DROP_RESTRICT'
               }
             }
           ],
-          relkind: 37
+          relkind: 'OBJECT_TABLE'
         }
       },
-      stmt_location: 3220,
       stmt_len: 169
     }
   },
@@ -3135,15 +2863,13 @@ export const domains = [
             RangeVar: {
               relname: 'defaulttest',
               inh: true,
-              relpersistence: 'p',
-              location: 3403
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'col4',
-                location: 3415
+                name: 'col4'
               }
             }
           ],
@@ -3157,19 +2883,17 @@ export const domains = [
                         Integer: {
                           ival: 0
                         }
-                      },
-                      location: 3428
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 3390,
       stmt_len: 40
     }
   },
@@ -3181,23 +2905,21 @@ export const domains = [
             RangeVar: {
               relname: 'defaulttest',
               inh: true,
-              relpersistence: 'p',
-              location: 3453
+              relpersistence: 'p'
             }
           },
           cmds: [
             {
               AlterTableCmd: {
-                subtype: 3,
+                subtype: 'AT_ColumnDefault',
                 name: 'col5',
-                behavior: 0
+                behavior: 'DROP_RESTRICT'
               }
             }
           ],
-          relkind: 37
+          relkind: 'OBJECT_TABLE'
         }
       },
-      stmt_location: 3431,
       stmt_len: 64
     }
   },
@@ -3209,14 +2931,12 @@ export const domains = [
             RangeVar: {
               relname: 'defaulttest',
               inh: true,
-              relpersistence: 'p',
-              location: 3509
+              relpersistence: 'p'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 3496,
       stmt_len: 39
     }
   },
@@ -3228,14 +2948,12 @@ export const domains = [
             RangeVar: {
               relname: 'defaulttest',
               inh: true,
-              relpersistence: 'p',
-              location: 3549
+              relpersistence: 'p'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 3536,
       stmt_len: 39
     }
   },
@@ -3252,11 +2970,9 @@ export const domains = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 3585
+                    ]
                   }
-                },
-                location: 3585
+                }
               }
             }
           ],
@@ -3265,15 +2981,13 @@ export const domains = [
               RangeVar: {
                 relname: 'defaulttest',
                 inh: true,
-                relpersistence: 'p',
-                location: 3592
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 3576,
       stmt_len: 27
     }
   },
@@ -3290,11 +3004,10 @@ export const domains = [
               }
             ]
           ],
-          removeType: 37,
-          behavior: 1
+          removeType: 'OBJECT_TABLE',
+          behavior: 'DROP_CASCADE'
         }
       },
-      stmt_location: 3604,
       stmt_len: 32
     }
   },
@@ -3323,13 +3036,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 3699
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 3637,
       stmt_len: 69
     }
   },
@@ -3341,8 +3052,7 @@ export const domains = [
             RangeVar: {
               relname: 'domnotnull',
               inh: true,
-              relpersistence: 'p',
-              location: 3721
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -3358,12 +3068,10 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 3739
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 3734
+                is_local: true
               }
             },
             {
@@ -3378,19 +3086,16 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 3759
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 3754
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 3707,
       stmt_len: 66
     }
   },
@@ -3402,14 +3107,12 @@ export const domains = [
             RangeVar: {
               relname: 'domnotnull',
               inh: true,
-              relpersistence: 'p',
-              location: 3788
+              relpersistence: 'p'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 3774,
       stmt_len: 39
     }
   },
@@ -3425,10 +3128,9 @@ export const domains = [
               }
             }
           ],
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 3814,
       stmt_len: 39
     }
   },
@@ -3440,8 +3142,7 @@ export const domains = [
             RangeVar: {
               relname: 'domnotnull',
               inh: true,
-              relpersistence: 'p',
-              location: 3872
+              relpersistence: 'p'
             }
           },
           targetList: [
@@ -3454,17 +3155,14 @@ export const domains = [
                       Integer: {
                         ival: 5
                       }
-                    },
-                    location: 3894
+                    }
                   }
-                },
-                location: 3887
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 3854,
       stmt_len: 41
     }
   },
@@ -3480,10 +3178,9 @@ export const domains = [
               }
             }
           ],
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 3896,
       stmt_len: 39
     }
   },
@@ -3495,8 +3192,7 @@ export const domains = [
             RangeVar: {
               relname: 'domnotnull',
               inh: true,
-              relpersistence: 'p',
-              location: 3954
+              relpersistence: 'p'
             }
           },
           targetList: [
@@ -3509,17 +3205,14 @@ export const domains = [
                       Integer: {
                         ival: 6
                       }
-                    },
-                    location: 3976
+                    }
                   }
-                },
-                location: 3969
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 3936,
       stmt_len: 41
     }
   },
@@ -3535,10 +3228,9 @@ export const domains = [
               }
             }
           ],
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 3978,
       stmt_len: 40
     }
   },
@@ -3550,8 +3242,7 @@ export const domains = [
             RangeVar: {
               relname: 'domnotnull',
               inh: true,
-              relpersistence: 'p',
-              location: 4028
+              relpersistence: 'p'
             }
           },
           targetList: [
@@ -3562,17 +3253,14 @@ export const domains = [
                   A_Const: {
                     val: {
                       Null: {}
-                    },
-                    location: 4050
+                    }
                   }
-                },
-                location: 4043
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 4019,
       stmt_len: 35
     }
   },
@@ -3588,10 +3276,9 @@ export const domains = [
               }
             }
           ],
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 4055,
       stmt_len: 50
     }
   },
@@ -3603,8 +3290,7 @@ export const domains = [
             RangeVar: {
               relname: 'domnotnull',
               inh: true,
-              relpersistence: 'p',
-              location: 4115
+              relpersistence: 'p'
             }
           },
           targetList: [
@@ -3615,17 +3301,14 @@ export const domains = [
                   A_Const: {
                     val: {
                       Null: {}
-                    },
-                    location: 4137
+                    }
                   }
-                },
-                location: 4130
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 4106,
       stmt_len: 35
     }
   },
@@ -3643,16 +3326,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 4156
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 1
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_CASCADE'
         }
       },
-      stmt_location: 4142,
       stmt_len: 34
     }
   },
@@ -3664,8 +3345,7 @@ export const domains = [
             RangeVar: {
               relname: 'domdeftest',
               inh: true,
-              relpersistence: 'p',
-              location: 4227
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -3681,19 +3361,16 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 4244
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 4239
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 4177,
       stmt_len: 73
     }
   },
@@ -3705,14 +3382,12 @@ export const domains = [
             RangeVar: {
               relname: 'domdeftest',
               inh: true,
-              relpersistence: 'p',
-              location: 4265
+              relpersistence: 'p'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 4251,
       stmt_len: 39
     }
   },
@@ -3729,11 +3404,9 @@ export const domains = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4299
+                    ]
                   }
-                },
-                location: 4299
+                }
               }
             }
           ],
@@ -3742,15 +3415,13 @@ export const domains = [
               RangeVar: {
                 relname: 'domdeftest',
                 inh: true,
-                relpersistence: 'p',
-                location: 4306
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4291,
       stmt_len: 25
     }
   },
@@ -3772,14 +3443,12 @@ export const domains = [
                 String: {
                   str: '42'
                 }
-              },
-              location: 4350
+              }
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 4317,
       stmt_len: 37
     }
   },
@@ -3791,14 +3460,12 @@ export const domains = [
             RangeVar: {
               relname: 'domdeftest',
               inh: true,
-              relpersistence: 'p',
-              location: 4368
+              relpersistence: 'p'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 4355,
       stmt_len: 38
     }
   },
@@ -3815,11 +3482,9 @@ export const domains = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4402
+                    ]
                   }
-                },
-                location: 4402
+                }
               }
             }
           ],
@@ -3828,15 +3493,13 @@ export const domains = [
               RangeVar: {
                 relname: 'domdeftest',
                 inh: true,
-                relpersistence: 'p',
-                location: 4409
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4394,
       stmt_len: 25
     }
   },
@@ -3852,10 +3515,9 @@ export const domains = [
               }
             }
           ],
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 4420,
       stmt_len: 33
     }
   },
@@ -3867,14 +3529,12 @@ export const domains = [
             RangeVar: {
               relname: 'domdeftest',
               inh: true,
-              relpersistence: 'p',
-              location: 4467
+              relpersistence: 'p'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 4454,
       stmt_len: 38
     }
   },
@@ -3891,11 +3551,9 @@ export const domains = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4501
+                    ]
                   }
-                },
-                location: 4501
+                }
               }
             }
           ],
@@ -3904,15 +3562,13 @@ export const domains = [
               RangeVar: {
                 relname: 'domdeftest',
                 inh: true,
-                relpersistence: 'p',
-                location: 4508
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4493,
       stmt_len: 25
     }
   },
@@ -3929,11 +3585,10 @@ export const domains = [
               }
             ]
           ],
-          removeType: 37,
-          behavior: 0
+          removeType: 'OBJECT_TABLE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 4519,
       stmt_len: 23
     }
   },
@@ -3962,13 +3617,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 4604
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 4543,
       stmt_len: 68
     }
   },
@@ -3980,8 +3633,7 @@ export const domains = [
             RangeVar: {
               relname: 'domcontest',
               inh: true,
-              relpersistence: 'p',
-              location: 4626
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -3997,19 +3649,16 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 4643
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 4638
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 4612,
       stmt_len: 35
     }
   },
@@ -4021,8 +3670,7 @@ export const domains = [
             RangeVar: {
               relname: 'domcontest',
               inh: true,
-              relpersistence: 'p',
-              location: 4662
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -4035,19 +3683,17 @@ export const domains = [
                         Integer: {
                           ival: 1
                         }
-                      },
-                      location: 4681
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 4648,
       stmt_len: 35
     }
   },
@@ -4059,8 +3705,7 @@ export const domains = [
             RangeVar: {
               relname: 'domcontest',
               inh: true,
-              relpersistence: 'p',
-              location: 4697
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -4073,19 +3718,17 @@ export const domains = [
                         Integer: {
                           ival: 2
                         }
-                      },
-                      location: 4716
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 4684,
       stmt_len: 34
     }
   },
@@ -4103,12 +3746,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 't',
-              location: 4741,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -4124,8 +3766,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 4761
+                      ]
                     }
                   },
                   rexpr: {
@@ -4134,20 +3775,17 @@ export const domains = [
                         Integer: {
                           ival: 1
                         }
-                      },
-                      location: 4769
+                      }
                     }
-                  },
-                  location: 4767
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 4719,
       stmt_len: 52
     }
   },
@@ -4165,12 +3803,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 't',
-              location: 4804,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -4186,8 +3823,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 4824
+                      ]
                     }
                   },
                   rexpr: {
@@ -4196,20 +3832,17 @@ export const domains = [
                         Integer: {
                           ival: 34
                         }
-                      },
-                      location: 4832
+                      }
                     }
-                  },
-                  location: 4830
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 4772,
       stmt_len: 63
     }
   },
@@ -4227,11 +3860,10 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
-              location: 4858,
+              contype: 'CONSTR_CHECK',
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -4247,8 +3879,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 4865
+                      ]
                     }
                   },
                   rexpr: {
@@ -4257,20 +3888,17 @@ export const domains = [
                         Integer: {
                           ival: 0
                         }
-                      },
-                      location: 4873
+                      }
                     }
-                  },
-                  location: 4871
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 4836,
       stmt_len: 39
     }
   },
@@ -4282,8 +3910,7 @@ export const domains = [
             RangeVar: {
               relname: 'domcontest',
               inh: true,
-              relpersistence: 'p',
-              location: 4890
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -4296,19 +3923,17 @@ export const domains = [
                         Integer: {
                           ival: -5
                         }
-                      },
-                      location: 4909
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 4876,
       stmt_len: 36
     }
   },
@@ -4320,8 +3945,7 @@ export const domains = [
             RangeVar: {
               relname: 'domcontest',
               inh: true,
-              relpersistence: 'p',
-              location: 4935
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -4334,19 +3958,17 @@ export const domains = [
                         Integer: {
                           ival: 42
                         }
-                      },
-                      location: 4954
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 4913,
       stmt_len: 44
     }
   },
@@ -4358,8 +3980,7 @@ export const domains = [
             RangeVar: {
               relname: 'domcontest',
               inh: true,
-              relpersistence: 'p',
-              location: 4980
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -4372,19 +3993,17 @@ export const domains = [
                         Integer: {
                           ival: 5
                         }
-                      },
-                      location: 4999
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 4958,
       stmt_len: 43
     }
   },
@@ -4401,10 +4020,9 @@ export const domains = [
             }
           ],
           name: 't',
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 5002,
       stmt_len: 36
     }
   },
@@ -4416,8 +4034,7 @@ export const domains = [
             RangeVar: {
               relname: 'domcontest',
               inh: true,
-              relpersistence: 'p',
-              location: 5052
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -4430,19 +4047,17 @@ export const domains = [
                         Integer: {
                           ival: -5
                         }
-                      },
-                      location: 5071
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 5039,
       stmt_len: 35
     }
   },
@@ -4454,8 +4069,7 @@ export const domains = [
             RangeVar: {
               relname: 'domcontest',
               inh: true,
-              relpersistence: 'p',
-              location: 5096
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -4468,19 +4082,17 @@ export const domains = [
                         Integer: {
                           ival: 42
                         }
-                      },
-                      location: 5115
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 5075,
       stmt_len: 43
     }
   },
@@ -4497,10 +4109,9 @@ export const domains = [
             }
           ],
           name: 'nonexistent',
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 5119,
       stmt_len: 46
     }
   },
@@ -4517,11 +4128,10 @@ export const domains = [
             }
           ],
           name: 'nonexistent',
-          behavior: 0,
+          behavior: 'DROP_RESTRICT',
           missing_ok: true
         }
       },
-      stmt_location: 5166,
       stmt_len: 55
     }
   },
@@ -4550,13 +4160,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 5296
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 5222,
       stmt_len: 77
     }
   },
@@ -4568,8 +4176,7 @@ export const domains = [
             RangeVar: {
               relname: 'thethings',
               inh: true,
-              relpersistence: 'p',
-              location: 5314
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -4585,19 +4192,16 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 5331
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 5325
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 5300,
       stmt_len: 38
     }
   },
@@ -4609,15 +4213,13 @@ export const domains = [
             RangeVar: {
               relname: 'thethings',
               inh: true,
-              relpersistence: 'p',
-              location: 5352
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'stuff',
-                location: 5363
+                name: 'stuff'
               }
             }
           ],
@@ -4631,19 +4233,17 @@ export const domains = [
                         Integer: {
                           ival: 55
                         }
-                      },
-                      location: 5378
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 5339,
       stmt_len: 42
     }
   },
@@ -4661,12 +4261,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 'meow',
-              location: 5407,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -4682,8 +4281,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 5430
+                      ]
                     }
                   },
                   rexpr: {
@@ -4692,20 +4290,17 @@ export const domains = [
                         Integer: {
                           ival: 11
                         }
-                      },
-                      location: 5438
+                      }
                     }
-                  },
-                  location: 5436
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 5382,
       stmt_len: 59
     }
   },
@@ -4723,12 +4318,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 'meow',
-              location: 5467,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -4744,8 +4338,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 5490
+                      ]
                     }
                   },
                   rexpr: {
@@ -4754,20 +4347,17 @@ export const domains = [
                         Integer: {
                           ival: 11
                         }
-                      },
-                      location: 5498
+                      }
                     }
-                  },
-                  location: 5496
+                  }
                 }
               },
               skip_validation: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 5442,
       stmt_len: 69
     }
   },
@@ -4784,10 +4374,9 @@ export const domains = [
             }
           ],
           name: 'meow',
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 5512,
       stmt_len: 45
     }
   },
@@ -4799,8 +4388,7 @@ export const domains = [
             RangeVar: {
               relname: 'thethings',
               inh: true,
-              relpersistence: 'p',
-              location: 5566
+              relpersistence: 'p'
             }
           },
           targetList: [
@@ -4813,17 +4401,14 @@ export const domains = [
                       Integer: {
                         ival: 10
                       }
-                    },
-                    location: 5588
+                    }
                   }
-                },
-                location: 5580
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 5558,
       stmt_len: 32
     }
   },
@@ -4840,10 +4425,9 @@ export const domains = [
             }
           ],
           name: 'meow',
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 5591,
       stmt_len: 45
     }
   },
@@ -4855,8 +4439,7 @@ export const domains = [
             RangeVar: {
               relname: 'domtab',
               inh: true,
-              relpersistence: 'p',
-              location: 5688
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -4877,19 +4460,16 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 5701
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 5696
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 5637,
       stmt_len: 72
     }
   },
@@ -4918,13 +4498,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 5732
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 5710,
       stmt_len: 29
     }
   },
@@ -4936,8 +4514,7 @@ export const domains = [
             RangeVar: {
               relname: 'domview',
               inh: true,
-              relpersistence: 'p',
-              location: 5753
+              relpersistence: 'p'
             }
           },
           query: {
@@ -4955,8 +4532,7 @@ export const domains = [
                                   str: 'col1'
                                 }
                               }
-                            ],
-                            location: 5776
+                            ]
                           }
                         },
                         typeName: {
@@ -4968,14 +4544,11 @@ export const domains = [
                                 }
                               }
                             ],
-                            typemod: -1,
-                            location: 5784
+                            typemod: -1
                           }
-                        },
-                        location: 5771
+                        }
                       }
-                    },
-                    location: 5771
+                    }
                   }
                 }
               ],
@@ -4984,18 +4557,16 @@ export const domains = [
                   RangeVar: {
                     relname: 'domtab',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 5794
+                    relpersistence: 'p'
                   }
                 }
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           withCheckOption: 0
         }
       },
-      stmt_location: 5740,
       stmt_len: 60
     }
   },
@@ -5007,15 +4578,13 @@ export const domains = [
             RangeVar: {
               relname: 'domtab',
               inh: true,
-              relpersistence: 'p',
-              location: 5814
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'col1',
-                location: 5822
+                name: 'col1'
               }
             }
           ],
@@ -5027,19 +4596,17 @@ export const domains = [
                     A_Const: {
                       val: {
                         Null: {}
-                      },
-                      location: 5836
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 5801,
       stmt_len: 40
     }
   },
@@ -5051,15 +4618,13 @@ export const domains = [
             RangeVar: {
               relname: 'domtab',
               inh: true,
-              relpersistence: 'p',
-              location: 5855
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'col1',
-                location: 5863
+                name: 'col1'
               }
             }
           ],
@@ -5073,19 +4638,17 @@ export const domains = [
                         Integer: {
                           ival: 5
                         }
-                      },
-                      location: 5877
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 5842,
       stmt_len: 37
     }
   },
@@ -5102,11 +4665,9 @@ export const domains = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 5888
+                    ]
                   }
-                },
-                location: 5888
+                }
               }
             }
           ],
@@ -5115,15 +4676,13 @@ export const domains = [
               RangeVar: {
                 relname: 'domview',
                 inh: true,
-                relpersistence: 'p',
-                location: 5895
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 5880,
       stmt_len: 22
     }
   },
@@ -5139,10 +4698,9 @@ export const domains = [
               }
             }
           ],
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 5903,
       stmt_len: 31
     }
   },
@@ -5159,11 +4717,9 @@ export const domains = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 5943
+                    ]
                   }
-                },
-                location: 5943
+                }
               }
             }
           ],
@@ -5172,15 +4728,13 @@ export const domains = [
               RangeVar: {
                 relname: 'domview',
                 inh: true,
-                relpersistence: 'p',
-                location: 5950
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 5935,
       stmt_len: 22
     }
   },
@@ -5196,10 +4750,9 @@ export const domains = [
               }
             }
           ],
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 5958,
       stmt_len: 40
     }
   },
@@ -5216,11 +4769,9 @@ export const domains = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 6007
+                    ]
                   }
-                },
-                location: 6007
+                }
               }
             }
           ],
@@ -5229,15 +4780,13 @@ export const domains = [
               RangeVar: {
                 relname: 'domview',
                 inh: true,
-                relpersistence: 'p',
-                location: 6014
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 5999,
       stmt_len: 22
     }
   },
@@ -5255,12 +4804,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 'domchkgt6',
-              location: 6045,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -5276,8 +4824,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 6072
+                      ]
                     }
                   },
                   rexpr: {
@@ -5286,20 +4833,17 @@ export const domains = [
                         Integer: {
                           ival: 6
                         }
-                      },
-                      location: 6080
+                      }
                     }
-                  },
-                  location: 6078
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 6022,
       stmt_len: 60
     }
   },
@@ -5316,11 +4860,9 @@ export const domains = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 6091
+                    ]
                   }
-                },
-                location: 6091
+                }
               }
             }
           ],
@@ -5329,15 +4871,13 @@ export const domains = [
               RangeVar: {
                 relname: 'domview',
                 inh: true,
-                relpersistence: 'p',
-                location: 6098
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6083,
       stmt_len: 22
     }
   },
@@ -5354,10 +4894,9 @@ export const domains = [
             }
           ],
           name: 'domchkgt6',
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 6106,
       stmt_len: 60
     }
   },
@@ -5374,11 +4913,9 @@ export const domains = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 6175
+                    ]
                   }
-                },
-                location: 6175
+                }
               }
             }
           ],
@@ -5387,15 +4924,13 @@ export const domains = [
               RangeVar: {
                 relname: 'domview',
                 inh: true,
-                relpersistence: 'p',
-                location: 6182
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6167,
       stmt_len: 22
     }
   },
@@ -5413,16 +4948,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 6215
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 6190,
       stmt_len: 39
     }
   },
@@ -5440,16 +4973,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 6243
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 6230,
       stmt_len: 27
     }
   },
@@ -5467,16 +4998,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 6271
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 6258,
       stmt_len: 27
     }
   },
@@ -5494,16 +5023,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 6299
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 6286,
       stmt_len: 27
     }
   },
@@ -5521,16 +5048,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 6327
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 6314,
       stmt_len: 27
     }
   },
@@ -5547,11 +5072,10 @@ export const domains = [
               }
             ]
           ],
-          removeType: 33,
-          behavior: 0
+          removeType: 'OBJECT_SEQUENCE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 6342,
       stmt_len: 24
     }
   },
@@ -5587,18 +5111,15 @@ export const domains = [
                       Integer: {
                         ival: 4
                       }
-                    },
-                    location: 6427
+                    }
                   }
                 }
               ],
-              typemod: -1,
-              location: 6419
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 6367,
       stmt_len: 62
     }
   },
@@ -5622,18 +5143,16 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 6452
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 4,
-                location: 6459,
+                contype: 'CONSTR_CHECK',
                 raw_expr: {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -5664,8 +5183,7 @@ export const domains = [
                                     str: 'value'
                                   }
                                 }
-                              ],
-                              location: 6476
+                              ]
                             }
                           },
                           {
@@ -5674,8 +5192,7 @@ export const domains = [
                                 Integer: {
                                   ival: 1
                                 }
-                              },
-                              location: 6483
+                              }
                             }
                           },
                           {
@@ -5684,12 +5201,10 @@ export const domains = [
                                 Integer: {
                                   ival: 1
                                 }
-                              },
-                              location: 6486
+                              }
                             }
                           }
-                        ],
-                        location: 6466
+                        ]
                       }
                     },
                     rexpr: {
@@ -5698,11 +5213,9 @@ export const domains = [
                           String: {
                             str: 'x'
                           }
-                        },
-                        location: 6491
+                        }
                       }
-                    },
-                    location: 6489
+                    }
                   }
                 },
                 initially_valid: true
@@ -5711,7 +5224,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 6430,
       stmt_len: 65
     }
   },
@@ -5735,18 +5247,16 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 6516
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 4,
-                location: 6523,
+                contype: 'CONSTR_CHECK',
                 raw_expr: {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -5777,8 +5287,7 @@ export const domains = [
                                     str: 'value'
                                   }
                                 }
-                              ],
-                              location: 6540
+                              ]
                             }
                           },
                           {
@@ -5787,8 +5296,7 @@ export const domains = [
                                 Integer: {
                                   ival: 2
                                 }
-                              },
-                              location: 6547
+                              }
                             }
                           },
                           {
@@ -5797,12 +5305,10 @@ export const domains = [
                                 Integer: {
                                   ival: 1
                                 }
-                              },
-                              location: 6550
+                              }
                             }
                           }
-                        ],
-                        location: 6530
+                        ]
                       }
                     },
                     rexpr: {
@@ -5811,11 +5317,9 @@ export const domains = [
                           String: {
                             str: '1'
                           }
-                        },
-                        location: 6555
+                        }
                       }
-                    },
-                    location: 6553
+                    }
                   }
                 },
                 initially_valid: true
@@ -5824,7 +5328,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 6496,
       stmt_len: 63
     }
   },
@@ -5843,8 +5346,7 @@ export const domains = [
                           String: {
                             str: 'x123'
                           }
-                        },
-                        location: 6569
+                        }
                       }
                     },
                     typeName: {
@@ -5856,21 +5358,17 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 6577
+                        typemod: -1
                       }
-                    },
-                    location: 6575
+                    }
                   }
-                },
-                location: 6569
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6560,
       stmt_len: 21
     }
   },
@@ -5889,8 +5387,7 @@ export const domains = [
                           String: {
                             str: 'x1234'
                           }
-                        },
-                        location: 6590
+                        }
                       }
                     },
                     typeName: {
@@ -5902,21 +5399,17 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 6599
+                        typemod: -1
                       }
-                    },
-                    location: 6597
+                    }
                   }
-                },
-                location: 6590
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6582,
       stmt_len: 21
     }
   },
@@ -5935,8 +5428,7 @@ export const domains = [
                           String: {
                             str: 'y1234'
                           }
-                        },
-                        location: 6649
+                        }
                       }
                     },
                     typeName: {
@@ -5948,21 +5440,17 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 6658
+                        typemod: -1
                       }
-                    },
-                    location: 6656
+                    }
                   }
-                },
-                location: 6649
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6604,
       stmt_len: 58
     }
   },
@@ -5981,8 +5469,7 @@ export const domains = [
                           String: {
                             str: 'y123'
                           }
-                        },
-                        location: 6679
+                        }
                       }
                     },
                     typeName: {
@@ -5994,21 +5481,17 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 6687
+                        typemod: -1
                       }
-                    },
-                    location: 6685
+                    }
                   }
-                },
-                location: 6679
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6663,
       stmt_len: 28
     }
   },
@@ -6027,8 +5510,7 @@ export const domains = [
                           String: {
                             str: 'yz23'
                           }
-                        },
-                        location: 6708
+                        }
                       }
                     },
                     typeName: {
@@ -6040,21 +5522,17 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 6716
+                        typemod: -1
                       }
-                    },
-                    location: 6714
+                    }
                   }
-                },
-                location: 6708
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6692,
       stmt_len: 28
     }
   },
@@ -6073,8 +5551,7 @@ export const domains = [
                           String: {
                             str: 'xz23'
                           }
-                        },
-                        location: 6737
+                        }
                       }
                     },
                     typeName: {
@@ -6086,21 +5563,17 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 6745
+                        typemod: -1
                       }
-                    },
-                    location: 6743
+                    }
                   }
-                },
-                location: 6737
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6721,
       stmt_len: 28
     }
   },
@@ -6112,8 +5585,7 @@ export const domains = [
             RangeVar: {
               relname: 'dtest',
               inh: true,
-              relpersistence: 't',
-              location: 6778
+              relpersistence: 't'
             }
           },
           tableElts: [
@@ -6129,19 +5601,16 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 6787
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 6784
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 6750,
       stmt_len: 42
     }
   },
@@ -6153,8 +5622,7 @@ export const domains = [
             RangeVar: {
               relname: 'dtest',
               inh: true,
-              relpersistence: 'p',
-              location: 6807
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -6167,19 +5635,17 @@ export const domains = [
                         String: {
                           str: 'x123'
                         }
-                      },
-                      location: 6820
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 6793,
       stmt_len: 34
     }
   },
@@ -6191,8 +5657,7 @@ export const domains = [
             RangeVar: {
               relname: 'dtest',
               inh: true,
-              relpersistence: 'p',
-              location: 6841
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -6205,19 +5670,17 @@ export const domains = [
                         String: {
                           str: 'x1234'
                         }
-                      },
-                      location: 6854
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 6828,
       stmt_len: 34
     }
   },
@@ -6229,8 +5692,7 @@ export const domains = [
             RangeVar: {
               relname: 'dtest',
               inh: true,
-              relpersistence: 'p',
-              location: 6903
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -6243,19 +5705,17 @@ export const domains = [
                         String: {
                           str: 'y1234'
                         }
-                      },
-                      location: 6916
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 6863,
       stmt_len: 61
     }
   },
@@ -6267,8 +5727,7 @@ export const domains = [
             RangeVar: {
               relname: 'dtest',
               inh: true,
-              relpersistence: 'p',
-              location: 6965
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -6281,19 +5740,17 @@ export const domains = [
                         String: {
                           str: 'y123'
                         }
-                      },
-                      location: 6978
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 6925,
       stmt_len: 60
     }
   },
@@ -6305,8 +5762,7 @@ export const domains = [
             RangeVar: {
               relname: 'dtest',
               inh: true,
-              relpersistence: 'p',
-              location: 7007
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -6319,19 +5775,17 @@ export const domains = [
                         String: {
                           str: 'yz23'
                         }
-                      },
-                      location: 7020
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 6986,
       stmt_len: 41
     }
   },
@@ -6343,8 +5797,7 @@ export const domains = [
             RangeVar: {
               relname: 'dtest',
               inh: true,
-              relpersistence: 'p',
-              location: 7049
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -6357,19 +5810,17 @@ export const domains = [
                         String: {
                           str: 'xz23'
                         }
-                      },
-                      location: 7062
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 7028,
       stmt_len: 41
     }
   },
@@ -6386,11 +5837,10 @@ export const domains = [
               }
             ]
           ],
-          removeType: 37,
-          behavior: 0
+          removeType: 'OBJECT_TABLE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 7070,
       stmt_len: 26
     }
   },
@@ -6408,16 +5858,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 7110
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 1
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_CASCADE'
         }
       },
-      stmt_location: 7097,
       stmt_len: 27
     }
   },
@@ -6441,21 +5889,18 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 7312
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 1,
-                location: 7317
+                contype: 'CONSTR_NOTNULL'
               }
             }
           ]
         }
       },
-      stmt_location: 7125,
       stmt_len: 200
     }
   },
@@ -6467,8 +5912,7 @@ export const domains = [
             RangeVar: {
               relname: 'domain_test',
               inh: true,
-              relpersistence: 'p',
-              location: 7341
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -6489,12 +5933,10 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 7356
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 7354
+                is_local: true
               }
             },
             {
@@ -6514,19 +5956,16 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 7363
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 7361
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 7326,
       stmt_len: 41
     }
   },
@@ -6538,8 +5977,7 @@ export const domains = [
             RangeVar: {
               relname: 'domain_test',
               inh: true,
-              relpersistence: 'p',
-              location: 7382
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -6552,8 +5990,7 @@ export const domains = [
                         Integer: {
                           ival: 1
                         }
-                      },
-                      location: 7402
+                      }
                     }
                   },
                   {
@@ -6562,19 +5999,17 @@ export const domains = [
                         Integer: {
                           ival: 2
                         }
-                      },
-                      location: 7405
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 7368,
       stmt_len: 39
     }
   },
@@ -6586,8 +6021,7 @@ export const domains = [
             RangeVar: {
               relname: 'domain_test',
               inh: true,
-              relpersistence: 'p',
-              location: 7421
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -6600,8 +6034,7 @@ export const domains = [
                         Integer: {
                           ival: 1
                         }
-                      },
-                      location: 7441
+                      }
                     }
                   },
                   {
@@ -6610,19 +6043,17 @@ export const domains = [
                         Integer: {
                           ival: 2
                         }
-                      },
-                      location: 7444
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 7408,
       stmt_len: 38
     }
   },
@@ -6634,14 +6065,13 @@ export const domains = [
             RangeVar: {
               relname: 'domain_test',
               inh: true,
-              relpersistence: 'p',
-              location: 7476
+              relpersistence: 'p'
             }
           },
           cmds: [
             {
               AlterTableCmd: {
-                subtype: 0,
+                subtype: 'AT_AddColumn',
                 def: {
                   ColumnDef: {
                     colname: 'c',
@@ -6654,22 +6084,19 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 7501
+                        typemod: -1
                       }
                     },
-                    is_local: true,
-                    location: 7499
+                    is_local: true
                   }
                 },
-                behavior: 0
+                behavior: 'DROP_RESTRICT'
               }
             }
           ],
-          relkind: 37
+          relkind: 'OBJECT_TABLE'
         }
       },
-      stmt_location: 7447,
       stmt_len: 64
     }
   },
@@ -6693,18 +6120,16 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 7543
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 4,
-                location: 7548,
+                contype: 'CONSTR_CHECK',
                 raw_expr: {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -6720,8 +6145,7 @@ export const domains = [
                               str: 'value'
                             }
                           }
-                        ],
-                        location: 7555
+                        ]
                       }
                     },
                     rexpr: {
@@ -6730,11 +6154,9 @@ export const domains = [
                           String: {
                             str: 'foo'
                           }
-                        },
-                        location: 7564
+                        }
                       }
-                    },
-                    location: 7561
+                    }
                   }
                 },
                 initially_valid: true
@@ -6742,16 +6164,14 @@ export const domains = [
             },
             {
               Constraint: {
-                contype: 2,
-                location: 7571,
+                contype: 'CONSTR_DEFAULT',
                 raw_expr: {
                   A_Const: {
                     val: {
                       String: {
                         str: 'foo'
                       }
-                    },
-                    location: 7579
+                    }
                   }
                 }
               }
@@ -6759,7 +6179,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 7512,
       stmt_len: 72
     }
   },
@@ -6771,14 +6190,13 @@ export const domains = [
             RangeVar: {
               relname: 'domain_test',
               inh: true,
-              relpersistence: 'p',
-              location: 7614
+              relpersistence: 'p'
             }
           },
           cmds: [
             {
               AlterTableCmd: {
-                subtype: 0,
+                subtype: 'AT_AddColumn',
                 def: {
                   ColumnDef: {
                     colname: 'd',
@@ -6791,22 +6209,19 @@ export const domains = [
                             }
                           }
                         ],
-                        typemod: -1,
-                        location: 7639
+                        typemod: -1
                       }
                     },
-                    is_local: true,
-                    location: 7637
+                    is_local: true
                   }
                 },
-                behavior: 0
+                behavior: 'DROP_RESTRICT'
               }
             }
           ],
-          relkind: 37
+          relkind: 'OBJECT_TABLE'
         }
       },
-      stmt_location: 7585,
       stmt_len: 65
     }
   },
@@ -6830,18 +6245,16 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 7787
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 4,
-                location: 7792,
+                contype: 'CONSTR_CHECK',
                 raw_expr: {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -6857,8 +6270,7 @@ export const domains = [
                               str: 'value'
                             }
                           }
-                        ],
-                        location: 7799
+                        ]
                       }
                     },
                     rexpr: {
@@ -6867,11 +6279,9 @@ export const domains = [
                           Integer: {
                             ival: 0
                           }
-                        },
-                        location: 7807
+                        }
                       }
-                    },
-                    location: 7805
+                    }
                   }
                 },
                 initially_valid: true
@@ -6879,14 +6289,12 @@ export const domains = [
             },
             {
               Constraint: {
-                contype: 1,
-                location: 7810
+                contype: 'CONSTR_NOTNULL'
               }
             }
           ]
         }
       },
-      stmt_location: 7651,
       stmt_len: 167
     }
   },
@@ -6902,14 +6310,12 @@ export const domains = [
                   Integer: {
                     ival: 10
                   }
-                },
-                location: 7883
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 7870,
       stmt_len: 16
     }
   },
@@ -6925,14 +6331,12 @@ export const domains = [
                   Integer: {
                     ival: 0
                   }
-                },
-                location: 7899
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 7887,
       stmt_len: 14
     }
   },
@@ -6946,14 +6350,12 @@ export const domains = [
               A_Const: {
                 val: {
                   Null: {}
-                },
-                location: 7929
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 7902,
       stmt_len: 32
     }
   },
@@ -6981,8 +6383,7 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 8109
+                    typemod: -1
                   }
                 },
                 mode: 105
@@ -6998,8 +6399,7 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 8126
+              typemod: -1
             }
           },
           options: [
@@ -7013,8 +6413,7 @@ export const domains = [
                     }
                   }
                 ],
-                defaction: 0,
-                location: 8134
+                defaction: 0
               }
             },
             {
@@ -7025,14 +6424,12 @@ export const domains = [
                     str: 'plpgsql'
                   }
                 },
-                defaction: 0,
-                location: 8186
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 7935,
       stmt_len: 267
     }
   },
@@ -7059,22 +6456,18 @@ export const domains = [
                             Integer: {
                               ival: 3
                             }
-                          },
-                          location: 8228
+                          }
                         }
                       }
-                    ],
-                    location: 8212
+                    ]
                   }
-                },
-                location: 8212
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 8203,
       stmt_len: 27
     }
   },
@@ -7103,8 +6496,7 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 8323
+                    typemod: -1
                   }
                 },
                 mode: 105
@@ -7120,8 +6512,7 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 8340
+              typemod: -1
             }
           },
           options: [
@@ -7136,8 +6527,7 @@ export const domains = [
                     }
                   }
                 ],
-                defaction: 0,
-                location: 8348
+                defaction: 0
               }
             },
             {
@@ -7148,14 +6538,12 @@ export const domains = [
                     str: 'plpgsql'
                   }
                 },
-                defaction: 0,
-                location: 8405
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 8231,
       stmt_len: 190
     }
   },
@@ -7182,22 +6570,18 @@ export const domains = [
                             Integer: {
                               ival: 3
                             }
-                          },
-                          location: 8447
+                          }
                         }
                       }
-                    ],
-                    location: 8431
+                    ]
                   }
-                },
-                location: 8431
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 8422,
       stmt_len: 27
     }
   },
@@ -7226,8 +6610,7 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 8535
+                    typemod: -1
                   }
                 },
                 mode: 105
@@ -7243,8 +6626,7 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 8552
+              typemod: -1
             }
           },
           options: [
@@ -7259,8 +6641,7 @@ export const domains = [
                     }
                   }
                 ],
-                defaction: 0,
-                location: 8560
+                defaction: 0
               }
             },
             {
@@ -7271,14 +6652,12 @@ export const domains = [
                     str: 'plpgsql'
                   }
                 },
-                defaction: 0,
-                location: 8637
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 8450,
       stmt_len: 203
     }
   },
@@ -7303,22 +6682,18 @@ export const domains = [
                         A_Const: {
                           val: {
                             Null: {}
-                          },
-                          location: 8679
+                          }
                         }
                       }
-                    ],
-                    location: 8663
+                    ]
                   }
-                },
-                location: 8663
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 8654,
       stmt_len: 30
     }
   },
@@ -7345,22 +6720,18 @@ export const domains = [
                             Integer: {
                               ival: 0
                             }
-                          },
-                          location: 8729
+                          }
                         }
                       }
-                    ],
-                    location: 8713
+                    ]
                   }
-                },
-                location: 8713
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 8685,
       stmt_len: 46
     }
   },
@@ -7387,22 +6758,18 @@ export const domains = [
                             Integer: {
                               ival: 1
                             }
-                          },
-                          location: 8776
+                          }
                         }
                       }
-                    ],
-                    location: 8760
+                    ]
                   }
-                },
-                location: 8760
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 8732,
       stmt_len: 46
     }
   },
@@ -7429,22 +6796,18 @@ export const domains = [
                             Integer: {
                               ival: 2
                             }
-                          },
-                          location: 8830
+                          }
                         }
                       }
-                    ],
-                    location: 8814
+                    ]
                   }
-                },
-                location: 8814
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 8779,
       stmt_len: 53
     }
   },
@@ -7471,22 +6834,18 @@ export const domains = [
                             Integer: {
                               ival: 3
                             }
-                          },
-                          location: 8875
+                          }
                         }
                       }
-                    ],
-                    location: 8859
+                    ]
                   }
-                },
-                location: 8859
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 8833,
       stmt_len: 44
     }
   },
@@ -7510,13 +6869,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 8971
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 8878,
       stmt_len: 97
     }
   },
@@ -7527,8 +6884,7 @@ export const domains = [
           typevar: {
             RangeVar: {
               relname: 'ddtest1',
-              relpersistence: 'p',
-              location: 9067
+              relpersistence: 'p'
             }
           },
           coldeflist: [
@@ -7544,18 +6900,15 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 9082
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 9079
+                is_local: true
               }
             }
           ]
         }
       },
-      stmt_location: 8976,
       stmt_len: 113
     }
   },
@@ -7567,8 +6920,7 @@ export const domains = [
             RangeVar: {
               relname: 'ddtest2',
               inh: true,
-              relpersistence: 'p',
-              location: 9104
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -7584,19 +6936,16 @@ export const domains = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 9115
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 9112
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 9090,
       stmt_len: 33
     }
   },
@@ -7608,8 +6957,7 @@ export const domains = [
             RangeVar: {
               relname: 'ddtest2',
               inh: true,
-              relpersistence: 'p',
-              location: 9137
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -7625,24 +6973,21 @@ export const domains = [
                               Integer: {
                                 ival: -1
                               }
-                            },
-                            location: 9156
+                            }
                           }
                         }
                       ],
-                      row_format: 0,
-                      location: 9152
+                      row_format: 0
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 9124,
       stmt_len: 36
     }
   },
@@ -7660,12 +7005,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 'c1',
-              location: 9186,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -7681,8 +7025,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 9206
+                      ]
                     }
                   },
                   rexpr: {
@@ -7691,20 +7034,17 @@ export const domains = [
                         Integer: {
                           ival: 0
                         }
-                      },
-                      location: 9215
+                      }
                     }
-                  },
-                  location: 9212
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 9161,
       stmt_len: 56
     }
   },
@@ -7721,11 +7061,10 @@ export const domains = [
               }
             ]
           ],
-          removeType: 37,
-          behavior: 0
+          removeType: 'OBJECT_TABLE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 9218,
       stmt_len: 19
     }
   },
@@ -7737,8 +7076,7 @@ export const domains = [
             RangeVar: {
               relname: 'ddtest2',
               inh: true,
-              relpersistence: 'p',
-              location: 9253
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -7761,19 +7099,16 @@ export const domains = [
                           ival: -1
                         }
                       }
-                    ],
-                    location: 9264
+                    ]
                   }
                 },
-                is_local: true,
-                location: 9261
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 9238,
       stmt_len: 36
     }
   },
@@ -7785,8 +7120,7 @@ export const domains = [
             RangeVar: {
               relname: 'ddtest2',
               inh: true,
-              relpersistence: 'p',
-              location: 9288
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -7799,19 +7133,17 @@ export const domains = [
                         String: {
                           str: '{(-1)}'
                         }
-                      },
-                      location: 9303
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 9275,
       stmt_len: 37
     }
   },
@@ -7829,12 +7161,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 'c1',
-              location: 9338,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -7850,8 +7181,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 9358
+                      ]
                     }
                   },
                   rexpr: {
@@ -7860,20 +7190,17 @@ export const domains = [
                         Integer: {
                           ival: 0
                         }
-                      },
-                      location: 9367
+                      }
                     }
-                  },
-                  location: 9364
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 9313,
       stmt_len: 56
     }
   },
@@ -7891,12 +7218,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 'c1',
-              location: 9395,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -7912,8 +7238,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 9415
+                      ]
                     }
                   },
                   rexpr: {
@@ -7922,20 +7247,17 @@ export const domains = [
                         Integer: {
                           ival: 0
                         }
-                      },
-                      location: 9424
+                      }
                     }
-                  },
-                  location: 9421
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 9370,
       stmt_len: 56
     }
   },
@@ -7959,18 +7281,16 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 9453
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 4,
-                location: 9460,
+                contype: 'CONSTR_CHECK',
                 raw_expr: {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -7980,7 +7300,7 @@ export const domains = [
                     ],
                     lexpr: {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -7996,8 +7316,7 @@ export const domains = [
                                   str: 'value'
                                 }
                               }
-                            ],
-                            location: 9467
+                            ]
                           }
                         },
                         rexpr: {
@@ -8006,11 +7325,9 @@ export const domains = [
                               Integer: {
                                 ival: 2
                               }
-                            },
-                            location: 9475
+                            }
                           }
-                        },
-                        location: 9473
+                        }
                       }
                     },
                     rexpr: {
@@ -8019,11 +7336,9 @@ export const domains = [
                           Integer: {
                             ival: 0
                           }
-                        },
-                        location: 9479
+                        }
                       }
-                    },
-                    location: 9477
+                    }
                   }
                 },
                 initially_valid: true
@@ -8032,7 +7347,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 9427,
       stmt_len: 54
     }
   },
@@ -8050,12 +7364,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 'c2',
-              location: 9507,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -8071,8 +7384,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 9527
+                      ]
                     }
                   },
                   rexpr: {
@@ -8081,20 +7393,17 @@ export const domains = [
                         Integer: {
                           ival: 10
                         }
-                      },
-                      location: 9536
+                      }
                     }
-                  },
-                  location: 9533
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 9482,
       stmt_len: 57
     }
   },
@@ -8112,12 +7421,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 'c2',
-              location: 9573,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -8133,8 +7441,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 9593
+                      ]
                     }
                   },
                   rexpr: {
@@ -8143,20 +7450,17 @@ export const domains = [
                         Integer: {
                           ival: 0
                         }
-                      },
-                      location: 9601
+                      }
                     }
-                  },
-                  location: 9599
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 9540,
       stmt_len: 63
     }
   },
@@ -8173,11 +7477,10 @@ export const domains = [
               }
             ]
           ],
-          removeType: 37,
-          behavior: 0
+          removeType: 'OBJECT_TABLE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 9604,
       stmt_len: 25
     }
   },
@@ -8195,16 +7498,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 9641
+                typemod: -1
               }
             }
           ],
-          removeType: 45,
-          behavior: 0
+          removeType: 'OBJECT_TYPE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 9630,
       stmt_len: 18
     }
   },
@@ -8222,16 +7523,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 9662
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 1
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_CASCADE'
         }
       },
-      stmt_location: 9649,
       stmt_len: 27
     }
   },
@@ -8267,8 +7566,7 @@ export const domains = [
                       Integer: {
                         ival: 4
                       }
-                    },
-                    location: 9710
+                    }
                   }
                 },
                 {
@@ -8277,8 +7575,7 @@ export const domains = [
                       Integer: {
                         ival: 2
                       }
-                    },
-                    location: 9712
+                    }
                   }
                 }
               ],
@@ -8289,13 +7586,11 @@ export const domains = [
                     ival: 1
                   }
                 }
-              ],
-              location: 9702
+              ]
             }
           }
         }
       },
-      stmt_location: 9677,
       stmt_len: 40
     }
   },
@@ -8319,13 +7614,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 9744
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 9718,
       stmt_len: 32
     }
   },
@@ -8361,18 +7654,16 @@ export const domains = [
                     ival: 2
                   }
                 }
-              ],
-              location: 9781
+              ]
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 4,
-                location: 9788,
+                contype: 'CONSTR_CHECK',
                 raw_expr: {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -8390,8 +7681,7 @@ export const domains = [
                                   str: 'value'
                                 }
                               }
-                            ],
-                            location: 9795
+                            ]
                           }
                         },
                         indirection: [
@@ -8403,8 +7693,7 @@ export const domains = [
                                     Integer: {
                                       ival: 1
                                     }
-                                  },
-                                  location: 9801
+                                  }
                                 }
                               }
                             }
@@ -8422,8 +7711,7 @@ export const domains = [
                                   str: 'value'
                                 }
                               }
-                            ],
-                            location: 9806
+                            ]
                           }
                         },
                         indirection: [
@@ -8435,16 +7723,14 @@ export const domains = [
                                     Integer: {
                                       ival: 2
                                     }
-                                  },
-                                  location: 9812
+                                  }
                                 }
                               }
                             }
                           }
                         ]
                       }
-                    },
-                    location: 9804
+                    }
                   }
                 },
                 initially_valid: true
@@ -8453,7 +7739,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 9751,
       stmt_len: 64
     }
   },
@@ -8482,13 +7767,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 9837
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 9816,
       stmt_len: 24
     }
   },
@@ -8506,12 +7789,11 @@ export const domains = [
           ],
           def: {
             Constraint: {
-              contype: 4,
+              contype: 'CONSTR_CHECK',
               conname: 'pos',
-              location: 9862,
               raw_expr: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -8527,8 +7809,7 @@ export const domains = [
                             str: 'value'
                           }
                         }
-                      ],
-                      location: 9884
+                      ]
                     }
                   },
                   rexpr: {
@@ -8537,20 +7818,17 @@ export const domains = [
                         Integer: {
                           ival: 0
                         }
-                      },
-                      location: 9892
+                      }
                     }
-                  },
-                  location: 9890
+                  }
                 }
               },
               initially_valid: true
             }
           },
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 9841,
       stmt_len: 53
     }
   },
@@ -8579,15 +7857,13 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 9919
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 4,
-                location: 9925,
+                contype: 'CONSTR_CHECK',
                 raw_expr: {
                   FuncCall: {
                     funcname: [
@@ -8606,20 +7882,17 @@ export const domains = [
                                 str: 'value'
                               }
                             }
-                          ],
-                          location: 9953
+                          ]
                         }
                       },
                       {
                         A_Const: {
                           val: {
                             Null: {}
-                          },
-                          location: 9960
+                          }
                         }
                       }
-                    ],
-                    location: 9932
+                    ]
                   }
                 },
                 initially_valid: true
@@ -8628,7 +7901,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 9895,
       stmt_len: 71
     }
   },
@@ -8646,16 +7918,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 9980
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 9967,
       stmt_len: 21
     }
   },
@@ -8684,13 +7954,11 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 10019
+              typemod: -1
             }
           }
         }
       },
-      stmt_location: 9989,
       stmt_len: 33
     }
   },
@@ -8698,8 +7966,8 @@ export const domains = [
     RawStmt: {
       stmt: {
         RenameStmt: {
-          renameType: 12,
-          relationType: 0,
+          renameType: 'OBJECT_DOMAIN',
+          relationType: 'OBJECT_ACCESS_METHOD',
           object: [
             {
               String: {
@@ -8708,10 +7976,9 @@ export const domains = [
             }
           ],
           newname: 'testdomain2',
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 10023,
       stmt_len: 47
     }
   },
@@ -8719,8 +7986,8 @@ export const domains = [
     RawStmt: {
       stmt: {
         RenameStmt: {
-          renameType: 45,
-          relationType: 0,
+          renameType: 'OBJECT_TYPE',
+          relationType: 'OBJECT_ACCESS_METHOD',
           object: [
             {
               String: {
@@ -8729,10 +7996,9 @@ export const domains = [
             }
           ],
           newname: 'testdomain3',
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 10071,
       stmt_len: 45
     }
   },
@@ -8750,16 +8016,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 10156
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 10117,
       stmt_len: 50
     }
   },
@@ -8788,19 +8052,17 @@ export const domains = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 10198
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 4,
+                contype: 'CONSTR_CHECK',
                 conname: 'unsigned',
-                location: 10202,
                 raw_expr: {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -8816,8 +8078,7 @@ export const domains = [
                               str: 'value'
                             }
                           }
-                        ],
-                        location: 10229
+                        ]
                       }
                     },
                     rexpr: {
@@ -8826,11 +8087,9 @@ export const domains = [
                           Integer: {
                             ival: 0
                           }
-                        },
-                        location: 10237
+                        }
                       }
-                    },
-                    location: 10235
+                    }
                   }
                 },
                 initially_valid: true
@@ -8839,7 +8098,6 @@ export const domains = [
           ]
         }
       },
-      stmt_location: 10168,
       stmt_len: 71
     }
   },
@@ -8847,8 +8105,8 @@ export const domains = [
     RawStmt: {
       stmt: {
         RenameStmt: {
-          renameType: 13,
-          relationType: 0,
+          renameType: 'OBJECT_DOMCONSTRAINT',
+          relationType: 'OBJECT_ACCESS_METHOD',
           object: [
             {
               String: {
@@ -8858,10 +8116,9 @@ export const domains = [
           ],
           subname: 'unsigned',
           newname: 'unsigned_foo',
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 10240,
       stmt_len: 68
     }
   },
@@ -8878,10 +8135,9 @@ export const domains = [
             }
           ],
           name: 'unsigned_foo',
-          behavior: 0
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 10309,
       stmt_len: 54
     }
   },
@@ -8899,16 +8155,14 @@ export const domains = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 10377
+                typemod: -1
               }
             }
           ],
-          removeType: 12,
-          behavior: 0
+          removeType: 'OBJECT_DOMAIN',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 10364,
       stmt_len: 24
     }
   }

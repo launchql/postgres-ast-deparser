@@ -26,11 +26,10 @@ export const functions = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 61
+                typemod: -1
               }
             },
-            mode: 105
+            mode: 'FUNC_PARAM_IN'
           }
         },
         {
@@ -45,17 +44,15 @@ export const functions = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 78
+                typemod: -1
               }
             },
-            mode: 105,
+            mode: 'FUNC_PARAM_IN',
             defexpr: {
               A_Const: {
                 val: {
                   Null: {}
-                },
-                location: 91
+                }
               }
             }
           }
@@ -70,8 +67,7 @@ export const functions = [
               }
             }
           ],
-          typemod: -1,
-          location: 106
+          typemod: -1
         }
       },
       options: [
@@ -85,8 +81,7 @@ export const functions = [
                 }
               }
             ],
-            defaction: 0,
-            location: 111
+            defaction: 'DEFELEM_UNSPEC'
           }
         },
         {
@@ -97,8 +92,7 @@ export const functions = [
                 str: 'plpgsql'
               }
             },
-            defaction: 0,
-            location: 587
+            defaction: 'DEFELEM_UNSPEC'
           }
         },
         {
@@ -109,8 +103,7 @@ export const functions = [
                 ival: 1
               }
             },
-            defaction: 0,
-            location: 606
+            defaction: 'DEFELEM_UNSPEC'
           }
         },
         {
@@ -121,8 +114,7 @@ export const functions = [
                 str: 'volatile'
               }
             },
-            defaction: 0,
-            location: 623
+            defaction: 'DEFELEM_UNSPEC'
           }
         }
       ]

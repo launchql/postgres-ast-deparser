@@ -1,6 +1,6 @@
 module.exports = {
   A_Expr: {
-    kind: 8,
+    kind: 'AEXPR_LIKE',
     lexpr: {
       ColumnRef: {
         fields: [
@@ -23,11 +23,10 @@ module.exports = {
       A_Const: {
         val: {
           String: {
-            str: '%\'test\'%'
+            str: "%'test'%"
           }
         }
       }
     }
   }
 };
-  

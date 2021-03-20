@@ -763,7 +763,7 @@ CREATE FUNCTION deparser.a_expr(
   context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
-  kind int;
+  kind text;
 BEGIN
 
   IF (expr->>'A_Expr') IS NULL THEN  
@@ -776,37 +776,37 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
   END IF;
 
-  kind = (expr->>'kind')::int;
+  kind = expr->>'kind';
 
-  IF (kind = ast_constants.a_expr_kind('AEXPR_OP')) THEN
+  IF (kind = 'AEXPR_OP') THEN
     RETURN deparser.a_expr_op(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_OP_ANY')) THEN
+  ELSEIF (kind = 'AEXPR_OP_ANY') THEN
     RETURN deparser.a_expr_op_any(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_OP_ALL')) THEN
+  ELSEIF (kind = 'AEXPR_OP_ALL') THEN
     RETURN deparser.a_expr_op_all(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_DISTINCT')) THEN
+  ELSEIF (kind = 'AEXPR_DISTINCT') THEN
     RETURN deparser.a_expr_distinct(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_NOT_DISTINCT')) THEN
+  ELSEIF (kind = 'AEXPR_NOT_DISTINCT') THEN
     RETURN deparser.a_expr_not_distinct(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_NULLIF')) THEN
+  ELSEIF (kind = 'AEXPR_NULLIF') THEN
     RETURN deparser.a_expr_nullif(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_OF')) THEN
+  ELSEIF (kind = 'AEXPR_OF') THEN
     RETURN deparser.a_expr_of(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_IN')) THEN
+  ELSEIF (kind = 'AEXPR_IN') THEN
     RETURN deparser.a_expr_in(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_LIKE')) THEN
+  ELSEIF (kind = 'AEXPR_LIKE') THEN
     RETURN deparser.a_expr_like(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_ILIKE')) THEN
+  ELSEIF (kind = 'AEXPR_ILIKE') THEN
     RETURN deparser.a_expr_ilike(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_SIMILAR')) THEN
+  ELSEIF (kind = 'AEXPR_SIMILAR') THEN
     RETURN deparser.a_expr_similar(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_BETWEEN')) THEN
+  ELSEIF (kind = 'AEXPR_BETWEEN') THEN
     RETURN deparser.a_expr_between(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_NOT_BETWEEN')) THEN
+  ELSEIF (kind = 'AEXPR_NOT_BETWEEN') THEN
     RETURN deparser.a_expr_not_between(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_BETWEEN_SYM')) THEN
+  ELSEIF (kind = 'AEXPR_BETWEEN_SYM') THEN
     RETURN deparser.a_expr_between_sym(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_NOT_BETWEEN_SYM')) THEN
+  ELSEIF (kind = 'AEXPR_NOT_BETWEEN_SYM') THEN
     RETURN deparser.a_expr_not_between_sym(expr, context);
   END IF;
 
@@ -820,36 +820,36 @@ CREATE FUNCTION deparser.bool_expr(
   context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
-  boolop int;
+  boolop text;
   ctx jsonb;
   fmt_str text = '%s';
 BEGIN
 
   IF (node->>'BoolExpr') IS NULL THEN  
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr (node)';
   END IF;
 
   node = node->'BoolExpr';
 
   IF (node->'boolop') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr (missing boolop)';
   END IF;
   IF (node->'args') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr (missing args)';
   END IF;
 
-  boolop = (node->'boolop')::int;
+  boolop = node->>'boolop';
 
   IF ((context->'bool')::bool IS TRUE) THEN 
     fmt_str = '(%s)';
   END IF;
   ctx = jsonb_set(context, '{bool}', to_jsonb(TRUE));
 
-  IF (boolop = ast_constants.bool_expr_type('AND_EXPR')) THEN
+  IF (boolop = 'AND_EXPR') THEN
     RETURN format(fmt_str, array_to_string(deparser.expressions_array(node->'args', ctx), ' AND '));
-  ELSEIF (boolop = ast_constants.bool_expr_type('OR_EXPR')) THEN
+  ELSEIF (boolop = 'OR_EXPR') THEN
     RETURN format(fmt_str, array_to_string(deparser.expressions_array(node->'args', ctx), ' OR '));
-  ELSEIF (boolop = 2) THEN -- purposely use original context for less parens
+  ELSEIF (boolop = 'NOT_EXPR') THEN -- purposely use original context for less parens
     RETURN format('NOT (%s)', deparser.expression(node->'args'->0, context));
   END IF;
 
@@ -998,7 +998,7 @@ CREATE FUNCTION deparser.sql_value_function(
   context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
-  op int;
+  op text;
   value text;
 BEGIN
 
@@ -1011,38 +1011,38 @@ BEGIN
   END IF;
 
   node = node->'SQLValueFunction';
-  op = (node->'op')::int;
+  op = node->>'op';
 
   SELECT (CASE
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_DATE'))
+  WHEN (op = 'SVFOP_CURRENT_DATE')
       THEN 'CURRENT_DATE' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIME'))
+  WHEN (op = 'SVFOP_CURRENT_TIME')
       THEN 'CURRENT_TIME' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIME_N'))
+  WHEN (op = 'SVFOP_CURRENT_TIME_N')
       THEN 'CURRENT_TIME_N' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIMESTAMP'))
+  WHEN (op = 'SVFOP_CURRENT_TIMESTAMP')
       THEN 'CURRENT_TIMESTAMP' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIMESTAMP_N'))
+  WHEN (op = 'SVFOP_CURRENT_TIMESTAMP_N')
       THEN 'CURRENT_TIMESTAMP_N' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIME'))
+  WHEN (op = 'SVFOP_LOCALTIME')
       THEN 'LOCALTIME' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIME_N'))
+  WHEN (op = 'SVFOP_LOCALTIME_N')
       THEN 'LOCALTIME_N' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIMESTAMP'))
+  WHEN (op = 'SVFOP_LOCALTIMESTAMP')
       THEN 'LOCALTIMESTAMP' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIMESTAMP_N'))
+  WHEN (op = 'SVFOP_LOCALTIMESTAMP_N')
       THEN 'LOCALTIMESTAMP_N' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_ROLE'))
+  WHEN (op = 'SVFOP_CURRENT_ROLE')
       THEN 'CURRENT_ROLE' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_USER'))
+  WHEN (op = 'SVFOP_CURRENT_USER')
       THEN 'CURRENT_USER'
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_USER'))
+  WHEN (op = 'SVFOP_USER')
       THEN 'USER' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_SESSION_USER'))
+  WHEN (op = 'SVFOP_SESSION_USER')
       THEN 'SESSION_USER' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_CATALOG'))
+  WHEN (op = 'SVFOP_CURRENT_CATALOG')
       THEN 'CURRENT_CATALOG' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_SCHEMA'))
+  WHEN (op = 'SVFOP_CURRENT_SCHEMA')
       THEN 'CURRENT_SCHEMA'
   END)
   INTO value;
@@ -1169,7 +1169,7 @@ CREATE FUNCTION deparser.boolean_test(
 ) returns text as $$
 DECLARE
   output text[];
-  booltesttype int;
+  booltesttype text;
 BEGIN
 
   IF (node->'BooleanTest') IS NULL THEN
@@ -1186,17 +1186,17 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'BooleanTest';
   END IF;
 
-  booltesttype = (node->'booltesttype')::int;
+  booltesttype = node->>'booltesttype';
 
   output = array_append(output, deparser.expression(node->'arg'));
 
   output = array_append(output, (CASE
-      WHEN booltesttype = 0 THEN 'IS TRUE'
-      WHEN booltesttype = 1 THEN 'IS NOT TRUE'
-      WHEN booltesttype = 2 THEN 'IS FALSE'
-      WHEN booltesttype = 3 THEN 'IS NOT FALSE'
-      WHEN booltesttype = 4 THEN 'IS UNKNOWN'
-      WHEN booltesttype = 5 THEN 'IS NOT UNKNOWN'
+      WHEN booltesttype = 'IS_TRUE' THEN 'IS TRUE'
+      WHEN booltesttype = 'IS_NOT_TRUE' THEN 'IS NOT TRUE'
+      WHEN booltesttype = 'IS_FALSE' THEN 'IS FALSE'
+      WHEN booltesttype = 'IS_NOT_FALSE' THEN 'IS NOT FALSE'
+      WHEN booltesttype = 'IS_UNKNOWN' THEN 'IS UNKNOWN'
+      WHEN booltesttype = 'IS_NOT_UNKNOWN' THEN 'IS NOT UNKNOWN'
   END));
 
   RETURN array_to_string(output, ' ');
@@ -1589,7 +1589,7 @@ CREATE FUNCTION deparser.role_spec(
   context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
-  roletype int;
+  roletype text;
 BEGIN
     IF (node->'RoleSpec') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'RoleSpec';
@@ -1600,15 +1600,15 @@ BEGIN
     END IF;
 
     node = node->'RoleSpec';
-    roletype = (node->'roletype')::int;
+    roletype = node->>'roletype';
 
-    IF (roletype = ast_constants.role_spec_type('ROLESPEC_CSTRING')) THEN
+    IF (roletype = 'ROLESPEC_CSTRING') THEN
       RETURN quote_ident(node->>'rolename');
-    ELSIF (roletype = ast_constants.role_spec_type('ROLESPEC_CURRENT_USER')) THEN 
+    ELSIF (roletype = 'ROLESPEC_CURRENT_USER') THEN 
       RETURN 'CURRENT_USER';
-    ELSIF (roletype = ast_constants.role_spec_type('ROLESPEC_SESSION_USER')) THEN 
+    ELSIF (roletype = 'ROLESPEC_SESSION_USER') THEN 
       RETURN 'SESSION_USER';
-    ELSIF (roletype = ast_constants.role_spec_type('ROLESPEC_PUBLIC')) THEN 
+    ELSIF (roletype = 'ROLESPEC_PUBLIC') THEN 
       RETURN 'PUBLIC';
     END IF;
 
@@ -1800,12 +1800,12 @@ CREATE FUNCTION deparser.constraint_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  contype int;
+  contype text;
   constrainttype text;
 BEGIN
-  contype = (node->'contype')::int;
+  contype = node->>'contype';
 
-  IF (contype = 3) THEN
+  IF (contype = 'CONSTR_IDENTITY') THEN
     output = array_append(output, 'GENERATED');
     IF (node->>'generated_when' = 'a') THEN 
       output = array_append(output, 'ALWAYS AS');
@@ -1822,8 +1822,7 @@ BEGIN
     END IF;
     RETURN array_to_string(output, ' ');
 
-  ELSIF (contype = 13) THEN
-    -- NOTE: 13 IS NOT the real number... it's just future PG 13
+  ELSIF (contype = 'CONSTR_GENERATED') THEN
     output = array_append(output, 'GENERATED');
     IF (node->>'generated_when' = 'a') THEN 
       output = array_append(output, 'ALWAYS AS');
@@ -1948,7 +1947,7 @@ CREATE FUNCTION deparser.constraint(
 ) returns text as $$
 DECLARE
   output text[];
-  contype int;
+  contype text;
 BEGIN
 
     IF (node->'Constraint') IS NULL THEN
@@ -1960,9 +1959,9 @@ BEGIN
     END IF;
 
     node = node->'Constraint';
-    contype = (node->'contype')::int;
+    contype = node->>'contype';
 
-    IF (contype = ast_constants.constr_type('CONSTR_FOREIGN')) THEN 
+    IF (contype = 'CONSTR_FOREIGN') THEN 
       output = array_append(output, deparser.reference_constraint(node));
     ELSE
       output = array_append(output, deparser.constraint_stmt(node));
@@ -1974,7 +1973,7 @@ BEGIN
 
     IF (node->'raw_expr' IS NOT NULL) THEN 
       output = array_append(output, deparser.parens(deparser.expression(node->'raw_expr')));
-      IF (contype = 13) THEN 
+      IF (contype = 'CONSTR_GENERATED') THEN 
         output = array_append(output, 'STORED');
       END IF;
     END IF;
@@ -2011,7 +2010,7 @@ BEGIN
       output = array_append(output, 'NOT VALID');
     END IF;
 
-    IF (contype = ast_constants.constr_type('CONSTR_EXCLUSION')) THEN 
+    IF (contype = 'CONSTR_EXCLUSION') THEN 
       output = array_append(output, deparser.exclusion_constraint(node));
     END IF;
 
@@ -2115,7 +2114,7 @@ CREATE FUNCTION deparser.comment_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  objtype int;
+  objtype text;
 
   cmt text;
 BEGIN
@@ -2128,44 +2127,44 @@ BEGIN
     END IF;
 
     node = node->'CommentStmt';
-    objtype = (node->'objtype')::int;
+    objtype = node->>'objtype';
     output = array_append(output, 'COMMENT');
     output = array_append(output, 'ON');
     output = array_append(output, ast_utils.objtype_name(objtype));
 
-    IF (objtype = ast_constants.object_type('OBJECT_CAST')) THEN
+    IF (objtype = 'OBJECT_CAST') THEN
       output = array_append(output, '(');
       output = array_append(output, deparser.expression(node->'object'->0));
       output = array_append(output, 'AS');
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, ')');
-    ELSIF (objtype = ast_constants.object_type('OBJECT_DOMCONSTRAINT')) THEN
+    ELSIF (objtype = 'OBJECT_DOMCONSTRAINT') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, 'DOMAIN');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_OPCLASS')) THEN
+    ELSIF (objtype = 'OBJECT_OPCLASS') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'USING');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_OPFAMILY')) THEN
+    ELSIF (objtype = 'OBJECT_OPFAMILY') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'USING');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_OPERATOR')) THEN
+    ELSIF (objtype = 'OBJECT_OPERATOR') THEN
       -- TODO lookup noquotes context in pgsql-parser
       output = array_append(output, deparser.expression(node->'object', 'noquotes'));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_POLICY')) THEN
+    ELSIF (objtype = 'OBJECT_POLICY') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_ROLE')) THEN
+    ELSIF (objtype = 'OBJECT_ROLE') THEN
       output = array_append(output, deparser.expression(node->'object'));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_RULE')) THEN
+    ELSIF (objtype = 'OBJECT_RULE') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_TABCONSTRAINT')) THEN
+    ELSIF (objtype = 'OBJECT_TABCONSTRAINT') THEN
       IF (jsonb_array_length(node->'object') = 3) THEN 
         output = array_append(output, 
           quote_ident(deparser.expression(node->'object'->2))
@@ -2183,16 +2182,16 @@ BEGIN
         output = array_append(output, 'ON');
         output = array_append(output, deparser.expression(node->'object'->0));
       END IF;
-    ELSIF (objtype = ast_constants.object_type('OBJECT_TRANSFORM')) THEN
+    ELSIF (objtype = 'OBJECT_TRANSFORM') THEN
       output = array_append(output, 'FOR');
       output = array_append(output, deparser.expression(node->'object'->0));
       output = array_append(output, 'LANGUAGE');
       output = array_append(output, deparser.expression(node->'object'->1));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_TRIGGER')) THEN
+    ELSIF (objtype = 'OBJECT_TRIGGER') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_LARGEOBJECT')) THEN
+    ELSIF (objtype = 'OBJECT_LARGEOBJECT') THEN
       output = array_append(output, deparser.expression(node->'object'));
     ELSE 
       IF (jsonb_typeof(node->'object') = 'array') THEN 
@@ -2365,7 +2364,7 @@ CREATE FUNCTION deparser.variable_set_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  kind int;
+  kind text;
   local text = '';
   multi text = '';
 BEGIN
@@ -2379,26 +2378,26 @@ BEGIN
 
     node = node->'VariableSetStmt';
 
-    kind = (node->'kind')::int;
-    IF (kind = ast_constants.variable_set_kind('VAR_SET_VALUE')) THEN 
+    kind = node->>'kind';
+    IF (kind = 'VAR_SET_VALUE') THEN 
       IF (node->'is_local' IS NOT NULL AND (node->'is_local')::bool IS TRUE) THEN 
         local = 'LOCAL ';
       END IF;
       output = array_append(output, format('SET %s%s = %s', local, node->>'name', deparser.list(node->'args', ', ', jsonb_set(context, '{simple}', to_jsonb(TRUE)))));
-    ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_DEFAULT')) THEN
+    ELSIF (kind = 'VAR_SET_DEFAULT') THEN
       output = array_append(output, format('SET %s TO DEFAULT', node->>'name'));
-    ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_CURRENT')) THEN
+    ELSIF (kind = 'VAR_SET_CURRENT') THEN
       output = array_append(output, format('SET %s FROM CURRENT', node->>'name'));
-    ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_MULTI')) THEN
+    ELSIF (kind = 'VAR_SET_MULTI') THEN
       IF (node->>'name' = 'TRANSACTION') THEN
         multi = 'TRANSACTION';
       ELSIF (node->>'name' = 'SESSION CHARACTERISTICS') THEN
         multi = 'SESSION CHARACTERISTICS AS TRANSACTION';
       END IF;
       output = array_append(output, format('SET %s %s', multi, deparser.list(node->'args', ', ', jsonb_set(context, '{simple}', to_jsonb(TRUE)))));
-    ELSIF (kind = ast_constants.variable_set_kind('VAR_RESET')) THEN
+    ELSIF (kind = 'VAR_RESET') THEN
       output = array_append(output, format('RESET %s', node->>'name'));
-    ELSIF (kind = ast_constants.variable_set_kind('VAR_RESET_ALL')) THEN
+    ELSIF (kind = 'VAR_RESET_ALL') THEN
       output = array_append(output, 'RESET ALL');
     ELSE
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableSetStmt';
@@ -2605,7 +2604,7 @@ CREATE FUNCTION deparser.grant_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  objtype int;
+  objtype text;
 BEGIN
     IF (node->'GrantStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantStmt';
@@ -2616,9 +2615,11 @@ BEGIN
     END IF;
 
     node = node->'GrantStmt';
-    objtype = (node->'objtype')::int;
+    objtype = node->>'objtype';
 
-    IF (objtype != 0) THEN 
+    -- TODO NAMING
+    -- IF (objtype != 0) THEN 
+    IF (objtype != 'OBJECT_ACCESS_METHOD') THEN 
       IF (node->'is_grant' IS NULL OR (node->'is_grant')::bool IS FALSE) THEN 
         output = array_append(output, 'REVOKE');
         IF (node->'grant_option' IS NOT NULL AND (node->'grant_option')::bool IS TRUE) THEN 
@@ -2632,7 +2633,7 @@ BEGIN
         END IF;
         output = array_append(output, 'ON');
         output = array_append(output, ast_utils.getgrantobject(node));
-        IF ( objtype = ast_constants.object_type('OBJECT_DOMAIN') ) THEN 
+        IF ( objtype = 'OBJECT_DOMAIN' ) THEN 
           output = array_append(output, deparser.list(node->'objects'->0));
         ELSE
           output = array_append(output, deparser.list(node->'objects'));
@@ -2656,7 +2657,7 @@ BEGIN
         END IF;
       END IF;
       
-      IF (node->'behavior' IS NOT NULL AND (node->'behavior')::int = 1) THEN
+      IF (node->>'behavior' = 'DROP_CASCADE') THEN
         output = array_append(output, 'CASCADE');
       END IF;
 
@@ -2764,7 +2765,7 @@ CREATE FUNCTION deparser.alter_table_cmd(
 ) returns text as $$
 DECLARE
   output text[];
-  subtype int;
+  subtype text;
   subtypeName text;
 BEGIN
     IF (node->'AlterTableCmd') IS NULL THEN
@@ -2776,14 +2777,14 @@ BEGIN
     END IF;
 
     node = node->'AlterTableCmd';
-    subtype = (node->'subtype')::int;
+    subtype = node->>'subtype';
     
     subtypeName = 'COLUMN';
     IF ( context->>'alterType' = 'OBJECT_TYPE' ) THEN 
       subtypeName = 'ATTRIBUTE';
     END IF;
 
-    IF (subtype = ast_constants.alter_table_type('AT_AddColumn')) THEN 
+    IF (subtype = 'AT_AddColumn') THEN 
       output = array_append(output, 'ADD');
       output = array_append(output, subtypeName);
       IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
@@ -2791,7 +2792,7 @@ BEGIN
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ColumnDefault')) THEN
+    ELSIF (subtype = 'AT_ColumnDefault') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
@@ -2801,28 +2802,28 @@ BEGIN
       ELSE
         output = array_append(output, 'DROP DEFAULT');
       END IF;
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropNotNull')) THEN
+    ELSIF (subtype = 'AT_DropNotNull') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'DROP NOT NULL');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_SetNotNull')) THEN
+    ELSIF (subtype = 'AT_SetNotNull') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET NOT NULL');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_SetStatistics')) THEN
+    ELSIF (subtype = 'AT_SetStatistics') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET STATISTICS');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_SetOptions')) THEN
+    ELSIF (subtype = 'AT_SetOptions') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_SetStorage')) THEN
+    ELSIF (subtype = 'AT_SetStorage') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET STORAGE');
@@ -2831,73 +2832,73 @@ BEGIN
       ELSE
         output = array_append(output, 'PLAIN');
       END IF;
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropColumn')) THEN
+    ELSIF (subtype = 'AT_DropColumn') THEN
       output = array_append(output, 'DROP');
       output = array_append(output, subtypeName);
       IF ( (node->'missing_ok')::bool IS TRUE ) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_AddConstraint')) THEN
+    ELSIF (subtype = 'AT_AddConstraint') THEN
       output = array_append(output, 'ADD');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ValidateConstraint')) THEN
+    ELSIF (subtype = 'AT_ValidateConstraint') THEN
       output = array_append(output, 'VALIDATE CONSTRAINT');
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropConstraint')) THEN
+    ELSIF (subtype = 'AT_DropConstraint') THEN
       output = array_append(output, 'DROP CONSTRAINT');
       IF ( (node->'missing_ok')::bool IS TRUE ) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_AlterColumnType')) THEN
+    ELSIF (subtype = 'AT_AlterColumnType') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'TYPE');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ChangeOwner')) THEN
+    ELSIF (subtype = 'AT_ChangeOwner') THEN
       output = array_append(output, 'OWNER TO');
       output = array_append(output, deparser.expression(node->'newowner'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ClusterOn')) THEN
+    ELSIF (subtype = 'AT_ClusterOn') THEN
       output = array_append(output, 'CLUSTER ON');
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropCluster')) THEN
+    ELSIF (subtype = 'AT_DropCluster') THEN
       output = array_append(output, 'SET WITHOUT CLUSTER');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_AddOids')) THEN
+    ELSIF (subtype = 'AT_AddOids') THEN
       output = array_append(output, 'SET WITH OIDS');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropOids')) THEN
+    ELSIF (subtype = 'AT_DropOids') THEN
       output = array_append(output, 'SET WITHOUT OIDS');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_SetRelOptions')) THEN
+    ELSIF (subtype = 'AT_SetRelOptions') THEN
       output = array_append(output, 'SET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ResetRelOptions')) THEN
+    ELSIF (subtype = 'AT_ResetRelOptions') THEN
       output = array_append(output, 'RESET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_AddInherit')) THEN
+    ELSIF (subtype = 'AT_AddInherit') THEN
       output = array_append(output, 'INHERIT');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropInherit')) THEN
+    ELSIF (subtype = 'AT_DropInherit') THEN
       output = array_append(output, 'NO INHERIT');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_AddOf')) THEN
+    ELSIF (subtype = 'AT_AddOf') THEN
       output = array_append(output, 'OF');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropOf')) THEN
+    ELSIF (subtype = 'AT_DropOf') THEN
       output = array_append(output, 'NOT OF');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_EnableRowSecurity')) THEN
+    ELSIF (subtype = 'AT_EnableRowSecurity') THEN
       output = array_append(output, 'ENABLE ROW LEVEL SECURITY');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DisableRowSecurity')) THEN
+    ELSIF (subtype = 'AT_DisableRowSecurity') THEN
       output = array_append(output, 'DISABLE ROW LEVEL SECURITY');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ForceRowSecurity')) THEN
+    ELSIF (subtype = 'AT_ForceRowSecurity') THEN
       output = array_append(output, 'FORCE ROW SECURITY');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_NoForceRowSecurity')) THEN
+    ELSIF (subtype = 'AT_NoForceRowSecurity') THEN
       output = array_append(output, 'NO FORCE ROW SECURITY');
     ELSE 
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableCmd may need to implement more alter_table_type(s)';
     END IF;
 
-    IF ( (node->'behavior')::int = 1 ) THEN
+    IF ( node->>'behavior' = 'DROP_CASCADE') THEN
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -2912,7 +2913,7 @@ CREATE FUNCTION deparser.alter_table_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  relkind int;
+  relkind text;
   ninh bool;
 BEGIN
     IF (node->'AlterTableStmt') IS NULL THEN
@@ -2928,10 +2929,10 @@ BEGIN
     END IF;
 
     node = node->'AlterTableStmt';
-    relkind = (node->'relkind')::int;
+    relkind = node->>'relkind';
     output = array_append(output, 'ALTER');
 
-    IF (relkind = ast_constants.object_type('OBJECT_TABLE') ) THEN 
+    IF (relkind = 'OBJECT_TABLE' ) THEN 
       output = array_append(output, 'TABLE');
 
       ninh = (node->'relation'->'RangeVar'->'inh')::bool;
@@ -2939,17 +2940,17 @@ BEGIN
         output = array_append(output, 'ONLY');
       END IF;
 
-    ELSEIF (relkind = ast_constants.object_type('OBJECT_TYPE')) THEN 
+    ELSEIF (relkind = 'OBJECT_TYPE') THEN 
       output = array_append(output, 'TYPE');
     ELSE 
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableStmt (relkind impl)';
+      RAISE EXCEPTION 'BAD_EXPRESSION % %', 'AlterTableStmt (relkind impl)', relkind;
     END IF;
 
     IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
       output = array_append(output, 'IF EXISTS');
     END IF;
 
-    context = jsonb_set(context, '{alterType}', to_jsonb(ast_constants.object_type(relkind)));
+    context = jsonb_set(context, '{alterType}', to_jsonb(relkind));
 
     output = array_append(output, deparser.expression(node->'relation', context));
     output = array_append(output, deparser.list(node->'cmds', ', ', context));
@@ -3205,7 +3206,7 @@ CREATE FUNCTION deparser.join_expr(
 ) returns text as $$
 DECLARE
   output text[];
-  jointype int;
+  jointype text;
   jointxt text;
   wrapped text;
   is_natural bool = false;
@@ -3231,8 +3232,8 @@ BEGIN
       is_natural = TRUE;
     END IF;
 
-    jointype = (node->'jointype')::int;
-    IF (jointype = ast_constants.join_type('JOIN_INNER')) THEN 
+    jointype = node->'jointype';
+    IF (jointype = 'JOIN_INNER') THEN 
       IF (node->'quals' IS NOT NULL) THEN 
         jointxt = 'INNER JOIN';
       ELSIF (
@@ -3244,11 +3245,11 @@ BEGIN
       ELSE
         jointxt = 'JOIN';
       END IF;
-    ELSIF (jointype = ast_constants.join_type('JOIN_LEFT')) THEN
+    ELSIF (jointype = 'JOIN_LEFT') THEN
         jointxt = 'LEFT OUTER JOIN';
-    ELSIF (jointype = ast_constants.join_type('JOIN_FULL')) THEN
+    ELSIF (jointype = 'JOIN_FULL') THEN
         jointxt = 'FULL OUTER JOIN';
-    ELSIF (jointype = ast_constants.join_type('JOIN_RIGHT')) THEN
+    ELSIF (jointype = 'JOIN_RIGHT') THEN
         jointxt = 'RIGHT OUTER JOIN';
     ELSE
       -- TODO need to implement more joins
@@ -3330,27 +3331,27 @@ CREATE FUNCTION deparser.sub_link(
 ) returns text as $$
 DECLARE
   output text[];
-  subLinkType int;
+  subLinkType text;
 BEGIN
     IF (node->'SubLink') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'SubLink';
     END IF;
 
     node = node->'SubLink';
-    subLinkType = (node->'subLinkType')::int;
-    IF (subLinkType = 0) THEN
+    subLinkType = node->>'subLinkType';
+    IF (subLinkType = 'EXISTS_SUBLINK') THEN
       output = array_append(output, format(
         'EXISTS (%s)', 
         deparser.expression(node->'subselect')
       ));
-    ELSIF (subLinkType = 1) THEN
+    ELSIF (subLinkType = 'ALL_SUBLINK') THEN
       output = array_append(output, format(
         '%s %s ALL (%s)',
         deparser.expression(node->'testexpr'),
         deparser.expression(node->'operName'->0),
         deparser.expression(node->'subselect')
       ));
-    ELSIF (subLinkType = 2) THEN
+    ELSIF (subLinkType = 'ANY_SUBLINK') THEN
       IF (node->'operName' IS NOT NULL) THEN 
         output = array_append(output, format(
           '%s %s ANY (%s)',
@@ -3365,21 +3366,19 @@ BEGIN
           deparser.expression(node->'subselect')
         ));
       END IF;
-    ELSIF (subLinkType = 3) THEN
+    ELSIF (subLinkType = 'ROWCOMPARE_SUBLINK') THEN
       output = array_append(output, format(
         '%s %s (%s)',
         deparser.expression(node->'testexpr'),
         deparser.expression(node->'operName'->0),
         deparser.expression(node->'subselect')
       ));
-    ELSIF (subLinkType = 4) THEN
+    ELSIF (subLinkType = 'EXPR_SUBLINK') THEN
       output = array_append(output, format(
         '(%s)',
         deparser.expression(node->'subselect')
       ));
-    ELSIF (subLinkType = 5) THEN
-       RAISE EXCEPTION 'BAD_EXPRESSION %', 'unknown kind SubLink';
-    ELSIF (subLinkType = 6) THEN
+    ELSIF (subLinkType = 'ARRAY_SUBLINK') THEN
       output = array_append(output, format(
         'ARRAY (%s)',
         deparser.expression(node->'subselect')
@@ -3684,7 +3683,7 @@ CREATE FUNCTION deparser.create_role_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  stmt_type int;
+  stmt_type text;
   option jsonb;
   opts_len int;
   defname text;
@@ -3698,15 +3697,15 @@ BEGIN
     END IF;
 
     node = node->'CreateRoleStmt';
-    stmt_type = (node->'stmt_type')::int;
+    stmt_type = node->>'stmt_type';
 
     output = array_append(output, 'CREATE');
     
-    IF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_ROLE')) THEN 
+    IF (stmt_type = 'ROLESTMT_ROLE') THEN 
       output = array_append(output, 'ROLE');
-    ELSEIF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_USER')) THEN 
+    ELSEIF (stmt_type = 'ROLESTMT_USER') THEN 
       output = array_append(output, 'USER');
-    ELSEIF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_GROUP')) THEN 
+    ELSEIF (stmt_type = 'ROLESTMT_GROUP') THEN 
       output = array_append(output, 'GROUP');
     ELSE 
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
@@ -3851,7 +3850,7 @@ CREATE FUNCTION deparser.transaction_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  kind int;
+  kind text;
 BEGIN
     IF (node->'TransactionStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TransactionStmt';
@@ -3862,34 +3861,34 @@ BEGIN
     END IF;
 
     node = node->'TransactionStmt';
-    kind = (node->'kind')::int;
+    kind = node->>'kind';
 
-    IF (kind = 0) THEN
+    IF (kind = 'TRANS_STMT_BEGIN') THEN
       -- TODO implement other options
       output = array_append(output, 'BEGIN');
-    ELSIF (kind = 1) THEN
+    ELSIF (kind = 'TRANS_STMT_START') THEN
       -- TODO implement other options
       output = array_append(output, 'START TRANSACTION');
-    ELSIF (kind = 2) THEN
+    ELSIF (kind = 'TRANS_STMT_COMMIT') THEN
       output = array_append(output, 'COMMIT');
-    ELSIF (kind = 3) THEN
+    ELSIF (kind = 'TRANS_STMT_ROLLBACK') THEN
       output = array_append(output, 'ROLLBACK');
-    ELSIF (kind = 4) THEN
+    ELSIF (kind = 'TRANS_STMT_SAVEPOINT') THEN
       output = array_append(output, 'SAVEPOINT');
       output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
-    ELSIF (kind = 5) THEN
+    ELSIF (kind = 'TRANS_STMT_RELEASE') THEN
       output = array_append(output, 'RELEASE SAVEPOINT');
       output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
-    ELSIF (kind = 6) THEN
+    ELSIF (kind = 'TRANS_STMT_ROLLBACK_TO') THEN
       output = array_append(output, 'ROLLBACK TO');
       output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
-    ELSIF (kind = 7) THEN
+    ELSIF (kind = 'TRANS_STMT_PREPARE') THEN
       output = array_append(output, 'PREPARE TRANSACTION');
       output = array_append(output, '''' || node->>'gid' || '''');
-    ELSIF (kind = 8) THEN
+    ELSIF (kind = 'TRANS_STMT_COMMIT_PREPARED') THEN
       output = array_append(output, 'COMMIT PREPARED');
       output = array_append(output, '''' || node->>'gid' || '''');
-    ELSIF (kind = 9) THEN
+    ELSIF (kind = 'TRANS_STMT_ROLLBACK_PREPARED') THEN
       output = array_append(output, 'ROLLBACK PREPARED');
       output = array_append(output, '''' || node->>'gid' || '''');
     END IF;
@@ -3935,8 +3934,8 @@ CREATE FUNCTION deparser.sort_by(
 ) returns text as $$
 DECLARE
   output text[];
-  dir int;
-  nulls int;
+  dir text;
+  nulls text;
 BEGIN
     IF (node->'SortBy') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'SortBy';
@@ -3952,14 +3951,14 @@ BEGIN
       output = array_append(output, deparser.expression(node->'node'));
     END IF;
 
-    dir = (node->'sortby_dir')::int;
-    IF (dir = ast_constants.sort_by_dir('SORTBY_DEFAULT')) THEN 
+    dir = node->>'sortby_dir';
+    IF (dir = 'SORTBY_DEFAULT') THEN 
       -- noop
-    ELSIF (dir = ast_constants.sort_by_dir('SORTBY_ASC')) THEN
+    ELSIF (dir = 'SORTBY_ASC') THEN
       output = array_append(output, 'ASC');
-    ELSIF (dir = ast_constants.sort_by_dir('SORTBY_DESC')) THEN
+    ELSIF (dir = 'SORTBY_DESC') THEN
       output = array_append(output, 'DESC');
-    ELSIF (dir = ast_constants.sort_by_dir('SORTBY_USING')) THEN
+    ELSIF (dir = 'SORTBY_USING') THEN
       output = array_append(output, 'USING');
       output = array_append(output, deparser.list(node->'useOp'));
     ELSE 
@@ -3967,12 +3966,12 @@ BEGIN
     END IF;
 
     IF (node->'sortby_nulls' IS NOT NULL) THEN
-      nulls = (node->'sortby_nulls')::int;
-      IF (nulls = ast_constants.sort_by_nulls('SORTBY_NULLS_DEFAULT')) THEN 
+      nulls = node->>'sortby_nulls';
+      IF (nulls = 'SORTBY_NULLS_DEFAULT') THEN 
         -- noop
-      ELSIF (nulls = ast_constants.sort_by_nulls('SORTBY_NULLS_FIRST')) THEN
+      ELSIF (nulls = 'SORTBY_NULLS_FIRST') THEN
         output = array_append(output, 'NULLS FIRST');
-      ELSIF (nulls = ast_constants.sort_by_nulls('SORTBY_NULLS_LAST')) THEN
+      ELSIF (nulls = 'SORTBY_NULLS_LAST') THEN
         output = array_append(output, 'NULLS LAST');
       END IF;
     END IF;
@@ -4090,7 +4089,7 @@ BEGIN
       output = array_append(output, quote_ident(node->>'name'));
     END IF;
 
-    IF ((node->'behavior')::int = 1) THEN 
+    IF ( node->>'behavior' = 'DROP_CASCADE') THEN
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -4128,7 +4127,7 @@ BEGIN
       output = array_append(output, '''' || txt || '''');
     END IF;
 
-    IF ((node->'behavior')::int = 1) THEN 
+    IF ( node->>'behavior' = 'DROP_CASCADE') THEN
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -4172,15 +4171,15 @@ CREATE FUNCTION deparser.row_expr(
   context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
-  row_format int;
+  row_format text;
 BEGIN
     IF (node->'RowExpr') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'RowExpr';
     END IF;
 
     node = node->'RowExpr';
-    row_format = (node->'row_format')::int;
-    IF (row_format = 2) THEN 
+    row_format = node->>'row_format';
+    IF (row_format = 'COERCE_IMPLICIT_CAST') THEN 
       RETURN deparser.parens(deparser.list(node->'args'));
     END IF;
 
@@ -4232,8 +4231,8 @@ CREATE FUNCTION deparser.rename_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  renameType int;
-  relationType int;
+  renameType text;
+  relationType text;
   typObj jsonb;
 BEGIN
     IF (node->'RenameStmt') IS NULL THEN
@@ -4241,13 +4240,13 @@ BEGIN
     END IF;
 
     node = node->'RenameStmt';
-    renameType = (node->'renameType')::int;
-    relationType = (node->'relationType')::int;
+    renameType = node->>'renameType';
+    relationType = node->>'relationType';
     IF (
-      renameType = ast_constants.object_type('OBJECT_FUNCTION') OR
-      renameType = ast_constants.object_type('OBJECT_FOREIGN_TABLE') OR
-      renameType = ast_constants.object_type('OBJECT_FDW') OR
-      renameType = ast_constants.object_type('OBJECT_FOREIGN_SERVER')
+      renameType = 'OBJECT_FUNCTION' OR
+      renameType = 'OBJECT_FOREIGN_TABLE' OR
+      renameType = 'OBJECT_FDW' OR
+      renameType = 'OBJECT_FOREIGN_SERVER'
     ) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, ast_utils.objtype_name(renameType) );
@@ -4258,7 +4257,7 @@ BEGIN
       output = array_append(output, 'RENAME');
       output = array_append(output, 'TO');
       output = array_append(output, quote_ident(node->>'newname'));
-    ELSEIF ( renameType = ast_constants.object_type('OBJECT_ATTRIBUTE') ) THEN
+    ELSEIF ( renameType = 'OBJECT_ATTRIBUTE' ) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, ast_utils.objtype_name(relationType) );
       IF ((node->'missing_ok')::bool is TRUE) THEN
@@ -4271,8 +4270,8 @@ BEGIN
       output = array_append(output, 'TO');
       output = array_append(output, quote_ident(node->>'newname'));
     ELSEIF ( 
-      renameType = ast_constants.object_type('OBJECT_DOMAIN') OR
-      renameType = ast_constants.object_type('OBJECT_TYPE') 
+      renameType = 'OBJECT_DOMAIN' OR
+      renameType = 'OBJECT_TYPE' 
      ) THEN
 
       output = array_append(output, 'ALTER');
@@ -4288,7 +4287,7 @@ BEGIN
       output = array_append(output, 'TO');
       output = array_append(output, quote_ident(node->>'newname'));
 
-    ELSEIF ( renameType = ast_constants.object_type('OBJECT_DOMCONSTRAINT') ) THEN
+    ELSEIF ( renameType = 'OBJECT_DOMCONSTRAINT' ) THEN
 
       output = array_append(output, 'ALTER');
       output = array_append(output, 'DOMAIN');
@@ -4312,7 +4311,7 @@ BEGIN
       END IF;
       output = array_append(output, deparser.expression(node->'relation'));
       output = array_append(output, 'RENAME');
-      IF (renameType = ast_constants.object_type('OBJECT_COLUMN')) THEN 
+      IF (renameType = 'OBJECT_COLUMN') THEN 
         -- not necessary, but why not
         output = array_append(output, 'COLUMN');
       END IF;
@@ -4322,7 +4321,7 @@ BEGIN
 
     END IF;
 
-    IF ( (node->'behavior')::int = 1 ) THEN
+    IF ( node->>'behavior' = 'DROP_CASCADE') THEN
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -4337,19 +4336,19 @@ CREATE FUNCTION deparser.alter_owner_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  objectType int;
+  objectType text;
 BEGIN
     IF (node->'AlterOwnerStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterOwnerStmt';
     END IF;
 
     node = node->'AlterOwnerStmt';
-    objectType = (node->'objectType')::int;
+    objectType = node->>'objectType';
     IF (
-      objectType = ast_constants.object_type('OBJECT_FUNCTION') OR
-      objectType = ast_constants.object_type('OBJECT_FOREIGN_TABLE') OR
-      objectType = ast_constants.object_type('OBJECT_FDW') OR
-      objectType = ast_constants.object_type('OBJECT_FOREIGN_SERVER')
+      objectType = 'OBJECT_FUNCTION' OR
+      objectType = 'OBJECT_FOREIGN_TABLE' OR
+      objectType = 'OBJECT_FDW' OR
+      objectType = 'OBJECT_FOREIGN_SERVER'
     ) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, ast_utils.objtype_name(objectType) );
@@ -4372,15 +4371,15 @@ CREATE FUNCTION deparser.alter_object_schema_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  objectType int;
+  objectType text;
 BEGIN
     IF (node->'AlterObjectSchemaStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterObjectSchemaStmt';
     END IF;
 
     node = node->'AlterObjectSchemaStmt';
-    objectType = (node->'objectType')::int;
-    IF ( objectType = ast_constants.object_type('OBJECT_TABLE') ) THEN
+    objectType = node->>'objectType';
+    IF ( objectType = 'OBJECT_TABLE' ) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, ast_utils.objtype_name(objectType) );
       IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
@@ -4432,11 +4431,10 @@ CREATE FUNCTION deparser.select_stmt(
 ) returns text as $$
 DECLARE
   output text[];
-  sets text[];
   values text[];
   pvalues text[];
   value text;
-  op int;
+  op text;
   valueSet jsonb;
   valueArr text[];
 BEGIN
@@ -4454,9 +4452,9 @@ BEGIN
       output = array_append(output, deparser.expression(node->'withClause', context));
     END IF;
 
-    op = (node->'op')::int;
+    op = node->>'op';
 
-    IF (op = 0) THEN 
+    IF (op = 'SETOP_NONE') THEN 
        IF (node->'valuesLists') IS NULL THEN 
         output = array_append(output, 'SELECT');
        END IF;
@@ -4464,10 +4462,18 @@ BEGIN
         output = array_append(output, '(');
         output = array_append(output, deparser.expression(node->'larg', context));
         output = array_append(output, ')');
-        
-        -- sets
-        sets = ARRAY['NONE', 'UNION', 'INTERSECT', 'EXCEPT']::text[];
-        output = array_append(output, sets[op+1]);
+
+        IF (op = 'SETOP_NONE') THEN 
+          output = array_append(output, 'NONE');
+        ELSEIF (op = 'SETOP_UNION') THEN 
+          output = array_append(output, 'UNION');
+        ELSEIF (op = 'SETOP_INTERSECT') THEN 
+          output = array_append(output, 'INTERSECT');
+        ELSEIF (op = 'SETOP_EXCEPT') THEN 
+          output = array_append(output, 'EXCEPT');
+        ELSE
+          RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt (op)';
+        END IF;
         
         -- all
         IF (node->'all') IS NOT NULL THEN
@@ -4622,7 +4628,7 @@ CREATE FUNCTION deparser.locking_clause(
 ) returns text as $$
 DECLARE
   output text[];
-  strength int;
+  strength text;
 BEGIN
     IF (node->'LockingClause') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'LockingClause';
@@ -4633,16 +4639,16 @@ BEGIN
     END IF;
 
     node = node->'LockingClause';
-    strength = (node->'strength')::int;
-    IF (strength = ast_constants.lock_clause_strength('LCS_NONE')) THEN 
+    strength = node->>'strength';
+    IF (strength = 'LCS_NONE') THEN 
       output = array_append(output, 'NONE');
-    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORKEYSHARE')) THEN
+    ELSIF (strength = 'LCS_FORKEYSHARE') THEN
       output = array_append(output, 'FOR KEY SHARE');
-    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORSHARE')) THEN
+    ELSIF (strength = 'LCS_FORSHARE') THEN
       output = array_append(output, 'FOR SHARE');
-    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORNOKEYUPDATE')) THEN
+    ELSIF (strength = 'LCS_FORNOKEYUPDATE') THEN
       output = array_append(output, 'FOR NO KEY UPDATE');
-    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORUPDATE')) THEN
+    ELSIF (strength = 'LCS_FORUPDATE') THEN
       output = array_append(output, 'FOR UPDATE');
     END IF;
 
@@ -4681,7 +4687,7 @@ CREATE FUNCTION deparser.min_max_expr(
   context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
-  op int;
+  op text;
   output text[];
 BEGIN
     IF (node->'MinMaxExpr') IS NULL THEN
@@ -4693,8 +4699,8 @@ BEGIN
     END IF;
 
     node = node->'MinMaxExpr';
-    op = (node->'op')::int;
-    IF (op = 0) THEN 
+    op = node->>'op';
+    IF (op = 'IS_GREATEST') THEN 
       output = array_append(output, 'GREATEST');
     ELSE 
       output = array_append(output, 'LEAST');
@@ -4712,7 +4718,7 @@ CREATE FUNCTION deparser.null_test(
   context jsonb default '{}'::jsonb
 ) returns text as $$
 DECLARE
-  nulltesttype int;
+  nulltesttype text;
   output text[];
 BEGIN
     IF (node->'NullTest') IS NULL THEN
@@ -4728,10 +4734,10 @@ BEGIN
     END IF;
 
     node = node->'NullTest';
-    nulltesttype = (node->'nulltesttype')::int;
+    nulltesttype = node->>'nulltesttype';
 
     output = array_append(output, deparser.expression(node->'arg'));
-    IF (nulltesttype = ast_constants.null_test_type('IS_NULL')) THEN 
+    IF (nulltesttype = 'IS_NULL') THEN 
       output = array_append(output, 'IS NULL');
     ELSE 
       output = array_append(output, 'IS NOT NULL');
@@ -4779,7 +4785,7 @@ CREATE FUNCTION deparser.drop_stmt(
 DECLARE
   output text[];
   objtypes text[];
-  objtype int;
+  objtype text;
   obj jsonb;
   quoted text[];
 BEGIN
@@ -4798,7 +4804,7 @@ BEGIN
     node = node->'DropStmt';
 
     output = array_append(output, 'DROP');
-    objtype = (node->'removeType')::int;
+    objtype = node->>'removeType';
     output = array_append(output, ast_utils.objtype_name(objtype));
     
     IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN 
@@ -4809,9 +4815,9 @@ BEGIN
     FOR obj IN SELECT * FROM jsonb_array_elements(node->'objects')
     LOOP
       IF ( 
-        objtype = ast_constants.object_type('OBJECT_POLICY')
-        OR objtype = ast_constants.object_type('OBJECT_RULE')
-        OR objtype = ast_constants.object_type('OBJECT_TRIGGER')
+        objtype = 'OBJECT_POLICY'
+        OR objtype = 'OBJECT_RULE'
+        OR objtype = 'OBJECT_TRIGGER'
       ) THEN
         IF (jsonb_typeof(obj) = 'array') THEN
           IF (jsonb_array_length(obj) = 2) THEN
@@ -4843,7 +4849,7 @@ BEGIN
         ELSE
           RAISE EXCEPTION 'BAD_EXPRESSION %', 'DropStmt (POLICY)';
         END IF;
-      ELSEIF (objtype = ast_constants.object_type('OBJECT_CAST')) THEN 
+      ELSEIF (objtype = 'OBJECT_CAST') THEN 
         output = array_append(output, '(');
         output = array_append(output, deparser.expression(obj->0));
         output = array_append(output, 'AS');
@@ -4861,7 +4867,7 @@ BEGIN
     output = array_append(output, array_to_string(quoted, ', '));
 
     -- behavior
-    IF (node->'behavior' IS NOT NULL AND (node->'behavior')::int = 1) THEN 
+    IF (node->>'behavior' = 'DROP_CASCADE') THEN 
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -4964,9 +4970,9 @@ BEGIN
       FOR param IN
       SELECT * FROM jsonb_array_elements(node->'parameters')
       LOOP
-        IF ((param->'FunctionParameter'->'mode')::int = ANY(ARRAY[118, 111, 98, 105]::int[])) THEN
+        IF (param->'FunctionParameter'->>'mode' = ANY(ARRAY['FUNC_PARAM_VARIADIC', 'FUNC_PARAM_OUT', 'FUNC_PARAM_INOUT', 'FUNC_PARAM_IN'])) THEN
           params = array_append(params, param);
-        ELSEIF ((param->'FunctionParameter'->'mode')::int = 116) THEN
+        ELSEIF (param->'FunctionParameter'->>'mode' = 'FUNC_PARAM_TABLE') THEN
           returnsTableElements = array_append(returnsTableElements, param);
         END IF;
       END LOOP;
@@ -5059,15 +5065,15 @@ BEGIN
 
     node = node->'FunctionParameter';
 
-    IF ((node->'mode')::int = 118) THEN
+    IF (node->>'mode' = 'FUNC_PARAM_VARIADIC') THEN
       output = array_append(output, 'VARIADIC');
     END IF;
 
-    IF ((node->'mode')::int = 111) THEN
+    IF (node->>'mode' = 'FUNC_PARAM_OUT') THEN
       output = array_append(output, 'OUT');
     END IF;
 
-    IF ((node->'mode')::int = 98) THEN
+    IF (node->>'mode' = 'FUNC_PARAM_INOUT') THEN
       output = array_append(output, 'INOUT');
     END IF;
 

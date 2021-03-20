@@ -57,7 +57,7 @@ it('smart_comments for any object', async () => {
   const [{ expression: result }] = await db.any(
     `select deparser.expression(
     ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_TABCONSTRAINT'),
+        v_objtype := 'OBJECT_TABCONSTRAINT',
         v_object := to_jsonb(ARRAY[
             ast.string('my_schema'),
             ast.string('my_table'),
@@ -78,7 +78,7 @@ it('smart_comments for any complext', async () => {
   const [{ expression: result }] = await db.any(
     `select deparser.expression(
     ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_TABCONSTRAINT'),
+        v_objtype := 'OBJECT_TABCONSTRAINT',
         v_object := to_jsonb(ARRAY[
             ast.string('my_schema'),
             ast.string('my_table'),

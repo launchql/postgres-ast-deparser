@@ -40,8 +40,8 @@ SELECT deparser.deparse(ast_helpers.create_policy(
   v_schema_name := 'schemanamed',
   v_table_name := 'mytable',
   v_roles := '{authenticated}'::text[],
-  v_qual := ast.bool_expr(1, to_jsonb(ARRAY[
-    ast.a_expr(v_kind := 0,
+  v_qual := ast.bool_expr('OR_EXPR', to_jsonb(ARRAY[
+    ast.a_expr(v_kind := 'AEXPR_OP',
       v_lexpr := ast.column_ref(
         v_fields := to_jsonb(ARRAY[ ast.string('responder_id') ])
       ),
@@ -51,7 +51,7 @@ SELECT deparser.deparse(ast_helpers.create_policy(
         v_args := to_jsonb(ARRAY[ ast.string('c'), ast.string('b') ])
       )  
     ),
-    ast.a_expr(v_kind := 0,
+    ast.a_expr(v_kind := 'AEXPR_OP',
       v_lexpr := ast.column_ref(
         v_fields := to_jsonb(ARRAY[ ast.string('requester_id') ])
       ),

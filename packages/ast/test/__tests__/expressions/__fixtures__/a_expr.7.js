@@ -1,6 +1,6 @@
 module.exports = {
   A_Expr: {
-    kind: 7,
+    kind: 'AEXPR_IN',
     lexpr: {
       ColumnRef: {
         fields: [
