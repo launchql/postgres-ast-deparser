@@ -1,11 +1,4 @@
 import { getConnections } from '../../utils';
-import {
-  policies,
-  current_groups_ast,
-  current_groups_ast2,
-  current_user_ast
-} from './__fixtures__/policies';
-import policyStmt from './__fixtures__/policy';
 
 let db, teardown;
 const objs = {

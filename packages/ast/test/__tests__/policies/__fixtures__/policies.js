@@ -9,8 +9,7 @@ export const policies = [
               schemaname: 'dashboard_private',
               relname: 'user_secrets',
               inh: true,
-              relpersistence: 'p',
-              location: 61
+              relpersistence: 'p'
             }
           },
           cmd_name: 'delete',
@@ -18,15 +17,14 @@ export const policies = [
           roles: [
             {
               RoleSpec: {
-                roletype: 0,
-                rolename: 'authenticated',
-                location: 128
+                roletype: 'ROLESPEC_CSTRING',
+                rolename: 'authenticated'
               }
             }
           ],
           qual: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -42,8 +40,7 @@ export const policies = [
                         str: 'user_id'
                       }
                     }
-                  ],
-                  location: 157
+                  ]
                 }
               },
               rexpr: {
@@ -59,11 +56,9 @@ export const policies = [
                         str: 'get_current_user_id'
                       }
                     }
-                  ],
-                  location: 167
+                  ]
                 }
-              },
-              location: 165
+              }
             }
           }
         }

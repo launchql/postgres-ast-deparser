@@ -119,7 +119,7 @@ BEGIN
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -164,7 +164,7 @@ BEGIN
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -192,7 +192,7 @@ BEGIN
       ]),
       v_fromClause := to_jsonb(ARRAY[
           ast.join_expr(
-              v_jointype := 0,
+              v_jointype := 'JOIN_INNER',
               v_larg := ast_helpers.range_var(
                   v_schemaname := 'collections_public',
                   v_relname := 'table',
@@ -230,7 +230,7 @@ BEGIN
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -261,7 +261,7 @@ BEGIN
       ]),
       v_fromClause := to_jsonb(ARRAY[
           ast.join_expr(
-              v_jointype := 0,
+              v_jointype := 'JOIN_INNER',
               v_larg := ast_helpers.range_var(
                   v_schemaname := policy_template_vars->>'object_schema',
                   v_relname := policy_template_vars->>'object_table',
@@ -289,7 +289,7 @@ BEGIN
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -320,7 +320,7 @@ BEGIN
       ]),
       v_fromClause := to_jsonb(ARRAY[
           ast.join_expr(
-              v_jointype := 0,
+              v_jointype := 'JOIN_INNER',
               v_larg := ast_helpers.range_var(
                   v_schemaname := policy_template_vars->>'object_schema',
                   v_relname := policy_template_vars->>'object_table',
@@ -348,7 +348,7 @@ BEGIN
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -423,7 +423,7 @@ BEGIN
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 

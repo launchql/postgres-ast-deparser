@@ -42,7 +42,7 @@ select ast.create_trig_stmt(
     v_row := true,
     v_timing := 2,
     v_events := 16,
-    v_whenClause := ast.a_expr( v_kind := 3, 
+    v_whenClause := ast.a_expr( v_kind := 'AEXPR_DISTINCT', 
         v_lexpr := ast.column_ref(
           to_jsonb(ARRAY[ ast.string('old'),ast.string('field-b') ])
         ),
@@ -66,7 +66,7 @@ select deparser.deparse(
     v_row := true,
     v_timing := 2,
     v_events := 16,
-    v_whenClause := ast.a_expr( v_kind := 3, 
+    v_whenClause := ast.a_expr( v_kind := 'AEXPR_DISTINCT', 
         v_lexpr := ast.column_ref(
           to_jsonb(ARRAY[ ast.string('old'),ast.string('field-b') ])
         ),
@@ -253,7 +253,7 @@ select deparser.deparse(
     v_row := true,
     v_timing := 2,
     v_events := 16,
-    v_whenClause := ast.a_expr( v_kind := 3, 
+    v_whenClause := ast.a_expr( v_kind := 'AEXPR_DISTINCT', 
         v_lexpr := ast.column_ref(
           to_jsonb(ARRAY[ ast.string('old'),ast.string('field-b') ])
         ),

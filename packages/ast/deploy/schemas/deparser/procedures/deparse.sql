@@ -3212,15 +3212,15 @@ DECLARE
   is_natural bool = false;
 BEGIN
     IF (node->'JoinExpr') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr (node)';
     END IF;
 
     IF (node->'JoinExpr'->'larg') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr (larg)';
     END IF;
 
     IF (node->'JoinExpr'->'jointype') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr (jointype)';
     END IF;
 
     node = node->'JoinExpr';
@@ -3232,7 +3232,7 @@ BEGIN
       is_natural = TRUE;
     END IF;
 
-    jointype = node->'jointype';
+    jointype = node->>'jointype';
     IF (jointype = 'JOIN_INNER') THEN 
       IF (node->'quals' IS NOT NULL) THEN 
         jointxt = 'INNER JOIN';
@@ -4908,7 +4908,7 @@ CREATE FUNCTION deparser.on_conflict_clause(
 ) returns text as $$
 DECLARE
   output text[];
-  action int;
+  action text;
 BEGIN
     IF (node->'OnConflictClause') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'OnConflictClause';
@@ -4923,10 +4923,10 @@ BEGIN
     output = array_append(output, 'ON CONFLICT');
     output = array_append(output, deparser.expression(node->'infer'));
 
-    action = (node->'action')::int;
-    IF (action = 1) THEN 
+    action = node->>'action';
+    IF (action = 'ONCONFLICT_NOTHING') THEN 
       output = array_append(output, 'DO NOTHING');
-    ELSIF (action = 2) THEN 
+    ELSIF (action = 'ONCONFLICT_UPDATE') THEN 
       output = array_append(output, 'DO');
       output = array_append(output, deparser.update_stmt(node));
     END IF;

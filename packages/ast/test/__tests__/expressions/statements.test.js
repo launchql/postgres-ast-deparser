@@ -1586,7 +1586,7 @@ it('drop_stmt', async () => {
   }
 });
 
-it('drop_stmt', async () => {
+it('drop_stmt 1', async () => {
   for (const obj of [
     ['my-schema', 'my-table', 'DROP_RESTRICT'],
     ['myschema', 'mytable', 'DROP_RESTRICT']
@@ -1618,7 +1618,7 @@ const str = (s) => ({
   }
 });
 
-it('drop_stmt', async () => {
+it('drop_stmt 2', async () => {
   for (const obj of [
     [
       [
@@ -1627,7 +1627,7 @@ it('drop_stmt', async () => {
         ['sometable'],
         ['some-table']
       ],
-      1
+      'DROP_CASCADE'
     ],
     [[['myschema', 'mytable']], 'DROP_RESTRICT']
   ]) {
@@ -1658,7 +1658,7 @@ it('drop_stmt', async () => {
   }
 });
 
-it('drop_stmt', async () => {
+it('drop_stmt 3', async () => {
   for (const obj of [
     ['schema-name', 'my-func', 'int', 'DROP_RESTRICT'],
     ['schema-name', 'myfunction', 'int', 'DROP_RESTRICT'],
@@ -1715,7 +1715,7 @@ const objectWithArgs = (params) => {
   }
 };
 
-it('drop_stmt', async () => {
+it('drop_stmt drop', async () => {
   for (const obj of [
     [
       [

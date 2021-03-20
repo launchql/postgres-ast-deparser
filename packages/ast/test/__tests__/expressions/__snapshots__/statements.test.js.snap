@@ -4,25 +4,25 @@ exports[`a_expr 1`] = `"a = b"`;
 
 exports[`drop_stmt 1`] = `"DROP INDEX \\"my-schema\\".\\"my-function\\""`;
 
+exports[`drop_stmt 1 1`] = `"DROP TABLE \\"my-schema\\".\\"my-table\\""`;
+
+exports[`drop_stmt 1 2`] = `"DROP TABLE myschema.mytable"`;
+
 exports[`drop_stmt 2`] = `"DROP INDEX myschema.myfunction"`;
 
-exports[`drop_stmt 3`] = `"DROP TABLE \\"my-schema\\".\\"my-table\\""`;
+exports[`drop_stmt 2 1`] = `"DROP TABLE \\"some-schema\\".\\"some-table\\", someschema.sometable, sometable, \\"some-table\\" CASCADE"`;
 
-exports[`drop_stmt 4`] = `"DROP TABLE myschema.mytable"`;
+exports[`drop_stmt 2 2`] = `"DROP TABLE myschema.mytable"`;
 
-exports[`drop_stmt 5`] = `"DROP TABLE \\"some-schema\\".\\"some-table\\", someschema.sometable, sometable, \\"some-table\\" CASCADE"`;
+exports[`drop_stmt 3 1`] = `"DROP FUNCTION \\"schema-name\\".\\"my-func\\" ( int )"`;
 
-exports[`drop_stmt 6`] = `"DROP TABLE myschema.mytable"`;
+exports[`drop_stmt 3 2`] = `"DROP FUNCTION \\"schema-name\\".myfunction ( int )"`;
 
-exports[`drop_stmt 7`] = `"DROP FUNCTION \\"schema-name\\".\\"my-func\\" ( int )"`;
+exports[`drop_stmt 3 3`] = `"DROP FUNCTION schemaname.\\"my-func\\" ( int )"`;
 
-exports[`drop_stmt 8`] = `"DROP FUNCTION \\"schema-name\\".myfunction ( int )"`;
+exports[`drop_stmt drop 1`] = `"DROP FUNCTION \\"some-schema\\".\\"some-function\\" ( int ), someschema.somefunction ( int, bool ), somefunction, \\"some-function\\" ( text[] ) CASCADE"`;
 
-exports[`drop_stmt 9`] = `"DROP FUNCTION schemaname.\\"my-func\\" ( int )"`;
-
-exports[`drop_stmt 10`] = `"DROP FUNCTION \\"some-schema\\".\\"some-function\\" ( int ), someschema.somefunction ( int, bool ), somefunction, \\"some-function\\" ( text[] ) CASCADE"`;
-
-exports[`drop_stmt 11`] = `"DROP FUNCTION \\"some-schema\\".\\"some-function\\" ( int ), someschema.somefunction ( int, bool ), somefunction, somefunction ( text[] )"`;
+exports[`drop_stmt drop 2`] = `"DROP FUNCTION \\"some-schema\\".\\"some-function\\" ( int ), someschema.somefunction ( int, bool ), somefunction, somefunction ( text[] )"`;
 
 exports[`func_call 1`] = `"dan()"`;
 
@@ -223,9 +223,9 @@ exports[`select_stmt 60`] = `"EXPLAIN SELECT unique2 FROM onek2 WHERE unique2 = 
 
 exports[`select_stmt 61`] = `"SELECT unique2 FROM onek2 WHERE unique2 = 11 AND stringu1 < 'B';"`;
 
-exports[`select_stmt 62`] = `"EXPLAIN SELECT unique2 FROM onek2 WHERE unique2 = 11 AND stringu1 < 'B' OFFSET FOR UPDATE;"`;
+exports[`select_stmt 62`] = `"EXPLAIN SELECT unique2 FROM onek2 WHERE unique2 = 11 AND stringu1 < 'B' OFFSET ;"`;
 
-exports[`select_stmt 63`] = `"SELECT unique2 FROM onek2 WHERE unique2 = 11 AND stringu1 < 'B' OFFSET FOR UPDATE;"`;
+exports[`select_stmt 63`] = `"SELECT unique2 FROM onek2 WHERE unique2 = 11 AND stringu1 < 'B' OFFSET ;"`;
 
 exports[`select_stmt 64`] = `"EXPLAIN SELECT unique2 FROM onek2 WHERE unique2 = 11 AND stringu1 < 'C';"`;
 
