@@ -73,16 +73,16 @@ select deparser.deparse( ast.create_function_stmt(
 
   v_options := to_jsonb(ARRAY[
     ast.def_elem(
-      'volatility',
-      ast.string('volatile')
+      v_defname := 'volatility',
+      v_arg := ast.string('volatile')
     ),
     ast.def_elem(
-      'language',
-      ast.string('plpgsql')
+      v_defname := 'language',
+      v_arg := ast.string('plpgsql')
     ),
     ast.def_elem(
-      'security',
-      ast.integer(1)
+      v_defname := 'security',
+      v_arg := ast.integer(1)
     )
   ]::jsonb[])
 ))`);
@@ -118,16 +118,16 @@ select ast.create_function_stmt(
 
   v_options := to_jsonb(ARRAY[
     ast.def_elem(
-      'volatility',
-      ast.string('volatile')
+      v_defname := 'volatility',
+      v_arg := ast.string('volatile')
     ),
     ast.def_elem(
-      'language',
-      ast.string('plpgsql')
+      v_defname := 'language',
+      v_arg := ast.string('plpgsql')
     ),
     ast.def_elem(
-      'security',
-      ast.integer(1)
+      v_defname := 'security',
+      v_arg := ast.integer(1)
     )
   ]::jsonb[])
 )`);

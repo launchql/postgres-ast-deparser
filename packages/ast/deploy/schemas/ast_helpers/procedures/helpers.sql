@@ -696,26 +696,26 @@ DECLARE
 BEGIN
 
   options = array_append(options, ast.def_elem(
-    'as',
-    to_jsonb(ARRAY[ast.string(v_body)])
+    v_defname := 'as',
+    v_arg := to_jsonb(ARRAY[ast.string(v_body)])
   ));
   
   options = array_append(options, ast.def_elem(
-    'language',
-    ast.string(v_language)
+    v_defname := 'language',
+    v_arg := ast.string(v_language)
   ));
 
   IF (v_volatility IS NOT NULL) THEN 
     options = array_append(options, ast.def_elem(
-      'volatility',
-      ast.string(v_volatility)
+      v_defname := 'volatility',
+      v_arg := ast.string(v_volatility)
     ));
   END IF;
 
   IF (v_security IS NOT NULL) THEN 
     options = array_append(options, ast.def_elem(
-      'security',
-      ast.integer(v_security)
+      v_defname := 'security',
+      v_arg := ast.integer(v_security)
     ));
   END IF;
 

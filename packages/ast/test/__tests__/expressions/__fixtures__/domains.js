@@ -6386,7 +6386,7 @@ export const domains = [
                     typemod: -1
                   }
                 },
-                mode: 105
+                mode: 'FUNC_PARAM_IN'
               }
             }
           ],
@@ -6499,7 +6499,7 @@ export const domains = [
                     typemod: -1
                   }
                 },
-                mode: 105
+                mode: 'FUNC_PARAM_IN'
               }
             }
           ],
@@ -6613,7 +6613,7 @@ export const domains = [
                     typemod: -1
                   }
                 },
-                mode: 105
+                mode: 'FUNC_PARAM_IN'
               }
             }
           ],
