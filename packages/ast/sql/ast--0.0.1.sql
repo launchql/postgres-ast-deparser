@@ -3669,9 +3669,10 @@ CREATE FUNCTION ast_helpers.drop_table ( v_schema_name text, v_table_name text, 
   );
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_index ( v_index_name text, v_schema_name text, v_table_name text, v_fields text[], v_accessmethod text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.create_index ( v_index_name text, v_schema_name text, v_table_name text, v_fields text[], v_include_fields text[] DEFAULT ARRAY[]::text[], v_accessmethod text DEFAULT NULL, v_unique boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
 DECLARE
-  parameters jsonb[];
+  parameters jsonb[] = ARRAY[]::jsonb[];
+  includingParameters jsonb[] = ARRAY[]::jsonb[];
 
   item text;
   i int;
@@ -3688,7 +3689,17 @@ BEGIN
     ));
   END LOOP;
 
-  SELECT ast.raw_stmt(
+  FOR i IN
+    SELECT * FROM generate_series(1, cardinality(v_include_fields)) g (i)
+  LOOP
+    includingParameters = array_append(includingParameters, ast.index_elem(
+      v_name := v_include_fields[i],
+      v_ordering := 'SORTBY_DEFAULT',
+      v_nulls_ordering := 'SORTBY_NULLS_DEFAULT'
+    ));
+  END LOOP;
+
+  ast = ast.raw_stmt(
     v_stmt := ast.index_stmt(
       v_idxname := v_index_name,
       v_relation := ast_helpers.range_var(
@@ -3696,10 +3707,12 @@ BEGIN
         v_relname := v_table_name
       ),
       v_accessMethod := v_accessMethod,
-      v_indexParams := to_jsonb(parameters)
+      v_indexParams := to_jsonb(parameters),
+      v_indexIncludingParams := to_jsonb(includingParameters),
+      v_unique := v_unique
     ),
     v_stmt_len:= 1
-  ) INTO ast;
+  );
 
   RETURN ast;
 END;
@@ -7710,7 +7723,7 @@ BEGIN
     node = node->'IndexStmt';
 
     output = array_append(output, 'CREATE');
-    IF (node->'unique' IS NOT NULL) THEN 
+    IF ((node->'unique')::bool IS TRUE) THEN 
       output = array_append(output, 'UNIQUE');
     END IF;
     

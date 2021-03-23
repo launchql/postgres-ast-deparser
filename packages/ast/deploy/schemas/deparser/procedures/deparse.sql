@@ -3033,7 +3033,7 @@ BEGIN
     node = node->'IndexStmt';
 
     output = array_append(output, 'CREATE');
-    IF (node->'unique' IS NOT NULL) THEN 
+    IF ((node->'unique')::bool IS TRUE) THEN 
       output = array_append(output, 'UNIQUE');
     END IF;
     
