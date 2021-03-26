@@ -8434,6 +8434,16 @@ pgpass@1.x:
   dependencies:
     split "^1.0.0"
 
+pgsql-deparser@13.1.1, pgsql-deparser@^13.1.1:
+  version "13.1.1"
+  resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-13.1.1.tgz#95a3a9c1b73ffca6095fa2e7839447d23d67f972"
+  integrity sha512-V8fKumXROotviMqQ1HVRJUqjVd6P5lKaigZJYnK3bo6cjCbJMpmiHNaIFIlordXLbS/3VE5MAQKMFfPVLuhH+w==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    dotty "0.1.0"
+    lodash "4.17.20"
+    pgsql-enums "^13.1.0"
+
 pgsql-deparser@^1.2.2:
   version "1.2.3"
   resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-1.2.3.tgz#b426f7cc25e273690ff030701e833fcfed10ef50"
@@ -8443,16 +8453,6 @@ pgsql-deparser@^1.2.2:
     dotty "0.1.0"
     lodash "4.17.20"
     pgsql-enums "^1.0.2"
-
-pgsql-deparser@^13.1.0:
-  version "13.1.0"
-  resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-13.1.0.tgz#c1864439f16533fa5973b94a62f55c62c8e2d522"
-  integrity sha512-dFOJmOQQY/6UBP21IlHhJpKR4lQFLrNY2BxINf7pHbqBYlTyCSVMf2iTuXVrGs30xMqIHAdoGokRMPqg+shAlQ==
-  dependencies:
-    "@babel/runtime" "^7.11.2"
-    dotty "0.1.0"
-    lodash "4.17.20"
-    pgsql-enums "^13.1.0"
 
 pgsql-enums@^1.0.2:
   version "1.0.2"
@@ -8490,15 +8490,15 @@ pgsql-parser@1.2.2:
     pgsql-deparser "^1.2.2"
     pgsql-enums "^1.0.2"
 
-pgsql-parser@13.1.0:
-  version "13.1.0"
-  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-13.1.0.tgz#d21817e6f1ae22c28a8b5e31d4cacc4c3444e903"
-  integrity sha512-omkO76fk+TNBGuU1X7C30/g4Di0t5C7sw7QIRri1oxmL0BKk39sDilwpM0X6QGUfxYz7jcZ7wOY+qmYvLOMoaQ==
+pgsql-parser@13.1.1:
+  version "13.1.1"
+  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-13.1.1.tgz#7153d9fc114d7d66ae75258c464be18dc2bf24f0"
+  integrity sha512-Fh7Svor+9lAue9/vICvx+PlJB9W7SKfVuhfY1S72NX2gk5onrbMZXeY2vhd4AYzTzk9JumA+alNmb5/htCX9gg==
   dependencies:
     "@babel/runtime" "^7.11.2"
     libpg-query "13.0.1"
     minimist "^1.2.5"
-    pgsql-deparser "^13.1.0"
+    pgsql-deparser "^13.1.1"
     pgsql-enums "^13.1.0"
 
 picomatch@^2.0.4, picomatch@^2.0.5:

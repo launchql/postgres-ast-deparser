@@ -7895,3 +7895,31 @@ b bpchar
 CREATE FUNCTION charfunc ( a pg_catalog.\\"char\\", b \\"char\\", c char(1) ) RETURNS void AS $EOFCODE$BEGIN
 END;$EOFCODE$ LANGUAGE plpgsql VOLATILE;"
 `;
+
+exports[`privs-and-defaults 1`] = `
+"ALTER DEFAULT PRIVILEGES IN SCHEMA schema_name
+GRANT SELECT ON TABLES  TO your_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA schema_name
+GRANT ALL ON TABLES  TO your_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA schema_name
+GRANT ALL ON SEQUENCES  TO your_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA schema_name
+GRANT ALL ON FUNCTIONS  TO your_user;
+GRANT ALL ON ALL TABLES IN SCHEMA schema_name TO your_user;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA schema_name TO your_user;
+GRANT ALL ON ALL FUNCTIONS IN SCHEMA schema_name TO your_user;"
+`;
+
+exports[`privs-and-defaults 2`] = `
+"ALTER DEFAULT PRIVILEGES IN SCHEMA schema_name
+GRANT SELECT ON TABLES  TO your_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA schema_name
+GRANT ALL ON TABLES  TO your_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA schema_name
+GRANT ALL ON SEQUENCES  TO your_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA schema_name
+GRANT ALL ON FUNCTIONS  TO your_user;
+GRANT ALL ON ALL TABLES IN SCHEMA schema_name TO your_user;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA schema_name TO your_user;
+GRANT ALL ON ALL FUNCTIONS IN SCHEMA schema_name TO your_user;"
+`;

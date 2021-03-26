@@ -125,9 +125,13 @@ BEGIN
     ELSIF (targtype = 'ACL_TARGET_DEFAULTS') THEN 
       RETURN 'TABLES';
     END IF;
-    -- TODO could be a view
     RETURN 'TABLE';
   ELSIF (objtype = 'OBJECT_SEQUENCE') THEN
+    IF (targtype = 'ACL_TARGET_ALL_IN_SCHEMA') THEN 
+      RETURN 'ALL SEQUENCES IN SCHEMA';
+    ELSIF (targtype = 'ACL_TARGET_DEFAULTS') THEN 
+      RETURN 'SEQUENCES';
+    END IF;
     RETURN 'SEQUENCE';
   ELSIF (objtype = 'OBJECT_DATABASE') THEN
     RETURN 'DATABASE';
