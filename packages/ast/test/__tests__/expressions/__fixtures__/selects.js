@@ -12,11 +12,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 106
+                    ]
                   }
-                },
-                location: 106
+                }
               }
             }
           ],
@@ -25,14 +23,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 113
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -53,8 +50,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 127
+                  ]
                 }
               },
               rexpr: {
@@ -63,11 +59,9 @@ export const selects = [
                     Integer: {
                       ival: 10
                     }
-                  },
-                  location: 142
+                  }
                 }
-              },
-              location: 140
+              }
             }
           },
           sortClause: [
@@ -86,17 +80,15 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 157
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
       stmt_len: 169
@@ -122,11 +114,9 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 257
+                    ]
                   }
-                },
-                location: 257
+                }
               }
             },
             {
@@ -144,11 +134,9 @@ export const selects = [
                           str: 'stringu1'
                         }
                       }
-                    ],
-                    location: 271
+                    ]
                   }
-                },
-                location: 271
+                }
               }
             }
           ],
@@ -157,14 +145,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 290
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -185,8 +172,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 304
+                  ]
                 }
               },
               rexpr: {
@@ -195,11 +181,9 @@ export const selects = [
                     Integer: {
                       ival: 20
                     }
-                  },
-                  location: 319
+                  }
                 }
-              },
-              location: 317
+              }
             }
           },
           sortClause: [
@@ -213,27 +197,24 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 334
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '>'
                     }
                   }
-                ],
-                location: 348
+                ]
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 170,
       stmt_len: 179
     }
   },
@@ -257,11 +238,9 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 437
+                    ]
                   }
-                },
-                location: 437
+                }
               }
             },
             {
@@ -279,11 +258,9 @@ export const selects = [
                           str: 'stringu1'
                         }
                       }
-                    ],
-                    location: 451
+                    ]
                   }
-                },
-                location: 451
+                }
               }
             }
           ],
@@ -292,14 +269,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 470
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -320,8 +296,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 484
+                  ]
                 }
               },
               rexpr: {
@@ -330,11 +305,9 @@ export const selects = [
                     Integer: {
                       ival: 980
                     }
-                  },
-                  location: 499
+                  }
                 }
-              },
-              location: 497
+              }
             }
           },
           sortClause: [
@@ -348,27 +321,24 @@ export const selects = [
                           str: 'stringu1'
                         }
                       }
-                    ],
-                    location: 515
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '<'
                     }
                   }
-                ],
-                location: 530
+                ]
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 350,
       stmt_len: 181
     }
   },
@@ -392,11 +362,9 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 630
+                    ]
                   }
-                },
-                location: 630
+                }
               }
             },
             {
@@ -414,11 +382,9 @@ export const selects = [
                           str: 'string4'
                         }
                       }
-                    ],
-                    location: 644
+                    ]
                   }
-                },
-                location: 644
+                }
               }
             }
           ],
@@ -427,14 +393,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 662
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -455,8 +420,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 676
+                  ]
                 }
               },
               rexpr: {
@@ -465,11 +429,9 @@ export const selects = [
                     Integer: {
                       ival: 980
                     }
-                  },
-                  location: 691
+                  }
                 }
-              },
-              location: 689
+              }
             }
           },
           sortClause: [
@@ -483,20 +445,18 @@ export const selects = [
                           str: 'string4'
                         }
                       }
-                    ],
-                    location: 707
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '<'
                     }
                   }
-                ],
-                location: 721
+                ]
               }
             },
             {
@@ -509,27 +469,24 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 724
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '>'
                     }
                   }
-                ],
-                location: 738
+                ]
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 532,
       stmt_len: 207
     }
   },
@@ -553,11 +510,9 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 838
+                    ]
                   }
-                },
-                location: 838
+                }
               }
             },
             {
@@ -575,11 +530,9 @@ export const selects = [
                           str: 'string4'
                         }
                       }
-                    ],
-                    location: 852
+                    ]
                   }
-                },
-                location: 852
+                }
               }
             }
           ],
@@ -588,14 +541,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 870
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -616,8 +568,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 884
+                  ]
                 }
               },
               rexpr: {
@@ -626,11 +577,9 @@ export const selects = [
                     Integer: {
                       ival: 980
                     }
-                  },
-                  location: 899
+                  }
                 }
-              },
-              location: 897
+              }
             }
           },
           sortClause: [
@@ -644,20 +593,18 @@ export const selects = [
                           str: 'string4'
                         }
                       }
-                    ],
-                    location: 915
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '>'
                     }
                   }
-                ],
-                location: 929
+                ]
               }
             },
             {
@@ -670,27 +617,24 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 932
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '<'
                     }
                   }
-                ],
-                location: 946
+                ]
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 740,
       stmt_len: 207
     }
   },
@@ -714,11 +658,9 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 1045
+                    ]
                   }
-                },
-                location: 1045
+                }
               }
             },
             {
@@ -736,11 +678,9 @@ export const selects = [
                           str: 'string4'
                         }
                       }
-                    ],
-                    location: 1059
+                    ]
                   }
-                },
-                location: 1059
+                }
               }
             }
           ],
@@ -749,14 +689,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 1077
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -777,8 +716,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 1091
+                  ]
                 }
               },
               rexpr: {
@@ -787,11 +725,9 @@ export const selects = [
                     Integer: {
                       ival: 20
                     }
-                  },
-                  location: 1106
+                  }
                 }
-              },
-              location: 1104
+              }
             }
           },
           sortClause: [
@@ -805,20 +741,18 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 1121
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '>'
                     }
                   }
-                ],
-                location: 1135
+                ]
               }
             },
             {
@@ -831,27 +765,24 @@ export const selects = [
                           str: 'string4'
                         }
                       }
-                    ],
-                    location: 1138
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '<'
                     }
                   }
-                ],
-                location: 1152
+                ]
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 948,
       stmt_len: 205
     }
   },
@@ -875,11 +806,9 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 1251
+                    ]
                   }
-                },
-                location: 1251
+                }
               }
             },
             {
@@ -897,11 +826,9 @@ export const selects = [
                           str: 'string4'
                         }
                       }
-                    ],
-                    location: 1265
+                    ]
                   }
-                },
-                location: 1265
+                }
               }
             }
           ],
@@ -910,14 +837,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 1283
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -938,8 +864,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 1297
+                  ]
                 }
               },
               rexpr: {
@@ -948,11 +873,9 @@ export const selects = [
                     Integer: {
                       ival: 20
                     }
-                  },
-                  location: 1312
+                  }
                 }
-              },
-              location: 1310
+              }
             }
           },
           sortClause: [
@@ -966,20 +889,18 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 1327
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '<'
                     }
                   }
-                ],
-                location: 1341
+                ]
               }
             },
             {
@@ -992,27 +913,24 @@ export const selects = [
                           str: 'string4'
                         }
                       }
-                    ],
-                    location: 1344
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '>'
                     }
                   }
-                ],
-                location: 1358
+                ]
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 1154,
       stmt_len: 205
     }
   },
@@ -1025,13 +943,11 @@ export const selects = [
             RangeVar: {
               relname: 'onek2',
               inh: true,
-              relpersistence: 'p',
-              location: 1625
+              relpersistence: 'p'
             }
           }
         }
       },
-      stmt_location: 1360,
       stmt_len: 270
     }
   },
@@ -1039,7 +955,7 @@ export const selects = [
     RawStmt: {
       stmt: {
         VariableSetStmt: {
-          kind: 0,
+          kind: 'VAR_SET_VALUE',
           name: 'enable_seqscan',
           args: [
             {
@@ -1048,14 +964,12 @@ export const selects = [
                   String: {
                     str: 'off'
                   }
-                },
-                location: 1655
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 1631,
       stmt_len: 27
     }
   },
@@ -1063,7 +977,7 @@ export const selects = [
     RawStmt: {
       stmt: {
         VariableSetStmt: {
-          kind: 0,
+          kind: 'VAR_SET_VALUE',
           name: 'enable_bitmapscan',
           args: [
             {
@@ -1072,14 +986,12 @@ export const selects = [
                   String: {
                     str: 'off'
                   }
-                },
-                location: 1685
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 1659,
       stmt_len: 29
     }
   },
@@ -1087,7 +999,7 @@ export const selects = [
     RawStmt: {
       stmt: {
         VariableSetStmt: {
-          kind: 0,
+          kind: 'VAR_SET_VALUE',
           name: 'enable_sort',
           args: [
             {
@@ -1096,14 +1008,12 @@ export const selects = [
                   String: {
                     str: 'off'
                   }
-                },
-                location: 1709
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 1689,
       stmt_len: 23
     }
   },
@@ -1125,11 +1035,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 1795
+                    ]
                   }
-                },
-                location: 1795
+                }
               }
             }
           ],
@@ -1138,14 +1046,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 1808
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -1166,8 +1073,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 1820
+                  ]
                 }
               },
               rexpr: {
@@ -1176,17 +1082,14 @@ export const selects = [
                     Integer: {
                       ival: 10
                     }
-                  },
-                  location: 1836
+                  }
                 }
-              },
-              location: 1834
+              }
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 1713,
       stmt_len: 125
     }
   },
@@ -1210,11 +1113,9 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 1926
+                    ]
                   }
-                },
-                location: 1926
+                }
               }
             },
             {
@@ -1232,11 +1133,9 @@ export const selects = [
                           str: 'stringu1'
                         }
                       }
-                    ],
-                    location: 1941
+                    ]
                   }
-                },
-                location: 1941
+                }
               }
             }
           ],
@@ -1245,14 +1144,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 1961
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -1273,8 +1171,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 1977
+                  ]
                 }
               },
               rexpr: {
@@ -1283,11 +1180,9 @@ export const selects = [
                     Integer: {
                       ival: 20
                     }
-                  },
-                  location: 1993
+                  }
                 }
-              },
-              location: 1991
+              }
             }
           },
           sortClause: [
@@ -1301,27 +1196,24 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 2009
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '>'
                     }
                   }
-                ],
-                location: 2023
+                ]
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 1839,
       stmt_len: 185
     }
   },
@@ -1345,11 +1237,9 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 2112
+                    ]
                   }
-                },
-                location: 2112
+                }
               }
             },
             {
@@ -1367,11 +1257,9 @@ export const selects = [
                           str: 'stringu1'
                         }
                       }
-                    ],
-                    location: 2127
+                    ]
                   }
-                },
-                location: 2127
+                }
               }
             }
           ],
@@ -1380,14 +1268,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 2147
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -1408,8 +1295,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 2162
+                  ]
                 }
               },
               rexpr: {
@@ -1418,17 +1304,14 @@ export const selects = [
                     Integer: {
                       ival: 980
                     }
-                  },
-                  location: 2178
+                  }
                 }
-              },
-              location: 2176
+              }
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 2025,
       stmt_len: 156
     }
   },
@@ -1436,11 +1319,10 @@ export const selects = [
     RawStmt: {
       stmt: {
         VariableSetStmt: {
-          kind: 4,
+          kind: 'VAR_RESET',
           name: 'enable_seqscan'
         }
       },
-      stmt_location: 2182,
       stmt_len: 22
     }
   },
@@ -1448,11 +1330,10 @@ export const selects = [
     RawStmt: {
       stmt: {
         VariableSetStmt: {
-          kind: 4,
+          kind: 'VAR_RESET',
           name: 'enable_bitmapscan'
         }
       },
-      stmt_location: 2205,
       stmt_len: 24
     }
   },
@@ -1460,11 +1341,10 @@ export const selects = [
     RawStmt: {
       stmt: {
         VariableSetStmt: {
-          kind: 4,
+          kind: 'VAR_RESET',
           name: 'enable_sort'
         }
       },
-      stmt_location: 2230,
       stmt_len: 18
     }
   },
@@ -1478,8 +1358,7 @@ export const selects = [
                 RangeVar: {
                   relname: 'tmp',
                   inh: true,
-                  relpersistence: 'p',
-                  location: 2301
+                  relpersistence: 'p'
                 }
               },
               onCommit: 0
@@ -1496,11 +1375,9 @@ export const selects = [
                           str: 'two'
                         }
                       }
-                    ],
-                    location: 2259
+                    ]
                   }
-                },
-                location: 2259
+                }
               }
             },
             {
@@ -1513,11 +1390,9 @@ export const selects = [
                           str: 'stringu1'
                         }
                       }
-                    ],
-                    location: 2264
+                    ]
                   }
-                },
-                location: 2264
+                }
               }
             },
             {
@@ -1530,11 +1405,9 @@ export const selects = [
                           str: 'ten'
                         }
                       }
-                    ],
-                    location: 2274
+                    ]
                   }
-                },
-                location: 2274
+                }
               }
             },
             {
@@ -1547,11 +1420,9 @@ export const selects = [
                           str: 'string4'
                         }
                       }
-                    ],
-                    location: 2279
+                    ]
                   }
-                },
-                location: 2279
+                }
               }
             }
           ],
@@ -1560,15 +1431,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 2313
+                relpersistence: 'p'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 2249,
       stmt_len: 68
     }
   },
@@ -1592,11 +1461,9 @@ export const selects = [
                           str: 'name'
                         }
                       }
-                    ],
-                    location: 2634
+                    ]
                   }
-                },
-                location: 2634
+                }
               }
             },
             {
@@ -1614,11 +1481,9 @@ export const selects = [
                           str: 'age'
                         }
                       }
-                    ],
-                    location: 2642
+                    ]
                   }
-                },
-                location: 2642
+                }
               }
             }
           ],
@@ -1632,15 +1497,13 @@ export const selects = [
                   Alias: {
                     aliasname: 'p'
                   }
-                },
-                location: 2653
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 2318,
       stmt_len: 344
     }
   },
@@ -1664,11 +1527,9 @@ export const selects = [
                           str: 'name'
                         }
                       }
-                    ],
-                    location: 2940
+                    ]
                   }
-                },
-                location: 2940
+                }
               }
             },
             {
@@ -1686,11 +1547,9 @@ export const selects = [
                           str: 'age'
                         }
                       }
-                    ],
-                    location: 2948
+                    ]
                   }
-                },
-                location: 2948
+                }
               }
             }
           ],
@@ -1704,8 +1563,7 @@ export const selects = [
                   Alias: {
                     aliasname: 'p'
                   }
-                },
-                location: 2959
+                }
               }
             }
           ],
@@ -1720,20 +1578,18 @@ export const selects = [
                           str: 'age'
                         }
                       }
-                    ],
-                    location: 2978
+                    ]
                   }
                 },
-                sortby_dir: 3,
-                sortby_nulls: 0,
+                sortby_dir: 'SORTBY_USING',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT',
                 useOp: [
                   {
                     String: {
                       str: '>'
                     }
                   }
-                ],
-                location: 2988
+                ]
               }
             },
             {
@@ -1746,20 +1602,17 @@ export const selects = [
                           str: 'name'
                         }
                       }
-                    ],
-                    location: 2991
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 2663,
       stmt_len: 332
     }
   },
@@ -1778,11 +1631,9 @@ export const selects = [
                           str: 'foo'
                         }
                       }
-                    ],
-                    location: 3077
+                    ]
                   }
-                },
-                location: 3077
+                }
               }
             }
           ],
@@ -1800,15 +1651,13 @@ export const selects = [
                                 Integer: {
                                   ival: 1
                                 }
-                              },
-                              location: 3094
+                              }
                             }
-                          },
-                          location: 3094
+                          }
                         }
                       }
                     ],
-                    op: 0
+                    op: 'SETOP_NONE'
                   }
                 },
                 alias: {
@@ -1819,10 +1668,9 @@ export const selects = [
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 2996,
       stmt_len: 107
     }
   },
@@ -1841,11 +1689,9 @@ export const selects = [
                           str: 'foo'
                         }
                       }
-                    ],
-                    location: 3112
+                    ]
                   }
-                },
-                location: 3112
+                }
               }
             }
           ],
@@ -1861,15 +1707,13 @@ export const selects = [
                             A_Const: {
                               val: {
                                 Null: {}
-                              },
-                              location: 3129
+                              }
                             }
-                          },
-                          location: 3129
+                          }
                         }
                       }
                     ],
-                    op: 0
+                    op: 'SETOP_NONE'
                   }
                 },
                 alias: {
@@ -1880,10 +1724,9 @@ export const selects = [
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 3104,
       stmt_len: 37
     }
   },
@@ -1902,11 +1745,9 @@ export const selects = [
                           str: 'foo'
                         }
                       }
-                    ],
-                    location: 3150
+                    ]
                   }
-                },
-                location: 3150
+                }
               }
             }
           ],
@@ -1924,11 +1765,9 @@ export const selects = [
                                 String: {
                                   str: 'xyzzy'
                                 }
-                              },
-                              location: 3167
+                              }
                             }
-                          },
-                          location: 3167
+                          }
                         }
                       },
                       {
@@ -1939,11 +1778,9 @@ export const selects = [
                                 Integer: {
                                   ival: 1
                                 }
-                              },
-                              location: 3175
+                              }
                             }
-                          },
-                          location: 3175
+                          }
                         }
                       },
                       {
@@ -1952,15 +1789,13 @@ export const selects = [
                             A_Const: {
                               val: {
                                 Null: {}
-                              },
-                              location: 3177
+                              }
                             }
-                          },
-                          location: 3177
+                          }
                         }
                       }
                     ],
-                    op: 0
+                    op: 'SETOP_NONE'
                   }
                 },
                 alias: {
@@ -1971,10 +1806,9 @@ export const selects = [
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 3142,
       stmt_len: 47
     }
   },
@@ -1991,11 +1825,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 3226
+                    ]
                   }
-                },
-                location: 3226
+                }
               }
             }
           ],
@@ -2004,8 +1836,7 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 3233
+                relpersistence: 'p'
               }
             },
             {
@@ -2020,8 +1851,7 @@ export const selects = [
                               Integer: {
                                 ival: 147
                               }
-                            },
-                            location: 3247
+                            }
                           }
                         },
                         {
@@ -2030,8 +1860,7 @@ export const selects = [
                               String: {
                                 str: 'RFAAAA'
                               }
-                            },
-                            location: 3252
+                            }
                           }
                         }
                       ],
@@ -2042,8 +1871,7 @@ export const selects = [
                               Integer: {
                                 ival: 931
                               }
-                            },
-                            location: 3264
+                            }
                           }
                         },
                         {
@@ -2052,13 +1880,12 @@ export const selects = [
                               String: {
                                 str: 'VJAAAA'
                               }
-                            },
-                            location: 3269
+                            }
                           }
                         }
                       ]
                     ],
-                    op: 0
+                    op: 'SETOP_NONE'
                   }
                 },
                 alias: {
@@ -2083,11 +1910,11 @@ export const selects = [
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 0,
+              boolop: 'AND_EXPR',
               args: [
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -2108,8 +1935,7 @@ export const selects = [
                               str: 'unique1'
                             }
                           }
-                        ],
-                        location: 3302
+                        ]
                       }
                     },
                     rexpr: {
@@ -2125,16 +1951,14 @@ export const selects = [
                               str: 'i'
                             }
                           }
-                        ],
-                        location: 3317
+                        ]
                       }
-                    },
-                    location: 3315
+                    }
                   }
                 },
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -2155,8 +1979,7 @@ export const selects = [
                               str: 'stringu1'
                             }
                           }
-                        ],
-                        location: 3325
+                        ]
                       }
                     },
                     rexpr: {
@@ -2172,21 +1995,17 @@ export const selects = [
                               str: 'j'
                             }
                           }
-                        ],
-                        location: 3341
+                        ]
                       }
-                    },
-                    location: 3339
+                    }
                   }
                 }
-              ],
-              location: 3321
+              ]
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 3190,
       stmt_len: 154
     }
   },
@@ -2203,11 +2022,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 3413
+                    ]
                   }
-                },
-                location: 3413
+                }
               }
             }
           ],
@@ -2216,8 +2033,7 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 3420
+                relpersistence: 'p'
               }
             },
             {
@@ -2228,7 +2044,7 @@ export const selects = [
                       [
                         {
                           SubLink: {
-                            subLinkType: 4,
+                            subLinkType: 'EXPR_SUBLINK',
                             subselect: {
                               SelectStmt: {
                                 targetList: [
@@ -2242,11 +2058,9 @@ export const selects = [
                                                 str: 'i'
                                               }
                                             }
-                                          ],
-                                          location: 3445
+                                          ]
                                         }
-                                      },
-                                      location: 3445
+                                      }
                                     }
                                   }
                                 ],
@@ -2263,8 +2077,7 @@ export const selects = [
                                                     Integer: {
                                                       ival: 10000
                                                     }
-                                                  },
-                                                  location: 3464
+                                                  }
                                                 }
                                               }
                                             ],
@@ -2275,8 +2088,7 @@ export const selects = [
                                                     Integer: {
                                                       ival: 2
                                                     }
-                                                  },
-                                                  location: 3473
+                                                  }
                                                 }
                                               }
                                             ],
@@ -2287,8 +2099,7 @@ export const selects = [
                                                     Integer: {
                                                       ival: 389
                                                     }
-                                                  },
-                                                  location: 3478
+                                                  }
                                                 }
                                               }
                                             ],
@@ -2299,8 +2110,7 @@ export const selects = [
                                                     Integer: {
                                                       ival: 1000
                                                     }
-                                                  },
-                                                  location: 3485
+                                                  }
                                                 }
                                               }
                                             ],
@@ -2311,15 +2121,14 @@ export const selects = [
                                                     Integer: {
                                                       ival: 2000
                                                     }
-                                                  },
-                                                  location: 3493
+                                                  }
                                                 }
                                               }
                                             ],
                                             [
                                               {
                                                 SubLink: {
-                                                  subLinkType: 4,
+                                                  subLinkType: 'EXPR_SUBLINK',
                                                   subselect: {
                                                     SelectStmt: {
                                                       targetList: [
@@ -2331,23 +2140,20 @@ export const selects = [
                                                                   Integer: {
                                                                     ival: 10029
                                                                   }
-                                                                },
-                                                                location: 3509
+                                                                }
                                                               }
-                                                            },
-                                                            location: 3509
+                                                            }
                                                           }
                                                         }
                                                       ],
-                                                      op: 0
+                                                      op: 'SETOP_NONE'
                                                     }
-                                                  },
-                                                  location: 3501
+                                                  }
                                                 }
                                               }
                                             ]
                                           ],
-                                          op: 0
+                                          op: 'SETOP_NONE'
                                         }
                                       },
                                       alias: {
@@ -2376,13 +2182,11 @@ export const selects = [
                                                 str: 'i'
                                               }
                                             }
-                                          ],
-                                          location: 3541
+                                          ]
                                         }
                                       },
-                                      sortby_dir: 1,
-                                      sortby_nulls: 0,
-                                      location: -1
+                                      sortby_dir: 'SORTBY_ASC',
+                                      sortby_nulls: 'SORTBY_NULLS_DEFAULT'
                                     }
                                   }
                                 ],
@@ -2392,19 +2196,17 @@ export const selects = [
                                       Integer: {
                                         ival: 1
                                       }
-                                    },
-                                    location: 3553
+                                    }
                                   }
                                 },
-                                op: 0
+                                op: 'SETOP_NONE'
                               }
-                            },
-                            location: 3437
+                            }
                           }
                         }
                       ]
                     ],
-                    op: 0
+                    op: 'SETOP_NONE'
                   }
                 },
                 alias: {
@@ -2424,7 +2226,7 @@ export const selects = [
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -2445,8 +2247,7 @@ export const selects = [
                         str: 'unique1'
                       }
                     }
-                  ],
-                  location: 3574
+                  ]
                 }
               },
               rexpr: {
@@ -2462,17 +2263,14 @@ export const selects = [
                         str: 'i'
                       }
                     }
-                  ],
-                  location: 3589
+                  ]
                 }
-              },
-              location: 3587
+              }
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 3345,
       stmt_len: 249
     }
   },
@@ -2489,11 +2287,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 3632
+                    ]
                   }
-                },
-                location: 3632
+                }
               }
             }
           ],
@@ -2502,14 +2298,13 @@ export const selects = [
               RangeVar: {
                 relname: 'onek',
                 inh: true,
-                relpersistence: 'p',
-                location: 3639
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             SubLink: {
-              subLinkType: 2,
+              subLinkType: 'ANY_SUBLINK',
               testexpr: {
                 RowExpr: {
                   args: [
@@ -2521,8 +2316,7 @@ export const selects = [
                               str: 'unique1'
                             }
                           }
-                        ],
-                        location: 3655
+                        ]
                       }
                     },
                     {
@@ -2533,13 +2327,11 @@ export const selects = [
                               str: 'ten'
                             }
                           }
-                        ],
-                        location: 3663
+                        ]
                       }
                     }
                   ],
-                  row_format: 2,
-                  location: 3654
+                  row_format: 'COERCE_IMPLICIT_CAST'
                 }
               },
               subselect: {
@@ -2552,8 +2344,7 @@ export const selects = [
                             Integer: {
                               ival: 1
                             }
-                          },
-                          location: 3680
+                          }
                         }
                       },
                       {
@@ -2562,8 +2353,7 @@ export const selects = [
                             Integer: {
                               ival: 1
                             }
-                          },
-                          location: 3682
+                          }
                         }
                       }
                     ],
@@ -2574,8 +2364,7 @@ export const selects = [
                             Integer: {
                               ival: 20
                             }
-                          },
-                          location: 3687
+                          }
                         }
                       },
                       {
@@ -2584,8 +2373,7 @@ export const selects = [
                             Integer: {
                               ival: 0
                             }
-                          },
-                          location: 3690
+                          }
                         }
                       }
                     ],
@@ -2596,8 +2384,7 @@ export const selects = [
                             Integer: {
                               ival: 99
                             }
-                          },
-                          location: 3695
+                          }
                         }
                       },
                       {
@@ -2606,8 +2393,7 @@ export const selects = [
                             Integer: {
                               ival: 9
                             }
-                          },
-                          location: 3698
+                          }
                         }
                       }
                     ],
@@ -2618,8 +2404,7 @@ export const selects = [
                             Integer: {
                               ival: 17
                             }
-                          },
-                          location: 3703
+                          }
                         }
                       },
                       {
@@ -2628,16 +2413,14 @@ export const selects = [
                             Integer: {
                               ival: 99
                             }
-                          },
-                          location: 3706
+                          }
                         }
                       }
                     ]
                   ],
-                  op: 0
+                  op: 'SETOP_NONE'
                 }
-              },
-              location: 3668
+              }
             }
           },
           sortClause: [
@@ -2651,20 +2434,17 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 3724
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 3595,
       stmt_len: 136
     }
   },
@@ -2680,8 +2460,7 @@ export const selects = [
                     Integer: {
                       ival: 1
                     }
-                  },
-                  location: 3814
+                  }
                 }
               },
               {
@@ -2690,8 +2469,7 @@ export const selects = [
                     Integer: {
                       ival: 2
                     }
-                  },
-                  location: 3816
+                  }
                 }
               }
             ],
@@ -2702,13 +2480,12 @@ export const selects = [
                     Integer: {
                       ival: 3
                     }
-                  },
-                  location: 3821
+                  }
                 }
               },
               {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -2722,8 +2499,7 @@ export const selects = [
                         Integer: {
                           ival: 4
                         }
-                      },
-                      location: 3823
+                      }
                     }
                   },
                   rexpr: {
@@ -2732,11 +2508,9 @@ export const selects = [
                         Integer: {
                           ival: 4
                         }
-                      },
-                      location: 3825
+                      }
                     }
-                  },
-                  location: 3824
+                  }
                 }
               }
             ],
@@ -2747,8 +2521,7 @@ export const selects = [
                     Integer: {
                       ival: 7
                     }
-                  },
-                  location: 3830
+                  }
                 }
               },
               {
@@ -2757,28 +2530,26 @@ export const selects = [
                     Float: {
                       str: '77.7'
                     }
-                  },
-                  location: 3832
+                  }
                 }
               }
             ]
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 3732,
-      stmt_len: 105
+      stmt_len: 'FUNC_PARAM_IN'
     }
   },
   {
     RawStmt: {
       stmt: {
         SelectStmt: {
-          op: 1,
+          op: 'SETOP_UNION',
           all: true,
           larg: {
             SelectStmt: {
-              op: 1,
+              op: 'SETOP_UNION',
               all: true,
               larg: {
                 SelectStmt: {
@@ -2790,8 +2561,7 @@ export const selects = [
                             Integer: {
                               ival: 1
                             }
-                          },
-                          location: 3848
+                          }
                         }
                       },
                       {
@@ -2800,8 +2570,7 @@ export const selects = [
                             Integer: {
                               ival: 2
                             }
-                          },
-                          location: 3850
+                          }
                         }
                       }
                     ],
@@ -2812,13 +2581,12 @@ export const selects = [
                             Integer: {
                               ival: 3
                             }
-                          },
-                          location: 3855
+                          }
                         }
                       },
                       {
                         A_Expr: {
-                          kind: 0,
+                          kind: 'AEXPR_OP',
                           name: [
                             {
                               String: {
@@ -2832,8 +2600,7 @@ export const selects = [
                                 Integer: {
                                   ival: 4
                                 }
-                              },
-                              location: 3857
+                              }
                             }
                           },
                           rexpr: {
@@ -2842,11 +2609,9 @@ export const selects = [
                                 Integer: {
                                   ival: 4
                                 }
-                              },
-                              location: 3859
+                              }
                             }
-                          },
-                          location: 3858
+                          }
                         }
                       }
                     ],
@@ -2857,8 +2622,7 @@ export const selects = [
                             Integer: {
                               ival: 7
                             }
-                          },
-                          location: 3864
+                          }
                         }
                       },
                       {
@@ -2867,13 +2631,12 @@ export const selects = [
                             Float: {
                               str: '77.7'
                             }
-                          },
-                          location: 3866
+                          }
                         }
                       }
                     ]
                   ],
-                  op: 0
+                  op: 'SETOP_NONE'
                 }
               },
               rarg: {
@@ -2883,7 +2646,7 @@ export const selects = [
                       ResTarget: {
                         val: {
                           A_Expr: {
-                            kind: 0,
+                            kind: 'AEXPR_OP',
                             name: [
                               {
                                 String: {
@@ -2897,8 +2660,7 @@ export const selects = [
                                   Integer: {
                                     ival: 2
                                   }
-                                },
-                                location: 3889
+                                }
                               }
                             },
                             rexpr: {
@@ -2907,14 +2669,11 @@ export const selects = [
                                   Integer: {
                                     ival: 2
                                   }
-                                },
-                                location: 3891
+                                }
                               }
-                            },
-                            location: 3890
+                            }
                           }
-                        },
-                        location: 3889
+                        }
                       }
                     },
                     {
@@ -2925,15 +2684,13 @@ export const selects = [
                               Integer: {
                                 ival: 57
                               }
-                            },
-                            location: 3894
+                            }
                           }
-                        },
-                        location: 3894
+                        }
                       }
                     }
                   ],
-                  op: 0
+                  op: 'SETOP_NONE'
                 }
               }
             }
@@ -2949,11 +2706,9 @@ export const selects = [
                           {
                             A_Star: {}
                           }
-                        ],
-                        location: -1
+                        ]
                       }
-                    },
-                    location: -1
+                    }
                   }
                 }
               ],
@@ -2962,17 +2717,15 @@ export const selects = [
                   RangeVar: {
                     relname: 'int8_tbl',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 3913
+                    relpersistence: 'p'
                   }
                 }
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           }
         }
       },
-      stmt_location: 3838,
       stmt_len: 83
     }
   },
@@ -2984,8 +2737,7 @@ export const selects = [
             RangeVar: {
               relname: 'foo',
               inh: true,
-              relpersistence: 't',
-              location: 3974
+              relpersistence: 't'
             }
           },
           tableElts: [
@@ -3006,19 +2758,16 @@ export const selects = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 3982
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 3979
+                is_local: true
               }
             }
           ],
           oncommit: 0
         }
       },
-      stmt_location: 3922,
       stmt_len: 64
     }
   },
@@ -3030,8 +2779,7 @@ export const selects = [
             RangeVar: {
               relname: 'foo',
               inh: true,
-              relpersistence: 'p',
-              location: 4001
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -3044,8 +2792,7 @@ export const selects = [
                         Integer: {
                           ival: 42
                         }
-                      },
-                      location: 4013
+                      }
                     }
                   }
                 ],
@@ -3056,8 +2803,7 @@ export const selects = [
                         Integer: {
                           ival: 3
                         }
-                      },
-                      location: 4018
+                      }
                     }
                   }
                 ],
@@ -3068,8 +2814,7 @@ export const selects = [
                         Integer: {
                           ival: 10
                         }
-                      },
-                      location: 4022
+                      }
                     }
                   }
                 ],
@@ -3080,8 +2825,7 @@ export const selects = [
                         Integer: {
                           ival: 7
                         }
-                      },
-                      location: 4027
+                      }
                     }
                   }
                 ],
@@ -3090,8 +2834,7 @@ export const selects = [
                     A_Const: {
                       val: {
                         Null: {}
-                      },
-                      location: 4031
+                      }
                     }
                   }
                 ],
@@ -3100,8 +2843,7 @@ export const selects = [
                     A_Const: {
                       val: {
                         Null: {}
-                      },
-                      location: 4038
+                      }
                     }
                   }
                 ],
@@ -3112,19 +2854,17 @@ export const selects = [
                         Integer: {
                           ival: 1
                         }
-                      },
-                      location: 4045
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           override: 0
         }
       },
-      stmt_location: 3987,
       stmt_len: 60
     }
   },
@@ -3141,11 +2881,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4057
+                    ]
                   }
-                },
-                location: 4057
+                }
               }
             }
           ],
@@ -3154,8 +2892,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4064
+                relpersistence: 'p'
               }
             }
           ],
@@ -3170,20 +2907,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4077
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4048,
       stmt_len: 31
     }
   },
@@ -3200,11 +2934,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4088
+                    ]
                   }
-                },
-                location: 4088
+                }
               }
             }
           ],
@@ -3213,8 +2945,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4095
+                relpersistence: 'p'
               }
             }
           ],
@@ -3229,20 +2960,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4108
+                    ]
                   }
                 },
-                sortby_dir: 1,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_ASC',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4080,
       stmt_len: 34
     }
   },
@@ -3259,11 +2987,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4137
+                    ]
                   }
-                },
-                location: 4137
+                }
               }
             }
           ],
@@ -3272,8 +2998,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4144
+                relpersistence: 'p'
               }
             }
           ],
@@ -3288,20 +3013,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4157
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 1,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_FIRST'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4115,
       stmt_len: 56
     }
   },
@@ -3318,11 +3040,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4180
+                    ]
                   }
-                },
-                location: 4180
+                }
               }
             }
           ],
@@ -3331,8 +3051,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4187
+                relpersistence: 'p'
               }
             }
           ],
@@ -3347,20 +3066,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4200
+                    ]
                   }
                 },
-                sortby_dir: 2,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DESC',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4172,
       stmt_len: 35
     }
   },
@@ -3377,11 +3093,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4216
+                    ]
                   }
-                },
-                location: 4216
+                }
               }
             }
           ],
@@ -3390,8 +3104,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4223
+                relpersistence: 'p'
               }
             }
           ],
@@ -3406,20 +3119,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4236
+                    ]
                   }
                 },
-                sortby_dir: 2,
-                sortby_nulls: 2,
-                location: -1
+                sortby_dir: 'SORTBY_DESC',
+                sortby_nulls: 'SORTBY_NULLS_LAST'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4208,
       stmt_len: 46
     }
   },
@@ -3432,8 +3142,7 @@ export const selects = [
             RangeVar: {
               relname: 'foo',
               inh: true,
-              relpersistence: 'p',
-              location: 4321
+              relpersistence: 'p'
             }
           },
           accessMethod: 'btree',
@@ -3448,7 +3157,6 @@ export const selects = [
           ]
         }
       },
-      stmt_location: 4255,
       stmt_len: 74
     }
   },
@@ -3456,7 +3164,7 @@ export const selects = [
     RawStmt: {
       stmt: {
         VariableSetStmt: {
-          kind: 0,
+          kind: 'VAR_SET_VALUE',
           name: 'enable_sort',
           args: [
             {
@@ -3465,14 +3173,12 @@ export const selects = [
                   String: {
                     str: 'false'
                   }
-                },
-                location: 4349
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 4330,
       stmt_len: 24
     }
   },
@@ -3489,11 +3195,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4364
+                    ]
                   }
-                },
-                location: 4364
+                }
               }
             }
           ],
@@ -3502,8 +3206,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4371
+                relpersistence: 'p'
               }
             }
           ],
@@ -3518,20 +3221,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4384
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4355,
       stmt_len: 31
     }
   },
@@ -3548,11 +3248,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4395
+                    ]
                   }
-                },
-                location: 4395
+                }
               }
             }
           ],
@@ -3561,8 +3259,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4402
+                relpersistence: 'p'
               }
             }
           ],
@@ -3577,20 +3274,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4415
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 1,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_FIRST'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4387,
       stmt_len: 42
     }
   },
@@ -3607,11 +3301,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4438
+                    ]
                   }
-                },
-                location: 4438
+                }
               }
             }
           ],
@@ -3620,8 +3312,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4445
+                relpersistence: 'p'
               }
             }
           ],
@@ -3636,20 +3327,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4458
+                    ]
                   }
                 },
-                sortby_dir: 2,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DESC',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4430,
       stmt_len: 35
     }
   },
@@ -3666,11 +3354,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4474
+                    ]
                   }
-                },
-                location: 4474
+                }
               }
             }
           ],
@@ -3679,8 +3365,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4481
+                relpersistence: 'p'
               }
             }
           ],
@@ -3695,20 +3380,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4494
+                    ]
                   }
                 },
-                sortby_dir: 2,
-                sortby_nulls: 2,
-                location: -1
+                sortby_dir: 'SORTBY_DESC',
+                sortby_nulls: 'SORTBY_NULLS_LAST'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4466,
       stmt_len: 46
     }
   },
@@ -3725,11 +3407,10 @@ export const selects = [
               }
             ]
           ],
-          removeType: 20,
-          behavior: 0
+          removeType: 'OBJECT_INDEX',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 4513,
       stmt_len: 17
     }
   },
@@ -3742,8 +3423,7 @@ export const selects = [
             RangeVar: {
               relname: 'foo',
               inh: true,
-              relpersistence: 'p',
-              location: 4553
+              relpersistence: 'p'
             }
           },
           accessMethod: 'btree',
@@ -3758,7 +3438,6 @@ export const selects = [
           ]
         }
       },
-      stmt_location: 4531,
       stmt_len: 35
     }
   },
@@ -3775,11 +3454,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4576
+                    ]
                   }
-                },
-                location: 4576
+                }
               }
             }
           ],
@@ -3788,8 +3465,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4583
+                relpersistence: 'p'
               }
             }
           ],
@@ -3804,20 +3480,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4596
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4567,
       stmt_len: 31
     }
   },
@@ -3834,11 +3507,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4607
+                    ]
                   }
-                },
-                location: 4607
+                }
               }
             }
           ],
@@ -3847,8 +3518,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4614
+                relpersistence: 'p'
               }
             }
           ],
@@ -3863,20 +3533,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4627
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 1,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_FIRST'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4599,
       stmt_len: 42
     }
   },
@@ -3893,11 +3560,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4650
+                    ]
                   }
-                },
-                location: 4650
+                }
               }
             }
           ],
@@ -3906,8 +3571,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4657
+                relpersistence: 'p'
               }
             }
           ],
@@ -3922,20 +3586,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4670
+                    ]
                   }
                 },
-                sortby_dir: 2,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DESC',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4642,
       stmt_len: 35
     }
   },
@@ -3952,11 +3613,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4686
+                    ]
                   }
-                },
-                location: 4686
+                }
               }
             }
           ],
@@ -3965,8 +3624,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4693
+                relpersistence: 'p'
               }
             }
           ],
@@ -3981,20 +3639,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4706
+                    ]
                   }
                 },
-                sortby_dir: 2,
-                sortby_nulls: 2,
-                location: -1
+                sortby_dir: 'SORTBY_DESC',
+                sortby_nulls: 'SORTBY_NULLS_LAST'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4678,
       stmt_len: 46
     }
   },
@@ -4011,11 +3666,10 @@ export const selects = [
               }
             ]
           ],
-          removeType: 20,
-          behavior: 0
+          removeType: 'OBJECT_INDEX',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 4725,
       stmt_len: 17
     }
   },
@@ -4028,8 +3682,7 @@ export const selects = [
             RangeVar: {
               relname: 'foo',
               inh: true,
-              relpersistence: 'p',
-              location: 4765
+              relpersistence: 'p'
             }
           },
           accessMethod: 'btree',
@@ -4044,7 +3697,6 @@ export const selects = [
           ]
         }
       },
-      stmt_location: 4743,
       stmt_len: 46
     }
   },
@@ -4061,11 +3713,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4799
+                    ]
                   }
-                },
-                location: 4799
+                }
               }
             }
           ],
@@ -4074,8 +3724,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4806
+                relpersistence: 'p'
               }
             }
           ],
@@ -4090,20 +3739,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4819
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4790,
       stmt_len: 31
     }
   },
@@ -4120,11 +3766,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4830
+                    ]
                   }
-                },
-                location: 4830
+                }
               }
             }
           ],
@@ -4133,8 +3777,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4837
+                relpersistence: 'p'
               }
             }
           ],
@@ -4149,20 +3792,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4850
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 1,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_FIRST'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4822,
       stmt_len: 42
     }
   },
@@ -4179,11 +3819,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4873
+                    ]
                   }
-                },
-                location: 4873
+                }
               }
             }
           ],
@@ -4192,8 +3830,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4880
+                relpersistence: 'p'
               }
             }
           ],
@@ -4208,20 +3845,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4893
+                    ]
                   }
                 },
-                sortby_dir: 2,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DESC',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4865,
       stmt_len: 35
     }
   },
@@ -4238,11 +3872,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 4909
+                    ]
                   }
-                },
-                location: 4909
+                }
               }
             }
           ],
@@ -4251,8 +3883,7 @@ export const selects = [
               RangeVar: {
                 relname: 'foo',
                 inh: true,
-                relpersistence: 'p',
-                location: 4916
+                relpersistence: 'p'
               }
             }
           ],
@@ -4267,20 +3898,17 @@ export const selects = [
                           str: 'f1'
                         }
                       }
-                    ],
-                    location: 4929
+                    ]
                   }
                 },
-                sortby_dir: 2,
-                sortby_nulls: 2,
-                location: -1
+                sortby_dir: 'SORTBY_DESC',
+                sortby_nulls: 'SORTBY_NULLS_LAST'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 4901,
       stmt_len: 46
     }
   },
@@ -4299,11 +3927,9 @@ export const selects = [
                           {
                             A_Star: {}
                           }
-                        ],
-                        location: 5063
+                        ]
                       }
-                    },
-                    location: 5063
+                    }
                   }
                 }
               ],
@@ -4312,18 +3938,17 @@ export const selects = [
                   RangeVar: {
                     relname: 'onek2',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 5070
+                    relpersistence: 'p'
                   }
                 }
               ],
               whereClause: {
                 BoolExpr: {
-                  boolop: 0,
+                  boolop: 'AND_EXPR',
                   args: [
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -4339,8 +3964,7 @@ export const selects = [
                                   str: 'unique2'
                                 }
                               }
-                            ],
-                            location: 5082
+                            ]
                           }
                         },
                         rexpr: {
@@ -4349,16 +3973,14 @@ export const selects = [
                               Integer: {
                                 ival: 11
                               }
-                            },
-                            location: 5092
+                            }
                           }
-                        },
-                        location: 5090
+                        }
                       }
                     },
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -4374,8 +3996,7 @@ export const selects = [
                                   str: 'stringu1'
                                 }
                               }
-                            ],
-                            location: 5099
+                            ]
                           }
                         },
                         rexpr: {
@@ -4384,18 +4005,15 @@ export const selects = [
                               String: {
                                 str: 'ATAAAA'
                               }
-                            },
-                            location: 5110
+                            }
                           }
-                        },
-                        location: 5108
+                        }
                       }
                     }
-                  ],
-                  location: 5095
+                  ]
                 }
               },
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           options: [
@@ -4407,14 +4025,12 @@ export const selects = [
                     str: 'off'
                   }
                 },
-                defaction: 0,
-                location: 5045
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 4948,
       stmt_len: 170
     }
   },
@@ -4431,11 +4047,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 5127
+                    ]
                   }
-                },
-                location: 5127
+                }
               }
             }
           ],
@@ -4444,18 +4058,17 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 5134
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 0,
+              boolop: 'AND_EXPR',
               args: [
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -4471,8 +4084,7 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 5146
+                        ]
                       }
                     },
                     rexpr: {
@@ -4481,16 +4093,14 @@ export const selects = [
                           Integer: {
                             ival: 11
                           }
-                        },
-                        location: 5156
+                        }
                       }
-                    },
-                    location: 5154
+                    }
                   }
                 },
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -4506,8 +4116,7 @@ export const selects = [
                               str: 'stringu1'
                             }
                           }
-                        ],
-                        location: 5163
+                        ]
                       }
                     },
                     rexpr: {
@@ -4516,21 +4125,17 @@ export const selects = [
                           String: {
                             str: 'ATAAAA'
                           }
-                        },
-                        location: 5174
+                        }
                       }
-                    },
-                    location: 5172
+                    }
                   }
                 }
-              ],
-              location: 5159
+              ]
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 5119,
       stmt_len: 63
     }
   },
@@ -4551,11 +4156,9 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 5211
+                        ]
                       }
-                    },
-                    location: 5211
+                    }
                   }
                 }
               ],
@@ -4564,18 +4167,17 @@ export const selects = [
                   RangeVar: {
                     relname: 'onek2',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 5224
+                    relpersistence: 'p'
                   }
                 }
               ],
               whereClause: {
                 BoolExpr: {
-                  boolop: 0,
+                  boolop: 'AND_EXPR',
                   args: [
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -4591,8 +4193,7 @@ export const selects = [
                                   str: 'unique2'
                                 }
                               }
-                            ],
-                            location: 5236
+                            ]
                           }
                         },
                         rexpr: {
@@ -4601,16 +4202,14 @@ export const selects = [
                               Integer: {
                                 ival: 11
                               }
-                            },
-                            location: 5246
+                            }
                           }
-                        },
-                        location: 5244
+                        }
                       }
                     },
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -4626,8 +4225,7 @@ export const selects = [
                                   str: 'stringu1'
                                 }
                               }
-                            ],
-                            location: 5253
+                            ]
                           }
                         },
                         rexpr: {
@@ -4636,18 +4234,15 @@ export const selects = [
                               String: {
                                 str: 'ATAAAA'
                               }
-                            },
-                            location: 5264
+                            }
                           }
-                        },
-                        location: 5262
+                        }
                       }
                     }
-                  ],
-                  location: 5249
+                  ]
                 }
               },
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           options: [
@@ -4659,14 +4254,12 @@ export const selects = [
                     str: 'off'
                   }
                 },
-                defaction: 0,
-                location: 5193
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 5183,
       stmt_len: 89
     }
   },
@@ -4685,11 +4278,9 @@ export const selects = [
                           str: 'unique2'
                         }
                       }
-                    ],
-                    location: 5281
+                    ]
                   }
-                },
-                location: 5281
+                }
               }
             }
           ],
@@ -4698,18 +4289,17 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 5294
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 0,
+              boolop: 'AND_EXPR',
               args: [
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -4725,8 +4315,7 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 5306
+                        ]
                       }
                     },
                     rexpr: {
@@ -4735,16 +4324,14 @@ export const selects = [
                           Integer: {
                             ival: 11
                           }
-                        },
-                        location: 5316
+                        }
                       }
-                    },
-                    location: 5314
+                    }
                   }
                 },
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -4760,8 +4347,7 @@ export const selects = [
                               str: 'stringu1'
                             }
                           }
-                        ],
-                        location: 5323
+                        ]
                       }
                     },
                     rexpr: {
@@ -4770,21 +4356,17 @@ export const selects = [
                           String: {
                             str: 'ATAAAA'
                           }
-                        },
-                        location: 5334
+                        }
                       }
-                    },
-                    location: 5332
+                    }
                   }
                 }
-              ],
-              location: 5319
+              ]
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 5273,
       stmt_len: 69
     }
   },
@@ -4803,11 +4385,9 @@ export const selects = [
                           {
                             A_Star: {}
                           }
-                        ],
-                        location: 5436
+                        ]
                       }
-                    },
-                    location: 5436
+                    }
                   }
                 }
               ],
@@ -4816,18 +4396,17 @@ export const selects = [
                   RangeVar: {
                     relname: 'onek2',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 5443
+                    relpersistence: 'p'
                   }
                 }
               ],
               whereClause: {
                 BoolExpr: {
-                  boolop: 0,
+                  boolop: 'AND_EXPR',
                   args: [
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -4843,8 +4422,7 @@ export const selects = [
                                   str: 'unique2'
                                 }
                               }
-                            ],
-                            location: 5455
+                            ]
                           }
                         },
                         rexpr: {
@@ -4853,16 +4431,14 @@ export const selects = [
                               Integer: {
                                 ival: 11
                               }
-                            },
-                            location: 5465
+                            }
                           }
-                        },
-                        location: 5463
+                        }
                       }
                     },
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -4878,8 +4454,7 @@ export const selects = [
                                   str: 'stringu1'
                                 }
                               }
-                            ],
-                            location: 5472
+                            ]
                           }
                         },
                         rexpr: {
@@ -4888,18 +4463,15 @@ export const selects = [
                               String: {
                                 str: 'B'
                               }
-                            },
-                            location: 5483
+                            }
                           }
-                        },
-                        location: 5481
+                        }
                       }
                     }
-                  ],
-                  location: 5468
+                  ]
                 }
               },
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           options: [
@@ -4911,14 +4483,12 @@ export const selects = [
                     str: 'off'
                   }
                 },
-                defaction: 0,
-                location: 5418
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 5343,
       stmt_len: 143
     }
   },
@@ -4935,11 +4505,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 5495
+                    ]
                   }
-                },
-                location: 5495
+                }
               }
             }
           ],
@@ -4948,18 +4516,17 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 5502
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 0,
+              boolop: 'AND_EXPR',
               args: [
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -4975,8 +4542,7 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 5514
+                        ]
                       }
                     },
                     rexpr: {
@@ -4985,16 +4551,14 @@ export const selects = [
                           Integer: {
                             ival: 11
                           }
-                        },
-                        location: 5524
+                        }
                       }
-                    },
-                    location: 5522
+                    }
                   }
                 },
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -5010,8 +4574,7 @@ export const selects = [
                               str: 'stringu1'
                             }
                           }
-                        ],
-                        location: 5531
+                        ]
                       }
                     },
                     rexpr: {
@@ -5020,21 +4583,17 @@ export const selects = [
                           String: {
                             str: 'B'
                           }
-                        },
-                        location: 5542
+                        }
                       }
-                    },
-                    location: 5540
+                    }
                   }
                 }
-              ],
-              location: 5527
+              ]
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 5487,
       stmt_len: 58
     }
   },
@@ -5055,11 +4614,9 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 5574
+                        ]
                       }
-                    },
-                    location: 5574
+                    }
                   }
                 }
               ],
@@ -5068,18 +4625,17 @@ export const selects = [
                   RangeVar: {
                     relname: 'onek2',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 5587
+                    relpersistence: 'p'
                   }
                 }
               ],
               whereClause: {
                 BoolExpr: {
-                  boolop: 0,
+                  boolop: 'AND_EXPR',
                   args: [
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -5095,8 +4651,7 @@ export const selects = [
                                   str: 'unique2'
                                 }
                               }
-                            ],
-                            location: 5599
+                            ]
                           }
                         },
                         rexpr: {
@@ -5105,16 +4660,14 @@ export const selects = [
                               Integer: {
                                 ival: 11
                               }
-                            },
-                            location: 5609
+                            }
                           }
-                        },
-                        location: 5607
+                        }
                       }
                     },
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -5130,8 +4683,7 @@ export const selects = [
                                   str: 'stringu1'
                                 }
                               }
-                            ],
-                            location: 5616
+                            ]
                           }
                         },
                         rexpr: {
@@ -5140,18 +4692,15 @@ export const selects = [
                               String: {
                                 str: 'B'
                               }
-                            },
-                            location: 5627
+                            }
                           }
-                        },
-                        location: 5625
+                        }
                       }
                     }
-                  ],
-                  location: 5612
+                  ]
                 }
               },
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           options: [
@@ -5163,14 +4712,12 @@ export const selects = [
                     str: 'off'
                   }
                 },
-                defaction: 0,
-                location: 5556
+                defaction: 'DEFELEM_UNSPEC'
               }
             }
           ]
         }
       },
-      stmt_location: 5546,
       stmt_len: 84
     }
   },
@@ -5189,11 +4736,9 @@ export const selects = [
                           str: 'unique2'
                         }
                       }
-                    ],
-                    location: 5639
+                    ]
                   }
-                },
-                location: 5639
+                }
               }
             }
           ],
@@ -5202,18 +4747,17 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 5652
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 0,
+              boolop: 'AND_EXPR',
               args: [
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -5229,8 +4773,7 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 5664
+                        ]
                       }
                     },
                     rexpr: {
@@ -5239,16 +4782,14 @@ export const selects = [
                           Integer: {
                             ival: 11
                           }
-                        },
-                        location: 5674
+                        }
                       }
-                    },
-                    location: 5672
+                    }
                   }
                 },
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -5264,8 +4805,7 @@ export const selects = [
                               str: 'stringu1'
                             }
                           }
-                        ],
-                        location: 5681
+                        ]
                       }
                     },
                     rexpr: {
@@ -5274,21 +4814,17 @@ export const selects = [
                           String: {
                             str: 'B'
                           }
-                        },
-                        location: 5692
+                        }
                       }
-                    },
-                    location: 5690
+                    }
                   }
                 }
-              ],
-              location: 5677
+              ]
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 5631,
       stmt_len: 64
     }
   },
@@ -5309,11 +4845,9 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 5776
+                        ]
                       }
-                    },
-                    location: 5776
+                    }
                   }
                 }
               ],
@@ -5322,18 +4856,17 @@ export const selects = [
                   RangeVar: {
                     relname: 'onek2',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 5789
+                    relpersistence: 'p'
                   }
                 }
               ],
               whereClause: {
                 BoolExpr: {
-                  boolop: 0,
+                  boolop: 'AND_EXPR',
                   args: [
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -5349,8 +4882,7 @@ export const selects = [
                                   str: 'unique2'
                                 }
                               }
-                            ],
-                            location: 5801
+                            ]
                           }
                         },
                         rexpr: {
@@ -5359,16 +4891,14 @@ export const selects = [
                               Integer: {
                                 ival: 11
                               }
-                            },
-                            location: 5811
+                            }
                           }
-                        },
-                        location: 5809
+                        }
                       }
                     },
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -5384,8 +4914,7 @@ export const selects = [
                                   str: 'stringu1'
                                 }
                               }
-                            ],
-                            location: 5818
+                            ]
                           }
                         },
                         rexpr: {
@@ -5394,15 +4923,12 @@ export const selects = [
                               String: {
                                 str: 'B'
                               }
-                            },
-                            location: 5829
+                            }
                           }
-                        },
-                        location: 5827
+                        }
                       }
                     }
-                  ],
-                  location: 5814
+                  ]
                 }
               },
               lockingClause: [
@@ -5413,7 +4939,7 @@ export const selects = [
                   }
                 }
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           options: [
@@ -5425,14 +4951,12 @@ export const selects = [
                     str: 'off'
                   }
                 },
-                defaction: 0,
-                location: 5758
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 5696,
       stmt_len: 147
     }
   },
@@ -5451,11 +4975,9 @@ export const selects = [
                           str: 'unique2'
                         }
                       }
-                    ],
-                    location: 5852
+                    ]
                   }
-                },
-                location: 5852
+                }
               }
             }
           ],
@@ -5464,18 +4986,17 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 5865
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 0,
+              boolop: 'AND_EXPR',
               args: [
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -5491,8 +5012,7 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 5877
+                        ]
                       }
                     },
                     rexpr: {
@@ -5501,16 +5021,14 @@ export const selects = [
                           Integer: {
                             ival: 11
                           }
-                        },
-                        location: 5887
+                        }
                       }
-                    },
-                    location: 5885
+                    }
                   }
                 },
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -5526,8 +5044,7 @@ export const selects = [
                               str: 'stringu1'
                             }
                           }
-                        ],
-                        location: 5894
+                        ]
                       }
                     },
                     rexpr: {
@@ -5536,15 +5053,12 @@ export const selects = [
                           String: {
                             str: 'B'
                           }
-                        },
-                        location: 5905
+                        }
                       }
-                    },
-                    location: 5903
+                    }
                   }
                 }
-              ],
-              location: 5890
+              ]
             }
           },
           lockingClause: [
@@ -5555,10 +5069,9 @@ export const selects = [
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 5844,
       stmt_len: 75
     }
   },
@@ -5579,11 +5092,9 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 5983
+                        ]
                       }
-                    },
-                    location: 5983
+                    }
                   }
                 }
               ],
@@ -5592,18 +5103,17 @@ export const selects = [
                   RangeVar: {
                     relname: 'onek2',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 5996
+                    relpersistence: 'p'
                   }
                 }
               ],
               whereClause: {
                 BoolExpr: {
-                  boolop: 0,
+                  boolop: 'AND_EXPR',
                   args: [
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -5619,8 +5129,7 @@ export const selects = [
                                   str: 'unique2'
                                 }
                               }
-                            ],
-                            location: 6008
+                            ]
                           }
                         },
                         rexpr: {
@@ -5629,16 +5138,14 @@ export const selects = [
                               Integer: {
                                 ival: 11
                               }
-                            },
-                            location: 6018
+                            }
                           }
-                        },
-                        location: 6016
+                        }
                       }
                     },
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -5654,8 +5161,7 @@ export const selects = [
                                   str: 'stringu1'
                                 }
                               }
-                            ],
-                            location: 6025
+                            ]
                           }
                         },
                         rexpr: {
@@ -5664,18 +5170,15 @@ export const selects = [
                               String: {
                                 str: 'C'
                               }
-                            },
-                            location: 6036
+                            }
                           }
-                        },
-                        location: 6034
+                        }
                       }
                     }
-                  ],
-                  location: 6021
+                  ]
                 }
               },
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           options: [
@@ -5687,14 +5190,12 @@ export const selects = [
                     str: 'off'
                   }
                 },
-                defaction: 0,
-                location: 5965
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 5920,
       stmt_len: 119
     }
   },
@@ -5713,11 +5214,9 @@ export const selects = [
                           str: 'unique2'
                         }
                       }
-                    ],
-                    location: 6048
+                    ]
                   }
-                },
-                location: 6048
+                }
               }
             }
           ],
@@ -5726,18 +5225,17 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 6061
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 0,
+              boolop: 'AND_EXPR',
               args: [
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -5753,8 +5251,7 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 6073
+                        ]
                       }
                     },
                     rexpr: {
@@ -5763,16 +5260,14 @@ export const selects = [
                           Integer: {
                             ival: 11
                           }
-                        },
-                        location: 6083
+                        }
                       }
-                    },
-                    location: 6081
+                    }
                   }
                 },
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -5788,8 +5283,7 @@ export const selects = [
                               str: 'stringu1'
                             }
                           }
-                        ],
-                        location: 6090
+                        ]
                       }
                     },
                     rexpr: {
@@ -5798,21 +5292,17 @@ export const selects = [
                           String: {
                             str: 'C'
                           }
-                        },
-                        location: 6101
+                        }
                       }
-                    },
-                    location: 6099
+                    }
                   }
                 }
-              ],
-              location: 6086
+              ]
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6040,
       stmt_len: 64
     }
   },
@@ -5820,7 +5310,7 @@ export const selects = [
     RawStmt: {
       stmt: {
         VariableSetStmt: {
-          kind: 0,
+          kind: 'VAR_SET_VALUE',
           name: 'enable_indexscan',
           args: [
             {
@@ -5829,14 +5319,12 @@ export const selects = [
                   String: {
                     str: 'off'
                   }
-                },
-                location: 6209
+                }
               }
             }
           ]
         }
       },
-      stmt_location: 6105,
       stmt_len: 107
     }
   },
@@ -5857,11 +5345,9 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 6241
+                        ]
                       }
-                    },
-                    location: 6241
+                    }
                   }
                 }
               ],
@@ -5870,18 +5356,17 @@ export const selects = [
                   RangeVar: {
                     relname: 'onek2',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 6254
+                    relpersistence: 'p'
                   }
                 }
               ],
               whereClause: {
                 BoolExpr: {
-                  boolop: 0,
+                  boolop: 'AND_EXPR',
                   args: [
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -5897,8 +5382,7 @@ export const selects = [
                                   str: 'unique2'
                                 }
                               }
-                            ],
-                            location: 6266
+                            ]
                           }
                         },
                         rexpr: {
@@ -5907,16 +5391,14 @@ export const selects = [
                               Integer: {
                                 ival: 11
                               }
-                            },
-                            location: 6276
+                            }
                           }
-                        },
-                        location: 6274
+                        }
                       }
                     },
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -5932,8 +5414,7 @@ export const selects = [
                                   str: 'stringu1'
                                 }
                               }
-                            ],
-                            location: 6283
+                            ]
                           }
                         },
                         rexpr: {
@@ -5942,18 +5423,15 @@ export const selects = [
                               String: {
                                 str: 'B'
                               }
-                            },
-                            location: 6294
+                            }
                           }
-                        },
-                        location: 6292
+                        }
                       }
                     }
-                  ],
-                  location: 6279
+                  ]
                 }
               },
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           options: [
@@ -5965,14 +5443,12 @@ export const selects = [
                     str: 'off'
                   }
                 },
-                defaction: 0,
-                location: 6223
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 6213,
       stmt_len: 84
     }
   },
@@ -5991,11 +5467,9 @@ export const selects = [
                           str: 'unique2'
                         }
                       }
-                    ],
-                    location: 6306
+                    ]
                   }
-                },
-                location: 6306
+                }
               }
             }
           ],
@@ -6004,18 +5478,17 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 6319
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 0,
+              boolop: 'AND_EXPR',
               args: [
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -6031,8 +5504,7 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 6331
+                        ]
                       }
                     },
                     rexpr: {
@@ -6041,16 +5513,14 @@ export const selects = [
                           Integer: {
                             ival: 11
                           }
-                        },
-                        location: 6341
+                        }
                       }
-                    },
-                    location: 6339
+                    }
                   }
                 },
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -6066,8 +5536,7 @@ export const selects = [
                               str: 'stringu1'
                             }
                           }
-                        ],
-                        location: 6348
+                        ]
                       }
                     },
                     rexpr: {
@@ -6076,21 +5545,17 @@ export const selects = [
                           String: {
                             str: 'B'
                           }
-                        },
-                        location: 6359
+                        }
                       }
-                    },
-                    location: 6357
+                    }
                   }
                 }
-              ],
-              location: 6344
+              ]
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6298,
       stmt_len: 64
     }
   },
@@ -6098,11 +5563,10 @@ export const selects = [
     RawStmt: {
       stmt: {
         VariableSetStmt: {
-          kind: 4,
+          kind: 'VAR_RESET',
           name: 'enable_indexscan'
         }
       },
-      stmt_location: 6363,
       stmt_len: 23
     }
   },
@@ -6123,11 +5587,9 @@ export const selects = [
                               str: 'unique1'
                             }
                           }
-                        ],
-                        location: 6446
+                        ]
                       }
-                    },
-                    location: 6446
+                    }
                   }
                 },
                 {
@@ -6140,11 +5602,9 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 6455
+                        ]
                       }
-                    },
-                    location: 6455
+                    }
                   }
                 }
               ],
@@ -6153,22 +5613,21 @@ export const selects = [
                   RangeVar: {
                     relname: 'onek2',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 6468
+                    relpersistence: 'p'
                   }
                 }
               ],
               whereClause: {
                 BoolExpr: {
-                  boolop: 0,
+                  boolop: 'AND_EXPR',
                   args: [
                     {
                       BoolExpr: {
-                        boolop: 1,
+                        boolop: 'OR_EXPR',
                         args: [
                           {
                             A_Expr: {
-                              kind: 0,
+                              kind: 'AEXPR_OP',
                               name: [
                                 {
                                   String: {
@@ -6184,8 +5643,7 @@ export const selects = [
                                         str: 'unique2'
                                       }
                                     }
-                                  ],
-                                  location: 6483
+                                  ]
                                 }
                               },
                               rexpr: {
@@ -6194,16 +5652,14 @@ export const selects = [
                                     Integer: {
                                       ival: 11
                                     }
-                                  },
-                                  location: 6493
+                                  }
                                 }
-                              },
-                              location: 6491
+                              }
                             }
                           },
                           {
                             A_Expr: {
-                              kind: 0,
+                              kind: 'AEXPR_OP',
                               name: [
                                 {
                                   String: {
@@ -6219,8 +5675,7 @@ export const selects = [
                                         str: 'unique1'
                                       }
                                     }
-                                  ],
-                                  location: 6499
+                                  ]
                                 }
                               },
                               rexpr: {
@@ -6229,20 +5684,17 @@ export const selects = [
                                     Integer: {
                                       ival: 0
                                     }
-                                  },
-                                  location: 6509
+                                  }
                                 }
-                              },
-                              location: 6507
+                              }
                             }
                           }
-                        ],
-                        location: 6496
+                        ]
                       }
                     },
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -6258,8 +5710,7 @@ export const selects = [
                                   str: 'stringu1'
                                 }
                               }
-                            ],
-                            location: 6516
+                            ]
                           }
                         },
                         rexpr: {
@@ -6268,18 +5719,15 @@ export const selects = [
                               String: {
                                 str: 'B'
                               }
-                            },
-                            location: 6527
+                            }
                           }
-                        },
-                        location: 6525
+                        }
                       }
                     }
-                  ],
-                  location: 6512
+                  ]
                 }
               },
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           options: [
@@ -6291,14 +5739,12 @@ export const selects = [
                     str: 'off'
                   }
                 },
-                defaction: 0,
-                location: 6428
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 6387,
       stmt_len: 143
     }
   },
@@ -6317,11 +5763,9 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 6539
+                    ]
                   }
-                },
-                location: 6539
+                }
               }
             },
             {
@@ -6334,11 +5778,9 @@ export const selects = [
                           str: 'unique2'
                         }
                       }
-                    ],
-                    location: 6548
+                    ]
                   }
-                },
-                location: 6548
+                }
               }
             }
           ],
@@ -6347,22 +5789,21 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 6561
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 0,
+              boolop: 'AND_EXPR',
               args: [
                 {
                   BoolExpr: {
-                    boolop: 1,
+                    boolop: 'OR_EXPR',
                     args: [
                       {
                         A_Expr: {
-                          kind: 0,
+                          kind: 'AEXPR_OP',
                           name: [
                             {
                               String: {
@@ -6378,8 +5819,7 @@ export const selects = [
                                     str: 'unique2'
                                   }
                                 }
-                              ],
-                              location: 6576
+                              ]
                             }
                           },
                           rexpr: {
@@ -6388,16 +5828,14 @@ export const selects = [
                                 Integer: {
                                   ival: 11
                                 }
-                              },
-                              location: 6586
+                              }
                             }
-                          },
-                          location: 6584
+                          }
                         }
                       },
                       {
                         A_Expr: {
-                          kind: 0,
+                          kind: 'AEXPR_OP',
                           name: [
                             {
                               String: {
@@ -6413,8 +5851,7 @@ export const selects = [
                                     str: 'unique1'
                                   }
                                 }
-                              ],
-                              location: 6592
+                              ]
                             }
                           },
                           rexpr: {
@@ -6423,20 +5860,17 @@ export const selects = [
                                 Integer: {
                                   ival: 0
                                 }
-                              },
-                              location: 6602
+                              }
                             }
-                          },
-                          location: 6600
+                          }
                         }
                       }
-                    ],
-                    location: 6589
+                    ]
                   }
                 },
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -6452,8 +5886,7 @@ export const selects = [
                               str: 'stringu1'
                             }
                           }
-                        ],
-                        location: 6609
+                        ]
                       }
                     },
                     rexpr: {
@@ -6462,21 +5895,17 @@ export const selects = [
                           String: {
                             str: 'B'
                           }
-                        },
-                        location: 6620
+                        }
                       }
-                    },
-                    location: 6618
+                    }
                   }
                 }
-              ],
-              location: 6605
+              ]
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6531,
       stmt_len: 92
     }
   },
@@ -6497,11 +5926,9 @@ export const selects = [
                               str: 'unique1'
                             }
                           }
-                        ],
-                        location: 6652
+                        ]
                       }
-                    },
-                    location: 6652
+                    }
                   }
                 },
                 {
@@ -6514,11 +5941,9 @@ export const selects = [
                               str: 'unique2'
                             }
                           }
-                        ],
-                        location: 6661
+                        ]
                       }
-                    },
-                    location: 6661
+                    }
                   }
                 }
               ],
@@ -6527,22 +5952,21 @@ export const selects = [
                   RangeVar: {
                     relname: 'onek2',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 6674
+                    relpersistence: 'p'
                   }
                 }
               ],
               whereClause: {
                 BoolExpr: {
-                  boolop: 1,
+                  boolop: 'OR_EXPR',
                   args: [
                     {
                       BoolExpr: {
-                        boolop: 0,
+                        boolop: 'AND_EXPR',
                         args: [
                           {
                             A_Expr: {
-                              kind: 0,
+                              kind: 'AEXPR_OP',
                               name: [
                                 {
                                   String: {
@@ -6558,8 +5982,7 @@ export const selects = [
                                         str: 'unique2'
                                       }
                                     }
-                                  ],
-                                  location: 6689
+                                  ]
                                 }
                               },
                               rexpr: {
@@ -6568,16 +5991,14 @@ export const selects = [
                                     Integer: {
                                       ival: 11
                                     }
-                                  },
-                                  location: 6699
+                                  }
                                 }
-                              },
-                              location: 6697
+                              }
                             }
                           },
                           {
                             A_Expr: {
-                              kind: 0,
+                              kind: 'AEXPR_OP',
                               name: [
                                 {
                                   String: {
@@ -6593,8 +6014,7 @@ export const selects = [
                                         str: 'stringu1'
                                       }
                                     }
-                                  ],
-                                  location: 6706
+                                  ]
                                 }
                               },
                               rexpr: {
@@ -6603,20 +6023,17 @@ export const selects = [
                                     String: {
                                       str: 'B'
                                     }
-                                  },
-                                  location: 6717
+                                  }
                                 }
-                              },
-                              location: 6715
+                              }
                             }
                           }
-                        ],
-                        location: 6702
+                        ]
                       }
                     },
                     {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -6632,8 +6049,7 @@ export const selects = [
                                   str: 'unique1'
                                 }
                               }
-                            ],
-                            location: 6725
+                            ]
                           }
                         },
                         rexpr: {
@@ -6642,18 +6058,15 @@ export const selects = [
                               Integer: {
                                 ival: 0
                               }
-                            },
-                            location: 6735
+                            }
                           }
-                        },
-                        location: 6733
+                        }
                       }
                     }
-                  ],
-                  location: 6722
+                  ]
                 }
               },
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           options: [
@@ -6665,14 +6078,12 @@ export const selects = [
                     str: 'off'
                   }
                 },
-                defaction: 0,
-                location: 6634
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 6624,
       stmt_len: 112
     }
   },
@@ -6691,11 +6102,9 @@ export const selects = [
                           str: 'unique1'
                         }
                       }
-                    ],
-                    location: 6745
+                    ]
                   }
-                },
-                location: 6745
+                }
               }
             },
             {
@@ -6708,11 +6117,9 @@ export const selects = [
                           str: 'unique2'
                         }
                       }
-                    ],
-                    location: 6754
+                    ]
                   }
-                },
-                location: 6754
+                }
               }
             }
           ],
@@ -6721,22 +6128,21 @@ export const selects = [
               RangeVar: {
                 relname: 'onek2',
                 inh: true,
-                relpersistence: 'p',
-                location: 6767
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 1,
+              boolop: 'OR_EXPR',
               args: [
                 {
                   BoolExpr: {
-                    boolop: 0,
+                    boolop: 'AND_EXPR',
                     args: [
                       {
                         A_Expr: {
-                          kind: 0,
+                          kind: 'AEXPR_OP',
                           name: [
                             {
                               String: {
@@ -6752,8 +6158,7 @@ export const selects = [
                                     str: 'unique2'
                                   }
                                 }
-                              ],
-                              location: 6782
+                              ]
                             }
                           },
                           rexpr: {
@@ -6762,16 +6167,14 @@ export const selects = [
                                 Integer: {
                                   ival: 11
                                 }
-                              },
-                              location: 6792
+                              }
                             }
-                          },
-                          location: 6790
+                          }
                         }
                       },
                       {
                         A_Expr: {
-                          kind: 0,
+                          kind: 'AEXPR_OP',
                           name: [
                             {
                               String: {
@@ -6787,8 +6190,7 @@ export const selects = [
                                     str: 'stringu1'
                                   }
                                 }
-                              ],
-                              location: 6799
+                              ]
                             }
                           },
                           rexpr: {
@@ -6797,20 +6199,17 @@ export const selects = [
                                 String: {
                                   str: 'B'
                                 }
-                              },
-                              location: 6810
+                              }
                             }
-                          },
-                          location: 6808
+                          }
                         }
                       }
-                    ],
-                    location: 6795
+                    ]
                   }
                 },
                 {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -6826,8 +6225,7 @@ export const selects = [
                               str: 'unique1'
                             }
                           }
-                        ],
-                        location: 6818
+                        ]
                       }
                     },
                     rexpr: {
@@ -6836,21 +6234,17 @@ export const selects = [
                           Integer: {
                             ival: 0
                           }
-                        },
-                        location: 6828
+                        }
                       }
-                    },
-                    location: 6826
+                    }
                   }
                 }
-              ],
-              location: 6815
+              ]
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6737,
       stmt_len: 92
     }
   },
@@ -6868,11 +6262,9 @@ export const selects = [
                       Integer: {
                         ival: 1
                       }
-                    },
-                    location: 6974
+                    }
                   }
-                },
-                location: 6974
+                }
               }
             }
           ],
@@ -6887,20 +6279,17 @@ export const selects = [
                           str: 'x'
                         }
                       }
-                    ],
-                    location: 6990
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 6830,
       stmt_len: 161
     }
   },
@@ -6932,11 +6321,10 @@ export const selects = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 7067
+                    typemod: -1
                   }
                 },
-                mode: 105
+                mode: 'FUNC_PARAM_IN'
               }
             }
           ],
@@ -6955,8 +6343,7 @@ export const selects = [
                 }
               ],
               setof: true,
-              typemod: -1,
-              location: 7086
+              typemod: -1
             }
           },
           options: [
@@ -6970,8 +6357,7 @@ export const selects = [
                     }
                   }
                 ],
-                defaction: 0,
-                location: 7090
+                defaction: 0
               }
             },
             {
@@ -6982,8 +6368,7 @@ export const selects = [
                     str: 'sql'
                   }
                 },
-                defaction: 0,
-                location: 7122
+                defaction: 0
               }
             },
             {
@@ -6994,14 +6379,12 @@ export const selects = [
                     str: 'immutable'
                   }
                 },
-                defaction: 0,
-                location: 7135
+                defaction: 0
               }
             }
           ]
         }
       },
-      stmt_location: 6992,
       stmt_len: 152
     }
   },
@@ -7028,22 +6411,18 @@ export const selects = [
                             Integer: {
                               ival: 42
                             }
-                          },
-                          location: 7163
+                          }
                         }
                       }
-                    ],
-                    location: 7154
+                    ]
                   }
-                },
-                location: 7154
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 7145,
       stmt_len: 21
     }
   },
@@ -7070,15 +6449,12 @@ export const selects = [
                             Integer: {
                               ival: -1
                             }
-                          },
-                          location: 7184
+                          }
                         }
                       }
-                    ],
-                    location: 7175
+                    ]
                   }
-                },
-                location: 7175
+                }
               }
             }
           ],
@@ -7091,20 +6467,17 @@ export const selects = [
                       Integer: {
                         ival: 1
                       }
-                    },
-                    location: 7197
+                    }
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 7167,
       stmt_len: 31
     }
   },
@@ -7137,19 +6510,17 @@ export const selects = [
                           }
                         }
                       ],
-                      typemod: -1,
-                      location: 7224
+                      typemod: -1
                     }
                   }
                 ]
               }
             }
           ],
-          removeType: 19,
-          behavior: 0
+          removeType: 'OBJECT_FUNCTION',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 7199,
       stmt_len: 29
     }
   },
@@ -7166,11 +6537,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 7333
+                    ]
                   }
-                },
-                location: 7333
+                }
               }
             }
           ],
@@ -7187,8 +6556,7 @@ export const selects = [
                               Integer: {
                                 ival: 2
                               }
-                            },
-                            location: 7349
+                            }
                           }
                         }
                       ],
@@ -7197,8 +6565,7 @@ export const selects = [
                           A_Const: {
                             val: {
                               Null: {}
-                            },
-                            location: 7353
+                            }
                           }
                         }
                       ],
@@ -7209,13 +6576,12 @@ export const selects = [
                               Integer: {
                                 ival: 1
                               }
-                            },
-                            location: 7360
+                            }
                           }
                         }
                       ]
                     ],
-                    op: 0
+                    op: 'SETOP_NONE'
                   }
                 },
                 alias: {
@@ -7235,7 +6601,7 @@ export const selects = [
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -7251,8 +6617,7 @@ export const selects = [
                         str: 'k'
                       }
                     }
-                  ],
-                  location: 7375
+                  ]
                 }
               },
               rexpr: {
@@ -7263,11 +6628,9 @@ export const selects = [
                         str: 'k'
                       }
                     }
-                  ],
-                  location: 7379
+                  ]
                 }
-              },
-              location: 7377
+              }
             }
           },
           sortClause: [
@@ -7281,20 +6644,17 @@ export const selects = [
                           str: 'k'
                         }
                       }
-                    ],
-                    location: 7390
+                    ]
                   }
                 },
-                sortby_dir: 0,
-                sortby_nulls: 0,
-                location: -1
+                sortby_dir: 'SORTBY_DEFAULT',
+                sortby_nulls: 'SORTBY_NULLS_DEFAULT'
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 7229,
       stmt_len: 162
     }
   },
@@ -7311,11 +6671,9 @@ export const selects = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 7400
+                    ]
                   }
-                },
-                location: 7400
+                }
               }
             }
           ],
@@ -7332,8 +6690,7 @@ export const selects = [
                               Integer: {
                                 ival: 2
                               }
-                            },
-                            location: 7416
+                            }
                           }
                         }
                       ],
@@ -7342,8 +6699,7 @@ export const selects = [
                           A_Const: {
                             val: {
                               Null: {}
-                            },
-                            location: 7420
+                            }
                           }
                         }
                       ],
@@ -7354,13 +6710,12 @@ export const selects = [
                               Integer: {
                                 ival: 1
                               }
-                            },
-                            location: 7427
+                            }
                           }
                         }
                       ]
                     ],
-                    op: 0
+                    op: 'SETOP_NONE'
                   }
                 },
                 alias: {
@@ -7380,7 +6735,7 @@ export const selects = [
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -7396,8 +6751,7 @@ export const selects = [
                         str: 'k'
                       }
                     }
-                  ],
-                  location: 7442
+                  ]
                 }
               },
               rexpr: {
@@ -7408,17 +6762,14 @@ export const selects = [
                         str: 'k'
                       }
                     }
-                  ],
-                  location: 7446
+                  ]
                 }
-              },
-              location: 7444
+              }
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 7392,
       stmt_len: 55
     }
   }

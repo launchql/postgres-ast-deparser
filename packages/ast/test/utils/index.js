@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 export { getConnections } from '@launchql/db-testing';
 
@@ -70,6 +72,9 @@ export const cleanTree = (tree) => {
         if (Array.isArray(obj.arg) && obj.arg.length) {
           // function
           obj.arg[0].String.str = obj.arg[0].String.str.trim();
+        } else if (obj.arg.List && obj.arg.List.items) {
+          // function
+          obj.arg.List.items[0].String.str = obj.arg.List.items[0].String.str.trim();
         } else {
           // do stmt
           obj.arg.String.str = obj.arg.String.str.trim();

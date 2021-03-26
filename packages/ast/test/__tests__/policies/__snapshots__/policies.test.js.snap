@@ -1,0 +1,237 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`acl 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( EXISTS (SELECT 1 FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()) );",
+  "policy": "EXISTS (SELECT 1 FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id())",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( EXISTS (SELECT 1 FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()) );",
+}
+`;
+
+exports[`acl mask 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( EXISTS (SELECT 1 FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010101111') = '1010101111' AND acl.actor_id = jwt_public.current_user_id()) );",
+  "policy": "EXISTS (SELECT 1 FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010101111') = '1010101111' AND acl.actor_id = jwt_public.current_user_id())",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( EXISTS (SELECT 1 FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010101111') = '1010101111' AND acl.actor_id = jwt_public.current_user_id()) );",
+}
+`;
+
+exports[`child_of_owned_object_records 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key WHERE c.object_table_ref_key = this_object_key) );",
+  "policy": "(SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key WHERE c.object_table_ref_key = this_object_key)",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key WHERE c.object_table_ref_key = this_object_key) );",
+}
+`;
+
+exports[`child_of_owned_object_records bits 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.owned_table_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key WHERE c.object_table_ref_key = this_object_key) );",
+  "policy": "(SELECT p.owned_table_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key WHERE c.object_table_ref_key = this_object_key)",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT p.owned_table_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key WHERE c.object_table_ref_key = this_object_key) );",
+}
+`;
+
+exports[`child_of_owned_object_records_group_array 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT rls_schema.role_fn() = ANY( g.owned_table_key ) FROM messages_schema.messages_table AS m INNER JOIN groups_schema.groups_table AS g ON g.id = m.group_id WHERE m.id = id) );",
+  "policy": "(SELECT rls_schema.role_fn() = ANY( g.owned_table_key ) FROM messages_schema.messages_table AS m INNER JOIN groups_schema.groups_table AS g ON g.id = m.group_id WHERE m.id = id)",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT rls_schema.role_fn() = ANY( g.owned_table_key ) FROM messages_schema.messages_table AS m INNER JOIN groups_schema.groups_table AS g ON g.id = m.group_id WHERE m.id = id) );",
+}
+`;
+
+exports[`child_of_owned_object_records_group_array bits 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT rls_schema.role_fn() = ANY( g.owned_table_key ) FROM messages_schema.messages_table AS m INNER JOIN groups_schema.groups_table AS g ON g.id = m.group_id WHERE m.id = id) );",
+  "policy": "(SELECT rls_schema.role_fn() = ANY( g.owned_table_key ) FROM messages_schema.messages_table AS m INNER JOIN groups_schema.groups_table AS g ON g.id = m.group_id WHERE m.id = id)",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT rls_schema.role_fn() = ANY( g.owned_table_key ) FROM messages_schema.messages_table AS m INNER JOIN groups_schema.groups_table AS g ON g.id = m.group_id WHERE m.id = id) );",
+}
+`;
+
+exports[`child_of_owned_object_records_with_ownership 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key AND p.owned_table_ref_key = this_owned_key WHERE c.object_table_ref_key = this_object_key) );",
+  "policy": "(SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key AND p.owned_table_ref_key = this_owned_key WHERE c.object_table_ref_key = this_object_key)",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key AND p.owned_table_ref_key = this_owned_key WHERE c.object_table_ref_key = this_object_key) );",
+}
+`;
+
+exports[`child_of_owned_object_records_with_ownership bits 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.owned_table_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key AND p.owned_table_ref_key = this_owned_key WHERE c.object_table_ref_key = this_object_key) );",
+  "policy": "(SELECT p.owned_table_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key AND p.owned_table_ref_key = this_owned_key WHERE c.object_table_ref_key = this_object_key)",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT p.owned_table_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key AND p.owned_table_ref_key = this_owned_key WHERE c.object_table_ref_key = this_object_key) );",
+}
+`;
+
+exports[`deparse 1`] = `"CREATE POLICY authenticated_can_delete_on_user_secrets ON dashboard_private.user_secrets FOR DELETE TO authenticated USING ( user_id = dashboard_public.get_current_user_id() );"`;
+
+exports[`drop_policy 1`] = `
+Array [
+  Object {
+    "deparse": "DROP POLICY v_policy_name ON v_schema_name.v_table_name;",
+  },
+]
+`;
+
+exports[`entity_acl 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( entity_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()) ) );",
+  "policy": "entity_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( entity_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()) ) );",
+}
+`;
+
+exports[`entity_acl include user 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( entity_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()), jwt_public.current_user_id()) ) );",
+  "policy": "entity_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()), jwt_public.current_user_id()) )",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( entity_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()), jwt_public.current_user_id()) ) );",
+}
+`;
+
+exports[`entity_acl_mask 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( entity_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010010100101010111111') = '1010010100101010111111' AND acl.actor_id = jwt_public.current_user_id()) ) );",
+  "policy": "entity_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010010100101010111111') = '1010010100101010111111' AND acl.actor_id = jwt_public.current_user_id()) )",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( entity_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010010100101010111111') = '1010010100101010111111' AND acl.actor_id = jwt_public.current_user_id()) ) );",
+}
+`;
+
+exports[`entity_acl_mask include user 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( entity_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010010100101010111111') = '1010010100101010111111' AND acl.actor_id = jwt_public.current_user_id()), jwt_public.current_user_id()) ) );",
+  "policy": "entity_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010010100101010111111') = '1010010100101010111111' AND acl.actor_id = jwt_public.current_user_id()), jwt_public.current_user_id()) )",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( entity_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010010100101010111111') = '1010010100101010111111' AND acl.actor_id = jwt_public.current_user_id()), jwt_public.current_user_id()) ) );",
+}
+`;
+
+exports[`multi_owners 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( requester_id = rls_schema.role_fn() OR responder_id = rls_schema.role_fn() OR verifier_id = rls_schema.role_fn() );",
+  "policy": "requester_id = rls_schema.role_fn() OR responder_id = rls_schema.role_fn() OR verifier_id = rls_schema.role_fn()",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( requester_id = rls_schema.role_fn() OR responder_id = rls_schema.role_fn() OR verifier_id = rls_schema.role_fn() );",
+}
+`;
+
+exports[`open 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( TRUE );",
+  "policy": "TRUE",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( TRUE );",
+}
+`;
+
+exports[`own_records 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = rls_schema.role_fn() );",
+  "policy": "role_key = rls_schema.role_fn()",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = rls_schema.role_fn() );",
+}
+`;
+
+exports[`own_records defaults 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = jwt_public.current_user_id() );",
+  "policy": "role_key = jwt_public.current_user_id()",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = jwt_public.current_user_id() );",
+}
+`;
+
+exports[`owned_object_records 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key) );",
+  "policy": "(SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key)",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key) );",
+}
+`;
+
+exports[`owned_object_records bits 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.owned_table_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key) );",
+  "policy": "(SELECT p.owned_table_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key)",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT p.owned_table_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key) );",
+}
+`;
+
+exports[`owned_object_records_group_array 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT rls_schema.role_fn() = ANY( p.owned_table_key ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key) );",
+  "policy": "(SELECT rls_schema.role_fn() = ANY( p.owned_table_key ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key)",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT rls_schema.role_fn() = ANY( p.owned_table_key ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key) );",
+}
+`;
+
+exports[`owned_object_records_group_array bits 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT super_secret.current_user_id() = ANY( p.owned_table_key ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key) );",
+  "policy": "(SELECT super_secret.current_user_id() = ANY( p.owned_table_key ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key)",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT super_secret.current_user_id() = ANY( p.owned_table_key ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key) );",
+}
+`;
+
+exports[`owned_records 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = rls_schema.role_fn() OR role_key = ANY( rls_schema.group_fn() ) );",
+  "policy": "role_key = rls_schema.role_fn() OR role_key = ANY( rls_schema.group_fn() )",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = rls_schema.role_fn() OR role_key = ANY( rls_schema.group_fn() ) );",
+}
+`;
+
+exports[`owned_records defaults 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = jwt_public.current_user_id() OR role_key = ANY( jwt_public.current_group_ids() ) );",
+  "policy": "role_key = jwt_public.current_user_id() OR role_key = ANY( jwt_public.current_group_ids() )",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = jwt_public.current_user_id() OR role_key = ANY( jwt_public.current_group_ids() ) );",
+}
+`;
+
+exports[`owned_records w bits 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = rls_schema.role_fn() OR role_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) );",
+  "policy": "role_key = rls_schema.role_fn() OR role_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') )",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = rls_schema.role_fn() OR role_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) );",
+}
+`;
+
+exports[`owned_records w bits 2`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = rls_schema.role_fn() OR role_key = ANY( array_append(COALESCE(memberships_private.org_memberships_perm_ids('10000011111'), ARRAY[]::uuid[]), jwt_public.current_user_id()) ) );",
+  "policy": "role_key = rls_schema.role_fn() OR role_key = ANY( array_append(COALESCE(memberships_private.org_memberships_perm_ids('10000011111'), ARRAY[]::uuid[]), jwt_public.current_user_id()) )",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = rls_schema.role_fn() OR role_key = ANY( array_append(COALESCE(memberships_private.org_memberships_perm_ids('10000011111'), ARRAY[]::uuid[]), jwt_public.current_user_id()) ) );",
+}
+`;
+
+exports[`permission_name 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.permission_role_key = ANY( rls_schema.group_fn() ) FROM permission_schema.permission_table AS p WHERE p.permission_name_key = 'this_value') );",
+  "policy": "(SELECT p.permission_role_key = ANY( rls_schema.group_fn() ) FROM permission_schema.permission_table AS p WHERE p.permission_name_key = 'this_value')",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT p.permission_role_key = ANY( rls_schema.group_fn() ) FROM permission_schema.permission_table AS p WHERE p.permission_name_key = 'this_value') );",
+}
+`;
+
+exports[`permission_name w bits 1`] = `
+Object {
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.permission_role_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM permission_schema.permission_table AS p WHERE p.permission_name_key = 'this_value') );",
+  "policy": "(SELECT p.permission_role_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM permission_schema.permission_table AS p WHERE p.permission_name_key = 'this_value')",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( (SELECT p.permission_role_key = ANY( memberships_private.org_memberships_perm_ids('10000011111') ) FROM permission_schema.permission_table AS p WHERE p.permission_name_key = 'this_value') );",
+}
+`;
+
+exports[`policy deparse 1`] = `
+Array [
+  Object {
+    "deparse": "CREATE POLICY mypolicy ON schemanamed.mytable FOR INSERT TO authenticated USING ( responder_id = dbe.get_uid(c, b) OR requester_id = dbe.get_other_uid(c, b) );",
+  },
+]
+`;
+
+exports[`policy w permission_name 1`] = `"CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( (SELECT p.permission_role_key = ANY( rls_schema.group_fn() ) FROM permission_schema.permission_table AS p WHERE p.permission_name_key = 'this_value') );"`;
+
+exports[`policyStmt 1`] = `
+Array [
+  Object {
+    "deparse": "CREATE POLICY delete_the_thing ON users.\\"user\\" FOR DELETE TO PUBLIC USING ( (SELECT p.owned_table_key = ANY( current_role_fn_schema.current_group_ids_function() ) FROM object_schema.object_table AS c INNER JOIN owned_schema.owned_table AS p ON p.owned_table_ref_key = c.object_table_owned_key AND p.owned_table_ref_key = this_owned_key WHERE c.object_table_ref_key = this_object_key) );",
+  },
+]
+`;

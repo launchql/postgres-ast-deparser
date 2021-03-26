@@ -29,7 +29,8 @@
     "graphql": "^14.0.2",
     "graphql-tag": "2.10.3",
     "jest": "26.1.0",
-    "pgsql-parser": "1.2.3",
+    "pgsql-parser": "13.1.1",
+    "pgsql-deparser": "13.1.1",
     "prettier": "2.0.5",
     "regenerator-runtime": "^0.13.2"
   },

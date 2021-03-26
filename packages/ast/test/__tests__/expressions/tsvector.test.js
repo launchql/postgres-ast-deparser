@@ -23,7 +23,7 @@ it('pure psql', async () => {
   const [{ deparse: result }] = await db.any(`
 select deparser.deparse(
   ast.a_expr(
-  v_kind := 0,
+  v_kind := 'AEXPR_OP',
   v_lexpr := ast_helpers.tsvectorw( ast_helpers.tsvector(ast_helpers.coalesce('NEW.field1')) , 'A'),
   v_name := to_jsonb(ARRAY[ast.string('||')]),
   v_rexpr := ast_helpers.tsvectorw( ast_helpers.tsvector(ast_helpers.coalesce('NEW.field2')) , 'A')

@@ -7,7 +7,7 @@
 
 BEGIN;
 
-CREATE FUNCTION ast_helpers.equals (
+CREATE FUNCTION ast_helpers.eq (
   v_lexpr jsonb,
   v_rexpr jsonb
 )
@@ -17,9 +17,32 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.neq (
+  v_lexpr jsonb,
+  v_rexpr jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 'AEXPR_OP',
+      v_name := to_jsonb(ARRAY[
+          ast.string('<>')
       ]),
       v_lexpr := v_lexpr,
       v_rexpr := v_rexpr
@@ -40,7 +63,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('>')
       ]),
@@ -63,7 +86,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('<')
       ]),
@@ -86,7 +109,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('>=')
       ]),
@@ -109,7 +132,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('<=')
       ]),
@@ -132,7 +155,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 1,
+      v_kind := 'AEXPR_OP_ANY',
       v_name := to_jsonb(ARRAY[
           ast.string('=')
       ]),
@@ -154,7 +177,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.bool_expr(
-      v_boolop := 0,
+      v_boolop := 'AND_EXPR',
       v_args := to_jsonb($1)
   );
   RETURN ast_expr;
@@ -172,7 +195,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.bool_expr(
-      v_boolop := 1,
+      v_boolop := 'OR_EXPR',
       v_args := to_jsonb($1)
   );
   RETURN ast_expr;
@@ -191,7 +214,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('~*')
       ]),
@@ -385,7 +408,7 @@ BEGIN
       v_argType := ast.type_name( 
         v_names := to_jsonb(ARRAY[ast.string(type)])
       ),
-      v_mode := 105
+      v_mode := 'FUNC_PARAM_IN'
     );
 END;
 $$
@@ -405,7 +428,7 @@ BEGIN
       v_argType := ast.type_name( 
         v_names := to_jsonb(ARRAY[ast.string(type)])
       ),
-      v_mode := 105,
+      v_mode := 'FUNC_PARAM_IN',
       v_defexpr := ast.string(default_value)
     );
 END;
@@ -426,7 +449,7 @@ BEGIN
       v_argType := ast.type_name( 
         v_names := to_jsonb(ARRAY[ast.string(type)])
       ),
-      v_mode := 105,
+      v_mode := 'FUNC_PARAM_IN',
       v_defexpr := default_value
     );
 END;
@@ -453,7 +476,7 @@ CREATE FUNCTION ast_helpers.a_expr_distinct_tg_field (field text)
     RETURNS jsonb
     AS $$
 BEGIN
-	RETURN ast.a_expr(v_kind := 3, 
+	RETURN ast.a_expr(v_kind := 'AEXPR_DISTINCT', 
         v_lexpr := ast.column_ref(
           to_jsonb(ARRAY[ ast.string('old'),ast.string(field) ])
         ),
@@ -522,7 +545,7 @@ BEGIN
         result = results[i];
       ELSE
         result = ast.a_expr(
-          v_kind := 0,
+          v_kind := 'AEXPR_OP',
           v_lexpr := results[i], 
           v_name := to_jsonb(ARRAY[ast.string('||')]),
           v_rexpr := result );
@@ -530,6 +553,47 @@ BEGIN
     END LOOP;
 
 	RETURN result;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.create_trigger (
+  v_trigger_name text,
+  
+  v_schema_name text,
+  v_table_name text,
+
+  v_trigger_fn_schema text,
+  v_trigger_fn_name text,
+
+  v_whenClause jsonb DEFAULT NULL,
+  v_params text[] default ARRAY[]::text[],
+  v_timing int default 2,
+  v_events int default 4 | 16
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  result jsonb;
+BEGIN
+  result = ast.create_trig_stmt(
+    v_trigname := v_trigger_name,
+    v_relation := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_funcname := ast_helpers.array_of_strings(v_trigger_fn_schema, v_trigger_fn_name),
+    v_args := ast_helpers.array_of_strings( variadic strs := v_params ),
+    v_row := true,
+    v_timing := v_timing,
+    v_events := v_events,
+    v_whenClause := v_whenClause
+  );
+	RETURN ast.raw_stmt(
+    v_stmt := result,
+    v_stmt_len := 1
+  );
 END;
 $$
 LANGUAGE 'plpgsql'
@@ -552,16 +616,14 @@ CREATE FUNCTION ast_helpers.create_trigger_distinct_fields (
     RETURNS jsonb
     AS $$
 DECLARE
-  results jsonb[];
-  result jsonb;
   whenClause jsonb;
 	i int;
-
   nodes jsonb[];
 BEGIN
 
   FOR i IN SELECT * FROM generate_subscripts(v_fields, 1) g(i)
   LOOP
+    -- OLD.field <> NEW.field
     nodes = array_append(nodes, ast_helpers.a_expr_distinct_tg_field(v_fields[i]));
   END LOOP;
  
@@ -571,22 +633,19 @@ BEGIN
     whenClause = nodes[1];
   END IF;
 
-  result = ast.create_trig_stmt(
-    v_trigname := v_trigger_name,
-    v_relation := ast_helpers.range_var(
-      v_schemaname := v_schema_name,
-      v_relname := v_table_name
-    ),
-    v_funcname := ast_helpers.array_of_strings(v_trigger_fn_schema, v_trigger_fn_name),
-    v_args := ast_helpers.array_of_strings( variadic strs := v_params ),
-    v_row := true,
+  RETURN ast_helpers.create_trigger(
+    v_trigger_name := v_trigger_name,
+    
+    v_schema_name := v_schema_name,
+    v_table_name := v_table_name,
+
+    v_trigger_fn_schema := v_trigger_fn_schema,
+    v_trigger_fn_name := v_trigger_fn_name,
+
+    v_whenClause := whenClause,
+    v_params := v_params,
     v_timing := v_timing,
-    v_events := v_events,
-    v_whenClause := whenClause
-  );
-	RETURN ast.raw_stmt(
-    v_stmt := result,
-    v_stmt_len := 1
+    v_events := v_events
   );
 END;
 $$
@@ -610,8 +669,8 @@ CREATE FUNCTION ast_helpers.drop_trigger (
         ast.string(v_table_name),
         ast.string(v_trigger_name)
       ]]),
-      v_removeType := ast_constants.object_type('OBJECT_TRIGGER'),
-      v_behavior:= (CASE when v_cascade IS TRUE then 1 else 0 END)
+      v_removeType := 'OBJECT_TRIGGER',
+      v_behavior:= (CASE when v_cascade IS TRUE then 'DROP_CASCADE' else 'DROP_RESTRICT' END)
     ),
     v_stmt_len := 1
   );
@@ -637,37 +696,37 @@ DECLARE
 BEGIN
 
   options = array_append(options, ast.def_elem(
-    'as',
-    to_jsonb(ARRAY[ast.string(v_body)])
+    v_defname := 'as',
+    v_arg := to_jsonb(ARRAY[ast.string(v_body)])
   ));
   
   options = array_append(options, ast.def_elem(
-    'language',
-    ast.string(v_language)
+    v_defname := 'language',
+    v_arg := ast.string(v_language)
   ));
 
   IF (v_volatility IS NOT NULL) THEN 
     options = array_append(options, ast.def_elem(
-      'volatility',
-      ast.string(v_volatility)
+      v_defname := 'volatility',
+      v_arg := ast.string(v_volatility)
     ));
   END IF;
 
   IF (v_security IS NOT NULL) THEN 
     options = array_append(options, ast.def_elem(
-      'security',
-      ast.integer(v_security)
+      v_defname := 'security',
+      v_arg := ast.integer(v_security)
     ));
   END IF;
 
-  select * FROM ast.create_function_stmt(
+  ast = ast.create_function_stmt(
     v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
     v_parameters := v_parameters,
     v_returnType := ast.type_name( 
         v_names := ast_helpers.array_of_strings(v_type)
     ),
     v_options := to_jsonb(options)
-  ) INTO ast;
+  );
 
   RETURN ast.raw_stmt(
     v_stmt := ast,
@@ -694,7 +753,7 @@ BEGIN
         ast.string(v_schema_name),
         ast.string(v_function_name)
       ]]),
-      v_removeType := ast_constants.object_type('OBJECT_FUNCTION')
+      v_removeType := 'OBJECT_FUNCTION'
     ),
     v_stmt_len := 1
   );
@@ -731,19 +790,15 @@ BEGIN
   -- if there are no roles then use PUBLIC
   IF (v_roles IS NULL OR cardinality(v_roles) = 0) THEN 
       roles = array_append(roles, ast.role_spec(
-        v_roletype:=ast_constants.role_spec_type(
-          'ROLESPEC_PUBLIC'
-        )
+        v_roletype := 'ROLESPEC_PUBLIC'
       ));
   ELSE
     FOR i IN 
     SELECT * FROM generate_series(1, cardinality(v_roles))
     LOOP
       roles = array_append(roles, ast.role_spec(
-        v_roletype:=ast_constants.role_spec_type(
-          'ROLESPEC_CSTRING'
-        ),
-        v_rolename:=v_roles[i]
+        v_roletype := 'ROLESPEC_CSTRING',
+        v_rolename := v_roles[i]
       ));
     END LOOP;
   END IF;
@@ -759,6 +814,54 @@ BEGIN
     v_cmd_name := v_cmd_name,
     v_with_check := v_with_check,
     v_permissive := v_permissive
+  ) INTO ast;
+
+  RETURN ast.raw_stmt(
+    v_stmt := ast,
+    v_stmt_len := 1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_policy (
+  v_policy_name text default null,
+  v_schema_name text default null,
+  v_table_name text default null,
+  v_roles text[] default null,
+  v_qual jsonb default null,
+  v_with_check jsonb default null
+)
+RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+  roles jsonb[];
+  i int;
+BEGIN
+
+  -- if there are no roles then use PUBLIC
+  IF (v_roles IS NOT NULL OR cardinality(v_roles) > 0) THEN 
+    FOR i IN 
+    SELECT * FROM generate_series(1, cardinality(v_roles))
+    LOOP
+      roles = array_append(roles, ast.role_spec(
+        v_roletype := 'ROLESPEC_CSTRING',
+        v_rolename := v_roles[i]
+      ));
+    END LOOP;
+  END IF;
+
+  select * FROM ast.alter_policy_stmt(
+    v_policy_name := v_policy_name,
+    v_table := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_roles := to_jsonb(roles),
+    v_qual := v_qual,
+    v_with_check := v_with_check
   ) INTO ast;
 
   RETURN ast.raw_stmt(
@@ -787,7 +890,7 @@ BEGIN
         ast.string(v_table_name),
         ast.string(v_policy_name)
       ]]),
-      v_removeType := ast_constants.object_type('OBJECT_POLICY')
+      v_removeType := 'OBJECT_POLICY'
     ),
     v_stmt_len := 1
   );
@@ -811,7 +914,7 @@ CREATE FUNCTION ast_helpers.create_table (
         v_inh := TRUE,
         v_relpersistence := 'p'
       ),
-      v_oncommit := 0
+      v_oncommit := 'ONCOMMIT_NOOP'
     ),
     v_stmt_len := 1
   );
@@ -832,8 +935,8 @@ CREATE FUNCTION ast_helpers.drop_table (
         ast.string(v_schema_name),
         ast.string(v_table_name)
       ]]),
-      v_removeType := ast_constants.object_type('OBJECT_TABLE'),
-      v_behavior:= (CASE when v_cascade IS TRUE then 1 else 0 END)
+      v_removeType := 'OBJECT_TABLE',
+      v_behavior:= (CASE when v_cascade IS TRUE then 'DROP_CASCADE' else 'DROP_RESTRICT' END)
     ),
     v_stmt_len := 1
   );
@@ -846,12 +949,15 @@ CREATE FUNCTION ast_helpers.create_index (
   v_schema_name text,
   v_table_name text,
   v_fields text[],
-  v_accessMethod text default null
+  v_include_fields text[] default ARRAY[]::text[],
+  v_accessMethod text default null,
+  v_unique boolean default null
 )
     RETURNS jsonb
     AS $$
 DECLARE
-  parameters jsonb[];
+  parameters jsonb[] = ARRAY[]::jsonb[];
+  includingParameters jsonb[] = ARRAY[]::jsonb[];
 
   item text;
   i int;
@@ -863,12 +969,22 @@ BEGIN
   LOOP
     parameters = array_append(parameters, ast.index_elem(
       v_name := v_fields[i],
-      v_ordering := 0,
-      v_nulls_ordering := 0
+      v_ordering := 'SORTBY_DEFAULT',
+      v_nulls_ordering := 'SORTBY_NULLS_DEFAULT'
     ));
   END LOOP;
 
-  SELECT ast.raw_stmt(
+  FOR i IN
+    SELECT * FROM generate_series(1, cardinality(v_include_fields)) g (i)
+  LOOP
+    includingParameters = array_append(includingParameters, ast.index_elem(
+      v_name := v_include_fields[i],
+      v_ordering := 'SORTBY_DEFAULT',
+      v_nulls_ordering := 'SORTBY_NULLS_DEFAULT'
+    ));
+  END LOOP;
+
+  ast = ast.raw_stmt(
     v_stmt := ast.index_stmt(
       v_idxname := v_index_name,
       v_relation := ast_helpers.range_var(
@@ -876,10 +992,12 @@ BEGIN
         v_relname := v_table_name
       ),
       v_accessMethod := v_accessMethod,
-      v_indexParams := to_jsonb(parameters)
+      v_indexParams := to_jsonb(parameters),
+      v_indexIncludingParams := to_jsonb(includingParameters),
+      v_unique := v_unique
     ),
     v_stmt_len:= 1
-  ) INTO ast;
+  );
 
   RETURN ast;
 END;
@@ -901,8 +1019,8 @@ AS $$
           ast.string(v_index_name)
         ])
       ]),
-      v_removeType:= ast_constants.object_type('OBJECT_INDEX'),
-      v_behavior:= 0
+      v_removeType:= 'OBJECT_INDEX',
+      v_behavior:= 'DROP_RESTRICT'
     ),
     v_stmt_len := 1
   );
@@ -934,8 +1052,8 @@ BEGIN
   SELECT ast.raw_stmt(
     v_stmt := ast.grant_stmt(
       v_is_grant := v_is_grant,
-      v_targtype := 0, -- why?
-      v_objtype := 1, --why?
+      v_targtype := 'ACL_TARGET_OBJECT',
+      v_objtype := 'OBJECT_TABLE',
       v_objects := to_jsonb(ARRAY[
         ast_helpers.range_var(
           v_schemaname := v_schema_name,
@@ -950,9 +1068,7 @@ BEGIN
       ]),
       v_grantees := to_jsonb(ARRAY[
         ast.role_spec(
-          v_roletype:=ast_constants.role_spec_type(
-          'ROLESPEC_CSTRING'
-          ),
+          v_roletype := 'ROLESPEC_CSTRING',
           v_rolename:= v_role_name
         )
       ])
@@ -1017,16 +1133,16 @@ BEGIN
       ),
       v_cmds := to_jsonb(ARRAY[
         ast.alter_table_cmd(
-          v_subtype := ast_constants.alter_table_type('AT_AddColumn'),
+          v_subtype := 'AT_AddColumn',
           v_def := ast.column_def(
             v_colname := v_column_name,
             v_typeName := v_column_type,
             v_is_local := TRUE
           ),
-          v_behavior := 0 
+          v_behavior := 'DROP_RESTRICT' 
         )
       ]),
-      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+      v_relkind := 'OBJECT_TABLE'
     ),
     v_stmt_len:= 1
   );
@@ -1053,12 +1169,12 @@ BEGIN
       ),
       v_cmds := to_jsonb(ARRAY[
         ast.alter_table_cmd(
-          v_subtype := ast_constants.alter_table_type('AT_DropColumn'),
+          v_subtype := 'AT_DropColumn',
           v_name := v_column_name,
-          v_behavior := 0 
+          v_behavior := 'DROP_RESTRICT' 
         )
       ]),
-      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+      v_relkind := 'OBJECT_TABLE'
     ),
     v_stmt_len:= 1
   );
@@ -1080,8 +1196,8 @@ DECLARE
 BEGIN
   RETURN ast.raw_stmt(
     v_stmt := ast.rename_stmt(
-      v_renameType := ast_constants.object_type('OBJECT_COLUMN'),
-      v_relationType := ast_constants.object_type('OBJECT_TABLE'),
+      v_renameType := 'OBJECT_COLUMN',
+      v_relationType := 'OBJECT_TABLE',
       v_relation := ast_helpers.range_var(
         v_schemaname := v_schema_name,
         v_relname := v_table_name
@@ -1116,7 +1232,7 @@ BEGIN
       ),
       v_cmds := to_jsonb(ARRAY[
         ast.alter_table_cmd(
-          v_subtype := ast_constants.alter_table_type('AT_AlterColumnType'),
+          v_subtype := 'AT_AlterColumnType',
           v_name := v_column_name,
           v_def := ast.column_def(
             v_typeName := ast.type_name(
@@ -1137,10 +1253,10 @@ BEGIN
               )
             )
           ),
-          v_behavior := 0 
+          v_behavior := 'DROP_RESTRICT'
         )
       ]),
-      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+      v_relkind := 'OBJECT_TABLE'
     ),
     v_stmt_len:= 1
   );
@@ -1168,17 +1284,17 @@ BEGIN
           ),
           v_cmds := to_jsonb(ARRAY[
             ast.alter_table_cmd(
-              v_subtype := ast_constants.alter_table_type('AT_AddConstraint'),
+              v_subtype := 'AT_AddConstraint',
               v_def := ast.constraint(
-                v_contype := ast_utils.constrainttypes('CHECK'),
+                v_contype := 'CONSTR_CHECK',
                 v_conname := v_constraint_name,
                 v_raw_expr := v_constraint_expr,
                 v_initially_valid := true
               ),
-              v_behavior := 0 
+              v_behavior := 'DROP_RESTRICT'
             )
           ]),
-          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+          v_relkind := 'OBJECT_TABLE'
         ),
         v_stmt_len:= 1
       );
@@ -1205,12 +1321,12 @@ BEGIN
           ),
           v_cmds := to_jsonb(ARRAY[
             ast.alter_table_cmd(
-              v_subtype := ast_constants.alter_table_type('AT_DropConstraint'),
+              v_subtype := 'AT_DropConstraint',
               v_name := v_constraint_name,
-              v_behavior := 0 
+              v_behavior := 'DROP_RESTRICT'
             )
           ]),
-          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+          v_relkind := 'OBJECT_TABLE'
         ),
         v_stmt_len:= 1
       );
@@ -1240,24 +1356,24 @@ BEGIN
           v_cmds := to_jsonb(ARRAY[
             -- DROP IT FIRST
             ast.alter_table_cmd(
-              v_subtype := ast_constants.alter_table_type('AT_DropConstraint'),
+              v_subtype := 'AT_DropConstraint',
               v_name := v_constraint_name,
-              v_behavior := 0,
+              v_behavior := 'DROP_RESTRICT',
               v_missing_ok := TRUE
             ),
             -- ADD IT BACK
             ast.alter_table_cmd(
-              v_subtype := ast_constants.alter_table_type('AT_AddConstraint'),
+              v_subtype := 'AT_AddConstraint',
               v_def := ast.constraint(
-                v_contype := ast_utils.constrainttypes('CHECK'),
+                v_contype := 'CONSTR_CHECK',
                 v_conname := v_constraint_name,
                 v_raw_expr := v_constraint_expr,
                 v_initially_valid := true
               ),
-              v_behavior := 0 
+              v_behavior := 'DROP_RESTRICT' 
             )
           ]),
-          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+          v_relkind := 'OBJECT_TABLE'
         ),
         v_stmt_len:= 1
       );
@@ -1301,7 +1417,7 @@ BEGIN
 
   RETURN ast.raw_stmt(
         v_stmt := ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_FUNCTION'),
+        v_objtype := 'OBJECT_FUNCTION',
         v_object := ast.object_with_args(
                 v_objname := to_jsonb(names),
                 v_objargs := to_jsonb(types)
@@ -1345,7 +1461,7 @@ LANGUAGE 'plpgsql'
 IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.set_comment (
-  v_objtype int,
+  v_objtype text,
   v_comment text default null, 
   variadic v_name text[] default null
 )
@@ -1380,7 +1496,7 @@ LANGUAGE 'plpgsql'
 IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.set_comment (
-  v_objtype int,
+  v_objtype text,
   v_tags jsonb default null, 
   v_description text default null, 
   variadic v_name text[] default null

@@ -1,6 +1,6 @@
 module.exports = {
   A_Expr: {
-    kind: 10,
+    kind: 'AEXPR_SIMILAR',
     lexpr: {
       A_Const: {
         val: {
@@ -39,7 +39,7 @@ module.exports = {
                     str: 'test'
                   }
                 }
-              ],
+              ]
             }
           },
           {
@@ -63,9 +63,8 @@ module.exports = {
               str: 'similar_escape'
             }
           }
-        ],
+        ]
       }
     }
   }
 };
-  

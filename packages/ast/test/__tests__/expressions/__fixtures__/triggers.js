@@ -7,8 +7,7 @@ export const triggers = [
           schemaname: 'schema-name',
           relname: 'table_name',
           inh: true,
-          relpersistence: 'p',
-          location: 45
+          relpersistence: 'p'
         }
       },
       funcname: [
@@ -28,7 +27,7 @@ export const triggers = [
       events: 16,
       whenClause: {
         A_Expr: {
-          kind: 3,
+          kind: 'AEXPR_DISTINCT',
           name: [
             {
               String: {
@@ -49,8 +48,7 @@ export const triggers = [
                     str: 'field_name'
                   }
                 }
-              ],
-              location: 94
+              ]
             }
           },
           rexpr: {
@@ -66,11 +64,9 @@ export const triggers = [
                     str: 'field_name'
                   }
                 }
-              ],
-              location: 126
+              ]
             }
-          },
-          location: 109
+          }
         }
       }
     }

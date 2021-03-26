@@ -8,33 +8,28 @@ export const inserts = [
               schemaname: 'objects',
               relname: 'object',
               inh: true,
-              relpersistence: 'p',
-              location: 12
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'name',
-                location: 32
+                name: 'name'
               }
             },
             {
               ResTarget: {
-                name: 'val',
-                location: 38
+                name: 'val'
               }
             },
             {
               ResTarget: {
-                name: 'active',
-                location: 43
+                name: 'active'
               }
             },
             {
               ResTarget: {
-                name: 'hash',
-                location: 51
+                name: 'hash'
               }
             }
           ],
@@ -48,8 +43,7 @@ export const inserts = [
                         String: {
                           str: 'name'
                         }
-                      },
-                      location: 73
+                      }
                     }
                   },
                   {
@@ -58,8 +52,7 @@ export const inserts = [
                         String: {
                           str: 'val'
                         }
-                      },
-                      location: 81
+                      }
                     }
                   },
                   {
@@ -70,8 +63,7 @@ export const inserts = [
                             String: {
                               str: 't'
                             }
-                          },
-                          location: 88
+                          }
                         }
                       },
                       typeName: {
@@ -88,11 +80,9 @@ export const inserts = [
                               }
                             }
                           ],
-                          typemod: -1,
-                          location: -1
+                          typemod: -1
                         }
-                      },
-                      location: -1
+                      }
                     }
                   },
                   {
@@ -101,8 +91,7 @@ export const inserts = [
                         String: {
                           str: 'abcdefg'
                         }
-                      },
-                      location: 94
+                      }
                     }
                   }
                 ],
@@ -113,8 +102,7 @@ export const inserts = [
                         String: {
                           str: 'name'
                         }
-                      },
-                      location: 111
+                      }
                     }
                   },
                   {
@@ -123,8 +111,7 @@ export const inserts = [
                         String: {
                           str: 'val'
                         }
-                      },
-                      location: 119
+                      }
                     }
                   },
                   {
@@ -135,8 +122,7 @@ export const inserts = [
                             String: {
                               str: 't'
                             }
-                          },
-                          location: 126
+                          }
                         }
                       },
                       typeName: {
@@ -153,11 +139,9 @@ export const inserts = [
                               }
                             }
                           ],
-                          typemod: -1,
-                          location: -1
+                          typemod: -1
                         }
-                      },
-                      location: -1
+                      }
                     }
                   },
                   {
@@ -166,8 +150,7 @@ export const inserts = [
                         String: {
                           str: 'abcdefg'
                         }
-                      },
-                      location: 132
+                      }
                     }
                   }
                 ],
@@ -178,8 +161,7 @@ export const inserts = [
                         String: {
                           str: 'name'
                         }
-                      },
-                      location: 149
+                      }
                     }
                   },
                   {
@@ -188,8 +170,7 @@ export const inserts = [
                         String: {
                           str: 'val'
                         }
-                      },
-                      location: 157
+                      }
                     }
                   },
                   {
@@ -200,8 +181,7 @@ export const inserts = [
                             String: {
                               str: 't'
                             }
-                          },
-                          location: 164
+                          }
                         }
                       },
                       typeName: {
@@ -218,11 +198,9 @@ export const inserts = [
                               }
                             }
                           ],
-                          typemod: -1,
-                          location: -1
+                          typemod: -1
                         }
-                      },
-                      location: -1
+                      }
                     }
                   },
                   {
@@ -231,16 +209,15 @@ export const inserts = [
                         String: {
                           str: 'abcdefg'
                         }
-                      },
-                      location: 170
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
       stmt_len: 180
@@ -255,27 +232,23 @@ export const inserts = [
               schemaname: 'yo',
               relname: 'table',
               inh: true,
-              relpersistence: 'p',
-              location: 196
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'project_id',
-                location: 206
+                name: 'project_id'
               }
             },
             {
               ResTarget: {
-                name: 'name',
-                location: 218
+                name: 'name'
               }
             },
             {
               ResTarget: {
-                name: 'field_name',
-                location: 224
+                name: 'field_name'
               }
             }
           ],
@@ -291,8 +264,7 @@ export const inserts = [
                             str: 'v_obj_key_id'
                           }
                         }
-                      ],
-                      location: 246
+                      ]
                     }
                   },
                   {
@@ -305,8 +277,7 @@ export const inserts = [
                                 str: 'v_secret_name'
                               }
                             }
-                          ],
-                          location: 260
+                          ]
                         }
                       },
                       typeName: {
@@ -318,11 +289,9 @@ export const inserts = [
                               }
                             }
                           ],
-                          typemod: -1,
-                          location: 275
+                          typemod: -1
                         }
-                      },
-                      location: 273
+                      }
                     }
                   },
                   {
@@ -333,37 +302,35 @@ export const inserts = [
                             str: 'v_secret_value'
                           }
                         }
-                      ],
-                      location: 282
+                      ]
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           onConflictClause: {
             OnConflictClause: {
-              action: 2,
+              action: 'ONCONFLICT_UPDATE',
               infer: {
                 InferClause: {
                   indexElems: [
                     {
                       IndexElem: {
                         name: 'project_id',
-                        ordering: 0,
-                        nulls_ordering: 0
+                        ordering: 'SORTBY_DEFAULT',
+                        nulls_ordering: 'SORTBY_NULLS_DEFAULT'
                       }
                     },
                     {
                       IndexElem: {
                         name: 'name',
-                        ordering: 0,
-                        nulls_ordering: 0
+                        ordering: 'SORTBY_DEFAULT',
+                        nulls_ordering: 'SORTBY_NULLS_DEFAULT'
                       }
                     }
-                  ],
-                  location: 312
+                  ]
                 }
               },
               targetList: [
@@ -383,21 +350,17 @@ export const inserts = [
                               str: 'field_name'
                             }
                           }
-                        ],
-                        location: 368
+                        ]
                       }
-                    },
-                    location: 355
+                    }
                   }
                 }
-              ],
-              location: 300
+              ]
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 181,
       stmt_len: 206
     }
   },
@@ -410,27 +373,23 @@ export const inserts = [
               schemaname: 'yo',
               relname: 'table',
               inh: true,
-              relpersistence: 'p',
-              location: 403
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'project_id',
-                location: 413
+                name: 'project_id'
               }
             },
             {
               ResTarget: {
-                name: 'name',
-                location: 425
+                name: 'name'
               }
             },
             {
               ResTarget: {
-                name: 'field_name',
-                location: 431
+                name: 'field_name'
               }
             }
           ],
@@ -446,8 +405,7 @@ export const inserts = [
                             str: 'v_obj_key_id'
                           }
                         }
-                      ],
-                      location: 453
+                      ]
                     }
                   },
                   {
@@ -460,8 +418,7 @@ export const inserts = [
                                 str: 'v_secret_name'
                               }
                             }
-                          ],
-                          location: 467
+                          ]
                         }
                       },
                       typeName: {
@@ -473,11 +430,9 @@ export const inserts = [
                               }
                             }
                           ],
-                          typemod: -1,
-                          location: 482
+                          typemod: -1
                         }
-                      },
-                      location: 480
+                      }
                     }
                   },
                   {
@@ -488,37 +443,35 @@ export const inserts = [
                             str: 'v_secret_value'
                           }
                         }
-                      ],
-                      location: 489
+                      ]
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           onConflictClause: {
             OnConflictClause: {
-              action: 2,
+              action: 'ONCONFLICT_UPDATE',
               infer: {
                 InferClause: {
                   indexElems: [
                     {
                       IndexElem: {
                         name: 'project_id',
-                        ordering: 0,
-                        nulls_ordering: 0
+                        ordering: 'SORTBY_DEFAULT',
+                        nulls_ordering: 'SORTBY_NULLS_DEFAULT'
                       }
                     },
                     {
                       IndexElem: {
                         name: 'name',
-                        ordering: 0,
-                        nulls_ordering: 0
+                        ordering: 'SORTBY_DEFAULT',
+                        nulls_ordering: 'SORTBY_NULLS_DEFAULT'
                       }
                     }
-                  ],
-                  location: 519
+                  ]
                 }
               },
               targetList: [
@@ -538,17 +491,15 @@ export const inserts = [
                               str: 'field_name'
                             }
                           }
-                        ],
-                        location: 575
+                        ]
                       }
-                    },
-                    location: 562
+                    }
                   }
                 }
               ],
               whereClause: {
                 A_Expr: {
-                  kind: 0,
+                  kind: 'AEXPR_OP',
                   name: [
                     {
                       String: {
@@ -564,8 +515,7 @@ export const inserts = [
                             str: 'prop'
                           }
                         }
-                      ],
-                      location: 603
+                      ]
                     }
                   },
                   rexpr: {
@@ -574,20 +524,16 @@ export const inserts = [
                         Integer: {
                           ival: 1
                         }
-                      },
-                      location: 610
+                      }
                     }
-                  },
-                  location: 608
+                  }
                 }
-              },
-              location: 507
+              }
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 388,
       stmt_len: 223
     }
   },
@@ -600,27 +546,23 @@ export const inserts = [
               schemaname: 'yo',
               relname: 'table',
               inh: true,
-              relpersistence: 'p',
-              location: 626
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'project_id',
-                location: 636
+                name: 'project_id'
               }
             },
             {
               ResTarget: {
-                name: 'name',
-                location: 648
+                name: 'name'
               }
             },
             {
               ResTarget: {
-                name: 'field_name',
-                location: 654
+                name: 'field_name'
               }
             }
           ],
@@ -636,8 +578,7 @@ export const inserts = [
                             str: 'v_obj_key_id'
                           }
                         }
-                      ],
-                      location: 676
+                      ]
                     }
                   },
                   {
@@ -650,8 +591,7 @@ export const inserts = [
                                 str: 'v_secret_name'
                               }
                             }
-                          ],
-                          location: 690
+                          ]
                         }
                       },
                       typeName: {
@@ -663,11 +603,9 @@ export const inserts = [
                               }
                             }
                           ],
-                          typemod: -1,
-                          location: 705
+                          typemod: -1
                         }
-                      },
-                      location: 703
+                      }
                     }
                   },
                   {
@@ -678,46 +616,42 @@ export const inserts = [
                             str: 'v_secret_value'
                           }
                         }
-                      ],
-                      location: 712
+                      ]
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           onConflictClause: {
             OnConflictClause: {
-              action: 1,
+              action: 'ONCONFLICT_NOTHING',
               infer: {
                 InferClause: {
                   indexElems: [
                     {
                       IndexElem: {
                         name: 'project_id',
-                        ordering: 0,
-                        nulls_ordering: 0
+                        ordering: 'SORTBY_DEFAULT',
+                        nulls_ordering: 'SORTBY_NULLS_DEFAULT'
                       }
                     },
                     {
                       IndexElem: {
                         name: 'name',
-                        ordering: 0,
-                        nulls_ordering: 0
+                        ordering: 'SORTBY_DEFAULT',
+                        nulls_ordering: 'SORTBY_NULLS_DEFAULT'
                       }
                     }
-                  ],
-                  location: 742
+                  ]
                 }
-              },
-              location: 730
+              }
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 612,
       stmt_len: 161
     }
   },
@@ -729,21 +663,18 @@ export const inserts = [
             RangeVar: {
               relname: 'customers',
               inh: true,
-              relpersistence: 'p',
-              location: 788
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'name',
-                location: 799
+                name: 'name'
               }
             },
             {
               ResTarget: {
-                name: 'email',
-                location: 805
+                name: 'email'
               }
             }
           ],
@@ -757,8 +688,7 @@ export const inserts = [
                         String: {
                           str: 'Microsoft'
                         }
-                      },
-                      location: 824
+                      }
                     }
                   },
                   {
@@ -767,31 +697,27 @@ export const inserts = [
                         String: {
                           str: 'hotline@microsoft.com'
                         }
-                      },
-                      location: 839
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           onConflictClause: {
             OnConflictClause: {
-              action: 1,
+              action: 'ONCONFLICT_NOTHING',
               infer: {
                 InferClause: {
-                  conname: 'customers_name_key',
-                  location: 880
+                  conname: 'customers_name_key'
                 }
-              },
-              location: 867
+              }
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 774,
       stmt_len: 150
     }
   },
@@ -803,21 +729,18 @@ export const inserts = [
             RangeVar: {
               relname: 'customers',
               inh: true,
-              relpersistence: 'p',
-              location: 940
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'name',
-                location: 951
+                name: 'name'
               }
             },
             {
               ResTarget: {
-                name: 'email',
-                location: 957
+                name: 'email'
               }
             }
           ],
@@ -831,8 +754,7 @@ export const inserts = [
                         String: {
                           str: 'Microsoft'
                         }
-                      },
-                      location: 976
+                      }
                     }
                   },
                   {
@@ -841,30 +763,28 @@ export const inserts = [
                         String: {
                           str: 'hotline@microsoft.com'
                         }
-                      },
-                      location: 991
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           onConflictClause: {
             OnConflictClause: {
-              action: 2,
+              action: 'ONCONFLICT_UPDATE',
               infer: {
                 InferClause: {
                   indexElems: [
                     {
                       IndexElem: {
                         name: 'name',
-                        ordering: 0,
-                        nulls_ordering: 0
+                        ordering: 'SORTBY_DEFAULT',
+                        nulls_ordering: 'SORTBY_NULLS_DEFAULT'
                       }
                     }
-                  ],
-                  location: 1031
+                  ]
                 }
               },
               targetList: [
@@ -873,7 +793,7 @@ export const inserts = [
                     name: 'email',
                     val: {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -883,7 +803,7 @@ export const inserts = [
                         ],
                         lexpr: {
                           A_Expr: {
-                            kind: 0,
+                            kind: 'AEXPR_OP',
                             name: [
                               {
                                 String: {
@@ -904,8 +824,7 @@ export const inserts = [
                                       str: 'email'
                                     }
                                   }
-                                ],
-                                location: 1066
+                                ]
                               }
                             },
                             rexpr: {
@@ -914,11 +833,9 @@ export const inserts = [
                                   String: {
                                     str: ';'
                                   }
-                                },
-                                location: 1084
+                                }
                               }
-                            },
-                            location: 1081
+                            }
                           }
                         },
                         rexpr: {
@@ -934,24 +851,19 @@ export const inserts = [
                                   str: 'email'
                                 }
                               }
-                            ],
-                            location: 1091
+                            ]
                           }
-                        },
-                        location: 1088
+                        }
                       }
-                    },
-                    location: 1058
+                    }
                   }
                 }
-              ],
-              location: 1019
+              ]
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 925,
       stmt_len: 181
     }
   },
@@ -963,21 +875,18 @@ export const inserts = [
             RangeVar: {
               relname: 'customers',
               inh: true,
-              relpersistence: 'p',
-              location: 1122
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'name',
-                location: 1133
+                name: 'name'
               }
             },
             {
               ResTarget: {
-                name: 'email',
-                location: 1139
+                name: 'email'
               }
             }
           ],
@@ -991,8 +900,7 @@ export const inserts = [
                         String: {
                           str: 'Microsoft'
                         }
-                      },
-                      location: 1158
+                      }
                     }
                   },
                   {
@@ -1001,30 +909,28 @@ export const inserts = [
                         String: {
                           str: 'hotline@microsoft.com'
                         }
-                      },
-                      location: 1173
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           onConflictClause: {
             OnConflictClause: {
-              action: 2,
+              action: 'ONCONFLICT_UPDATE',
               infer: {
                 InferClause: {
                   indexElems: [
                     {
                       IndexElem: {
                         name: 'name',
-                        ordering: 0,
-                        nulls_ordering: 0
+                        ordering: 'SORTBY_DEFAULT',
+                        nulls_ordering: 'SORTBY_NULLS_DEFAULT'
                       }
                     }
-                  ],
-                  location: 1213
+                  ]
                 }
               },
               targetList: [
@@ -1033,7 +939,7 @@ export const inserts = [
                     name: 'email',
                     val: {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -1043,7 +949,7 @@ export const inserts = [
                         ],
                         lexpr: {
                           A_Expr: {
-                            kind: 0,
+                            kind: 'AEXPR_OP',
                             name: [
                               {
                                 String: {
@@ -1064,8 +970,7 @@ export const inserts = [
                                       str: 'email'
                                     }
                                   }
-                                ],
-                                location: 1257
+                                ]
                               }
                             },
                             rexpr: {
@@ -1074,11 +979,9 @@ export const inserts = [
                                   String: {
                                     str: ';'
                                   }
-                                },
-                                location: 1275
+                                }
                               }
-                            },
-                            location: 1272
+                            }
                           }
                         },
                         rexpr: {
@@ -1094,14 +997,11 @@ export const inserts = [
                                   str: 'email'
                                 }
                               }
-                            ],
-                            location: 1282
+                            ]
                           }
-                        },
-                        location: 1279
+                        }
                       }
-                    },
-                    location: 1249
+                    }
                   }
                 },
                 {
@@ -1109,7 +1009,7 @@ export const inserts = [
                     name: 'level',
                     val: {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -1130,8 +1030,7 @@ export const inserts = [
                                   str: 'level'
                                 }
                               }
-                            ],
-                            location: 1315
+                            ]
                           }
                         },
                         rexpr: {
@@ -1140,14 +1039,11 @@ export const inserts = [
                               Integer: {
                                 ival: 1
                               }
-                            },
-                            location: 1333
+                            }
                           }
-                        },
-                        location: 1331
+                        }
                       }
-                    },
-                    location: 1307
+                    }
                   }
                 },
                 {
@@ -1166,21 +1062,17 @@ export const inserts = [
                               str: 'other'
                             }
                           }
-                        ],
-                        location: 1352
+                        ]
                       }
-                    },
-                    location: 1344
+                    }
                   }
                 }
-              ],
-              location: 1201
+              ]
             }
           },
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 1107,
       stmt_len: 259
     }
   },
@@ -1192,21 +1084,18 @@ export const inserts = [
             RangeVar: {
               relname: 'customers',
               inh: true,
-              relpersistence: 'p',
-              location: 1382
+              relpersistence: 'p'
             }
           },
           cols: [
             {
               ResTarget: {
-                name: 'name',
-                location: 1393
+                name: 'name'
               }
             },
             {
               ResTarget: {
-                name: 'email',
-                location: 1399
+                name: 'email'
               }
             }
           ],
@@ -1220,8 +1109,7 @@ export const inserts = [
                         String: {
                           str: 'Microsoft'
                         }
-                      },
-                      location: 1418
+                      }
                     }
                   },
                   {
@@ -1230,37 +1118,35 @@ export const inserts = [
                         String: {
                           str: 'hotline@microsoft.com'
                         }
-                      },
-                      location: 1433
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           onConflictClause: {
             OnConflictClause: {
-              action: 2,
+              action: 'ONCONFLICT_UPDATE',
               infer: {
                 InferClause: {
                   indexElems: [
                     {
                       IndexElem: {
                         name: 'id',
-                        ordering: 0,
-                        nulls_ordering: 0
+                        ordering: 'SORTBY_DEFAULT',
+                        nulls_ordering: 'SORTBY_NULLS_DEFAULT'
                       }
                     },
                     {
                       IndexElem: {
                         name: 'project_id',
-                        ordering: 0,
-                        nulls_ordering: 0
+                        ordering: 'SORTBY_DEFAULT',
+                        nulls_ordering: 'SORTBY_NULLS_DEFAULT'
                       }
                     }
-                  ],
-                  location: 1473
+                  ]
                 }
               },
               targetList: [
@@ -1269,7 +1155,7 @@ export const inserts = [
                     name: 'email',
                     val: {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -1279,7 +1165,7 @@ export const inserts = [
                         ],
                         lexpr: {
                           A_Expr: {
-                            kind: 0,
+                            kind: 'AEXPR_OP',
                             name: [
                               {
                                 String: {
@@ -1300,8 +1186,7 @@ export const inserts = [
                                       str: 'email'
                                     }
                                   }
-                                ],
-                                location: 1527
+                                ]
                               }
                             },
                             rexpr: {
@@ -1310,11 +1195,9 @@ export const inserts = [
                                   String: {
                                     str: ';'
                                   }
-                                },
-                                location: 1545
+                                }
                               }
-                            },
-                            location: 1542
+                            }
                           }
                         },
                         rexpr: {
@@ -1330,14 +1213,11 @@ export const inserts = [
                                   str: 'email'
                                 }
                               }
-                            ],
-                            location: 1552
+                            ]
                           }
-                        },
-                        location: 1549
+                        }
                       }
-                    },
-                    location: 1519
+                    }
                   }
                 },
                 {
@@ -1345,7 +1225,7 @@ export const inserts = [
                     name: 'level',
                     val: {
                       A_Expr: {
-                        kind: 0,
+                        kind: 'AEXPR_OP',
                         name: [
                           {
                             String: {
@@ -1366,8 +1246,7 @@ export const inserts = [
                                   str: 'level'
                                 }
                               }
-                            ],
-                            location: 1585
+                            ]
                           }
                         },
                         rexpr: {
@@ -1376,14 +1255,11 @@ export const inserts = [
                               Integer: {
                                 ival: 1
                               }
-                            },
-                            location: 1603
+                            }
                           }
-                        },
-                        location: 1601
+                        }
                       }
-                    },
-                    location: 1577
+                    }
                   }
                 },
                 {
@@ -1402,15 +1278,12 @@ export const inserts = [
                               str: 'other'
                             }
                           }
-                        ],
-                        location: 1622
+                        ]
                       }
-                    },
-                    location: 1614
+                    }
                   }
                 }
-              ],
-              location: 1461
+              ]
             }
           },
           returningList: [
@@ -1422,18 +1295,15 @@ export const inserts = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 1651
+                    ]
                   }
-                },
-                location: 1651
+                }
               }
             }
           ],
-          override: 0
+          override: 'OVERRIDING_NOT_SET'
         }
       },
-      stmt_location: 1367,
       stmt_len: 285
     }
   }

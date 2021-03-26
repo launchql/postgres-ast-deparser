@@ -2,6 +2,7 @@ import { cleanTree, cleanLines, getConnections } from '../utils';
 import { readFileSync } from 'fs';
 import { sync as glob } from 'glob';
 const parser = require('pgsql-parser');
+const { preparse } = require('pgsql-deparser');
 
 const FIXTURE_DIR = `${__dirname}/../__fixtures__`;
 let db, teardown;
@@ -31,14 +32,15 @@ export const check = async (file) => {
   )[0];
   const tree = parser.parse(testsql);
   const originalTree = cleanTree(tree);
-
+  const parseTree = preparse(tree);
   const sqlfromparser = parser.deparse(tree);
   const [{ expressions_array: result }] = await db.any(
     `select deparser.expressions_array( $1::jsonb );`,
-    JSON.stringify(tree)
+    JSON.stringify(parseTree)
   );
   const sql = result.join('\n');
   // console.log(sql);
+
   expect(cleanLines(sql)).toMatchSnapshot();
   expect(cleanLines(sqlfromparser)).toMatchSnapshot();
   // uncomment this to debug...
@@ -49,6 +51,10 @@ export const check = async (file) => {
   expect(newTree).toEqual(originalTree);
   expect(cleanTree(parser.parse(sqlfromparser))).toEqual(originalTree);
 };
+
+it('privs-and-defaults', async () => {
+  await check('privs-and-defaults.sql');
+});
 
 it('parens', async () => {
   await check('parens.sql');

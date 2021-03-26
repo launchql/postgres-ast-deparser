@@ -30,11 +30,11 @@ it('select policy (using)', async () => {
                 v_table_name := 'mytable'::text,
                 v_roles := '{app_user, auth_user}'::text[],
                 v_qual := ast.bool_expr(
-                    v_boolop := 1,
+                    v_boolop := 'OR_EXPR',
                     v_args := to_jsonb(
                         ARRAY[
                             ast.a_expr(
-                                v_kind := 0,
+                                v_kind := 'AEXPR_OP',
                                 v_name := to_jsonb(ARRAY[
                                     ast.string('=')
                                 ]),
@@ -83,11 +83,11 @@ it('insert policy (with_check)', async () => {
                 v_table_name := 'mytable'::text,
                 v_roles := '{app_user, auth_user}'::text[],
                 v_with_check := ast.bool_expr(
-                    v_boolop := 1,
+                    v_boolop := 'OR_EXPR',
                     v_args := to_jsonb(
                         ARRAY[
                             ast.a_expr(
-                                v_kind := 0,
+                                v_kind := 'AEXPR_OP',
                                 v_name := to_jsonb(ARRAY[
                                     ast.string('=')
                                 ]),

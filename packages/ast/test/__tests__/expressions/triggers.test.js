@@ -42,7 +42,7 @@ select ast.create_trig_stmt(
     v_row := true,
     v_timing := 2,
     v_events := 16,
-    v_whenClause := ast.a_expr( v_kind := 3, 
+    v_whenClause := ast.a_expr( v_kind := 'AEXPR_DISTINCT', 
         v_lexpr := ast.column_ref(
           to_jsonb(ARRAY[ ast.string('old'),ast.string('field-b') ])
         ),
@@ -66,7 +66,7 @@ select deparser.deparse(
     v_row := true,
     v_timing := 2,
     v_events := 16,
-    v_whenClause := ast.a_expr( v_kind := 3, 
+    v_whenClause := ast.a_expr( v_kind := 'AEXPR_DISTINCT', 
         v_lexpr := ast.column_ref(
           to_jsonb(ARRAY[ ast.string('old'),ast.string('field-b') ])
         ),
@@ -201,7 +201,7 @@ select deparser.deparse(
     
     v_body := deparser.deparse(
         ast.raw_stmt(
-          v_stmt := ast_helpers.equals(
+          v_stmt := ast_helpers.eq(
               v_lexpr := ast.string('NEW.field'),
               v_rexpr := ast_helpers.tsvector_index($1::jsonb)
           ),
@@ -253,7 +253,7 @@ select deparser.deparse(
     v_row := true,
     v_timing := 2,
     v_events := 16,
-    v_whenClause := ast.a_expr( v_kind := 3, 
+    v_whenClause := ast.a_expr( v_kind := 'AEXPR_DISTINCT', 
         v_lexpr := ast.column_ref(
           to_jsonb(ARRAY[ ast.string('old'),ast.string('field-b') ])
         ),
@@ -262,6 +262,53 @@ select deparser.deparse(
           to_jsonb(ARRAY[ ast.string('new'),ast.string('field-b') ])
         ) 
     )
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('create_trigger_distinct_fields deparse', async () => {
+  const [result] = await db.any(`
+select deparser.deparse( 
+  ast_helpers.create_trigger_distinct_fields(
+    v_trigger_name := 'v_trigger_name',
+    
+    v_schema_name := 'v_schema_name',
+    v_table_name := 'v_table_name',
+
+    v_trigger_fn_schema := 'v_trigger_fn_schema',
+    v_trigger_fn_name := 'v_trigger_fn_name',
+
+    v_fields := ARRAY['field1', 'field2'],
+    v_params := NULL,
+    v_timing := 2,
+    v_events := 4
+  )
+);
+  `);
+  expect(result).toMatchSnapshot();
+});
+
+it('create_trigger deparse', async () => {
+  const [result] = await db.any(`
+select deparser.deparse( 
+  ast_helpers.create_trigger(
+    v_trigger_name := 'v_trigger_name',
+    
+    v_schema_name := 'v_schema_name',
+    v_table_name := 'v_table_name',
+
+    v_trigger_fn_schema := 'v_trigger_fn_schema',
+    v_trigger_fn_name := 'v_trigger_fn_name',
+
+    v_whenClause := ast_helpers.neq(
+      v_lexpr := ast_helpers.col('new', 'type'),
+      v_rexpr := ast.a_const( v_val := ast.integer(0) )
+    ),
+    v_params := NULL,
+    v_timing := 2,
+    v_events := 4
   )
 );
   `);

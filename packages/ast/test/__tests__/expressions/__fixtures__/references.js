@@ -7,8 +7,7 @@ export const references = [
             RangeVar: {
               relname: 'orders',
               inh: true,
-              relpersistence: 'p',
-              location: 13
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -29,20 +28,17 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 35
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 5,
-                      location: 43
+                      contype: 'CONSTR_PRIMARY'
                     }
                   }
-                ],
-                location: 26
+                ]
               }
             },
             {
@@ -62,22 +58,19 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 71
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 8,
-                      location: 79,
+                      contype: 'CONSTR_FOREIGN',
                       pktable: {
                         RangeVar: {
                           relname: 'products',
                           inh: true,
-                          relpersistence: 'p',
-                          location: 90
+                          relpersistence: 'p'
                         }
                       },
                       pk_attrs: [
@@ -93,8 +86,7 @@ export const references = [
                       initially_valid: true
                     }
                   }
-                ],
-                location: 60
+                ]
               }
             },
             {
@@ -114,16 +106,14 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 126
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 117
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
       stmt_len: 135
@@ -137,8 +127,7 @@ export const references = [
             RangeVar: {
               relname: 'orders',
               inh: true,
-              relpersistence: 'p',
-              location: 150
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -159,20 +148,17 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 172
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 5,
-                      location: 180
+                      contype: 'CONSTR_PRIMARY'
                     }
                   }
-                ],
-                location: 163
+                ]
               }
             },
             {
@@ -192,22 +178,19 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 208
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 8,
-                      location: 216,
+                      contype: 'CONSTR_FOREIGN',
                       pktable: {
                         RangeVar: {
                           relname: 'products',
                           inh: true,
-                          relpersistence: 'p',
-                          location: 227
+                          relpersistence: 'p'
                         }
                       },
                       fk_matchtype: 's',
@@ -216,8 +199,7 @@ export const references = [
                       initially_valid: true
                     }
                   }
-                ],
-                location: 197
+                ]
               }
             },
             {
@@ -237,19 +219,16 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 250
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 241
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 136,
       stmt_len: 123
     }
   },
@@ -261,8 +240,7 @@ export const references = [
             RangeVar: {
               relname: 't1',
               inh: true,
-              relpersistence: 'p',
-              location: 274
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -283,20 +261,17 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 283
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 5,
-                      location: 291
+                      contype: 'CONSTR_PRIMARY'
                     }
                   }
-                ],
-                location: 281
+                ]
               }
             },
             {
@@ -316,12 +291,10 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 308
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 306
+                is_local: true
               }
             },
             {
@@ -341,24 +314,20 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 321
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 319
+                is_local: true
               }
             },
             {
               Constraint: {
-                contype: 8,
-                location: 332,
+                contype: 'CONSTR_FOREIGN',
                 pktable: {
                   RangeVar: {
                     relname: 'other_table',
                     inh: true,
-                    relpersistence: 'p',
-                    location: 362
+                    relpersistence: 'p'
                   }
                 },
                 fk_attrs: [
@@ -392,10 +361,9 @@ export const references = [
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 260,
       stmt_len: 124
     }
   },
@@ -407,8 +375,7 @@ export const references = [
             RangeVar: {
               relname: 'products',
               inh: true,
-              relpersistence: 'p',
-              location: 399
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -429,20 +396,17 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 425
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 5,
-                      location: 433
+                      contype: 'CONSTR_PRIMARY'
                     }
                   }
-                ],
-                location: 414
+                ]
               }
             },
             {
@@ -457,12 +421,10 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 455
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 450
+                is_local: true
               }
             },
             {
@@ -482,19 +444,16 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 471
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 465
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 385,
       stmt_len: 95
     }
   },
@@ -506,8 +465,7 @@ export const references = [
             RangeVar: {
               relname: 'orders',
               inh: true,
-              relpersistence: 'p',
-              location: 495
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -528,20 +486,17 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 517
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 5,
-                      location: 525
+                      contype: 'CONSTR_PRIMARY'
                     }
                   }
-                ],
-                location: 508
+                ]
               }
             },
             {
@@ -556,19 +511,16 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 559
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 542
+                is_local: true
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 481,
       stmt_len: 84
     }
   },
@@ -580,8 +532,7 @@ export const references = [
             RangeVar: {
               relname: 'order_items',
               inh: true,
-              relpersistence: 'p',
-              location: 580
+              relpersistence: 'p'
             }
           },
           tableElts: [
@@ -602,22 +553,19 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 609
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 8,
-                      location: 617,
+                      contype: 'CONSTR_FOREIGN',
                       pktable: {
                         RangeVar: {
                           relname: 'products',
                           inh: true,
-                          relpersistence: 'p',
-                          location: 628
+                          relpersistence: 'p'
                         }
                       },
                       fk_matchtype: 's',
@@ -626,8 +574,7 @@ export const references = [
                       initially_valid: true
                     }
                   }
-                ],
-                location: 598
+                ]
               }
             },
             {
@@ -647,22 +594,19 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 651
+                    typemod: -1
                   }
                 },
                 is_local: true,
                 constraints: [
                   {
                     Constraint: {
-                      contype: 8,
-                      location: 659,
+                      contype: 'CONSTR_FOREIGN',
                       pktable: {
                         RangeVar: {
                           relname: 'orders',
                           inh: true,
-                          relpersistence: 'p',
-                          location: 670
+                          relpersistence: 'p'
                         }
                       },
                       fk_matchtype: 's',
@@ -671,8 +615,7 @@ export const references = [
                       initially_valid: true
                     }
                   }
-                ],
-                location: 642
+                ]
               }
             },
             {
@@ -692,18 +635,15 @@ export const references = [
                         }
                       }
                     ],
-                    typemod: -1,
-                    location: 691
+                    typemod: -1
                   }
                 },
-                is_local: true,
-                location: 682
+                is_local: true
               }
             },
             {
               Constraint: {
-                contype: 5,
-                location: 704,
+                contype: 'CONSTR_PRIMARY',
                 keys: [
                   {
                     String: {
@@ -719,10 +659,9 @@ export const references = [
               }
             }
           ],
-          oncommit: 0
+          oncommit: 'ONCOMMIT_NOOP'
         }
       },
-      stmt_location: 566,
       stmt_len: 174
     }
   }

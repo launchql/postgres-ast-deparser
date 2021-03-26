@@ -16,13 +16,13 @@ export default {
         roles: [
           {
             RoleSpec: {
-              roletype: 3
+              roletype: 'ROLESPEC_PUBLIC'
             }
           }
         ],
         qual: {
           SubLink: {
-            subLinkType: 4,
+            subLinkType: 'EXPR_SUBLINK',
             subselect: {
               SelectStmt: {
                 targetList: [
@@ -30,7 +30,7 @@ export default {
                     ResTarget: {
                       val: {
                         A_Expr: {
-                          kind: 1,
+                          kind: 'AEXPR_OP_ANY',
                           name: [
                             {
                               String: {
@@ -78,7 +78,7 @@ export default {
                 fromClause: [
                   {
                     JoinExpr: {
-                      jointype: 0,
+                      jointype: 'JOIN_INNER',
                       larg: {
                         RangeVar: {
                           schemaname: 'object_schema',
@@ -107,11 +107,11 @@ export default {
                       },
                       quals: {
                         BoolExpr: {
-                          boolop: 0,
+                          boolop: 'AND_EXPR',
                           args: [
                             {
                               A_Expr: {
-                                kind: 0,
+                                kind: 'AEXPR_OP',
                                 name: [
                                   {
                                     String: {
@@ -155,7 +155,7 @@ export default {
                             },
                             {
                               A_Expr: {
-                                kind: 0,
+                                kind: 'AEXPR_OP',
                                 name: [
                                   {
                                     String: {
@@ -200,7 +200,7 @@ export default {
                 ],
                 whereClause: {
                   A_Expr: {
-                    kind: 0,
+                    kind: 'AEXPR_OP',
                     name: [
                       {
                         String: {
@@ -237,7 +237,7 @@ export default {
                     }
                   }
                 },
-                op: 0
+                op: 'SETOP_NONE'
               }
             }
           }

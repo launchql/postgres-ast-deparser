@@ -6,309 +6,6 @@ GRANT USAGE ON SCHEMA ast_constants TO PUBLIC;
 ALTER DEFAULT PRIVILEGES IN SCHEMA ast_constants 
  GRANT EXECUTE ON FUNCTIONS  TO PUBLIC;
 
-CREATE FUNCTION ast_constants.alter_table_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'AT_AddColumn' THEN 0
- WHEN 'AT_AddColumnRecurse' THEN 1
- WHEN 'AT_AddColumnToView' THEN 2
- WHEN 'AT_ColumnDefault' THEN 3
- WHEN 'AT_DropNotNull' THEN 4
- WHEN 'AT_SetNotNull' THEN 5
- WHEN 'AT_SetStatistics' THEN 6
- WHEN 'AT_SetOptions' THEN 7
- WHEN 'AT_ResetOptions' THEN 8
- WHEN 'AT_SetStorage' THEN 9
- WHEN 'AT_DropColumn' THEN 10
- WHEN 'AT_DropColumnRecurse' THEN 11
- WHEN 'AT_AddIndex' THEN 12
- WHEN 'AT_ReAddIndex' THEN 13
- WHEN 'AT_AddConstraint' THEN 14
- WHEN 'AT_AddConstraintRecurse' THEN 15
- WHEN 'AT_ReAddConstraint' THEN 16
- WHEN 'AT_AlterConstraint' THEN 17
- WHEN 'AT_ValidateConstraint' THEN 18
- WHEN 'AT_ValidateConstraintRecurse' THEN 19
- WHEN 'AT_ProcessedConstraint' THEN 20
- WHEN 'AT_AddIndexConstraint' THEN 21
- WHEN 'AT_DropConstraint' THEN 22
- WHEN 'AT_DropConstraintRecurse' THEN 23
- WHEN 'AT_ReAddComment' THEN 24
- WHEN 'AT_AlterColumnType' THEN 25
- WHEN 'AT_AlterColumnGenericOptions' THEN 26
- WHEN 'AT_ChangeOwner' THEN 27
- WHEN 'AT_ClusterOn' THEN 28
- WHEN 'AT_DropCluster' THEN 29
- WHEN 'AT_SetLogged' THEN 30
- WHEN 'AT_SetUnLogged' THEN 31
- WHEN 'AT_AddOids' THEN 32
- WHEN 'AT_AddOidsRecurse' THEN 33
- WHEN 'AT_DropOids' THEN 34
- WHEN 'AT_SetTableSpace' THEN 35
- WHEN 'AT_SetRelOptions' THEN 36
- WHEN 'AT_ResetRelOptions' THEN 37
- WHEN 'AT_ReplaceRelOptions' THEN 38
- WHEN 'AT_EnableTrig' THEN 39
- WHEN 'AT_EnableAlwaysTrig' THEN 40
- WHEN 'AT_EnableReplicaTrig' THEN 41
- WHEN 'AT_DisableTrig' THEN 42
- WHEN 'AT_EnableTrigAll' THEN 43
- WHEN 'AT_DisableTrigAll' THEN 44
- WHEN 'AT_EnableTrigUser' THEN 45
- WHEN 'AT_DisableTrigUser' THEN 46
- WHEN 'AT_EnableRule' THEN 47
- WHEN 'AT_EnableAlwaysRule' THEN 48
- WHEN 'AT_EnableReplicaRule' THEN 49
- WHEN 'AT_DisableRule' THEN 50
- WHEN 'AT_AddInherit' THEN 51
- WHEN 'AT_DropInherit' THEN 52
- WHEN 'AT_AddOf' THEN 53
- WHEN 'AT_DropOf' THEN 54
- WHEN 'AT_ReplicaIdentity' THEN 55
- WHEN 'AT_EnableRowSecurity' THEN 56
- WHEN 'AT_DisableRowSecurity' THEN 57
- WHEN 'AT_ForceRowSecurity' THEN 58
- WHEN 'AT_NoForceRowSecurity' THEN 59
- WHEN 'AT_GenericOptions' THEN 60
- WHEN 'AT_AttachPartition' THEN 61
- WHEN 'AT_DetachPartition' THEN 62
- WHEN 'AT_AddIdentity' THEN 63
- WHEN 'AT_SetIdentity' THEN 64
- WHEN 'AT_DropIdentity' THEN 65 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.join_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'JOIN_INNER' THEN 0
- WHEN 'JOIN_LEFT' THEN 1
- WHEN 'JOIN_FULL' THEN 2
- WHEN 'JOIN_RIGHT' THEN 3
- WHEN 'JOIN_SEMI' THEN 4
- WHEN 'JOIN_ANTI' THEN 5
- WHEN 'JOIN_UNIQUE_OUTER' THEN 6
- WHEN 'JOIN_UNIQUE_INNER' THEN 7 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.role_stmt_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'ROLESTMT_ROLE' THEN 0
- WHEN 'ROLESTMT_USER' THEN 1
- WHEN 'ROLESTMT_GROUP' THEN 2 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.role_spec_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'ROLESPEC_CSTRING' THEN 0
- WHEN 'ROLESPEC_CURRENT_USER' THEN 1
- WHEN 'ROLESPEC_SESSION_USER' THEN 2
- WHEN 'ROLESPEC_PUBLIC' THEN 3 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.sql_value_function_op ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'SVFOP_CURRENT_DATE' THEN 0
- WHEN 'SVFOP_CURRENT_TIME' THEN 1
- WHEN 'SVFOP_CURRENT_TIME_N' THEN 2
- WHEN 'SVFOP_CURRENT_TIMESTAMP' THEN 3
- WHEN 'SVFOP_CURRENT_TIMESTAMP_N' THEN 4
- WHEN 'SVFOP_LOCALTIME' THEN 5
- WHEN 'SVFOP_LOCALTIME_N' THEN 6
- WHEN 'SVFOP_LOCALTIMESTAMP' THEN 7
- WHEN 'SVFOP_LOCALTIMESTAMP_N' THEN 8
- WHEN 'SVFOP_CURRENT_ROLE' THEN 9
- WHEN 'SVFOP_CURRENT_USER' THEN 10
- WHEN 'SVFOP_USER' THEN 11
- WHEN 'SVFOP_SESSION_USER' THEN 12
- WHEN 'SVFOP_CURRENT_CATALOG' THEN 13
- WHEN 'SVFOP_CURRENT_SCHEMA' THEN 14 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.bool_expr_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'AND_EXPR' THEN 0
- WHEN 'OR_EXPR' THEN 1 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.a_expr_kind ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'AEXPR_OP' THEN 0
- WHEN 'AEXPR_OP_ANY' THEN 1
- WHEN 'AEXPR_OP_ALL' THEN 2
- WHEN 'AEXPR_DISTINCT' THEN 3
- WHEN 'AEXPR_NOT_DISTINCT' THEN 4
- WHEN 'AEXPR_NULLIF' THEN 5
- WHEN 'AEXPR_OF' THEN 6
- WHEN 'AEXPR_IN' THEN 7
- WHEN 'AEXPR_LIKE' THEN 8
- WHEN 'AEXPR_ILIKE' THEN 9
- WHEN 'AEXPR_SIMILAR' THEN 10
- WHEN 'AEXPR_BETWEEN' THEN 11
- WHEN 'AEXPR_NOT_BETWEEN' THEN 12
- WHEN 'AEXPR_BETWEEN_SYM' THEN 13
- WHEN 'AEXPR_NOT_BETWEEN_SYM' THEN 14
- WHEN 'AEXPR_PAREN' THEN 15 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.null_test_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'IS_NULL' THEN 0
- WHEN 'IS_NOT_NULL' THEN 1 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.lock_clause_strength ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'LCS_NONE' THEN 0
- WHEN 'LCS_FORKEYSHARE' THEN 1
- WHEN 'LCS_FORSHARE' THEN 2
- WHEN 'LCS_FORNOKEYUPDATE' THEN 3
- WHEN 'LCS_FORUPDATE' THEN 4 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.sort_by_dir ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'SORTBY_DEFAULT' THEN 0
- WHEN 'SORTBY_ASC' THEN 1
- WHEN 'SORTBY_DESC' THEN 2
- WHEN 'SORTBY_USING' THEN 3 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.sort_by_nulls ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'SORTBY_NULLS_DEFAULT' THEN 0
- WHEN 'SORTBY_NULLS_FIRST' THEN 1
- WHEN 'SORTBY_NULLS_LAST' THEN 2 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.variable_set_kind ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'VAR_SET_VALUE' THEN 0
- WHEN 'VAR_SET_DEFAULT' THEN 1
- WHEN 'VAR_SET_CURRENT' THEN 2
- WHEN 'VAR_SET_MULTI' THEN 3
- WHEN 'VAR_RESET' THEN 4
- WHEN 'VAR_RESET_ALL' THEN 5 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.object_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'OBJECT_ACCESS_METHOD' THEN 0
- WHEN 'OBJECT_AGGREGATE' THEN 1
- WHEN 'OBJECT_AMOP' THEN 2
- WHEN 'OBJECT_AMPROC' THEN 3
- WHEN 'OBJECT_ATTRIBUTE' THEN 4
- WHEN 'OBJECT_CAST' THEN 5
- WHEN 'OBJECT_COLUMN' THEN 6
- WHEN 'OBJECT_COLLATION' THEN 7
- WHEN 'OBJECT_CONVERSION' THEN 8
- WHEN 'OBJECT_DATABASE' THEN 9
- WHEN 'OBJECT_DEFAULT' THEN 10
- WHEN 'OBJECT_DEFACL' THEN 11
- WHEN 'OBJECT_DOMAIN' THEN 12
- WHEN 'OBJECT_DOMCONSTRAINT' THEN 13
- WHEN 'OBJECT_EVENT_TRIGGER' THEN 14
- WHEN 'OBJECT_EXTENSION' THEN 15
- WHEN 'OBJECT_FDW' THEN 16
- WHEN 'OBJECT_FOREIGN_SERVER' THEN 17
- WHEN 'OBJECT_FOREIGN_TABLE' THEN 18
- WHEN 'OBJECT_FUNCTION' THEN 19
- WHEN 'OBJECT_INDEX' THEN 20
- WHEN 'OBJECT_LANGUAGE' THEN 21
- WHEN 'OBJECT_LARGEOBJECT' THEN 22
- WHEN 'OBJECT_MATVIEW' THEN 23
- WHEN 'OBJECT_OPCLASS' THEN 24
- WHEN 'OBJECT_OPERATOR' THEN 25
- WHEN 'OBJECT_OPFAMILY' THEN 26
- WHEN 'OBJECT_POLICY' THEN 27
- WHEN 'OBJECT_PUBLICATION' THEN 28
- WHEN 'OBJECT_PUBLICATION_REL' THEN 29
- WHEN 'OBJECT_ROLE' THEN 30
- WHEN 'OBJECT_RULE' THEN 31
- WHEN 'OBJECT_SCHEMA' THEN 32
- WHEN 'OBJECT_SEQUENCE' THEN 33
- WHEN 'OBJECT_SUBSCRIPTION' THEN 34
- WHEN 'OBJECT_STATISTIC_EXT' THEN 35
- WHEN 'OBJECT_TABCONSTRAINT' THEN 36
- WHEN 'OBJECT_TABLE' THEN 37
- WHEN 'OBJECT_TABLESPACE' THEN 38
- WHEN 'OBJECT_TRANSFORM' THEN 39
- WHEN 'OBJECT_TRIGGER' THEN 40
- WHEN 'OBJECT_TSCONFIGURATION' THEN 41
- WHEN 'OBJECT_TSDICTIONARY' THEN 42
- WHEN 'OBJECT_TSPARSER' THEN 43
- WHEN 'OBJECT_TSTEMPLATE' THEN 44
- WHEN 'OBJECT_TYPE' THEN 45
- WHEN 'OBJECT_USER_MAPPING' THEN 46
- WHEN 'OBJECT_VIEW' THEN 47 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.object_type ( val int ) RETURNS text AS $EOFCODE$
-SELECT CASE val
- WHEN 0 THEN 'OBJECT_ACCESS_METHOD'
- WHEN 1 THEN 'OBJECT_AGGREGATE'
- WHEN 2 THEN 'OBJECT_AMOP'
- WHEN 3 THEN 'OBJECT_AMPROC'
- WHEN 4 THEN 'OBJECT_ATTRIBUTE'
- WHEN 5 THEN 'OBJECT_CAST'
- WHEN 6 THEN 'OBJECT_COLUMN'
- WHEN 7 THEN 'OBJECT_COLLATION'
- WHEN 8 THEN 'OBJECT_CONVERSION'
- WHEN 9 THEN 'OBJECT_DATABASE'
- WHEN 10 THEN 'OBJECT_DEFAULT'
- WHEN 11 THEN 'OBJECT_DEFACL'
- WHEN 12 THEN 'OBJECT_DOMAIN'
- WHEN 13 THEN 'OBJECT_DOMCONSTRAINT'
- WHEN 14 THEN 'OBJECT_EVENT_TRIGGER'
- WHEN 15 THEN 'OBJECT_EXTENSION'
- WHEN 16 THEN 'OBJECT_FDW'
- WHEN 17 THEN 'OBJECT_FOREIGN_SERVER'
- WHEN 18 THEN 'OBJECT_FOREIGN_TABLE'
- WHEN 19 THEN 'OBJECT_FUNCTION'
- WHEN 20 THEN 'OBJECT_INDEX'
- WHEN 21 THEN 'OBJECT_LANGUAGE'
- WHEN 22 THEN 'OBJECT_LARGEOBJECT'
- WHEN 23 THEN 'OBJECT_MATVIEW'
- WHEN 24 THEN 'OBJECT_OPCLASS'
- WHEN 25 THEN 'OBJECT_OPERATOR'
- WHEN 26 THEN 'OBJECT_OPFAMILY'
- WHEN 27 THEN 'OBJECT_POLICY'
- WHEN 28 THEN 'OBJECT_PUBLICATION'
- WHEN 29 THEN 'OBJECT_PUBLICATION_REL'
- WHEN 30 THEN 'OBJECT_ROLE'
- WHEN 31 THEN 'OBJECT_RULE'
- WHEN 32 THEN 'OBJECT_SCHEMA'
- WHEN 33 THEN 'OBJECT_SEQUENCE'
- WHEN 34 THEN 'OBJECT_SUBSCRIPTION'
- WHEN 35 THEN 'OBJECT_STATISTIC_EXT'
- WHEN 36 THEN 'OBJECT_TABCONSTRAINT'
- WHEN 37 THEN 'OBJECT_TABLE'
- WHEN 38 THEN 'OBJECT_TABLESPACE'
- WHEN 39 THEN 'OBJECT_TRANSFORM'
- WHEN 40 THEN 'OBJECT_TRIGGER'
- WHEN 41 THEN 'OBJECT_TSCONFIGURATION'
- WHEN 42 THEN 'OBJECT_TSDICTIONARY'
- WHEN 43 THEN 'OBJECT_TSPARSER'
- WHEN 44 THEN 'OBJECT_TSTEMPLATE'
- WHEN 45 THEN 'OBJECT_TYPE'
- WHEN 46 THEN 'OBJECT_USER_MAPPING'
- WHEN 47 THEN 'OBJECT_VIEW' END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_constants.constr_type ( val text ) RETURNS int AS $EOFCODE$
-SELECT CASE val
- WHEN 'CONSTR_NULL' THEN 0
- WHEN 'CONSTR_NOTNULL' THEN 1
- WHEN 'CONSTR_DEFAULT' THEN 2
- WHEN 'CONSTR_IDENTITY' THEN 3
- WHEN 'CONSTR_CHECK' THEN 4
- WHEN 'CONSTR_PRIMARY' THEN 5
- WHEN 'CONSTR_UNIQUE' THEN 6
- WHEN 'CONSTR_EXCLUSION' THEN 7
- WHEN 'CONSTR_FOREIGN' THEN 8
- WHEN 'CONSTR_ATTR_DEFERRABLE' THEN 9
- WHEN 'CONSTR_ATTR_NOT_DEFERRABLE' THEN 10
- WHEN 'CONSTR_ATTR_DEFERRED' THEN 11
- WHEN 'CONSTR_ATTR_IMMEDIATE' THEN 12 END;
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
 CREATE SCHEMA ast_helpers;
 
 GRANT USAGE ON SCHEMA ast_helpers TO PUBLIC;
@@ -332,1725 +29,2927 @@ RETURN result;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.raw_stmt ( v_stmt jsonb DEFAULT NULL, v_stmt_len int DEFAULT NULL, v_stmt_location int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"RawStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{RawStmt, stmt}', v_stmt);
-    result = ast.jsonb_set(result, '{RawStmt, stmt_len}', to_jsonb(v_stmt_len));
-    result = ast.jsonb_set(result, '{RawStmt, stmt_location}', to_jsonb(v_stmt_location));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.alias ( v_aliasname text DEFAULT NULL, v_colnames jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Alias":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{Alias, aliasname}', to_jsonb(v_aliasname));
+      result = ast.jsonb_set(result, '{Alias, colnames}', v_colnames);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.create_schema_stmt ( v_schemaname text DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL, v_schemaelts jsonb DEFAULT NULL, v_authrole jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateSchemaStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateSchemaStmt, schemaname}', to_jsonb(v_schemaname));
-    result = ast.jsonb_set(result, '{CreateSchemaStmt, if_not_exists}', to_jsonb(v_if_not_exists));
-    result = ast.jsonb_set(result, '{CreateSchemaStmt, schemaElts}', v_schemaElts);
-    result = ast.jsonb_set(result, '{CreateSchemaStmt, authrole}', v_authrole);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.range_var ( v_catalogname text DEFAULT NULL, v_schemaname text DEFAULT NULL, v_relname text DEFAULT NULL, v_inh boolean DEFAULT NULL, v_relpersistence text DEFAULT NULL, v_alias jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RangeVar":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RangeVar, catalogname}', to_jsonb(v_catalogname));
+      result = ast.jsonb_set(result, '{RangeVar, schemaname}', to_jsonb(v_schemaname));
+      result = ast.jsonb_set(result, '{RangeVar, relname}', to_jsonb(v_relname));
+      result = ast.jsonb_set(result, '{RangeVar, inh}', to_jsonb(v_inh));
+      result = ast.jsonb_set(result, '{RangeVar, relpersistence}', to_jsonb(v_relpersistence));
+      result = ast.jsonb_set(result, '{RangeVar, alias}', v_alias);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.create_stmt ( v_relation jsonb DEFAULT NULL, v_tableelts jsonb DEFAULT NULL, v_oncommit int DEFAULT NULL, v_inhrelations jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_oftypename jsonb DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{CreateStmt, tableElts}', v_tableElts);
-    result = ast.jsonb_set(result, '{CreateStmt, oncommit}', to_jsonb(v_oncommit));
-    result = ast.jsonb_set(result, '{CreateStmt, inhRelations}', v_inhRelations);
-    result = ast.jsonb_set(result, '{CreateStmt, options}', v_options);
-    result = ast.jsonb_set(result, '{CreateStmt, ofTypename}', v_ofTypename);
-    result = ast.jsonb_set(result, '{CreateStmt, if_not_exists}', to_jsonb(v_if_not_exists));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.table_func ( v_ns_uris jsonb DEFAULT NULL, v_ns_names jsonb DEFAULT NULL, v_docexpr jsonb DEFAULT NULL, v_rowexpr jsonb DEFAULT NULL, v_colnames jsonb DEFAULT NULL, v_coltypes jsonb DEFAULT NULL, v_coltypmods jsonb DEFAULT NULL, v_colcollations jsonb DEFAULT NULL, v_colexprs jsonb DEFAULT NULL, v_coldefexprs jsonb DEFAULT NULL, v_notnulls jsonb DEFAULT NULL, v_ordinalitycol int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"TableFunc":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{TableFunc, ns_uris}', v_ns_uris);
+      result = ast.jsonb_set(result, '{TableFunc, ns_names}', v_ns_names);
+      result = ast.jsonb_set(result, '{TableFunc, docexpr}', v_docexpr);
+      result = ast.jsonb_set(result, '{TableFunc, rowexpr}', v_rowexpr);
+      result = ast.jsonb_set(result, '{TableFunc, colnames}', v_colnames);
+      result = ast.jsonb_set(result, '{TableFunc, coltypes}', v_coltypes);
+      result = ast.jsonb_set(result, '{TableFunc, coltypmods}', v_coltypmods);
+      result = ast.jsonb_set(result, '{TableFunc, colcollations}', v_colcollations);
+      result = ast.jsonb_set(result, '{TableFunc, colexprs}', v_colexprs);
+      result = ast.jsonb_set(result, '{TableFunc, coldefexprs}', v_coldefexprs);
+      result = ast.jsonb_set(result, '{TableFunc, notnulls}', v_notnulls);
+      result = ast.jsonb_set(result, '{TableFunc, ordinalitycol}', to_jsonb(v_ordinalitycol));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.range_var ( v_schemaname text DEFAULT NULL, v_relname text DEFAULT NULL, v_inh boolean DEFAULT NULL, v_relpersistence text DEFAULT NULL, v_alias jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"RangeVar":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{RangeVar, schemaname}', to_jsonb(v_schemaname));
-    result = ast.jsonb_set(result, '{RangeVar, relname}', to_jsonb(v_relname));
-    result = ast.jsonb_set(result, '{RangeVar, inh}', to_jsonb(v_inh));
-    result = ast.jsonb_set(result, '{RangeVar, relpersistence}', to_jsonb(v_relpersistence));
-    result = ast.jsonb_set(result, '{RangeVar, alias}', v_alias);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.into_clause ( v_rel jsonb DEFAULT NULL, v_colnames jsonb DEFAULT NULL, v_accessmethod text DEFAULT NULL, v_options jsonb DEFAULT NULL, v_oncommit text DEFAULT NULL, v_tablespacename text DEFAULT NULL, v_viewquery jsonb DEFAULT NULL, v_skipdata boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"IntoClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{IntoClause, rel}', v_rel);
+      result = ast.jsonb_set(result, '{IntoClause, colNames}', v_colNames);
+      result = ast.jsonb_set(result, '{IntoClause, accessMethod}', to_jsonb(v_accessMethod));
+      result = ast.jsonb_set(result, '{IntoClause, options}', v_options);
+      result = ast.jsonb_set(result, '{IntoClause, onCommit}', to_jsonb(v_onCommit));
+      result = ast.jsonb_set(result, '{IntoClause, tableSpaceName}', to_jsonb(v_tableSpaceName));
+      result = ast.jsonb_set(result, '{IntoClause, viewQuery}', v_viewQuery);
+      result = ast.jsonb_set(result, '{IntoClause, skipData}', to_jsonb(v_skipData));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.column_def ( v_colname text DEFAULT NULL, v_typename jsonb DEFAULT NULL, v_is_local boolean DEFAULT NULL, v_constraints jsonb DEFAULT NULL, v_raw_default jsonb DEFAULT NULL, v_collclause jsonb DEFAULT NULL, v_fdwoptions jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ColumnDef":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ColumnDef, colname}', to_jsonb(v_colname));
-    result = ast.jsonb_set(result, '{ColumnDef, typeName}', v_typeName);
-    result = ast.jsonb_set(result, '{ColumnDef, is_local}', to_jsonb(v_is_local));
-    result = ast.jsonb_set(result, '{ColumnDef, constraints}', v_constraints);
-    result = ast.jsonb_set(result, '{ColumnDef, raw_default}', v_raw_default);
-    result = ast.jsonb_set(result, '{ColumnDef, collClause}', v_collClause);
-    result = ast.jsonb_set(result, '{ColumnDef, fdwoptions}', v_fdwoptions);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.expr (  ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Expr":{}}'::jsonb;
+  BEGIN
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.type_name ( v_names jsonb DEFAULT NULL, v_typemod int DEFAULT NULL, v_typmods jsonb DEFAULT NULL, v_setof boolean DEFAULT NULL, v_arraybounds jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"TypeName":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{TypeName, names}', v_names);
-    result = ast.jsonb_set(result, '{TypeName, typemod}', to_jsonb(v_typemod));
-    result = ast.jsonb_set(result, '{TypeName, typmods}', v_typmods);
-    result = ast.jsonb_set(result, '{TypeName, setof}', to_jsonb(v_setof));
-    result = ast.jsonb_set(result, '{TypeName, arrayBounds}', v_arrayBounds);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.var ( v_xpr jsonb DEFAULT NULL, v_varno jsonb DEFAULT NULL, v_varattno int DEFAULT NULL, v_vartype jsonb DEFAULT NULL, v_vartypmod int DEFAULT NULL, v_varcollid jsonb DEFAULT NULL, v_varlevelsup jsonb DEFAULT NULL, v_varnosyn jsonb DEFAULT NULL, v_varattnosyn int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Var":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{Var, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{Var, varno}', v_varno);
+      result = ast.jsonb_set(result, '{Var, varattno}', to_jsonb(v_varattno));
+      result = ast.jsonb_set(result, '{Var, vartype}', v_vartype);
+      result = ast.jsonb_set(result, '{Var, vartypmod}', to_jsonb(v_vartypmod));
+      result = ast.jsonb_set(result, '{Var, varcollid}', v_varcollid);
+      result = ast.jsonb_set(result, '{Var, varlevelsup}', v_varlevelsup);
+      result = ast.jsonb_set(result, '{Var, varnosyn}', v_varnosyn);
+      result = ast.jsonb_set(result, '{Var, varattnosyn}', to_jsonb(v_varattnosyn));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.string ( v_str text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"String":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{String, str}', to_jsonb(v_str));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.const ( v_xpr jsonb DEFAULT NULL, v_consttype jsonb DEFAULT NULL, v_consttypmod int DEFAULT NULL, v_constcollid jsonb DEFAULT NULL, v_constlen int DEFAULT NULL, v_constvalue jsonb DEFAULT NULL, v_constisnull boolean DEFAULT NULL, v_constbyval boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Const":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{Const, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{Const, consttype}', v_consttype);
+      result = ast.jsonb_set(result, '{Const, consttypmod}', to_jsonb(v_consttypmod));
+      result = ast.jsonb_set(result, '{Const, constcollid}', v_constcollid);
+      result = ast.jsonb_set(result, '{Const, constlen}', to_jsonb(v_constlen));
+      result = ast.jsonb_set(result, '{Const, constvalue}', v_constvalue);
+      result = ast.jsonb_set(result, '{Const, constisnull}', to_jsonb(v_constisnull));
+      result = ast.jsonb_set(result, '{Const, constbyval}', to_jsonb(v_constbyval));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.constraint ( v_contype int DEFAULT NULL, v_raw_expr jsonb DEFAULT NULL, v_conname text DEFAULT NULL, v_pktable jsonb DEFAULT NULL, v_fk_attrs jsonb DEFAULT NULL, v_pk_attrs jsonb DEFAULT NULL, v_fk_matchtype text DEFAULT NULL, v_fk_upd_action text DEFAULT NULL, v_fk_del_action text DEFAULT NULL, v_initially_valid boolean DEFAULT NULL, v_keys jsonb DEFAULT NULL, v_is_no_inherit boolean DEFAULT NULL, v_skip_validation boolean DEFAULT NULL, v_exclusions jsonb DEFAULT NULL, v_access_method text DEFAULT NULL, v_deferrable boolean DEFAULT NULL, v_indexname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"Constraint":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{Constraint, contype}', to_jsonb(v_contype));
-    result = ast.jsonb_set(result, '{Constraint, raw_expr}', v_raw_expr);
-    result = ast.jsonb_set(result, '{Constraint, conname}', to_jsonb(v_conname));
-    result = ast.jsonb_set(result, '{Constraint, pktable}', v_pktable);
-    result = ast.jsonb_set(result, '{Constraint, fk_attrs}', v_fk_attrs);
-    result = ast.jsonb_set(result, '{Constraint, pk_attrs}', v_pk_attrs);
-    result = ast.jsonb_set(result, '{Constraint, fk_matchtype}', to_jsonb(v_fk_matchtype));
-    result = ast.jsonb_set(result, '{Constraint, fk_upd_action}', to_jsonb(v_fk_upd_action));
-    result = ast.jsonb_set(result, '{Constraint, fk_del_action}', to_jsonb(v_fk_del_action));
-    result = ast.jsonb_set(result, '{Constraint, initially_valid}', to_jsonb(v_initially_valid));
-    result = ast.jsonb_set(result, '{Constraint, keys}', v_keys);
-    result = ast.jsonb_set(result, '{Constraint, is_no_inherit}', to_jsonb(v_is_no_inherit));
-    result = ast.jsonb_set(result, '{Constraint, skip_validation}', to_jsonb(v_skip_validation));
-    result = ast.jsonb_set(result, '{Constraint, exclusions}', v_exclusions);
-    result = ast.jsonb_set(result, '{Constraint, access_method}', to_jsonb(v_access_method));
-    result = ast.jsonb_set(result, '{Constraint, deferrable}', to_jsonb(v_deferrable));
-    result = ast.jsonb_set(result, '{Constraint, indexname}', to_jsonb(v_indexname));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.param ( v_xpr jsonb DEFAULT NULL, v_paramkind text DEFAULT NULL, v_paramid int DEFAULT NULL, v_paramtype jsonb DEFAULT NULL, v_paramtypmod int DEFAULT NULL, v_paramcollid jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Param":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{Param, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{Param, paramkind}', to_jsonb(v_paramkind));
+      result = ast.jsonb_set(result, '{Param, paramid}', to_jsonb(v_paramid));
+      result = ast.jsonb_set(result, '{Param, paramtype}', v_paramtype);
+      result = ast.jsonb_set(result, '{Param, paramtypmod}', to_jsonb(v_paramtypmod));
+      result = ast.jsonb_set(result, '{Param, paramcollid}', v_paramcollid);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.a_const ( v_val jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"A_Const":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{A_Const, val}', v_val);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.aggref ( v_xpr jsonb DEFAULT NULL, v_aggfnoid jsonb DEFAULT NULL, v_aggtype jsonb DEFAULT NULL, v_aggcollid jsonb DEFAULT NULL, v_inputcollid jsonb DEFAULT NULL, v_aggtranstype jsonb DEFAULT NULL, v_aggargtypes jsonb DEFAULT NULL, v_aggdirectargs jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_aggorder jsonb DEFAULT NULL, v_aggdistinct jsonb DEFAULT NULL, v_aggfilter jsonb DEFAULT NULL, v_aggstar boolean DEFAULT NULL, v_aggvariadic boolean DEFAULT NULL, v_aggkind text DEFAULT NULL, v_agglevelsup jsonb DEFAULT NULL, v_aggsplit text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Aggref":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{Aggref, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{Aggref, aggfnoid}', v_aggfnoid);
+      result = ast.jsonb_set(result, '{Aggref, aggtype}', v_aggtype);
+      result = ast.jsonb_set(result, '{Aggref, aggcollid}', v_aggcollid);
+      result = ast.jsonb_set(result, '{Aggref, inputcollid}', v_inputcollid);
+      result = ast.jsonb_set(result, '{Aggref, aggtranstype}', v_aggtranstype);
+      result = ast.jsonb_set(result, '{Aggref, aggargtypes}', v_aggargtypes);
+      result = ast.jsonb_set(result, '{Aggref, aggdirectargs}', v_aggdirectargs);
+      result = ast.jsonb_set(result, '{Aggref, args}', v_args);
+      result = ast.jsonb_set(result, '{Aggref, aggorder}', v_aggorder);
+      result = ast.jsonb_set(result, '{Aggref, aggdistinct}', v_aggdistinct);
+      result = ast.jsonb_set(result, '{Aggref, aggfilter}', v_aggfilter);
+      result = ast.jsonb_set(result, '{Aggref, aggstar}', to_jsonb(v_aggstar));
+      result = ast.jsonb_set(result, '{Aggref, aggvariadic}', to_jsonb(v_aggvariadic));
+      result = ast.jsonb_set(result, '{Aggref, aggkind}', to_jsonb(v_aggkind));
+      result = ast.jsonb_set(result, '{Aggref, agglevelsup}', v_agglevelsup);
+      result = ast.jsonb_set(result, '{Aggref, aggsplit}', to_jsonb(v_aggsplit));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.integer ( v_ival int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"Integer":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{Integer, ival}', to_jsonb(v_ival));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.grouping_func ( v_xpr jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_refs jsonb DEFAULT NULL, v_cols jsonb DEFAULT NULL, v_agglevelsup jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"GroupingFunc":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{GroupingFunc, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{GroupingFunc, args}', v_args);
+      result = ast.jsonb_set(result, '{GroupingFunc, refs}', v_refs);
+      result = ast.jsonb_set(result, '{GroupingFunc, cols}', v_cols);
+      result = ast.jsonb_set(result, '{GroupingFunc, agglevelsup}', v_agglevelsup);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.alter_table_stmt ( v_relation jsonb DEFAULT NULL, v_cmds jsonb DEFAULT NULL, v_relkind int DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterTableStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterTableStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{AlterTableStmt, cmds}', v_cmds);
-    result = ast.jsonb_set(result, '{AlterTableStmt, relkind}', to_jsonb(v_relkind));
-    result = ast.jsonb_set(result, '{AlterTableStmt, missing_ok}', to_jsonb(v_missing_ok));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.window_func ( v_xpr jsonb DEFAULT NULL, v_winfnoid jsonb DEFAULT NULL, v_wintype jsonb DEFAULT NULL, v_wincollid jsonb DEFAULT NULL, v_inputcollid jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_aggfilter jsonb DEFAULT NULL, v_winref jsonb DEFAULT NULL, v_winstar boolean DEFAULT NULL, v_winagg boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"WindowFunc":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{WindowFunc, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{WindowFunc, winfnoid}', v_winfnoid);
+      result = ast.jsonb_set(result, '{WindowFunc, wintype}', v_wintype);
+      result = ast.jsonb_set(result, '{WindowFunc, wincollid}', v_wincollid);
+      result = ast.jsonb_set(result, '{WindowFunc, inputcollid}', v_inputcollid);
+      result = ast.jsonb_set(result, '{WindowFunc, args}', v_args);
+      result = ast.jsonb_set(result, '{WindowFunc, aggfilter}', v_aggfilter);
+      result = ast.jsonb_set(result, '{WindowFunc, winref}', v_winref);
+      result = ast.jsonb_set(result, '{WindowFunc, winstar}', to_jsonb(v_winstar));
+      result = ast.jsonb_set(result, '{WindowFunc, winagg}', to_jsonb(v_winagg));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.alter_table_cmd ( v_subtype int DEFAULT NULL, v_behavior int DEFAULT NULL, v_name text DEFAULT NULL, v_def jsonb DEFAULT NULL, v_missing_ok boolean DEFAULT NULL, v_newowner jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterTableCmd":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterTableCmd, subtype}', to_jsonb(v_subtype));
-    result = ast.jsonb_set(result, '{AlterTableCmd, behavior}', to_jsonb(v_behavior));
-    result = ast.jsonb_set(result, '{AlterTableCmd, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{AlterTableCmd, def}', v_def);
-    result = ast.jsonb_set(result, '{AlterTableCmd, missing_ok}', to_jsonb(v_missing_ok));
-    result = ast.jsonb_set(result, '{AlterTableCmd, newowner}', v_newowner);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.subscripting_ref ( v_xpr jsonb DEFAULT NULL, v_refcontainertype jsonb DEFAULT NULL, v_refelemtype jsonb DEFAULT NULL, v_reftypmod int DEFAULT NULL, v_refcollid jsonb DEFAULT NULL, v_refupperindexpr jsonb DEFAULT NULL, v_reflowerindexpr jsonb DEFAULT NULL, v_refexpr jsonb DEFAULT NULL, v_refassgnexpr jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"SubscriptingRef":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{SubscriptingRef, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{SubscriptingRef, refcontainertype}', v_refcontainertype);
+      result = ast.jsonb_set(result, '{SubscriptingRef, refelemtype}', v_refelemtype);
+      result = ast.jsonb_set(result, '{SubscriptingRef, reftypmod}', to_jsonb(v_reftypmod));
+      result = ast.jsonb_set(result, '{SubscriptingRef, refcollid}', v_refcollid);
+      result = ast.jsonb_set(result, '{SubscriptingRef, refupperindexpr}', v_refupperindexpr);
+      result = ast.jsonb_set(result, '{SubscriptingRef, reflowerindexpr}', v_reflowerindexpr);
+      result = ast.jsonb_set(result, '{SubscriptingRef, refexpr}', v_refexpr);
+      result = ast.jsonb_set(result, '{SubscriptingRef, refassgnexpr}', v_refassgnexpr);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.sql_value_function ( v_op int DEFAULT NULL, v_typmod int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"SQLValueFunction":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{SQLValueFunction, op}', to_jsonb(v_op));
-    result = ast.jsonb_set(result, '{SQLValueFunction, typmod}', to_jsonb(v_typmod));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.func_expr ( v_xpr jsonb DEFAULT NULL, v_funcid jsonb DEFAULT NULL, v_funcresulttype jsonb DEFAULT NULL, v_funcretset boolean DEFAULT NULL, v_funcvariadic boolean DEFAULT NULL, v_funcformat text DEFAULT NULL, v_funccollid jsonb DEFAULT NULL, v_inputcollid jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"FuncExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{FuncExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{FuncExpr, funcid}', v_funcid);
+      result = ast.jsonb_set(result, '{FuncExpr, funcresulttype}', v_funcresulttype);
+      result = ast.jsonb_set(result, '{FuncExpr, funcretset}', to_jsonb(v_funcretset));
+      result = ast.jsonb_set(result, '{FuncExpr, funcvariadic}', to_jsonb(v_funcvariadic));
+      result = ast.jsonb_set(result, '{FuncExpr, funcformat}', to_jsonb(v_funcformat));
+      result = ast.jsonb_set(result, '{FuncExpr, funccollid}', v_funccollid);
+      result = ast.jsonb_set(result, '{FuncExpr, inputcollid}', v_inputcollid);
+      result = ast.jsonb_set(result, '{FuncExpr, args}', v_args);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.rename_stmt ( v_renametype int DEFAULT NULL, v_relationtype int DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_subname text DEFAULT NULL, v_newname text DEFAULT NULL, v_behavior int DEFAULT NULL, v_object jsonb DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"RenameStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{RenameStmt, renameType}', to_jsonb(v_renameType));
-    result = ast.jsonb_set(result, '{RenameStmt, relationType}', to_jsonb(v_relationType));
-    result = ast.jsonb_set(result, '{RenameStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{RenameStmt, subname}', to_jsonb(v_subname));
-    result = ast.jsonb_set(result, '{RenameStmt, newname}', to_jsonb(v_newname));
-    result = ast.jsonb_set(result, '{RenameStmt, behavior}', to_jsonb(v_behavior));
-    result = ast.jsonb_set(result, '{RenameStmt, object}', v_object);
-    result = ast.jsonb_set(result, '{RenameStmt, missing_ok}', to_jsonb(v_missing_ok));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.named_arg_expr ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_name text DEFAULT NULL, v_argnumber int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"NamedArgExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{NamedArgExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{NamedArgExpr, arg}', v_arg);
+      result = ast.jsonb_set(result, '{NamedArgExpr, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{NamedArgExpr, argnumber}', to_jsonb(v_argnumber));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.a_expr ( v_kind int DEFAULT NULL, v_name jsonb DEFAULT NULL, v_lexpr jsonb DEFAULT NULL, v_rexpr jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"A_Expr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{A_Expr, kind}', to_jsonb(v_kind));
-    result = ast.jsonb_set(result, '{A_Expr, name}', v_name);
-    result = ast.jsonb_set(result, '{A_Expr, lexpr}', v_lexpr);
-    result = ast.jsonb_set(result, '{A_Expr, rexpr}', v_rexpr);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.op_expr ( v_xpr jsonb DEFAULT NULL, v_opno jsonb DEFAULT NULL, v_opfuncid jsonb DEFAULT NULL, v_opresulttype jsonb DEFAULT NULL, v_opretset boolean DEFAULT NULL, v_opcollid jsonb DEFAULT NULL, v_inputcollid jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"OpExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{OpExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{OpExpr, opno}', v_opno);
+      result = ast.jsonb_set(result, '{OpExpr, opfuncid}', v_opfuncid);
+      result = ast.jsonb_set(result, '{OpExpr, opresulttype}', v_opresulttype);
+      result = ast.jsonb_set(result, '{OpExpr, opretset}', to_jsonb(v_opretset));
+      result = ast.jsonb_set(result, '{OpExpr, opcollid}', v_opcollid);
+      result = ast.jsonb_set(result, '{OpExpr, inputcollid}', v_inputcollid);
+      result = ast.jsonb_set(result, '{OpExpr, args}', v_args);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.type_cast ( v_arg jsonb DEFAULT NULL, v_typename jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"TypeCast":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{TypeCast, arg}', v_arg);
-    result = ast.jsonb_set(result, '{TypeCast, typeName}', v_typeName);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.scalar_array_op_expr ( v_xpr jsonb DEFAULT NULL, v_opno jsonb DEFAULT NULL, v_opfuncid jsonb DEFAULT NULL, v_useor boolean DEFAULT NULL, v_inputcollid jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ScalarArrayOpExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ScalarArrayOpExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{ScalarArrayOpExpr, opno}', v_opno);
+      result = ast.jsonb_set(result, '{ScalarArrayOpExpr, opfuncid}', v_opfuncid);
+      result = ast.jsonb_set(result, '{ScalarArrayOpExpr, useOr}', to_jsonb(v_useOr));
+      result = ast.jsonb_set(result, '{ScalarArrayOpExpr, inputcollid}', v_inputcollid);
+      result = ast.jsonb_set(result, '{ScalarArrayOpExpr, args}', v_args);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.bool_expr ( v_boolop text DEFAULT NULL, v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"BoolExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{BoolExpr, boolop}', to_jsonb(v_boolop));
+      result = ast.jsonb_set(result, '{BoolExpr, args}', v_args);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.sub_link ( v_xpr jsonb DEFAULT NULL, v_sublinktype text DEFAULT NULL, v_sublinkid int DEFAULT NULL, v_testexpr jsonb DEFAULT NULL, v_opername jsonb DEFAULT NULL, v_subselect jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"SubLink":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{SubLink, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{SubLink, subLinkType}', to_jsonb(v_subLinkType));
+      result = ast.jsonb_set(result, '{SubLink, subLinkId}', to_jsonb(v_subLinkId));
+      result = ast.jsonb_set(result, '{SubLink, testexpr}', v_testexpr);
+      result = ast.jsonb_set(result, '{SubLink, operName}', v_operName);
+      result = ast.jsonb_set(result, '{SubLink, subselect}', v_subselect);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.sub_plan ( v_xpr jsonb DEFAULT NULL, v_sublinktype text DEFAULT NULL, v_testexpr jsonb DEFAULT NULL, v_paramids jsonb DEFAULT NULL, v_plan_id int DEFAULT NULL, v_plan_name text DEFAULT NULL, v_firstcoltype jsonb DEFAULT NULL, v_firstcoltypmod int DEFAULT NULL, v_firstcolcollation jsonb DEFAULT NULL, v_usehashtable boolean DEFAULT NULL, v_unknowneqfalse boolean DEFAULT NULL, v_parallel_safe boolean DEFAULT NULL, v_setparam jsonb DEFAULT NULL, v_parparam jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_startup_cost jsonb DEFAULT NULL, v_per_call_cost jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"SubPlan":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{SubPlan, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{SubPlan, subLinkType}', to_jsonb(v_subLinkType));
+      result = ast.jsonb_set(result, '{SubPlan, testexpr}', v_testexpr);
+      result = ast.jsonb_set(result, '{SubPlan, paramIds}', v_paramIds);
+      result = ast.jsonb_set(result, '{SubPlan, plan_id}', to_jsonb(v_plan_id));
+      result = ast.jsonb_set(result, '{SubPlan, plan_name}', to_jsonb(v_plan_name));
+      result = ast.jsonb_set(result, '{SubPlan, firstColType}', v_firstColType);
+      result = ast.jsonb_set(result, '{SubPlan, firstColTypmod}', to_jsonb(v_firstColTypmod));
+      result = ast.jsonb_set(result, '{SubPlan, firstColCollation}', v_firstColCollation);
+      result = ast.jsonb_set(result, '{SubPlan, useHashTable}', to_jsonb(v_useHashTable));
+      result = ast.jsonb_set(result, '{SubPlan, unknownEqFalse}', to_jsonb(v_unknownEqFalse));
+      result = ast.jsonb_set(result, '{SubPlan, parallel_safe}', to_jsonb(v_parallel_safe));
+      result = ast.jsonb_set(result, '{SubPlan, setParam}', v_setParam);
+      result = ast.jsonb_set(result, '{SubPlan, parParam}', v_parParam);
+      result = ast.jsonb_set(result, '{SubPlan, args}', v_args);
+      result = ast.jsonb_set(result, '{SubPlan, startup_cost}', v_startup_cost);
+      result = ast.jsonb_set(result, '{SubPlan, per_call_cost}', v_per_call_cost);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alternative_sub_plan ( v_xpr jsonb DEFAULT NULL, v_subplans jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlternativeSubPlan":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlternativeSubPlan, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{AlternativeSubPlan, subplans}', v_subplans);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.field_select ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_fieldnum int DEFAULT NULL, v_resulttype jsonb DEFAULT NULL, v_resulttypmod int DEFAULT NULL, v_resultcollid jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"FieldSelect":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{FieldSelect, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{FieldSelect, arg}', v_arg);
+      result = ast.jsonb_set(result, '{FieldSelect, fieldnum}', to_jsonb(v_fieldnum));
+      result = ast.jsonb_set(result, '{FieldSelect, resulttype}', v_resulttype);
+      result = ast.jsonb_set(result, '{FieldSelect, resulttypmod}', to_jsonb(v_resulttypmod));
+      result = ast.jsonb_set(result, '{FieldSelect, resultcollid}', v_resultcollid);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.field_store ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_newvals jsonb DEFAULT NULL, v_fieldnums jsonb DEFAULT NULL, v_resulttype jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"FieldStore":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{FieldStore, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{FieldStore, arg}', v_arg);
+      result = ast.jsonb_set(result, '{FieldStore, newvals}', v_newvals);
+      result = ast.jsonb_set(result, '{FieldStore, fieldnums}', v_fieldnums);
+      result = ast.jsonb_set(result, '{FieldStore, resulttype}', v_resulttype);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.relabel_type ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_resulttype jsonb DEFAULT NULL, v_resulttypmod int DEFAULT NULL, v_resultcollid jsonb DEFAULT NULL, v_relabelformat text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RelabelType":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RelabelType, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{RelabelType, arg}', v_arg);
+      result = ast.jsonb_set(result, '{RelabelType, resulttype}', v_resulttype);
+      result = ast.jsonb_set(result, '{RelabelType, resulttypmod}', to_jsonb(v_resulttypmod));
+      result = ast.jsonb_set(result, '{RelabelType, resultcollid}', v_resultcollid);
+      result = ast.jsonb_set(result, '{RelabelType, relabelformat}', to_jsonb(v_relabelformat));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.coerce_via_io ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_resulttype jsonb DEFAULT NULL, v_resultcollid jsonb DEFAULT NULL, v_coerceformat text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CoerceViaIO":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CoerceViaIO, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{CoerceViaIO, arg}', v_arg);
+      result = ast.jsonb_set(result, '{CoerceViaIO, resulttype}', v_resulttype);
+      result = ast.jsonb_set(result, '{CoerceViaIO, resultcollid}', v_resultcollid);
+      result = ast.jsonb_set(result, '{CoerceViaIO, coerceformat}', to_jsonb(v_coerceformat));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.array_coerce_expr ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_elemexpr jsonb DEFAULT NULL, v_resulttype jsonb DEFAULT NULL, v_resulttypmod int DEFAULT NULL, v_resultcollid jsonb DEFAULT NULL, v_coerceformat text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ArrayCoerceExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ArrayCoerceExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{ArrayCoerceExpr, arg}', v_arg);
+      result = ast.jsonb_set(result, '{ArrayCoerceExpr, elemexpr}', v_elemexpr);
+      result = ast.jsonb_set(result, '{ArrayCoerceExpr, resulttype}', v_resulttype);
+      result = ast.jsonb_set(result, '{ArrayCoerceExpr, resulttypmod}', to_jsonb(v_resulttypmod));
+      result = ast.jsonb_set(result, '{ArrayCoerceExpr, resultcollid}', v_resultcollid);
+      result = ast.jsonb_set(result, '{ArrayCoerceExpr, coerceformat}', to_jsonb(v_coerceformat));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.convert_rowtype_expr ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_resulttype jsonb DEFAULT NULL, v_convertformat text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ConvertRowtypeExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ConvertRowtypeExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{ConvertRowtypeExpr, arg}', v_arg);
+      result = ast.jsonb_set(result, '{ConvertRowtypeExpr, resulttype}', v_resulttype);
+      result = ast.jsonb_set(result, '{ConvertRowtypeExpr, convertformat}', to_jsonb(v_convertformat));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.collate_expr ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_colloid jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CollateExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CollateExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{CollateExpr, arg}', v_arg);
+      result = ast.jsonb_set(result, '{CollateExpr, collOid}', v_collOid);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.case_expr ( v_xpr jsonb DEFAULT NULL, v_casetype jsonb DEFAULT NULL, v_casecollid jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_defresult jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CaseExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CaseExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{CaseExpr, casetype}', v_casetype);
+      result = ast.jsonb_set(result, '{CaseExpr, casecollid}', v_casecollid);
+      result = ast.jsonb_set(result, '{CaseExpr, arg}', v_arg);
+      result = ast.jsonb_set(result, '{CaseExpr, args}', v_args);
+      result = ast.jsonb_set(result, '{CaseExpr, defresult}', v_defresult);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.case_when ( v_xpr jsonb DEFAULT NULL, v_expr jsonb DEFAULT NULL, v_result jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CaseWhen":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CaseWhen, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{CaseWhen, expr}', v_expr);
+      result = ast.jsonb_set(result, '{CaseWhen, result}', v_result);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.case_test_expr ( v_xpr jsonb DEFAULT NULL, v_typeid jsonb DEFAULT NULL, v_typemod int DEFAULT NULL, v_collation jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CaseTestExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CaseTestExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{CaseTestExpr, typeId}', v_typeId);
+      result = ast.jsonb_set(result, '{CaseTestExpr, typeMod}', to_jsonb(v_typeMod));
+      result = ast.jsonb_set(result, '{CaseTestExpr, collation}', v_collation);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.array_expr ( v_xpr jsonb DEFAULT NULL, v_array_typeid jsonb DEFAULT NULL, v_array_collid jsonb DEFAULT NULL, v_element_typeid jsonb DEFAULT NULL, v_elements jsonb DEFAULT NULL, v_multidims boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ArrayExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ArrayExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{ArrayExpr, array_typeid}', v_array_typeid);
+      result = ast.jsonb_set(result, '{ArrayExpr, array_collid}', v_array_collid);
+      result = ast.jsonb_set(result, '{ArrayExpr, element_typeid}', v_element_typeid);
+      result = ast.jsonb_set(result, '{ArrayExpr, elements}', v_elements);
+      result = ast.jsonb_set(result, '{ArrayExpr, multidims}', to_jsonb(v_multidims));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.row_expr ( v_xpr jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_row_typeid jsonb DEFAULT NULL, v_row_format text DEFAULT NULL, v_colnames jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RowExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RowExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{RowExpr, args}', v_args);
+      result = ast.jsonb_set(result, '{RowExpr, row_typeid}', v_row_typeid);
+      result = ast.jsonb_set(result, '{RowExpr, row_format}', to_jsonb(v_row_format));
+      result = ast.jsonb_set(result, '{RowExpr, colnames}', v_colnames);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.row_compare_expr ( v_xpr jsonb DEFAULT NULL, v_rctype text DEFAULT NULL, v_opnos jsonb DEFAULT NULL, v_opfamilies jsonb DEFAULT NULL, v_inputcollids jsonb DEFAULT NULL, v_largs jsonb DEFAULT NULL, v_rargs jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RowCompareExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RowCompareExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{RowCompareExpr, rctype}', to_jsonb(v_rctype));
+      result = ast.jsonb_set(result, '{RowCompareExpr, opnos}', v_opnos);
+      result = ast.jsonb_set(result, '{RowCompareExpr, opfamilies}', v_opfamilies);
+      result = ast.jsonb_set(result, '{RowCompareExpr, inputcollids}', v_inputcollids);
+      result = ast.jsonb_set(result, '{RowCompareExpr, largs}', v_largs);
+      result = ast.jsonb_set(result, '{RowCompareExpr, rargs}', v_rargs);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.coalesce_expr ( v_xpr jsonb DEFAULT NULL, v_coalescetype jsonb DEFAULT NULL, v_coalescecollid jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CoalesceExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CoalesceExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{CoalesceExpr, coalescetype}', v_coalescetype);
+      result = ast.jsonb_set(result, '{CoalesceExpr, coalescecollid}', v_coalescecollid);
+      result = ast.jsonb_set(result, '{CoalesceExpr, args}', v_args);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.min_max_expr ( v_xpr jsonb DEFAULT NULL, v_minmaxtype jsonb DEFAULT NULL, v_minmaxcollid jsonb DEFAULT NULL, v_inputcollid jsonb DEFAULT NULL, v_op text DEFAULT NULL, v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"MinMaxExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{MinMaxExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{MinMaxExpr, minmaxtype}', v_minmaxtype);
+      result = ast.jsonb_set(result, '{MinMaxExpr, minmaxcollid}', v_minmaxcollid);
+      result = ast.jsonb_set(result, '{MinMaxExpr, inputcollid}', v_inputcollid);
+      result = ast.jsonb_set(result, '{MinMaxExpr, op}', to_jsonb(v_op));
+      result = ast.jsonb_set(result, '{MinMaxExpr, args}', v_args);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.sql_value_function ( v_xpr jsonb DEFAULT NULL, v_op text DEFAULT NULL, v_typmod int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"SQLValueFunction":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{SQLValueFunction, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{SQLValueFunction, op}', to_jsonb(v_op));
+      result = ast.jsonb_set(result, '{SQLValueFunction, typmod}', to_jsonb(v_typmod));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.xml_expr ( v_xpr jsonb DEFAULT NULL, v_op text DEFAULT NULL, v_name text DEFAULT NULL, v_named_args jsonb DEFAULT NULL, v_arg_names jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_xmloption text DEFAULT NULL, v_typmod int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"XmlExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{XmlExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{XmlExpr, op}', to_jsonb(v_op));
+      result = ast.jsonb_set(result, '{XmlExpr, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{XmlExpr, named_args}', v_named_args);
+      result = ast.jsonb_set(result, '{XmlExpr, arg_names}', v_arg_names);
+      result = ast.jsonb_set(result, '{XmlExpr, args}', v_args);
+      result = ast.jsonb_set(result, '{XmlExpr, xmloption}', to_jsonb(v_xmloption));
+      result = ast.jsonb_set(result, '{XmlExpr, typmod}', to_jsonb(v_typmod));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.null_test ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_nulltesttype text DEFAULT NULL, v_argisrow boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"NullTest":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{NullTest, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{NullTest, arg}', v_arg);
+      result = ast.jsonb_set(result, '{NullTest, nulltesttype}', to_jsonb(v_nulltesttype));
+      result = ast.jsonb_set(result, '{NullTest, argisrow}', to_jsonb(v_argisrow));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.boolean_test ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_booltesttype text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"BooleanTest":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{BooleanTest, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{BooleanTest, arg}', v_arg);
+      result = ast.jsonb_set(result, '{BooleanTest, booltesttype}', to_jsonb(v_booltesttype));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.coerce_to_domain ( v_xpr jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_resulttype jsonb DEFAULT NULL, v_resulttypmod int DEFAULT NULL, v_resultcollid jsonb DEFAULT NULL, v_coercionformat text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CoerceToDomain":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CoerceToDomain, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{CoerceToDomain, arg}', v_arg);
+      result = ast.jsonb_set(result, '{CoerceToDomain, resulttype}', v_resulttype);
+      result = ast.jsonb_set(result, '{CoerceToDomain, resulttypmod}', to_jsonb(v_resulttypmod));
+      result = ast.jsonb_set(result, '{CoerceToDomain, resultcollid}', v_resultcollid);
+      result = ast.jsonb_set(result, '{CoerceToDomain, coercionformat}', to_jsonb(v_coercionformat));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.coerce_to_domain_value ( v_xpr jsonb DEFAULT NULL, v_typeid jsonb DEFAULT NULL, v_typemod int DEFAULT NULL, v_collation jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CoerceToDomainValue":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CoerceToDomainValue, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{CoerceToDomainValue, typeId}', v_typeId);
+      result = ast.jsonb_set(result, '{CoerceToDomainValue, typeMod}', to_jsonb(v_typeMod));
+      result = ast.jsonb_set(result, '{CoerceToDomainValue, collation}', v_collation);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.set_to_default ( v_xpr jsonb DEFAULT NULL, v_typeid jsonb DEFAULT NULL, v_typemod int DEFAULT NULL, v_collation jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"SetToDefault":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{SetToDefault, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{SetToDefault, typeId}', v_typeId);
+      result = ast.jsonb_set(result, '{SetToDefault, typeMod}', to_jsonb(v_typeMod));
+      result = ast.jsonb_set(result, '{SetToDefault, collation}', v_collation);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.current_of_expr ( v_xpr jsonb DEFAULT NULL, v_cvarno jsonb DEFAULT NULL, v_cursor_name text DEFAULT NULL, v_cursor_param int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CurrentOfExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CurrentOfExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{CurrentOfExpr, cvarno}', v_cvarno);
+      result = ast.jsonb_set(result, '{CurrentOfExpr, cursor_name}', to_jsonb(v_cursor_name));
+      result = ast.jsonb_set(result, '{CurrentOfExpr, cursor_param}', to_jsonb(v_cursor_param));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.next_value_expr ( v_xpr jsonb DEFAULT NULL, v_seqid jsonb DEFAULT NULL, v_typeid jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"NextValueExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{NextValueExpr, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{NextValueExpr, seqid}', v_seqid);
+      result = ast.jsonb_set(result, '{NextValueExpr, typeId}', v_typeId);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.inference_elem ( v_xpr jsonb DEFAULT NULL, v_expr jsonb DEFAULT NULL, v_infercollid jsonb DEFAULT NULL, v_inferopclass jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"InferenceElem":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{InferenceElem, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{InferenceElem, expr}', v_expr);
+      result = ast.jsonb_set(result, '{InferenceElem, infercollid}', v_infercollid);
+      result = ast.jsonb_set(result, '{InferenceElem, inferopclass}', v_inferopclass);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.target_entry ( v_xpr jsonb DEFAULT NULL, v_expr jsonb DEFAULT NULL, v_resno int DEFAULT NULL, v_resname text DEFAULT NULL, v_ressortgroupref jsonb DEFAULT NULL, v_resorigtbl jsonb DEFAULT NULL, v_resorigcol int DEFAULT NULL, v_resjunk boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"TargetEntry":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{TargetEntry, xpr}', v_xpr);
+      result = ast.jsonb_set(result, '{TargetEntry, expr}', v_expr);
+      result = ast.jsonb_set(result, '{TargetEntry, resno}', to_jsonb(v_resno));
+      result = ast.jsonb_set(result, '{TargetEntry, resname}', to_jsonb(v_resname));
+      result = ast.jsonb_set(result, '{TargetEntry, ressortgroupref}', v_ressortgroupref);
+      result = ast.jsonb_set(result, '{TargetEntry, resorigtbl}', v_resorigtbl);
+      result = ast.jsonb_set(result, '{TargetEntry, resorigcol}', to_jsonb(v_resorigcol));
+      result = ast.jsonb_set(result, '{TargetEntry, resjunk}', to_jsonb(v_resjunk));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.range_tbl_ref ( v_rtindex int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RangeTblRef":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RangeTblRef, rtindex}', to_jsonb(v_rtindex));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.join_expr ( v_jointype text DEFAULT NULL, v_isnatural boolean DEFAULT NULL, v_larg jsonb DEFAULT NULL, v_rarg jsonb DEFAULT NULL, v_usingclause jsonb DEFAULT NULL, v_quals jsonb DEFAULT NULL, v_alias jsonb DEFAULT NULL, v_rtindex int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"JoinExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{JoinExpr, jointype}', to_jsonb(v_jointype));
+      result = ast.jsonb_set(result, '{JoinExpr, isNatural}', to_jsonb(v_isNatural));
+      result = ast.jsonb_set(result, '{JoinExpr, larg}', v_larg);
+      result = ast.jsonb_set(result, '{JoinExpr, rarg}', v_rarg);
+      result = ast.jsonb_set(result, '{JoinExpr, usingClause}', v_usingClause);
+      result = ast.jsonb_set(result, '{JoinExpr, quals}', v_quals);
+      result = ast.jsonb_set(result, '{JoinExpr, alias}', v_alias);
+      result = ast.jsonb_set(result, '{JoinExpr, rtindex}', to_jsonb(v_rtindex));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.from_expr ( v_fromlist jsonb DEFAULT NULL, v_quals jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"FromExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{FromExpr, fromlist}', v_fromlist);
+      result = ast.jsonb_set(result, '{FromExpr, quals}', v_quals);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.on_conflict_expr ( v_action text DEFAULT NULL, v_arbiterelems jsonb DEFAULT NULL, v_arbiterwhere jsonb DEFAULT NULL, v_constraint jsonb DEFAULT NULL, v_onconflictset jsonb DEFAULT NULL, v_onconflictwhere jsonb DEFAULT NULL, v_exclrelindex int DEFAULT NULL, v_exclreltlist jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"OnConflictExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{OnConflictExpr, action}', to_jsonb(v_action));
+      result = ast.jsonb_set(result, '{OnConflictExpr, arbiterElems}', v_arbiterElems);
+      result = ast.jsonb_set(result, '{OnConflictExpr, arbiterWhere}', v_arbiterWhere);
+      result = ast.jsonb_set(result, '{OnConflictExpr, constraint}', v_constraint);
+      result = ast.jsonb_set(result, '{OnConflictExpr, onConflictSet}', v_onConflictSet);
+      result = ast.jsonb_set(result, '{OnConflictExpr, onConflictWhere}', v_onConflictWhere);
+      result = ast.jsonb_set(result, '{OnConflictExpr, exclRelIndex}', to_jsonb(v_exclRelIndex));
+      result = ast.jsonb_set(result, '{OnConflictExpr, exclRelTlist}', v_exclRelTlist);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.query ( v_commandtype text DEFAULT NULL, v_querysource text DEFAULT NULL, v_queryid int DEFAULT NULL, v_cansettag boolean DEFAULT NULL, v_utilitystmt jsonb DEFAULT NULL, v_resultrelation int DEFAULT NULL, v_hasaggs boolean DEFAULT NULL, v_haswindowfuncs boolean DEFAULT NULL, v_hastargetsrfs boolean DEFAULT NULL, v_hassublinks boolean DEFAULT NULL, v_hasdistincton boolean DEFAULT NULL, v_hasrecursive boolean DEFAULT NULL, v_hasmodifyingcte boolean DEFAULT NULL, v_hasforupdate boolean DEFAULT NULL, v_hasrowsecurity boolean DEFAULT NULL, v_ctelist jsonb DEFAULT NULL, v_rtable jsonb DEFAULT NULL, v_jointree jsonb DEFAULT NULL, v_targetlist jsonb DEFAULT NULL, v_override text DEFAULT NULL, v_onconflict jsonb DEFAULT NULL, v_returninglist jsonb DEFAULT NULL, v_groupclause jsonb DEFAULT NULL, v_groupingsets jsonb DEFAULT NULL, v_havingqual jsonb DEFAULT NULL, v_windowclause jsonb DEFAULT NULL, v_distinctclause jsonb DEFAULT NULL, v_sortclause jsonb DEFAULT NULL, v_limitoffset jsonb DEFAULT NULL, v_limitcount jsonb DEFAULT NULL, v_limitoption text DEFAULT NULL, v_rowmarks jsonb DEFAULT NULL, v_setoperations jsonb DEFAULT NULL, v_constraintdeps jsonb DEFAULT NULL, v_withcheckoptions jsonb DEFAULT NULL, v_stmt_location int DEFAULT NULL, v_stmt_len int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Query":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{Query, commandType}', to_jsonb(v_commandType));
+      result = ast.jsonb_set(result, '{Query, querySource}', to_jsonb(v_querySource));
+      result = ast.jsonb_set(result, '{Query, queryId}', to_jsonb(v_queryId));
+      result = ast.jsonb_set(result, '{Query, canSetTag}', to_jsonb(v_canSetTag));
+      result = ast.jsonb_set(result, '{Query, utilityStmt}', v_utilityStmt);
+      result = ast.jsonb_set(result, '{Query, resultRelation}', to_jsonb(v_resultRelation));
+      result = ast.jsonb_set(result, '{Query, hasAggs}', to_jsonb(v_hasAggs));
+      result = ast.jsonb_set(result, '{Query, hasWindowFuncs}', to_jsonb(v_hasWindowFuncs));
+      result = ast.jsonb_set(result, '{Query, hasTargetSRFs}', to_jsonb(v_hasTargetSRFs));
+      result = ast.jsonb_set(result, '{Query, hasSubLinks}', to_jsonb(v_hasSubLinks));
+      result = ast.jsonb_set(result, '{Query, hasDistinctOn}', to_jsonb(v_hasDistinctOn));
+      result = ast.jsonb_set(result, '{Query, hasRecursive}', to_jsonb(v_hasRecursive));
+      result = ast.jsonb_set(result, '{Query, hasModifyingCTE}', to_jsonb(v_hasModifyingCTE));
+      result = ast.jsonb_set(result, '{Query, hasForUpdate}', to_jsonb(v_hasForUpdate));
+      result = ast.jsonb_set(result, '{Query, hasRowSecurity}', to_jsonb(v_hasRowSecurity));
+      result = ast.jsonb_set(result, '{Query, cteList}', v_cteList);
+      result = ast.jsonb_set(result, '{Query, rtable}', v_rtable);
+      result = ast.jsonb_set(result, '{Query, jointree}', v_jointree);
+      result = ast.jsonb_set(result, '{Query, targetList}', v_targetList);
+      result = ast.jsonb_set(result, '{Query, override}', to_jsonb(v_override));
+      result = ast.jsonb_set(result, '{Query, onConflict}', v_onConflict);
+      result = ast.jsonb_set(result, '{Query, returningList}', v_returningList);
+      result = ast.jsonb_set(result, '{Query, groupClause}', v_groupClause);
+      result = ast.jsonb_set(result, '{Query, groupingSets}', v_groupingSets);
+      result = ast.jsonb_set(result, '{Query, havingQual}', v_havingQual);
+      result = ast.jsonb_set(result, '{Query, windowClause}', v_windowClause);
+      result = ast.jsonb_set(result, '{Query, distinctClause}', v_distinctClause);
+      result = ast.jsonb_set(result, '{Query, sortClause}', v_sortClause);
+      result = ast.jsonb_set(result, '{Query, limitOffset}', v_limitOffset);
+      result = ast.jsonb_set(result, '{Query, limitCount}', v_limitCount);
+      result = ast.jsonb_set(result, '{Query, limitOption}', to_jsonb(v_limitOption));
+      result = ast.jsonb_set(result, '{Query, rowMarks}', v_rowMarks);
+      result = ast.jsonb_set(result, '{Query, setOperations}', v_setOperations);
+      result = ast.jsonb_set(result, '{Query, constraintDeps}', v_constraintDeps);
+      result = ast.jsonb_set(result, '{Query, withCheckOptions}', v_withCheckOptions);
+      result = ast.jsonb_set(result, '{Query, stmt_location}', to_jsonb(v_stmt_location));
+      result = ast.jsonb_set(result, '{Query, stmt_len}', to_jsonb(v_stmt_len));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.type_name ( v_names jsonb DEFAULT NULL, v_typeoid jsonb DEFAULT NULL, v_setof boolean DEFAULT NULL, v_pct_type boolean DEFAULT NULL, v_typmods jsonb DEFAULT NULL, v_typemod int DEFAULT NULL, v_arraybounds jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"TypeName":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{TypeName, names}', v_names);
+      result = ast.jsonb_set(result, '{TypeName, typeOid}', v_typeOid);
+      result = ast.jsonb_set(result, '{TypeName, setof}', to_jsonb(v_setof));
+      result = ast.jsonb_set(result, '{TypeName, pct_type}', to_jsonb(v_pct_type));
+      result = ast.jsonb_set(result, '{TypeName, typmods}', v_typmods);
+      result = ast.jsonb_set(result, '{TypeName, typemod}', to_jsonb(v_typemod));
+      result = ast.jsonb_set(result, '{TypeName, arrayBounds}', v_arrayBounds);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.column_ref ( v_fields jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ColumnRef":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ColumnRef, fields}', v_fields);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.func_call ( v_funcname jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_agg_star boolean DEFAULT NULL, v_func_variadic boolean DEFAULT NULL, v_agg_order jsonb DEFAULT NULL, v_agg_distinct boolean DEFAULT NULL, v_agg_filter jsonb DEFAULT NULL, v_agg_within_group boolean DEFAULT NULL, v_over jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"FuncCall":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{FuncCall, funcname}', v_funcname);
-    result = ast.jsonb_set(result, '{FuncCall, args}', v_args);
-    result = ast.jsonb_set(result, '{FuncCall, agg_star}', to_jsonb(v_agg_star));
-    result = ast.jsonb_set(result, '{FuncCall, func_variadic}', to_jsonb(v_func_variadic));
-    result = ast.jsonb_set(result, '{FuncCall, agg_order}', v_agg_order);
-    result = ast.jsonb_set(result, '{FuncCall, agg_distinct}', to_jsonb(v_agg_distinct));
-    result = ast.jsonb_set(result, '{FuncCall, agg_filter}', v_agg_filter);
-    result = ast.jsonb_set(result, '{FuncCall, agg_within_group}', to_jsonb(v_agg_within_group));
-    result = ast.jsonb_set(result, '{FuncCall, over}', v_over);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_default_privileges_stmt ( v_options jsonb DEFAULT NULL, v_action jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterDefaultPrivilegesStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterDefaultPrivilegesStmt, options}', v_options);
-    result = ast.jsonb_set(result, '{AlterDefaultPrivilegesStmt, action}', v_action);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.def_elem ( v_defname text DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_defaction int DEFAULT NULL, v_defnamespace text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DefElem":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DefElem, defname}', to_jsonb(v_defname));
-    result = ast.jsonb_set(result, '{DefElem, arg}', v_arg);
-    result = ast.jsonb_set(result, '{DefElem, defaction}', to_jsonb(v_defaction));
-    result = ast.jsonb_set(result, '{DefElem, defnamespace}', to_jsonb(v_defnamespace));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.grant_stmt ( v_is_grant boolean DEFAULT NULL, v_targtype int DEFAULT NULL, v_objtype int DEFAULT NULL, v_privileges jsonb DEFAULT NULL, v_grantees jsonb DEFAULT NULL, v_behavior int DEFAULT NULL, v_objects jsonb DEFAULT NULL, v_grant_option boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"GrantStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{GrantStmt, is_grant}', to_jsonb(v_is_grant));
-    result = ast.jsonb_set(result, '{GrantStmt, targtype}', to_jsonb(v_targtype));
-    result = ast.jsonb_set(result, '{GrantStmt, objtype}', to_jsonb(v_objtype));
-    result = ast.jsonb_set(result, '{GrantStmt, privileges}', v_privileges);
-    result = ast.jsonb_set(result, '{GrantStmt, grantees}', v_grantees);
-    result = ast.jsonb_set(result, '{GrantStmt, behavior}', to_jsonb(v_behavior));
-    result = ast.jsonb_set(result, '{GrantStmt, objects}', v_objects);
-    result = ast.jsonb_set(result, '{GrantStmt, grant_option}', to_jsonb(v_grant_option));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.access_priv ( v_priv_name text DEFAULT NULL, v_cols jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AccessPriv":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AccessPriv, priv_name}', to_jsonb(v_priv_name));
-    result = ast.jsonb_set(result, '{AccessPriv, cols}', v_cols);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.role_spec ( v_roletype int DEFAULT NULL, v_rolename text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"RoleSpec":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{RoleSpec, roletype}', to_jsonb(v_roletype));
-    result = ast.jsonb_set(result, '{RoleSpec, rolename}', to_jsonb(v_rolename));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.comment_stmt ( v_objtype int DEFAULT NULL, v_object jsonb DEFAULT NULL, v_comment text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CommentStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CommentStmt, objtype}', to_jsonb(v_objtype));
-    result = ast.jsonb_set(result, '{CommentStmt, object}', v_object);
-    result = ast.jsonb_set(result, '{CommentStmt, comment}', to_jsonb(v_comment));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.object_with_args ( v_objname jsonb DEFAULT NULL, v_objargs jsonb DEFAULT NULL, v_args_unspecified boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ObjectWithArgs":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ObjectWithArgs, objname}', v_objname);
-    result = ast.jsonb_set(result, '{ObjectWithArgs, objargs}', v_objargs);
-    result = ast.jsonb_set(result, '{ObjectWithArgs, args_unspecified}', to_jsonb(v_args_unspecified));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.select_stmt ( v_targetlist jsonb DEFAULT NULL, v_fromclause jsonb DEFAULT NULL, v_groupclause jsonb DEFAULT NULL, v_havingclause jsonb DEFAULT NULL, v_op int DEFAULT NULL, v_sortclause jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_distinctclause jsonb DEFAULT NULL, v_limitcount jsonb DEFAULT NULL, v_valueslists jsonb DEFAULT NULL, v_intoclause jsonb DEFAULT NULL, v_all boolean DEFAULT NULL, v_larg jsonb DEFAULT NULL, v_rarg jsonb DEFAULT NULL, v_limitoffset jsonb DEFAULT NULL, v_withclause jsonb DEFAULT NULL, v_lockingclause jsonb DEFAULT NULL, v_windowclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"SelectStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{SelectStmt, targetList}', v_targetList);
-    result = ast.jsonb_set(result, '{SelectStmt, fromClause}', v_fromClause);
-    result = ast.jsonb_set(result, '{SelectStmt, groupClause}', v_groupClause);
-    result = ast.jsonb_set(result, '{SelectStmt, havingClause}', v_havingClause);
-    result = ast.jsonb_set(result, '{SelectStmt, op}', to_jsonb(v_op));
-    result = ast.jsonb_set(result, '{SelectStmt, sortClause}', v_sortClause);
-    result = ast.jsonb_set(result, '{SelectStmt, whereClause}', v_whereClause);
-    result = ast.jsonb_set(result, '{SelectStmt, distinctClause}', v_distinctClause);
-    result = ast.jsonb_set(result, '{SelectStmt, limitCount}', v_limitCount);
-    result = ast.jsonb_set(result, '{SelectStmt, valuesLists}', v_valuesLists);
-    result = ast.jsonb_set(result, '{SelectStmt, intoClause}', v_intoClause);
-    result = ast.jsonb_set(result, '{SelectStmt, all}', to_jsonb(v_all));
-    result = ast.jsonb_set(result, '{SelectStmt, larg}', v_larg);
-    result = ast.jsonb_set(result, '{SelectStmt, rarg}', v_rarg);
-    result = ast.jsonb_set(result, '{SelectStmt, limitOffset}', v_limitOffset);
-    result = ast.jsonb_set(result, '{SelectStmt, withClause}', v_withClause);
-    result = ast.jsonb_set(result, '{SelectStmt, lockingClause}', v_lockingClause);
-    result = ast.jsonb_set(result, '{SelectStmt, windowClause}', v_windowClause);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.res_target ( v_val jsonb DEFAULT NULL, v_name text DEFAULT NULL, v_indirection jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ResTarget":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ResTarget, val}', v_val);
-    result = ast.jsonb_set(result, '{ResTarget, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{ResTarget, indirection}', v_indirection);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alias ( v_aliasname text DEFAULT NULL, v_colnames jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"Alias":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{Alias, aliasname}', to_jsonb(v_aliasname));
-    result = ast.jsonb_set(result, '{Alias, colnames}', v_colnames);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.join_expr ( v_jointype int DEFAULT NULL, v_larg jsonb DEFAULT NULL, v_rarg jsonb DEFAULT NULL, v_quals jsonb DEFAULT NULL, v_usingclause jsonb DEFAULT NULL, v_isnatural boolean DEFAULT NULL, v_alias jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"JoinExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{JoinExpr, jointype}', to_jsonb(v_jointype));
-    result = ast.jsonb_set(result, '{JoinExpr, larg}', v_larg);
-    result = ast.jsonb_set(result, '{JoinExpr, rarg}', v_rarg);
-    result = ast.jsonb_set(result, '{JoinExpr, quals}', v_quals);
-    result = ast.jsonb_set(result, '{JoinExpr, usingClause}', v_usingClause);
-    result = ast.jsonb_set(result, '{JoinExpr, isNatural}', to_jsonb(v_isNatural));
-    result = ast.jsonb_set(result, '{JoinExpr, alias}', v_alias);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.bool_expr ( v_boolop int DEFAULT NULL, v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"BoolExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{BoolExpr, boolop}', to_jsonb(v_boolop));
-    result = ast.jsonb_set(result, '{BoolExpr, args}', v_args);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.a_star (  ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"A_Star":{}}'::jsonb;
-BEGIN
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.sort_by ( v_node jsonb DEFAULT NULL, v_sortby_dir int DEFAULT NULL, v_sortby_nulls int DEFAULT NULL, v_useop jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"SortBy":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{SortBy, node}', v_node);
-    result = ast.jsonb_set(result, '{SortBy, sortby_dir}', to_jsonb(v_sortby_dir));
-    result = ast.jsonb_set(result, '{SortBy, sortby_nulls}', to_jsonb(v_sortby_nulls));
-    result = ast.jsonb_set(result, '{SortBy, useOp}', v_useOp);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.named_arg_expr ( v_arg jsonb DEFAULT NULL, v_name text DEFAULT NULL, v_argnumber int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"NamedArgExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{NamedArgExpr, arg}', v_arg);
-    result = ast.jsonb_set(result, '{NamedArgExpr, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{NamedArgExpr, argnumber}', to_jsonb(v_argnumber));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.a_array_expr ( v_elements jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"A_ArrayExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{A_ArrayExpr, elements}', v_elements);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.float ( v_str text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"Float":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{Float, str}', to_jsonb(v_str));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.range_function ( v_is_rowsfrom boolean DEFAULT NULL, v_functions jsonb DEFAULT NULL, v_coldeflist jsonb DEFAULT NULL, v_alias jsonb DEFAULT NULL, v_lateral boolean DEFAULT NULL, v_ordinality boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"RangeFunction":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{RangeFunction, is_rowsfrom}', to_jsonb(v_is_rowsfrom));
-    result = ast.jsonb_set(result, '{RangeFunction, functions}', v_functions);
-    result = ast.jsonb_set(result, '{RangeFunction, coldeflist}', v_coldeflist);
-    result = ast.jsonb_set(result, '{RangeFunction, alias}', v_alias);
-    result = ast.jsonb_set(result, '{RangeFunction, lateral}', to_jsonb(v_lateral));
-    result = ast.jsonb_set(result, '{RangeFunction, ordinality}', to_jsonb(v_ordinality));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.sub_link ( v_sublinktype int DEFAULT NULL, v_subselect jsonb DEFAULT NULL, v_testexpr jsonb DEFAULT NULL, v_opername jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"SubLink":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{SubLink, subLinkType}', to_jsonb(v_subLinkType));
-    result = ast.jsonb_set(result, '{SubLink, subselect}', v_subselect);
-    result = ast.jsonb_set(result, '{SubLink, testexpr}', v_testexpr);
-    result = ast.jsonb_set(result, '{SubLink, operName}', v_operName);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.null (  ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"Null":{}}'::jsonb;
-BEGIN
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.variable_set_stmt ( v_kind int DEFAULT NULL, v_name text DEFAULT NULL, v_args jsonb DEFAULT NULL, v_is_local boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"VariableSetStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{VariableSetStmt, kind}', to_jsonb(v_kind));
-    result = ast.jsonb_set(result, '{VariableSetStmt, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{VariableSetStmt, args}', v_args);
-    result = ast.jsonb_set(result, '{VariableSetStmt, is_local}', to_jsonb(v_is_local));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.variable_show_stmt ( v_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"VariableShowStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{VariableShowStmt, name}', to_jsonb(v_name));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.do_stmt ( v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DoStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DoStmt, args}', v_args);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_domain_stmt ( v_domainname jsonb DEFAULT NULL, v_typename jsonb DEFAULT NULL, v_constraints jsonb DEFAULT NULL, v_collclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateDomainStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateDomainStmt, domainname}', v_domainname);
-    result = ast.jsonb_set(result, '{CreateDomainStmt, typeName}', v_typeName);
-    result = ast.jsonb_set(result, '{CreateDomainStmt, constraints}', v_constraints);
-    result = ast.jsonb_set(result, '{CreateDomainStmt, collClause}', v_collClause);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_enum_stmt ( v_typename jsonb DEFAULT NULL, v_vals jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateEnumStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateEnumStmt, typeName}', v_typeName);
-    result = ast.jsonb_set(result, '{CreateEnumStmt, vals}', v_vals);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_extension_stmt ( v_extname text DEFAULT NULL, v_options jsonb DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateExtensionStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateExtensionStmt, extname}', to_jsonb(v_extname));
-    result = ast.jsonb_set(result, '{CreateExtensionStmt, options}', v_options);
-    result = ast.jsonb_set(result, '{CreateExtensionStmt, if_not_exists}', to_jsonb(v_if_not_exists));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_function_stmt ( v_replace boolean DEFAULT NULL, v_funcname jsonb DEFAULT NULL, v_parameters jsonb DEFAULT NULL, v_returntype jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateFunctionStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateFunctionStmt, replace}', to_jsonb(v_replace));
-    result = ast.jsonb_set(result, '{CreateFunctionStmt, funcname}', v_funcname);
-    result = ast.jsonb_set(result, '{CreateFunctionStmt, parameters}', v_parameters);
-    result = ast.jsonb_set(result, '{CreateFunctionStmt, returnType}', v_returnType);
-    result = ast.jsonb_set(result, '{CreateFunctionStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.function_parameter ( v_name text DEFAULT NULL, v_argtype jsonb DEFAULT NULL, v_mode int DEFAULT NULL, v_defexpr jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"FunctionParameter":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{FunctionParameter, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{FunctionParameter, argType}', v_argType);
-    result = ast.jsonb_set(result, '{FunctionParameter, mode}', to_jsonb(v_mode));
-    result = ast.jsonb_set(result, '{FunctionParameter, defexpr}', v_defexpr);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.transaction_stmt ( v_kind int DEFAULT NULL, v_options jsonb DEFAULT NULL, v_gid text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"TransactionStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{TransactionStmt, kind}', to_jsonb(v_kind));
-    result = ast.jsonb_set(result, '{TransactionStmt, options}', v_options);
-    result = ast.jsonb_set(result, '{TransactionStmt, gid}', to_jsonb(v_gid));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.index_stmt ( v_idxname text DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_accessmethod text DEFAULT NULL, v_indexparams jsonb DEFAULT NULL, v_concurrent boolean DEFAULT NULL, v_unique boolean DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"IndexStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{IndexStmt, idxname}', to_jsonb(v_idxname));
-    result = ast.jsonb_set(result, '{IndexStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{IndexStmt, accessMethod}', to_jsonb(v_accessMethod));
-    result = ast.jsonb_set(result, '{IndexStmt, indexParams}', v_indexParams);
-    result = ast.jsonb_set(result, '{IndexStmt, concurrent}', to_jsonb(v_concurrent));
-    result = ast.jsonb_set(result, '{IndexStmt, unique}', to_jsonb(v_unique));
-    result = ast.jsonb_set(result, '{IndexStmt, whereClause}', v_whereClause);
-    result = ast.jsonb_set(result, '{IndexStmt, options}', v_options);
-    result = ast.jsonb_set(result, '{IndexStmt, if_not_exists}', to_jsonb(v_if_not_exists));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.index_elem ( v_name text DEFAULT NULL, v_ordering int DEFAULT NULL, v_nulls_ordering int DEFAULT NULL, v_expr jsonb DEFAULT NULL, v_opclass jsonb DEFAULT NULL, v_collation jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"IndexElem":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{IndexElem, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{IndexElem, ordering}', to_jsonb(v_ordering));
-    result = ast.jsonb_set(result, '{IndexElem, nulls_ordering}', to_jsonb(v_nulls_ordering));
-    result = ast.jsonb_set(result, '{IndexElem, expr}', v_expr);
-    result = ast.jsonb_set(result, '{IndexElem, opclass}', v_opclass);
-    result = ast.jsonb_set(result, '{IndexElem, collation}', v_collation);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.null_test ( v_arg jsonb DEFAULT NULL, v_nulltesttype int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"NullTest":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{NullTest, arg}', v_arg);
-    result = ast.jsonb_set(result, '{NullTest, nulltesttype}', to_jsonb(v_nulltesttype));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+  DECLARE
+      result jsonb = '{"ColumnRef":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ColumnRef, fields}', v_fields);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.param_ref ( v_number int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ParamRef":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ParamRef, number}', to_jsonb(v_number));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+  DECLARE
+      result jsonb = '{"ParamRef":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ParamRef, number}', to_jsonb(v_number));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.create_policy_stmt ( v_policy_name text DEFAULT NULL, v_table jsonb DEFAULT NULL, v_cmd_name text DEFAULT NULL, v_permissive boolean DEFAULT NULL, v_roles jsonb DEFAULT NULL, v_qual jsonb DEFAULT NULL, v_with_check jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreatePolicyStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreatePolicyStmt, policy_name}', to_jsonb(v_policy_name));
-    result = ast.jsonb_set(result, '{CreatePolicyStmt, table}', v_table);
-    result = ast.jsonb_set(result, '{CreatePolicyStmt, cmd_name}', to_jsonb(v_cmd_name));
-    result = ast.jsonb_set(result, '{CreatePolicyStmt, permissive}', to_jsonb(v_permissive));
-    result = ast.jsonb_set(result, '{CreatePolicyStmt, roles}', v_roles);
-    result = ast.jsonb_set(result, '{CreatePolicyStmt, qual}', v_qual);
-    result = ast.jsonb_set(result, '{CreatePolicyStmt, with_check}', v_with_check);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.a_expr ( v_kind text DEFAULT NULL, v_name jsonb DEFAULT NULL, v_lexpr jsonb DEFAULT NULL, v_rexpr jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"A_Expr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{A_Expr, kind}', to_jsonb(v_kind));
+      result = ast.jsonb_set(result, '{A_Expr, name}', v_name);
+      result = ast.jsonb_set(result, '{A_Expr, lexpr}', v_lexpr);
+      result = ast.jsonb_set(result, '{A_Expr, rexpr}', v_rexpr);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.range_subselect ( v_subquery jsonb DEFAULT NULL, v_alias jsonb DEFAULT NULL, v_lateral boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"RangeSubselect":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{RangeSubselect, subquery}', v_subquery);
-    result = ast.jsonb_set(result, '{RangeSubselect, alias}', v_alias);
-    result = ast.jsonb_set(result, '{RangeSubselect, lateral}', to_jsonb(v_lateral));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.a_const ( v_val jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"A_Const":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{A_Const, val}', v_val);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.a_indirection ( v_arg jsonb DEFAULT NULL, v_indirection jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"A_Indirection":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{A_Indirection, arg}', v_arg);
-    result = ast.jsonb_set(result, '{A_Indirection, indirection}', v_indirection);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.row_expr ( v_args jsonb DEFAULT NULL, v_row_format int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"RowExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{RowExpr, args}', v_args);
-    result = ast.jsonb_set(result, '{RowExpr, row_format}', to_jsonb(v_row_format));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_role_stmt ( v_stmt_type int DEFAULT NULL, v_role text DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateRoleStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateRoleStmt, stmt_type}', to_jsonb(v_stmt_type));
-    result = ast.jsonb_set(result, '{CreateRoleStmt, role}', to_jsonb(v_role));
-    result = ast.jsonb_set(result, '{CreateRoleStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.grant_role_stmt ( v_granted_roles jsonb DEFAULT NULL, v_grantee_roles jsonb DEFAULT NULL, v_is_grant boolean DEFAULT NULL, v_behavior int DEFAULT NULL, v_admin_opt boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"GrantRoleStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{GrantRoleStmt, granted_roles}', v_granted_roles);
-    result = ast.jsonb_set(result, '{GrantRoleStmt, grantee_roles}', v_grantee_roles);
-    result = ast.jsonb_set(result, '{GrantRoleStmt, is_grant}', to_jsonb(v_is_grant));
-    result = ast.jsonb_set(result, '{GrantRoleStmt, behavior}', to_jsonb(v_behavior));
-    result = ast.jsonb_set(result, '{GrantRoleStmt, admin_opt}', to_jsonb(v_admin_opt));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.rule_stmt ( v_relation jsonb DEFAULT NULL, v_rulename text DEFAULT NULL, v_event int DEFAULT NULL, v_instead boolean DEFAULT NULL, v_actions jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_replace boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"RuleStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{RuleStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{RuleStmt, rulename}', to_jsonb(v_rulename));
-    result = ast.jsonb_set(result, '{RuleStmt, event}', to_jsonb(v_event));
-    result = ast.jsonb_set(result, '{RuleStmt, instead}', to_jsonb(v_instead));
-    result = ast.jsonb_set(result, '{RuleStmt, actions}', v_actions);
-    result = ast.jsonb_set(result, '{RuleStmt, whereClause}', v_whereClause);
-    result = ast.jsonb_set(result, '{RuleStmt, replace}', to_jsonb(v_replace));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.update_stmt ( v_relation jsonb DEFAULT NULL, v_targetlist jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_returninglist jsonb DEFAULT NULL, v_fromclause jsonb DEFAULT NULL, v_withclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"UpdateStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{UpdateStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{UpdateStmt, targetList}', v_targetList);
-    result = ast.jsonb_set(result, '{UpdateStmt, whereClause}', v_whereClause);
-    result = ast.jsonb_set(result, '{UpdateStmt, returningList}', v_returningList);
-    result = ast.jsonb_set(result, '{UpdateStmt, fromClause}', v_fromClause);
-    result = ast.jsonb_set(result, '{UpdateStmt, withClause}', v_withClause);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.delete_stmt ( v_relation jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_usingclause jsonb DEFAULT NULL, v_returninglist jsonb DEFAULT NULL, v_withclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DeleteStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DeleteStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{DeleteStmt, whereClause}', v_whereClause);
-    result = ast.jsonb_set(result, '{DeleteStmt, usingClause}', v_usingClause);
-    result = ast.jsonb_set(result, '{DeleteStmt, returningList}', v_returningList);
-    result = ast.jsonb_set(result, '{DeleteStmt, withClause}', v_withClause);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.insert_stmt ( v_relation jsonb DEFAULT NULL, v_selectstmt jsonb DEFAULT NULL, v_override int DEFAULT NULL, v_cols jsonb DEFAULT NULL, v_onconflictclause jsonb DEFAULT NULL, v_returninglist jsonb DEFAULT NULL, v_withclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"InsertStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{InsertStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{InsertStmt, selectStmt}', v_selectStmt);
-    result = ast.jsonb_set(result, '{InsertStmt, override}', to_jsonb(v_override));
-    result = ast.jsonb_set(result, '{InsertStmt, cols}', v_cols);
-    result = ast.jsonb_set(result, '{InsertStmt, onConflictClause}', v_onConflictClause);
-    result = ast.jsonb_set(result, '{InsertStmt, returningList}', v_returningList);
-    result = ast.jsonb_set(result, '{InsertStmt, withClause}', v_withClause);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_seq_stmt ( v_sequence jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateSeqStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateSeqStmt, sequence}', v_sequence);
-    result = ast.jsonb_set(result, '{CreateSeqStmt, options}', v_options);
-    result = ast.jsonb_set(result, '{CreateSeqStmt, if_not_exists}', to_jsonb(v_if_not_exists));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.on_conflict_clause ( v_action int DEFAULT NULL, v_infer jsonb DEFAULT NULL, v_targetlist jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"OnConflictClause":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{OnConflictClause, action}', to_jsonb(v_action));
-    result = ast.jsonb_set(result, '{OnConflictClause, infer}', v_infer);
-    result = ast.jsonb_set(result, '{OnConflictClause, targetList}', v_targetList);
-    result = ast.jsonb_set(result, '{OnConflictClause, whereClause}', v_whereClause);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.infer_clause ( v_indexelems jsonb DEFAULT NULL, v_conname text DEFAULT NULL, v_whereclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"InferClause":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{InferClause, indexElems}', v_indexElems);
-    result = ast.jsonb_set(result, '{InferClause, conname}', to_jsonb(v_conname));
-    result = ast.jsonb_set(result, '{InferClause, whereClause}', v_whereClause);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.multi_assign_ref ( v_source jsonb DEFAULT NULL, v_colno int DEFAULT NULL, v_ncolumns int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"MultiAssignRef":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{MultiAssignRef, source}', v_source);
-    result = ast.jsonb_set(result, '{MultiAssignRef, colno}', to_jsonb(v_colno));
-    result = ast.jsonb_set(result, '{MultiAssignRef, ncolumns}', to_jsonb(v_ncolumns));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.set_to_default (  ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"SetToDefault":{}}'::jsonb;
-BEGIN
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.min_max_expr ( v_op int DEFAULT NULL, v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"MinMaxExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{MinMaxExpr, op}', to_jsonb(v_op));
-    result = ast.jsonb_set(result, '{MinMaxExpr, args}', v_args);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.drop_stmt ( v_objects jsonb DEFAULT NULL, v_removetype int DEFAULT NULL, v_behavior int DEFAULT NULL, v_missing_ok boolean DEFAULT NULL, v_concurrent boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DropStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DropStmt, objects}', v_objects);
-    result = ast.jsonb_set(result, '{DropStmt, removeType}', to_jsonb(v_removeType));
-    result = ast.jsonb_set(result, '{DropStmt, behavior}', to_jsonb(v_behavior));
-    result = ast.jsonb_set(result, '{DropStmt, missing_ok}', to_jsonb(v_missing_ok));
-    result = ast.jsonb_set(result, '{DropStmt, concurrent}', to_jsonb(v_concurrent));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_trig_stmt ( v_trigname text DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_funcname jsonb DEFAULT NULL, v_row boolean DEFAULT NULL, v_timing int DEFAULT NULL, v_events int DEFAULT NULL, v_args jsonb DEFAULT NULL, v_columns jsonb DEFAULT NULL, v_whenclause jsonb DEFAULT NULL, v_transitionrels jsonb DEFAULT NULL, v_isconstraint boolean DEFAULT NULL, v_deferrable boolean DEFAULT NULL, v_initdeferred boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateTrigStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateTrigStmt, trigname}', to_jsonb(v_trigname));
-    result = ast.jsonb_set(result, '{CreateTrigStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{CreateTrigStmt, funcname}', v_funcname);
-    result = ast.jsonb_set(result, '{CreateTrigStmt, row}', to_jsonb(v_row));
-    result = ast.jsonb_set(result, '{CreateTrigStmt, timing}', to_jsonb(v_timing));
-    result = ast.jsonb_set(result, '{CreateTrigStmt, events}', to_jsonb(v_events));
-    result = ast.jsonb_set(result, '{CreateTrigStmt, args}', v_args);
-    result = ast.jsonb_set(result, '{CreateTrigStmt, columns}', v_columns);
-    result = ast.jsonb_set(result, '{CreateTrigStmt, whenClause}', v_whenClause);
-    result = ast.jsonb_set(result, '{CreateTrigStmt, transitionRels}', v_transitionRels);
-    result = ast.jsonb_set(result, '{CreateTrigStmt, isconstraint}', to_jsonb(v_isconstraint));
-    result = ast.jsonb_set(result, '{CreateTrigStmt, deferrable}', to_jsonb(v_deferrable));
-    result = ast.jsonb_set(result, '{CreateTrigStmt, initdeferred}', to_jsonb(v_initdeferred));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.trigger_transition ( v_name text DEFAULT NULL, v_isnew boolean DEFAULT NULL, v_istable boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"TriggerTransition":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{TriggerTransition, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{TriggerTransition, isNew}', to_jsonb(v_isNew));
-    result = ast.jsonb_set(result, '{TriggerTransition, isTable}', to_jsonb(v_isTable));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.composite_type_stmt ( v_typevar jsonb DEFAULT NULL, v_coldeflist jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CompositeTypeStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CompositeTypeStmt, typevar}', v_typevar);
-    result = ast.jsonb_set(result, '{CompositeTypeStmt, coldeflist}', v_coldeflist);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.explain_stmt ( v_query jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ExplainStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ExplainStmt, query}', v_query);
-    result = ast.jsonb_set(result, '{ExplainStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.view_stmt ( v_view jsonb DEFAULT NULL, v_query jsonb DEFAULT NULL, v_withcheckoption int DEFAULT NULL, v_replace boolean DEFAULT NULL, v_aliases jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ViewStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ViewStmt, view}', v_view);
-    result = ast.jsonb_set(result, '{ViewStmt, query}', v_query);
-    result = ast.jsonb_set(result, '{ViewStmt, withCheckOption}', to_jsonb(v_withCheckOption));
-    result = ast.jsonb_set(result, '{ViewStmt, replace}', to_jsonb(v_replace));
-    result = ast.jsonb_set(result, '{ViewStmt, aliases}', v_aliases);
-    result = ast.jsonb_set(result, '{ViewStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.type_cast ( v_arg jsonb DEFAULT NULL, v_typename jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"TypeCast":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{TypeCast, arg}', v_arg);
+      result = ast.jsonb_set(result, '{TypeCast, typeName}', v_typeName);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.collate_clause ( v_arg jsonb DEFAULT NULL, v_collname jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CollateClause":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CollateClause, arg}', v_arg);
-    result = ast.jsonb_set(result, '{CollateClause, collname}', v_collname);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+  DECLARE
+      result jsonb = '{"CollateClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CollateClause, arg}', v_arg);
+      result = ast.jsonb_set(result, '{CollateClause, collname}', v_collname);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.define_stmt ( v_kind int DEFAULT NULL, v_defnames jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_definition jsonb DEFAULT NULL, v_oldstyle boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DefineStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DefineStmt, kind}', to_jsonb(v_kind));
-    result = ast.jsonb_set(result, '{DefineStmt, defnames}', v_defnames);
-    result = ast.jsonb_set(result, '{DefineStmt, args}', v_args);
-    result = ast.jsonb_set(result, '{DefineStmt, definition}', v_definition);
-    result = ast.jsonb_set(result, '{DefineStmt, oldstyle}', to_jsonb(v_oldstyle));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.role_spec ( v_roletype text DEFAULT NULL, v_rolename text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RoleSpec":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RoleSpec, roletype}', to_jsonb(v_roletype));
+      result = ast.jsonb_set(result, '{RoleSpec, rolename}', to_jsonb(v_rolename));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.drop_role_stmt ( v_roles jsonb DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DropRoleStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DropRoleStmt, roles}', v_roles);
-    result = ast.jsonb_set(result, '{DropRoleStmt, missing_ok}', to_jsonb(v_missing_ok));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.func_call ( v_funcname jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_agg_order jsonb DEFAULT NULL, v_agg_filter jsonb DEFAULT NULL, v_agg_within_group boolean DEFAULT NULL, v_agg_star boolean DEFAULT NULL, v_agg_distinct boolean DEFAULT NULL, v_func_variadic boolean DEFAULT NULL, v_over jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"FuncCall":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{FuncCall, funcname}', v_funcname);
+      result = ast.jsonb_set(result, '{FuncCall, args}', v_args);
+      result = ast.jsonb_set(result, '{FuncCall, agg_order}', v_agg_order);
+      result = ast.jsonb_set(result, '{FuncCall, agg_filter}', v_agg_filter);
+      result = ast.jsonb_set(result, '{FuncCall, agg_within_group}', to_jsonb(v_agg_within_group));
+      result = ast.jsonb_set(result, '{FuncCall, agg_star}', to_jsonb(v_agg_star));
+      result = ast.jsonb_set(result, '{FuncCall, agg_distinct}', to_jsonb(v_agg_distinct));
+      result = ast.jsonb_set(result, '{FuncCall, func_variadic}', to_jsonb(v_func_variadic));
+      result = ast.jsonb_set(result, '{FuncCall, over}', v_over);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.alter_owner_stmt ( v_objecttype int DEFAULT NULL, v_object jsonb DEFAULT NULL, v_newowner jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterOwnerStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterOwnerStmt, objectType}', to_jsonb(v_objectType));
-    result = ast.jsonb_set(result, '{AlterOwnerStmt, object}', v_object);
-    result = ast.jsonb_set(result, '{AlterOwnerStmt, newowner}', v_newowner);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_object_schema_stmt ( v_objecttype int DEFAULT NULL, v_object jsonb DEFAULT NULL, v_newschema text DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterObjectSchemaStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterObjectSchemaStmt, objectType}', to_jsonb(v_objectType));
-    result = ast.jsonb_set(result, '{AlterObjectSchemaStmt, object}', v_object);
-    result = ast.jsonb_set(result, '{AlterObjectSchemaStmt, newschema}', to_jsonb(v_newschema));
-    result = ast.jsonb_set(result, '{AlterObjectSchemaStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{AlterObjectSchemaStmt, missing_ok}', to_jsonb(v_missing_ok));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_conversion_stmt ( v_conversion_name jsonb DEFAULT NULL, v_for_encoding_name text DEFAULT NULL, v_to_encoding_name text DEFAULT NULL, v_func_name jsonb DEFAULT NULL, v_def boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateConversionStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateConversionStmt, conversion_name}', v_conversion_name);
-    result = ast.jsonb_set(result, '{CreateConversionStmt, for_encoding_name}', to_jsonb(v_for_encoding_name));
-    result = ast.jsonb_set(result, '{CreateConversionStmt, to_encoding_name}', to_jsonb(v_to_encoding_name));
-    result = ast.jsonb_set(result, '{CreateConversionStmt, func_name}', v_func_name);
-    result = ast.jsonb_set(result, '{CreateConversionStmt, def}', to_jsonb(v_def));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_fdw_stmt ( v_fdwname text DEFAULT NULL, v_func_options jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateFdwStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateFdwStmt, fdwname}', to_jsonb(v_fdwname));
-    result = ast.jsonb_set(result, '{CreateFdwStmt, func_options}', v_func_options);
-    result = ast.jsonb_set(result, '{CreateFdwStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_foreign_server_stmt ( v_servername text DEFAULT NULL, v_fdwname text DEFAULT NULL, v_options jsonb DEFAULT NULL, v_servertype text DEFAULT NULL, v_version text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateForeignServerStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateForeignServerStmt, servername}', to_jsonb(v_servername));
-    result = ast.jsonb_set(result, '{CreateForeignServerStmt, fdwname}', to_jsonb(v_fdwname));
-    result = ast.jsonb_set(result, '{CreateForeignServerStmt, options}', v_options);
-    result = ast.jsonb_set(result, '{CreateForeignServerStmt, servertype}', to_jsonb(v_servertype));
-    result = ast.jsonb_set(result, '{CreateForeignServerStmt, version}', to_jsonb(v_version));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_p_lang_stmt ( v_plname text DEFAULT NULL, v_plhandler jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreatePLangStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreatePLangStmt, plname}', to_jsonb(v_plname));
-    result = ast.jsonb_set(result, '{CreatePLangStmt, plhandler}', v_plhandler);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_op_family_stmt ( v_opfamilyname jsonb DEFAULT NULL, v_amname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateOpFamilyStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateOpFamilyStmt, opfamilyname}', v_opfamilyname);
-    result = ast.jsonb_set(result, '{CreateOpFamilyStmt, amname}', to_jsonb(v_amname));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_op_class_stmt ( v_opclassname jsonb DEFAULT NULL, v_amname text DEFAULT NULL, v_datatype jsonb DEFAULT NULL, v_items jsonb DEFAULT NULL, v_isdefault boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateOpClassStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateOpClassStmt, opclassname}', v_opclassname);
-    result = ast.jsonb_set(result, '{CreateOpClassStmt, amname}', to_jsonb(v_amname));
-    result = ast.jsonb_set(result, '{CreateOpClassStmt, datatype}', v_datatype);
-    result = ast.jsonb_set(result, '{CreateOpClassStmt, items}', v_items);
-    result = ast.jsonb_set(result, '{CreateOpClassStmt, isDefault}', to_jsonb(v_isDefault));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_op_class_item ( v_itemtype int DEFAULT NULL, v_storedtype jsonb DEFAULT NULL, v_name jsonb DEFAULT NULL, v_number int DEFAULT NULL, v_class_args jsonb DEFAULT NULL, v_order_family jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateOpClassItem":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateOpClassItem, itemtype}', to_jsonb(v_itemtype));
-    result = ast.jsonb_set(result, '{CreateOpClassItem, storedtype}', v_storedtype);
-    result = ast.jsonb_set(result, '{CreateOpClassItem, name}', v_name);
-    result = ast.jsonb_set(result, '{CreateOpClassItem, number}', to_jsonb(v_number));
-    result = ast.jsonb_set(result, '{CreateOpClassItem, class_args}', v_class_args);
-    result = ast.jsonb_set(result, '{CreateOpClassItem, order_family}', v_order_family);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_op_family_stmt ( v_opfamilyname jsonb DEFAULT NULL, v_amname text DEFAULT NULL, v_items jsonb DEFAULT NULL, v_isdrop boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterOpFamilyStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterOpFamilyStmt, opfamilyname}', v_opfamilyname);
-    result = ast.jsonb_set(result, '{AlterOpFamilyStmt, amname}', to_jsonb(v_amname));
-    result = ast.jsonb_set(result, '{AlterOpFamilyStmt, items}', v_items);
-    result = ast.jsonb_set(result, '{AlterOpFamilyStmt, isDrop}', to_jsonb(v_isDrop));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_operator_stmt ( v_opername jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterOperatorStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterOperatorStmt, opername}', v_opername);
-    result = ast.jsonb_set(result, '{AlterOperatorStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.vacuum_stmt ( v_options int DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_va_cols jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"VacuumStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{VacuumStmt, options}', to_jsonb(v_options));
-    result = ast.jsonb_set(result, '{VacuumStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{VacuumStmt, va_cols}', v_va_cols);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_table_as_stmt ( v_query jsonb DEFAULT NULL, v_into jsonb DEFAULT NULL, v_relkind int DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateTableAsStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateTableAsStmt, query}', v_query);
-    result = ast.jsonb_set(result, '{CreateTableAsStmt, into}', v_into);
-    result = ast.jsonb_set(result, '{CreateTableAsStmt, relkind}', to_jsonb(v_relkind));
-    result = ast.jsonb_set(result, '{CreateTableAsStmt, if_not_exists}', to_jsonb(v_if_not_exists));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.into_clause ( v_rel jsonb DEFAULT NULL, v_oncommit int DEFAULT NULL, v_colnames jsonb DEFAULT NULL, v_skipdata boolean DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"IntoClause":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{IntoClause, rel}', v_rel);
-    result = ast.jsonb_set(result, '{IntoClause, onCommit}', to_jsonb(v_onCommit));
-    result = ast.jsonb_set(result, '{IntoClause, colNames}', v_colNames);
-    result = ast.jsonb_set(result, '{IntoClause, skipData}', to_jsonb(v_skipData));
-    result = ast.jsonb_set(result, '{IntoClause, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.case_expr ( v_args jsonb DEFAULT NULL, v_defresult jsonb DEFAULT NULL, v_arg jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CaseExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CaseExpr, args}', v_args);
-    result = ast.jsonb_set(result, '{CaseExpr, defresult}', v_defresult);
-    result = ast.jsonb_set(result, '{CaseExpr, arg}', v_arg);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.case_when ( v_expr jsonb DEFAULT NULL, v_result jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CaseWhen":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CaseWhen, expr}', v_expr);
-    result = ast.jsonb_set(result, '{CaseWhen, result}', v_result);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.boolean_test ( v_arg jsonb DEFAULT NULL, v_booltesttype int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"BooleanTest":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{BooleanTest, arg}', v_arg);
-    result = ast.jsonb_set(result, '{BooleanTest, booltesttype}', to_jsonb(v_booltesttype));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_function_stmt ( v_func jsonb DEFAULT NULL, v_actions jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterFunctionStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterFunctionStmt, func}', v_func);
-    result = ast.jsonb_set(result, '{AlterFunctionStmt, actions}', v_actions);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.truncate_stmt ( v_relations jsonb DEFAULT NULL, v_behavior int DEFAULT NULL, v_restart_seqs boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"TruncateStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{TruncateStmt, relations}', v_relations);
-    result = ast.jsonb_set(result, '{TruncateStmt, behavior}', to_jsonb(v_behavior));
-    result = ast.jsonb_set(result, '{TruncateStmt, restart_seqs}', to_jsonb(v_restart_seqs));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.a_star (  ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"A_Star":{}}'::jsonb;
+  BEGIN
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.a_indices ( v_is_slice boolean DEFAULT NULL, v_lidx jsonb DEFAULT NULL, v_uidx jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"A_Indices":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{A_Indices, is_slice}', to_jsonb(v_is_slice));
-    result = ast.jsonb_set(result, '{A_Indices, lidx}', v_lidx);
-    result = ast.jsonb_set(result, '{A_Indices, uidx}', v_uidx);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+  DECLARE
+      result jsonb = '{"A_Indices":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{A_Indices, is_slice}', to_jsonb(v_is_slice));
+      result = ast.jsonb_set(result, '{A_Indices, lidx}', v_lidx);
+      result = ast.jsonb_set(result, '{A_Indices, uidx}', v_uidx);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.notify_stmt ( v_conditionname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"NotifyStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{NotifyStmt, conditionname}', to_jsonb(v_conditionname));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.a_indirection ( v_arg jsonb DEFAULT NULL, v_indirection jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"A_Indirection":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{A_Indirection, arg}', v_arg);
+      result = ast.jsonb_set(result, '{A_Indirection, indirection}', v_indirection);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.listen_stmt ( v_conditionname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ListenStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ListenStmt, conditionname}', to_jsonb(v_conditionname));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.a_array_expr ( v_elements jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"A_ArrayExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{A_ArrayExpr, elements}', v_elements);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.unlisten_stmt ( v_conditionname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"UnlistenStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{UnlistenStmt, conditionname}', to_jsonb(v_conditionname));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.res_target ( v_name text DEFAULT NULL, v_indirection jsonb DEFAULT NULL, v_val jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ResTarget":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ResTarget, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{ResTarget, indirection}', v_indirection);
+      result = ast.jsonb_set(result, '{ResTarget, val}', v_val);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.bit_string ( v_str text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"BitString":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{BitString, str}', to_jsonb(v_str));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.multi_assign_ref ( v_source jsonb DEFAULT NULL, v_colno int DEFAULT NULL, v_ncolumns int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"MultiAssignRef":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{MultiAssignRef, source}', v_source);
+      result = ast.jsonb_set(result, '{MultiAssignRef, colno}', to_jsonb(v_colno));
+      result = ast.jsonb_set(result, '{MultiAssignRef, ncolumns}', to_jsonb(v_ncolumns));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.coalesce_expr ( v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CoalesceExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CoalesceExpr, args}', v_args);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.sort_by ( v_node jsonb DEFAULT NULL, v_sortby_dir text DEFAULT NULL, v_sortby_nulls text DEFAULT NULL, v_useop jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"SortBy":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{SortBy, node}', v_node);
+      result = ast.jsonb_set(result, '{SortBy, sortby_dir}', to_jsonb(v_sortby_dir));
+      result = ast.jsonb_set(result, '{SortBy, sortby_nulls}', to_jsonb(v_sortby_nulls));
+      result = ast.jsonb_set(result, '{SortBy, useOp}', v_useOp);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.cluster_stmt ( v_relation jsonb DEFAULT NULL, v_indexname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ClusterStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ClusterStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{ClusterStmt, indexname}', to_jsonb(v_indexname));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.window_def ( v_name text DEFAULT NULL, v_refname text DEFAULT NULL, v_partitionclause jsonb DEFAULT NULL, v_orderclause jsonb DEFAULT NULL, v_frameoptions int DEFAULT NULL, v_startoffset jsonb DEFAULT NULL, v_endoffset jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"WindowDef":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{WindowDef, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{WindowDef, refname}', to_jsonb(v_refname));
+      result = ast.jsonb_set(result, '{WindowDef, partitionClause}', v_partitionClause);
+      result = ast.jsonb_set(result, '{WindowDef, orderClause}', v_orderClause);
+      result = ast.jsonb_set(result, '{WindowDef, frameOptions}', to_jsonb(v_frameOptions));
+      result = ast.jsonb_set(result, '{WindowDef, startOffset}', v_startOffset);
+      result = ast.jsonb_set(result, '{WindowDef, endOffset}', v_endOffset);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.table_like_clause ( v_relation jsonb DEFAULT NULL, v_options int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"TableLikeClause":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{TableLikeClause, relation}', v_relation);
-    result = ast.jsonb_set(result, '{TableLikeClause, options}', to_jsonb(v_options));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.range_subselect ( v_lateral boolean DEFAULT NULL, v_subquery jsonb DEFAULT NULL, v_alias jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RangeSubselect":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RangeSubselect, lateral}', to_jsonb(v_lateral));
+      result = ast.jsonb_set(result, '{RangeSubselect, subquery}', v_subquery);
+      result = ast.jsonb_set(result, '{RangeSubselect, alias}', v_alias);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.with_clause ( v_ctes jsonb DEFAULT NULL, v_recursive boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"WithClause":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{WithClause, ctes}', v_ctes);
-    result = ast.jsonb_set(result, '{WithClause, recursive}', to_jsonb(v_recursive));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.range_function ( v_lateral boolean DEFAULT NULL, v_ordinality boolean DEFAULT NULL, v_is_rowsfrom boolean DEFAULT NULL, v_functions jsonb DEFAULT NULL, v_alias jsonb DEFAULT NULL, v_coldeflist jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RangeFunction":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RangeFunction, lateral}', to_jsonb(v_lateral));
+      result = ast.jsonb_set(result, '{RangeFunction, ordinality}', to_jsonb(v_ordinality));
+      result = ast.jsonb_set(result, '{RangeFunction, is_rowsfrom}', to_jsonb(v_is_rowsfrom));
+      result = ast.jsonb_set(result, '{RangeFunction, functions}', v_functions);
+      result = ast.jsonb_set(result, '{RangeFunction, alias}', v_alias);
+      result = ast.jsonb_set(result, '{RangeFunction, coldeflist}', v_coldeflist);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.common_table_expr ( v_ctename text DEFAULT NULL, v_aliascolnames jsonb DEFAULT NULL, v_ctequery jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CommonTableExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CommonTableExpr, ctename}', to_jsonb(v_ctename));
-    result = ast.jsonb_set(result, '{CommonTableExpr, aliascolnames}', v_aliascolnames);
-    result = ast.jsonb_set(result, '{CommonTableExpr, ctequery}', v_ctequery);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.range_table_func ( v_lateral boolean DEFAULT NULL, v_docexpr jsonb DEFAULT NULL, v_rowexpr jsonb DEFAULT NULL, v_namespaces jsonb DEFAULT NULL, v_columns jsonb DEFAULT NULL, v_alias jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RangeTableFunc":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RangeTableFunc, lateral}', to_jsonb(v_lateral));
+      result = ast.jsonb_set(result, '{RangeTableFunc, docexpr}', v_docexpr);
+      result = ast.jsonb_set(result, '{RangeTableFunc, rowexpr}', v_rowexpr);
+      result = ast.jsonb_set(result, '{RangeTableFunc, namespaces}', v_namespaces);
+      result = ast.jsonb_set(result, '{RangeTableFunc, columns}', v_columns);
+      result = ast.jsonb_set(result, '{RangeTableFunc, alias}', v_alias);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.create_range_stmt ( v_typename jsonb DEFAULT NULL, v_params jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateRangeStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateRangeStmt, typeName}', v_typeName);
-    result = ast.jsonb_set(result, '{CreateRangeStmt, params}', v_params);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.declare_cursor_stmt ( v_portalname text DEFAULT NULL, v_options int DEFAULT NULL, v_query jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DeclareCursorStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DeclareCursorStmt, portalname}', to_jsonb(v_portalname));
-    result = ast.jsonb_set(result, '{DeclareCursorStmt, options}', to_jsonb(v_options));
-    result = ast.jsonb_set(result, '{DeclareCursorStmt, query}', v_query);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.fetch_stmt ( v_direction int DEFAULT NULL, v_howmany int DEFAULT NULL, v_portalname text DEFAULT NULL, v_ismove boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"FetchStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{FetchStmt, direction}', to_jsonb(v_direction));
-    result = ast.jsonb_set(result, '{FetchStmt, howMany}', to_jsonb(v_howMany));
-    result = ast.jsonb_set(result, '{FetchStmt, portalname}', to_jsonb(v_portalname));
-    result = ast.jsonb_set(result, '{FetchStmt, ismove}', to_jsonb(v_ismove));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.locking_clause ( v_strength int DEFAULT NULL, v_waitpolicy int DEFAULT NULL, v_lockedrels jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"LockingClause":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{LockingClause, strength}', to_jsonb(v_strength));
-    result = ast.jsonb_set(result, '{LockingClause, waitPolicy}', to_jsonb(v_waitPolicy));
-    result = ast.jsonb_set(result, '{LockingClause, lockedRels}', v_lockedRels);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_am_stmt ( v_amname text DEFAULT NULL, v_handler_name jsonb DEFAULT NULL, v_amtype text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateAmStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateAmStmt, amname}', to_jsonb(v_amname));
-    result = ast.jsonb_set(result, '{CreateAmStmt, handler_name}', v_handler_name);
-    result = ast.jsonb_set(result, '{CreateAmStmt, amtype}', to_jsonb(v_amtype));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_cast_stmt ( v_sourcetype jsonb DEFAULT NULL, v_targettype jsonb DEFAULT NULL, v_context int DEFAULT NULL, v_inout boolean DEFAULT NULL, v_func jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateCastStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateCastStmt, sourcetype}', v_sourcetype);
-    result = ast.jsonb_set(result, '{CreateCastStmt, targettype}', v_targettype);
-    result = ast.jsonb_set(result, '{CreateCastStmt, context}', to_jsonb(v_context));
-    result = ast.jsonb_set(result, '{CreateCastStmt, inout}', to_jsonb(v_inout));
-    result = ast.jsonb_set(result, '{CreateCastStmt, func}', v_func);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.reindex_stmt ( v_kind int DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_options int DEFAULT NULL, v_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ReindexStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ReindexStmt, kind}', to_jsonb(v_kind));
-    result = ast.jsonb_set(result, '{ReindexStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{ReindexStmt, options}', to_jsonb(v_options));
-    result = ast.jsonb_set(result, '{ReindexStmt, name}', to_jsonb(v_name));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.drop_owned_stmt ( v_roles jsonb DEFAULT NULL, v_behavior int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DropOwnedStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DropOwnedStmt, roles}', v_roles);
-    result = ast.jsonb_set(result, '{DropOwnedStmt, behavior}', to_jsonb(v_behavior));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.reassign_owned_stmt ( v_roles jsonb DEFAULT NULL, v_newrole jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ReassignOwnedStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ReassignOwnedStmt, roles}', v_roles);
-    result = ast.jsonb_set(result, '{ReassignOwnedStmt, newrole}', v_newrole);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_seq_stmt ( v_sequence jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterSeqStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterSeqStmt, sequence}', v_sequence);
-    result = ast.jsonb_set(result, '{AlterSeqStmt, options}', v_options);
-    result = ast.jsonb_set(result, '{AlterSeqStmt, missing_ok}', to_jsonb(v_missing_ok));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_domain_stmt ( v_subtype text DEFAULT NULL, v_typename jsonb DEFAULT NULL, v_behavior int DEFAULT NULL, v_def jsonb DEFAULT NULL, v_name text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterDomainStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterDomainStmt, subtype}', to_jsonb(v_subtype));
-    result = ast.jsonb_set(result, '{AlterDomainStmt, typeName}', v_typeName);
-    result = ast.jsonb_set(result, '{AlterDomainStmt, behavior}', to_jsonb(v_behavior));
-    result = ast.jsonb_set(result, '{AlterDomainStmt, def}', v_def);
-    result = ast.jsonb_set(result, '{AlterDomainStmt, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{AlterDomainStmt, missing_ok}', to_jsonb(v_missing_ok));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.prepare_stmt ( v_name text DEFAULT NULL, v_query jsonb DEFAULT NULL, v_argtypes jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"PrepareStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{PrepareStmt, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{PrepareStmt, query}', v_query);
-    result = ast.jsonb_set(result, '{PrepareStmt, argtypes}', v_argtypes);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.execute_stmt ( v_name text DEFAULT NULL, v_params jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ExecuteStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ExecuteStmt, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{ExecuteStmt, params}', v_params);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_enum_stmt ( v_typename jsonb DEFAULT NULL, v_newval text DEFAULT NULL, v_newvalisafter boolean DEFAULT NULL, v_newvalneighbor text DEFAULT NULL, v_skipifnewvalexists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterEnumStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterEnumStmt, typeName}', v_typeName);
-    result = ast.jsonb_set(result, '{AlterEnumStmt, newVal}', to_jsonb(v_newVal));
-    result = ast.jsonb_set(result, '{AlterEnumStmt, newValIsAfter}', to_jsonb(v_newValIsAfter));
-    result = ast.jsonb_set(result, '{AlterEnumStmt, newValNeighbor}', to_jsonb(v_newValNeighbor));
-    result = ast.jsonb_set(result, '{AlterEnumStmt, skipIfNewValExists}', to_jsonb(v_skipIfNewValExists));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_event_trig_stmt ( v_trigname text DEFAULT NULL, v_eventname text DEFAULT NULL, v_funcname jsonb DEFAULT NULL, v_whenclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateEventTrigStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateEventTrigStmt, trigname}', to_jsonb(v_trigname));
-    result = ast.jsonb_set(result, '{CreateEventTrigStmt, eventname}', to_jsonb(v_eventname));
-    result = ast.jsonb_set(result, '{CreateEventTrigStmt, funcname}', v_funcname);
-    result = ast.jsonb_set(result, '{CreateEventTrigStmt, whenclause}', v_whenclause);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_event_trig_stmt ( v_trigname text DEFAULT NULL, v_tgenabled text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterEventTrigStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterEventTrigStmt, trigname}', to_jsonb(v_trigname));
-    result = ast.jsonb_set(result, '{AlterEventTrigStmt, tgenabled}', to_jsonb(v_tgenabled));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_user_mapping_stmt ( v_user jsonb DEFAULT NULL, v_servername text DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateUserMappingStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateUserMappingStmt, user}', v_user);
-    result = ast.jsonb_set(result, '{CreateUserMappingStmt, servername}', to_jsonb(v_servername));
-    result = ast.jsonb_set(result, '{CreateUserMappingStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_role_stmt ( v_role jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_action int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterRoleStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterRoleStmt, role}', v_role);
-    result = ast.jsonb_set(result, '{AlterRoleStmt, options}', v_options);
-    result = ast.jsonb_set(result, '{AlterRoleStmt, action}', to_jsonb(v_action));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_policy_stmt ( v_policy_name text DEFAULT NULL, v_table jsonb DEFAULT NULL, v_qual jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterPolicyStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterPolicyStmt, policy_name}', to_jsonb(v_policy_name));
-    result = ast.jsonb_set(result, '{AlterPolicyStmt, table}', v_table);
-    result = ast.jsonb_set(result, '{AlterPolicyStmt, qual}', v_qual);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_fdw_stmt ( v_fdwname text DEFAULT NULL, v_func_options jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterFdwStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterFdwStmt, fdwname}', to_jsonb(v_fdwname));
-    result = ast.jsonb_set(result, '{AlterFdwStmt, func_options}', v_func_options);
-    result = ast.jsonb_set(result, '{AlterFdwStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_foreign_server_stmt ( v_servername text DEFAULT NULL, v_version text DEFAULT NULL, v_options jsonb DEFAULT NULL, v_has_version boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterForeignServerStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterForeignServerStmt, servername}', to_jsonb(v_servername));
-    result = ast.jsonb_set(result, '{AlterForeignServerStmt, version}', to_jsonb(v_version));
-    result = ast.jsonb_set(result, '{AlterForeignServerStmt, options}', v_options);
-    result = ast.jsonb_set(result, '{AlterForeignServerStmt, has_version}', to_jsonb(v_has_version));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_user_mapping_stmt ( v_user jsonb DEFAULT NULL, v_servername text DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterUserMappingStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterUserMappingStmt, user}', v_user);
-    result = ast.jsonb_set(result, '{AlterUserMappingStmt, servername}', to_jsonb(v_servername));
-    result = ast.jsonb_set(result, '{AlterUserMappingStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.drop_user_mapping_stmt ( v_user jsonb DEFAULT NULL, v_servername text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DropUserMappingStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DropUserMappingStmt, user}', v_user);
-    result = ast.jsonb_set(result, '{DropUserMappingStmt, servername}', to_jsonb(v_servername));
-    result = ast.jsonb_set(result, '{DropUserMappingStmt, missing_ok}', to_jsonb(v_missing_ok));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_foreign_table_stmt ( v_base jsonb DEFAULT NULL, v_servername text DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateForeignTableStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateForeignTableStmt, base}', v_base);
-    result = ast.jsonb_set(result, '{CreateForeignTableStmt, servername}', to_jsonb(v_servername));
-    result = ast.jsonb_set(result, '{CreateForeignTableStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.import_foreign_schema_stmt ( v_server_name text DEFAULT NULL, v_remote_schema text DEFAULT NULL, v_local_schema text DEFAULT NULL, v_list_type int DEFAULT NULL, v_table_list jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ImportForeignSchemaStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, server_name}', to_jsonb(v_server_name));
-    result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, remote_schema}', to_jsonb(v_remote_schema));
-    result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, local_schema}', to_jsonb(v_local_schema));
-    result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, list_type}', to_jsonb(v_list_type));
-    result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, table_list}', v_table_list);
-    result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, options}', v_options);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.constraints_set_stmt ( v_deferred boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ConstraintsSetStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ConstraintsSetStmt, deferred}', to_jsonb(v_deferred));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.grouping_func ( v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"GroupingFunc":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{GroupingFunc, args}', v_args);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.grouping_set ( v_kind int DEFAULT NULL, v_content jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"GroupingSet":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{GroupingSet, kind}', to_jsonb(v_kind));
-    result = ast.jsonb_set(result, '{GroupingSet, content}', v_content);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.window_def ( v_orderclause jsonb DEFAULT NULL, v_frameoptions int DEFAULT NULL, v_partitionclause jsonb DEFAULT NULL, v_name text DEFAULT NULL, v_startoffset jsonb DEFAULT NULL, v_endoffset jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"WindowDef":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{WindowDef, orderClause}', v_orderClause);
-    result = ast.jsonb_set(result, '{WindowDef, frameOptions}', to_jsonb(v_frameOptions));
-    result = ast.jsonb_set(result, '{WindowDef, partitionClause}', v_partitionClause);
-    result = ast.jsonb_set(result, '{WindowDef, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{WindowDef, startOffset}', v_startOffset);
-    result = ast.jsonb_set(result, '{WindowDef, endOffset}', v_endOffset);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.discard_stmt ( v_target int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DiscardStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DiscardStmt, target}', to_jsonb(v_target));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.lock_stmt ( v_relations jsonb DEFAULT NULL, v_mode int DEFAULT NULL, v_nowait boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"LockStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{LockStmt, relations}', v_relations);
-    result = ast.jsonb_set(result, '{LockStmt, mode}', to_jsonb(v_mode));
-    result = ast.jsonb_set(result, '{LockStmt, nowait}', to_jsonb(v_nowait));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.alter_role_set_stmt ( v_role jsonb DEFAULT NULL, v_setstmt jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterRoleSetStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterRoleSetStmt, role}', v_role);
-    result = ast.jsonb_set(result, '{AlterRoleSetStmt, setstmt}', v_setstmt);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.refresh_mat_view_stmt ( v_relation jsonb DEFAULT NULL, v_concurrent boolean DEFAULT NULL, v_skipdata boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"RefreshMatViewStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{RefreshMatViewStmt, relation}', v_relation);
-    result = ast.jsonb_set(result, '{RefreshMatViewStmt, concurrent}', to_jsonb(v_concurrent));
-    result = ast.jsonb_set(result, '{RefreshMatViewStmt, skipData}', to_jsonb(v_skipData));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.create_transform_stmt ( v_type_name jsonb DEFAULT NULL, v_lang text DEFAULT NULL, v_fromsql jsonb DEFAULT NULL, v_tosql jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CreateTransformStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CreateTransformStmt, type_name}', v_type_name);
-    result = ast.jsonb_set(result, '{CreateTransformStmt, lang}', to_jsonb(v_lang));
-    result = ast.jsonb_set(result, '{CreateTransformStmt, fromsql}', v_fromsql);
-    result = ast.jsonb_set(result, '{CreateTransformStmt, tosql}', v_tosql);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.close_portal_stmt ( v_portalname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ClosePortalStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ClosePortalStmt, portalname}', to_jsonb(v_portalname));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.current_of_expr ( v_cursor_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CurrentOfExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CurrentOfExpr, cursor_name}', to_jsonb(v_cursor_name));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.deallocate_stmt ( v_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"DeallocateStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{DeallocateStmt, name}', to_jsonb(v_name));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast.replica_identity_stmt ( v_identity_type text DEFAULT NULL, v_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"ReplicaIdentityStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{ReplicaIdentityStmt, identity_type}', to_jsonb(v_identity_type));
-    result = ast.jsonb_set(result, '{ReplicaIdentityStmt, name}', to_jsonb(v_name));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.range_table_func_col ( v_colname text DEFAULT NULL, v_typename jsonb DEFAULT NULL, v_for_ordinality boolean DEFAULT NULL, v_is_not_null boolean DEFAULT NULL, v_colexpr jsonb DEFAULT NULL, v_coldefexpr jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RangeTableFuncCol":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RangeTableFuncCol, colname}', to_jsonb(v_colname));
+      result = ast.jsonb_set(result, '{RangeTableFuncCol, typeName}', v_typeName);
+      result = ast.jsonb_set(result, '{RangeTableFuncCol, for_ordinality}', to_jsonb(v_for_ordinality));
+      result = ast.jsonb_set(result, '{RangeTableFuncCol, is_not_null}', to_jsonb(v_is_not_null));
+      result = ast.jsonb_set(result, '{RangeTableFuncCol, colexpr}', v_colexpr);
+      result = ast.jsonb_set(result, '{RangeTableFuncCol, coldefexpr}', v_coldefexpr);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast.range_table_sample ( v_relation jsonb DEFAULT NULL, v_method jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_repeatable jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"RangeTableSample":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{RangeTableSample, relation}', v_relation);
-    result = ast.jsonb_set(result, '{RangeTableSample, method}', v_method);
-    result = ast.jsonb_set(result, '{RangeTableSample, args}', v_args);
-    result = ast.jsonb_set(result, '{RangeTableSample, repeatable}', v_repeatable);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+  DECLARE
+      result jsonb = '{"RangeTableSample":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RangeTableSample, relation}', v_relation);
+      result = ast.jsonb_set(result, '{RangeTableSample, method}', v_method);
+      result = ast.jsonb_set(result, '{RangeTableSample, args}', v_args);
+      result = ast.jsonb_set(result, '{RangeTableSample, repeatable}', v_repeatable);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.sec_label_stmt ( v_objtype int DEFAULT NULL, v_object jsonb DEFAULT NULL, v_label text DEFAULT NULL, v_provider text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"SecLabelStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{SecLabelStmt, objtype}', to_jsonb(v_objtype));
-    result = ast.jsonb_set(result, '{SecLabelStmt, object}', v_object);
-    result = ast.jsonb_set(result, '{SecLabelStmt, label}', to_jsonb(v_label));
-    result = ast.jsonb_set(result, '{SecLabelStmt, provider}', to_jsonb(v_provider));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.column_def ( v_colname text DEFAULT NULL, v_typename jsonb DEFAULT NULL, v_inhcount int DEFAULT NULL, v_is_local boolean DEFAULT NULL, v_is_not_null boolean DEFAULT NULL, v_is_from_type boolean DEFAULT NULL, v_storage text DEFAULT NULL, v_raw_default jsonb DEFAULT NULL, v_cooked_default jsonb DEFAULT NULL, v_identity text DEFAULT NULL, v_identitysequence jsonb DEFAULT NULL, v_generated text DEFAULT NULL, v_collclause jsonb DEFAULT NULL, v_colloid jsonb DEFAULT NULL, v_constraints jsonb DEFAULT NULL, v_fdwoptions jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ColumnDef":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ColumnDef, colname}', to_jsonb(v_colname));
+      result = ast.jsonb_set(result, '{ColumnDef, typeName}', v_typeName);
+      result = ast.jsonb_set(result, '{ColumnDef, inhcount}', to_jsonb(v_inhcount));
+      result = ast.jsonb_set(result, '{ColumnDef, is_local}', to_jsonb(v_is_local));
+      result = ast.jsonb_set(result, '{ColumnDef, is_not_null}', to_jsonb(v_is_not_null));
+      result = ast.jsonb_set(result, '{ColumnDef, is_from_type}', to_jsonb(v_is_from_type));
+      result = ast.jsonb_set(result, '{ColumnDef, storage}', to_jsonb(v_storage));
+      result = ast.jsonb_set(result, '{ColumnDef, raw_default}', v_raw_default);
+      result = ast.jsonb_set(result, '{ColumnDef, cooked_default}', v_cooked_default);
+      result = ast.jsonb_set(result, '{ColumnDef, identity}', to_jsonb(v_identity));
+      result = ast.jsonb_set(result, '{ColumnDef, identitySequence}', v_identitySequence);
+      result = ast.jsonb_set(result, '{ColumnDef, generated}', to_jsonb(v_generated));
+      result = ast.jsonb_set(result, '{ColumnDef, collClause}', v_collClause);
+      result = ast.jsonb_set(result, '{ColumnDef, collOid}', v_collOid);
+      result = ast.jsonb_set(result, '{ColumnDef, constraints}', v_constraints);
+      result = ast.jsonb_set(result, '{ColumnDef, fdwoptions}', v_fdwoptions);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.copy_stmt ( v_query jsonb DEFAULT NULL, v_filename text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"CopyStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{CopyStmt, query}', v_query);
-    result = ast.jsonb_set(result, '{CopyStmt, filename}', to_jsonb(v_filename));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.table_like_clause ( v_relation jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"TableLikeClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{TableLikeClause, relation}', v_relation);
+      result = ast.jsonb_set(result, '{TableLikeClause, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.alter_ts_configuration_stmt ( v_kind int DEFAULT NULL, v_cfgname jsonb DEFAULT NULL, v_tokentype jsonb DEFAULT NULL, v_dicts jsonb DEFAULT NULL, v_override boolean DEFAULT NULL, v_replace boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"AlterTSConfigurationStmt":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, kind}', to_jsonb(v_kind));
-    result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, cfgname}', v_cfgname);
-    result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, tokentype}', v_tokentype);
-    result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, dicts}', v_dicts);
-    result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, override}', to_jsonb(v_override));
-    result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, replace}', to_jsonb(v_replace));
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.index_elem ( v_name text DEFAULT NULL, v_expr jsonb DEFAULT NULL, v_indexcolname text DEFAULT NULL, v_collation jsonb DEFAULT NULL, v_opclass jsonb DEFAULT NULL, v_opclassopts jsonb DEFAULT NULL, v_ordering text DEFAULT NULL, v_nulls_ordering text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"IndexElem":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{IndexElem, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{IndexElem, expr}', v_expr);
+      result = ast.jsonb_set(result, '{IndexElem, indexcolname}', to_jsonb(v_indexcolname));
+      result = ast.jsonb_set(result, '{IndexElem, collation}', v_collation);
+      result = ast.jsonb_set(result, '{IndexElem, opclass}', v_opclass);
+      result = ast.jsonb_set(result, '{IndexElem, opclassopts}', v_opclassopts);
+      result = ast.jsonb_set(result, '{IndexElem, ordering}', to_jsonb(v_ordering));
+      result = ast.jsonb_set(result, '{IndexElem, nulls_ordering}', to_jsonb(v_nulls_ordering));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.xml_expr ( v_op int DEFAULT NULL, v_args jsonb DEFAULT NULL, v_name text DEFAULT NULL, v_xmloption int DEFAULT NULL, v_named_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"XmlExpr":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{XmlExpr, op}', to_jsonb(v_op));
-    result = ast.jsonb_set(result, '{XmlExpr, args}', v_args);
-    result = ast.jsonb_set(result, '{XmlExpr, name}', to_jsonb(v_name));
-    result = ast.jsonb_set(result, '{XmlExpr, xmloption}', to_jsonb(v_xmloption));
-    result = ast.jsonb_set(result, '{XmlExpr, named_args}', v_named_args);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.def_elem ( v_defnamespace text DEFAULT NULL, v_defname text DEFAULT NULL, v_arg jsonb DEFAULT NULL, v_defaction text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DefElem":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DefElem, defnamespace}', to_jsonb(v_defnamespace));
+      result = ast.jsonb_set(result, '{DefElem, defname}', to_jsonb(v_defname));
+      result = ast.jsonb_set(result, '{DefElem, arg}', v_arg);
+      result = ast.jsonb_set(result, '{DefElem, defaction}', to_jsonb(v_defaction));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast.xml_serialize ( v_xmloption int DEFAULT NULL, v_expr jsonb DEFAULT NULL, v_typename jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-    result jsonb = '{"XmlSerialize":{}}'::jsonb;
-BEGIN
-    result = ast.jsonb_set(result, '{XmlSerialize, xmloption}', to_jsonb(v_xmloption));
-    result = ast.jsonb_set(result, '{XmlSerialize, expr}', v_expr);
-    result = ast.jsonb_set(result, '{XmlSerialize, typeName}', v_typeName);
-    RETURN result;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+CREATE FUNCTION ast.locking_clause ( v_lockedrels jsonb DEFAULT NULL, v_strength text DEFAULT NULL, v_waitpolicy text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"LockingClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{LockingClause, lockedRels}', v_lockedRels);
+      result = ast.jsonb_set(result, '{LockingClause, strength}', to_jsonb(v_strength));
+      result = ast.jsonb_set(result, '{LockingClause, waitPolicy}', to_jsonb(v_waitPolicy));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.xml_serialize ( v_xmloption text DEFAULT NULL, v_expr jsonb DEFAULT NULL, v_typename jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"XmlSerialize":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{XmlSerialize, xmloption}', to_jsonb(v_xmloption));
+      result = ast.jsonb_set(result, '{XmlSerialize, expr}', v_expr);
+      result = ast.jsonb_set(result, '{XmlSerialize, typeName}', v_typeName);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.partition_elem ( v_name text DEFAULT NULL, v_expr jsonb DEFAULT NULL, v_collation jsonb DEFAULT NULL, v_opclass jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"PartitionElem":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{PartitionElem, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{PartitionElem, expr}', v_expr);
+      result = ast.jsonb_set(result, '{PartitionElem, collation}', v_collation);
+      result = ast.jsonb_set(result, '{PartitionElem, opclass}', v_opclass);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.partition_spec ( v_strategy text DEFAULT NULL, v_partparams jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"PartitionSpec":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{PartitionSpec, strategy}', to_jsonb(v_strategy));
+      result = ast.jsonb_set(result, '{PartitionSpec, partParams}', v_partParams);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.partition_bound_spec ( v_strategy text DEFAULT NULL, v_is_default boolean DEFAULT NULL, v_modulus int DEFAULT NULL, v_remainder int DEFAULT NULL, v_listdatums jsonb DEFAULT NULL, v_lowerdatums jsonb DEFAULT NULL, v_upperdatums jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"PartitionBoundSpec":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{PartitionBoundSpec, strategy}', to_jsonb(v_strategy));
+      result = ast.jsonb_set(result, '{PartitionBoundSpec, is_default}', to_jsonb(v_is_default));
+      result = ast.jsonb_set(result, '{PartitionBoundSpec, modulus}', to_jsonb(v_modulus));
+      result = ast.jsonb_set(result, '{PartitionBoundSpec, remainder}', to_jsonb(v_remainder));
+      result = ast.jsonb_set(result, '{PartitionBoundSpec, listdatums}', v_listdatums);
+      result = ast.jsonb_set(result, '{PartitionBoundSpec, lowerdatums}', v_lowerdatums);
+      result = ast.jsonb_set(result, '{PartitionBoundSpec, upperdatums}', v_upperdatums);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.partition_range_datum ( v_kind text DEFAULT NULL, v_value jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"PartitionRangeDatum":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{PartitionRangeDatum, kind}', to_jsonb(v_kind));
+      result = ast.jsonb_set(result, '{PartitionRangeDatum, value}', v_value);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.partition_cmd ( v_name jsonb DEFAULT NULL, v_bound jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"PartitionCmd":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{PartitionCmd, name}', v_name);
+      result = ast.jsonb_set(result, '{PartitionCmd, bound}', v_bound);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.range_tbl_entry ( v_rtekind text DEFAULT NULL, v_relid jsonb DEFAULT NULL, v_relkind text DEFAULT NULL, v_rellockmode int DEFAULT NULL, v_tablesample jsonb DEFAULT NULL, v_subquery jsonb DEFAULT NULL, v_security_barrier boolean DEFAULT NULL, v_jointype text DEFAULT NULL, v_joinmergedcols int DEFAULT NULL, v_joinaliasvars jsonb DEFAULT NULL, v_joinleftcols jsonb DEFAULT NULL, v_joinrightcols jsonb DEFAULT NULL, v_functions jsonb DEFAULT NULL, v_funcordinality boolean DEFAULT NULL, v_tablefunc jsonb DEFAULT NULL, v_values_lists jsonb DEFAULT NULL, v_ctename text DEFAULT NULL, v_ctelevelsup jsonb DEFAULT NULL, v_self_reference boolean DEFAULT NULL, v_coltypes jsonb DEFAULT NULL, v_coltypmods jsonb DEFAULT NULL, v_colcollations jsonb DEFAULT NULL, v_enrname text DEFAULT NULL, v_enrtuples pg_catalog.float8 DEFAULT NULL, v_alias jsonb DEFAULT NULL, v_eref jsonb DEFAULT NULL, v_lateral boolean DEFAULT NULL, v_inh boolean DEFAULT NULL, v_infromcl boolean DEFAULT NULL, v_requiredperms jsonb DEFAULT NULL, v_checkasuser jsonb DEFAULT NULL, v_selectedcols jsonb DEFAULT NULL, v_insertedcols jsonb DEFAULT NULL, v_updatedcols jsonb DEFAULT NULL, v_extraupdatedcols jsonb DEFAULT NULL, v_securityquals jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RangeTblEntry":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RangeTblEntry, rtekind}', to_jsonb(v_rtekind));
+      result = ast.jsonb_set(result, '{RangeTblEntry, relid}', v_relid);
+      result = ast.jsonb_set(result, '{RangeTblEntry, relkind}', to_jsonb(v_relkind));
+      result = ast.jsonb_set(result, '{RangeTblEntry, rellockmode}', to_jsonb(v_rellockmode));
+      result = ast.jsonb_set(result, '{RangeTblEntry, tablesample}', v_tablesample);
+      result = ast.jsonb_set(result, '{RangeTblEntry, subquery}', v_subquery);
+      result = ast.jsonb_set(result, '{RangeTblEntry, security_barrier}', to_jsonb(v_security_barrier));
+      result = ast.jsonb_set(result, '{RangeTblEntry, jointype}', to_jsonb(v_jointype));
+      result = ast.jsonb_set(result, '{RangeTblEntry, joinmergedcols}', to_jsonb(v_joinmergedcols));
+      result = ast.jsonb_set(result, '{RangeTblEntry, joinaliasvars}', v_joinaliasvars);
+      result = ast.jsonb_set(result, '{RangeTblEntry, joinleftcols}', v_joinleftcols);
+      result = ast.jsonb_set(result, '{RangeTblEntry, joinrightcols}', v_joinrightcols);
+      result = ast.jsonb_set(result, '{RangeTblEntry, functions}', v_functions);
+      result = ast.jsonb_set(result, '{RangeTblEntry, funcordinality}', to_jsonb(v_funcordinality));
+      result = ast.jsonb_set(result, '{RangeTblEntry, tablefunc}', v_tablefunc);
+      result = ast.jsonb_set(result, '{RangeTblEntry, values_lists}', v_values_lists);
+      result = ast.jsonb_set(result, '{RangeTblEntry, ctename}', to_jsonb(v_ctename));
+      result = ast.jsonb_set(result, '{RangeTblEntry, ctelevelsup}', v_ctelevelsup);
+      result = ast.jsonb_set(result, '{RangeTblEntry, self_reference}', to_jsonb(v_self_reference));
+      result = ast.jsonb_set(result, '{RangeTblEntry, coltypes}', v_coltypes);
+      result = ast.jsonb_set(result, '{RangeTblEntry, coltypmods}', v_coltypmods);
+      result = ast.jsonb_set(result, '{RangeTblEntry, colcollations}', v_colcollations);
+      result = ast.jsonb_set(result, '{RangeTblEntry, enrname}', to_jsonb(v_enrname));
+      result = ast.jsonb_set(result, '{RangeTblEntry, enrtuples}', to_jsonb(v_enrtuples));
+      result = ast.jsonb_set(result, '{RangeTblEntry, alias}', v_alias);
+      result = ast.jsonb_set(result, '{RangeTblEntry, eref}', v_eref);
+      result = ast.jsonb_set(result, '{RangeTblEntry, lateral}', to_jsonb(v_lateral));
+      result = ast.jsonb_set(result, '{RangeTblEntry, inh}', to_jsonb(v_inh));
+      result = ast.jsonb_set(result, '{RangeTblEntry, inFromCl}', to_jsonb(v_inFromCl));
+      result = ast.jsonb_set(result, '{RangeTblEntry, requiredPerms}', v_requiredPerms);
+      result = ast.jsonb_set(result, '{RangeTblEntry, checkAsUser}', v_checkAsUser);
+      result = ast.jsonb_set(result, '{RangeTblEntry, selectedCols}', v_selectedCols);
+      result = ast.jsonb_set(result, '{RangeTblEntry, insertedCols}', v_insertedCols);
+      result = ast.jsonb_set(result, '{RangeTblEntry, updatedCols}', v_updatedCols);
+      result = ast.jsonb_set(result, '{RangeTblEntry, extraUpdatedCols}', v_extraUpdatedCols);
+      result = ast.jsonb_set(result, '{RangeTblEntry, securityQuals}', v_securityQuals);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.range_tbl_function ( v_funcexpr jsonb DEFAULT NULL, v_funccolcount int DEFAULT NULL, v_funccolnames jsonb DEFAULT NULL, v_funccoltypes jsonb DEFAULT NULL, v_funccoltypmods jsonb DEFAULT NULL, v_funccolcollations jsonb DEFAULT NULL, v_funcparams jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RangeTblFunction":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RangeTblFunction, funcexpr}', v_funcexpr);
+      result = ast.jsonb_set(result, '{RangeTblFunction, funccolcount}', to_jsonb(v_funccolcount));
+      result = ast.jsonb_set(result, '{RangeTblFunction, funccolnames}', v_funccolnames);
+      result = ast.jsonb_set(result, '{RangeTblFunction, funccoltypes}', v_funccoltypes);
+      result = ast.jsonb_set(result, '{RangeTblFunction, funccoltypmods}', v_funccoltypmods);
+      result = ast.jsonb_set(result, '{RangeTblFunction, funccolcollations}', v_funccolcollations);
+      result = ast.jsonb_set(result, '{RangeTblFunction, funcparams}', v_funcparams);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.table_sample_clause ( v_tsmhandler jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_repeatable jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"TableSampleClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{TableSampleClause, tsmhandler}', v_tsmhandler);
+      result = ast.jsonb_set(result, '{TableSampleClause, args}', v_args);
+      result = ast.jsonb_set(result, '{TableSampleClause, repeatable}', v_repeatable);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.with_check_option ( v_kind text DEFAULT NULL, v_relname text DEFAULT NULL, v_polname text DEFAULT NULL, v_qual jsonb DEFAULT NULL, v_cascaded boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"WithCheckOption":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{WithCheckOption, kind}', to_jsonb(v_kind));
+      result = ast.jsonb_set(result, '{WithCheckOption, relname}', to_jsonb(v_relname));
+      result = ast.jsonb_set(result, '{WithCheckOption, polname}', to_jsonb(v_polname));
+      result = ast.jsonb_set(result, '{WithCheckOption, qual}', v_qual);
+      result = ast.jsonb_set(result, '{WithCheckOption, cascaded}', to_jsonb(v_cascaded));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.sort_group_clause ( v_tlesortgroupref jsonb DEFAULT NULL, v_eqop jsonb DEFAULT NULL, v_sortop jsonb DEFAULT NULL, v_nulls_first boolean DEFAULT NULL, v_hashable boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"SortGroupClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{SortGroupClause, tleSortGroupRef}', v_tleSortGroupRef);
+      result = ast.jsonb_set(result, '{SortGroupClause, eqop}', v_eqop);
+      result = ast.jsonb_set(result, '{SortGroupClause, sortop}', v_sortop);
+      result = ast.jsonb_set(result, '{SortGroupClause, nulls_first}', to_jsonb(v_nulls_first));
+      result = ast.jsonb_set(result, '{SortGroupClause, hashable}', to_jsonb(v_hashable));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.grouping_set ( v_kind text DEFAULT NULL, v_content jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"GroupingSet":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{GroupingSet, kind}', to_jsonb(v_kind));
+      result = ast.jsonb_set(result, '{GroupingSet, content}', v_content);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.window_clause ( v_name text DEFAULT NULL, v_refname text DEFAULT NULL, v_partitionclause jsonb DEFAULT NULL, v_orderclause jsonb DEFAULT NULL, v_frameoptions int DEFAULT NULL, v_startoffset jsonb DEFAULT NULL, v_endoffset jsonb DEFAULT NULL, v_startinrangefunc jsonb DEFAULT NULL, v_endinrangefunc jsonb DEFAULT NULL, v_inrangecoll jsonb DEFAULT NULL, v_inrangeasc boolean DEFAULT NULL, v_inrangenullsfirst boolean DEFAULT NULL, v_winref jsonb DEFAULT NULL, v_copiedorder boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"WindowClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{WindowClause, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{WindowClause, refname}', to_jsonb(v_refname));
+      result = ast.jsonb_set(result, '{WindowClause, partitionClause}', v_partitionClause);
+      result = ast.jsonb_set(result, '{WindowClause, orderClause}', v_orderClause);
+      result = ast.jsonb_set(result, '{WindowClause, frameOptions}', to_jsonb(v_frameOptions));
+      result = ast.jsonb_set(result, '{WindowClause, startOffset}', v_startOffset);
+      result = ast.jsonb_set(result, '{WindowClause, endOffset}', v_endOffset);
+      result = ast.jsonb_set(result, '{WindowClause, startInRangeFunc}', v_startInRangeFunc);
+      result = ast.jsonb_set(result, '{WindowClause, endInRangeFunc}', v_endInRangeFunc);
+      result = ast.jsonb_set(result, '{WindowClause, inRangeColl}', v_inRangeColl);
+      result = ast.jsonb_set(result, '{WindowClause, inRangeAsc}', to_jsonb(v_inRangeAsc));
+      result = ast.jsonb_set(result, '{WindowClause, inRangeNullsFirst}', to_jsonb(v_inRangeNullsFirst));
+      result = ast.jsonb_set(result, '{WindowClause, winref}', v_winref);
+      result = ast.jsonb_set(result, '{WindowClause, copiedOrder}', to_jsonb(v_copiedOrder));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.row_mark_clause ( v_rti jsonb DEFAULT NULL, v_strength text DEFAULT NULL, v_waitpolicy text DEFAULT NULL, v_pusheddown boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RowMarkClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RowMarkClause, rti}', v_rti);
+      result = ast.jsonb_set(result, '{RowMarkClause, strength}', to_jsonb(v_strength));
+      result = ast.jsonb_set(result, '{RowMarkClause, waitPolicy}', to_jsonb(v_waitPolicy));
+      result = ast.jsonb_set(result, '{RowMarkClause, pushedDown}', to_jsonb(v_pushedDown));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.with_clause ( v_ctes jsonb DEFAULT NULL, v_recursive boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"WithClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{WithClause, ctes}', v_ctes);
+      result = ast.jsonb_set(result, '{WithClause, recursive}', to_jsonb(v_recursive));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.infer_clause ( v_indexelems jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_conname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"InferClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{InferClause, indexElems}', v_indexElems);
+      result = ast.jsonb_set(result, '{InferClause, whereClause}', v_whereClause);
+      result = ast.jsonb_set(result, '{InferClause, conname}', to_jsonb(v_conname));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.on_conflict_clause ( v_action text DEFAULT NULL, v_infer jsonb DEFAULT NULL, v_targetlist jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"OnConflictClause":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{OnConflictClause, action}', to_jsonb(v_action));
+      result = ast.jsonb_set(result, '{OnConflictClause, infer}', v_infer);
+      result = ast.jsonb_set(result, '{OnConflictClause, targetList}', v_targetList);
+      result = ast.jsonb_set(result, '{OnConflictClause, whereClause}', v_whereClause);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.common_table_expr ( v_ctename text DEFAULT NULL, v_aliascolnames jsonb DEFAULT NULL, v_ctematerialized text DEFAULT NULL, v_ctequery jsonb DEFAULT NULL, v_cterecursive boolean DEFAULT NULL, v_cterefcount int DEFAULT NULL, v_ctecolnames jsonb DEFAULT NULL, v_ctecoltypes jsonb DEFAULT NULL, v_ctecoltypmods jsonb DEFAULT NULL, v_ctecolcollations jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CommonTableExpr":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CommonTableExpr, ctename}', to_jsonb(v_ctename));
+      result = ast.jsonb_set(result, '{CommonTableExpr, aliascolnames}', v_aliascolnames);
+      result = ast.jsonb_set(result, '{CommonTableExpr, ctematerialized}', to_jsonb(v_ctematerialized));
+      result = ast.jsonb_set(result, '{CommonTableExpr, ctequery}', v_ctequery);
+      result = ast.jsonb_set(result, '{CommonTableExpr, cterecursive}', to_jsonb(v_cterecursive));
+      result = ast.jsonb_set(result, '{CommonTableExpr, cterefcount}', to_jsonb(v_cterefcount));
+      result = ast.jsonb_set(result, '{CommonTableExpr, ctecolnames}', v_ctecolnames);
+      result = ast.jsonb_set(result, '{CommonTableExpr, ctecoltypes}', v_ctecoltypes);
+      result = ast.jsonb_set(result, '{CommonTableExpr, ctecoltypmods}', v_ctecoltypmods);
+      result = ast.jsonb_set(result, '{CommonTableExpr, ctecolcollations}', v_ctecolcollations);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.trigger_transition ( v_name text DEFAULT NULL, v_isnew boolean DEFAULT NULL, v_istable boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"TriggerTransition":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{TriggerTransition, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{TriggerTransition, isNew}', to_jsonb(v_isNew));
+      result = ast.jsonb_set(result, '{TriggerTransition, isTable}', to_jsonb(v_isTable));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.raw_stmt ( v_stmt jsonb DEFAULT NULL, v_stmt_len int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RawStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RawStmt, stmt}', v_stmt);
+      result = ast.jsonb_set(result, '{RawStmt, stmt_len}', to_jsonb(v_stmt_len));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.insert_stmt ( v_relation jsonb DEFAULT NULL, v_cols jsonb DEFAULT NULL, v_selectstmt jsonb DEFAULT NULL, v_onconflictclause jsonb DEFAULT NULL, v_returninglist jsonb DEFAULT NULL, v_withclause jsonb DEFAULT NULL, v_override text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"InsertStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{InsertStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{InsertStmt, cols}', v_cols);
+      result = ast.jsonb_set(result, '{InsertStmt, selectStmt}', v_selectStmt);
+      result = ast.jsonb_set(result, '{InsertStmt, onConflictClause}', v_onConflictClause);
+      result = ast.jsonb_set(result, '{InsertStmt, returningList}', v_returningList);
+      result = ast.jsonb_set(result, '{InsertStmt, withClause}', v_withClause);
+      result = ast.jsonb_set(result, '{InsertStmt, override}', to_jsonb(v_override));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.delete_stmt ( v_relation jsonb DEFAULT NULL, v_usingclause jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_returninglist jsonb DEFAULT NULL, v_withclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DeleteStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DeleteStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{DeleteStmt, usingClause}', v_usingClause);
+      result = ast.jsonb_set(result, '{DeleteStmt, whereClause}', v_whereClause);
+      result = ast.jsonb_set(result, '{DeleteStmt, returningList}', v_returningList);
+      result = ast.jsonb_set(result, '{DeleteStmt, withClause}', v_withClause);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.update_stmt ( v_relation jsonb DEFAULT NULL, v_targetlist jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_fromclause jsonb DEFAULT NULL, v_returninglist jsonb DEFAULT NULL, v_withclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"UpdateStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{UpdateStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{UpdateStmt, targetList}', v_targetList);
+      result = ast.jsonb_set(result, '{UpdateStmt, whereClause}', v_whereClause);
+      result = ast.jsonb_set(result, '{UpdateStmt, fromClause}', v_fromClause);
+      result = ast.jsonb_set(result, '{UpdateStmt, returningList}', v_returningList);
+      result = ast.jsonb_set(result, '{UpdateStmt, withClause}', v_withClause);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.select_stmt ( v_distinctclause jsonb DEFAULT NULL, v_intoclause jsonb DEFAULT NULL, v_targetlist jsonb DEFAULT NULL, v_fromclause jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_groupclause jsonb DEFAULT NULL, v_havingclause jsonb DEFAULT NULL, v_windowclause jsonb DEFAULT NULL, v_valueslists jsonb DEFAULT NULL, v_sortclause jsonb DEFAULT NULL, v_limitoffset jsonb DEFAULT NULL, v_limitcount jsonb DEFAULT NULL, v_limitoption text DEFAULT NULL, v_lockingclause jsonb DEFAULT NULL, v_withclause jsonb DEFAULT NULL, v_op text DEFAULT NULL, v_all boolean DEFAULT NULL, v_larg jsonb DEFAULT NULL, v_rarg jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"SelectStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{SelectStmt, distinctClause}', v_distinctClause);
+      result = ast.jsonb_set(result, '{SelectStmt, intoClause}', v_intoClause);
+      result = ast.jsonb_set(result, '{SelectStmt, targetList}', v_targetList);
+      result = ast.jsonb_set(result, '{SelectStmt, fromClause}', v_fromClause);
+      result = ast.jsonb_set(result, '{SelectStmt, whereClause}', v_whereClause);
+      result = ast.jsonb_set(result, '{SelectStmt, groupClause}', v_groupClause);
+      result = ast.jsonb_set(result, '{SelectStmt, havingClause}', v_havingClause);
+      result = ast.jsonb_set(result, '{SelectStmt, windowClause}', v_windowClause);
+      result = ast.jsonb_set(result, '{SelectStmt, valuesLists}', v_valuesLists);
+      result = ast.jsonb_set(result, '{SelectStmt, sortClause}', v_sortClause);
+      result = ast.jsonb_set(result, '{SelectStmt, limitOffset}', v_limitOffset);
+      result = ast.jsonb_set(result, '{SelectStmt, limitCount}', v_limitCount);
+      result = ast.jsonb_set(result, '{SelectStmt, limitOption}', to_jsonb(v_limitOption));
+      result = ast.jsonb_set(result, '{SelectStmt, lockingClause}', v_lockingClause);
+      result = ast.jsonb_set(result, '{SelectStmt, withClause}', v_withClause);
+      result = ast.jsonb_set(result, '{SelectStmt, op}', to_jsonb(v_op));
+      result = ast.jsonb_set(result, '{SelectStmt, all}', to_jsonb(v_all));
+      result = ast.jsonb_set(result, '{SelectStmt, larg}', v_larg);
+      result = ast.jsonb_set(result, '{SelectStmt, rarg}', v_rarg);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.set_operation_stmt ( v_op text DEFAULT NULL, v_all boolean DEFAULT NULL, v_larg jsonb DEFAULT NULL, v_rarg jsonb DEFAULT NULL, v_coltypes jsonb DEFAULT NULL, v_coltypmods jsonb DEFAULT NULL, v_colcollations jsonb DEFAULT NULL, v_groupclauses jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"SetOperationStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{SetOperationStmt, op}', to_jsonb(v_op));
+      result = ast.jsonb_set(result, '{SetOperationStmt, all}', to_jsonb(v_all));
+      result = ast.jsonb_set(result, '{SetOperationStmt, larg}', v_larg);
+      result = ast.jsonb_set(result, '{SetOperationStmt, rarg}', v_rarg);
+      result = ast.jsonb_set(result, '{SetOperationStmt, colTypes}', v_colTypes);
+      result = ast.jsonb_set(result, '{SetOperationStmt, colTypmods}', v_colTypmods);
+      result = ast.jsonb_set(result, '{SetOperationStmt, colCollations}', v_colCollations);
+      result = ast.jsonb_set(result, '{SetOperationStmt, groupClauses}', v_groupClauses);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_schema_stmt ( v_schemaname text DEFAULT NULL, v_authrole jsonb DEFAULT NULL, v_schemaelts jsonb DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateSchemaStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateSchemaStmt, schemaname}', to_jsonb(v_schemaname));
+      result = ast.jsonb_set(result, '{CreateSchemaStmt, authrole}', v_authrole);
+      result = ast.jsonb_set(result, '{CreateSchemaStmt, schemaElts}', v_schemaElts);
+      result = ast.jsonb_set(result, '{CreateSchemaStmt, if_not_exists}', to_jsonb(v_if_not_exists));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_table_stmt ( v_relation jsonb DEFAULT NULL, v_cmds jsonb DEFAULT NULL, v_relkind text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterTableStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterTableStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{AlterTableStmt, cmds}', v_cmds);
+      result = ast.jsonb_set(result, '{AlterTableStmt, relkind}', to_jsonb(v_relkind));
+      result = ast.jsonb_set(result, '{AlterTableStmt, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.replica_identity_stmt ( v_identity_type text DEFAULT NULL, v_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ReplicaIdentityStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ReplicaIdentityStmt, identity_type}', to_jsonb(v_identity_type));
+      result = ast.jsonb_set(result, '{ReplicaIdentityStmt, name}', to_jsonb(v_name));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_table_cmd ( v_subtype text DEFAULT NULL, v_name text DEFAULT NULL, v_num int DEFAULT NULL, v_newowner jsonb DEFAULT NULL, v_def jsonb DEFAULT NULL, v_behavior text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterTableCmd":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterTableCmd, subtype}', to_jsonb(v_subtype));
+      result = ast.jsonb_set(result, '{AlterTableCmd, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{AlterTableCmd, num}', to_jsonb(v_num));
+      result = ast.jsonb_set(result, '{AlterTableCmd, newowner}', v_newowner);
+      result = ast.jsonb_set(result, '{AlterTableCmd, def}', v_def);
+      result = ast.jsonb_set(result, '{AlterTableCmd, behavior}', to_jsonb(v_behavior));
+      result = ast.jsonb_set(result, '{AlterTableCmd, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_collation_stmt ( v_collname jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterCollationStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterCollationStmt, collname}', v_collname);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_domain_stmt ( v_subtype text DEFAULT NULL, v_typename jsonb DEFAULT NULL, v_name text DEFAULT NULL, v_def jsonb DEFAULT NULL, v_behavior text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterDomainStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterDomainStmt, subtype}', to_jsonb(v_subtype));
+      result = ast.jsonb_set(result, '{AlterDomainStmt, typeName}', v_typeName);
+      result = ast.jsonb_set(result, '{AlterDomainStmt, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{AlterDomainStmt, def}', v_def);
+      result = ast.jsonb_set(result, '{AlterDomainStmt, behavior}', to_jsonb(v_behavior));
+      result = ast.jsonb_set(result, '{AlterDomainStmt, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.grant_stmt ( v_is_grant boolean DEFAULT NULL, v_targtype text DEFAULT NULL, v_objtype text DEFAULT NULL, v_objects jsonb DEFAULT NULL, v_privileges jsonb DEFAULT NULL, v_grantees jsonb DEFAULT NULL, v_grant_option boolean DEFAULT NULL, v_behavior text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"GrantStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{GrantStmt, is_grant}', to_jsonb(v_is_grant));
+      result = ast.jsonb_set(result, '{GrantStmt, targtype}', to_jsonb(v_targtype));
+      result = ast.jsonb_set(result, '{GrantStmt, objtype}', to_jsonb(v_objtype));
+      result = ast.jsonb_set(result, '{GrantStmt, objects}', v_objects);
+      result = ast.jsonb_set(result, '{GrantStmt, privileges}', v_privileges);
+      result = ast.jsonb_set(result, '{GrantStmt, grantees}', v_grantees);
+      result = ast.jsonb_set(result, '{GrantStmt, grant_option}', to_jsonb(v_grant_option));
+      result = ast.jsonb_set(result, '{GrantStmt, behavior}', to_jsonb(v_behavior));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.object_with_args ( v_objname jsonb DEFAULT NULL, v_objargs jsonb DEFAULT NULL, v_args_unspecified boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ObjectWithArgs":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ObjectWithArgs, objname}', v_objname);
+      result = ast.jsonb_set(result, '{ObjectWithArgs, objargs}', v_objargs);
+      result = ast.jsonb_set(result, '{ObjectWithArgs, args_unspecified}', to_jsonb(v_args_unspecified));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.access_priv ( v_priv_name text DEFAULT NULL, v_cols jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AccessPriv":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AccessPriv, priv_name}', to_jsonb(v_priv_name));
+      result = ast.jsonb_set(result, '{AccessPriv, cols}', v_cols);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.grant_role_stmt ( v_granted_roles jsonb DEFAULT NULL, v_grantee_roles jsonb DEFAULT NULL, v_is_grant boolean DEFAULT NULL, v_admin_opt boolean DEFAULT NULL, v_grantor jsonb DEFAULT NULL, v_behavior text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"GrantRoleStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{GrantRoleStmt, granted_roles}', v_granted_roles);
+      result = ast.jsonb_set(result, '{GrantRoleStmt, grantee_roles}', v_grantee_roles);
+      result = ast.jsonb_set(result, '{GrantRoleStmt, is_grant}', to_jsonb(v_is_grant));
+      result = ast.jsonb_set(result, '{GrantRoleStmt, admin_opt}', to_jsonb(v_admin_opt));
+      result = ast.jsonb_set(result, '{GrantRoleStmt, grantor}', v_grantor);
+      result = ast.jsonb_set(result, '{GrantRoleStmt, behavior}', to_jsonb(v_behavior));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_default_privileges_stmt ( v_options jsonb DEFAULT NULL, v_action jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterDefaultPrivilegesStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterDefaultPrivilegesStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{AlterDefaultPrivilegesStmt, action}', v_action);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.copy_stmt ( v_relation jsonb DEFAULT NULL, v_query jsonb DEFAULT NULL, v_attlist jsonb DEFAULT NULL, v_is_from boolean DEFAULT NULL, v_is_program boolean DEFAULT NULL, v_filename text DEFAULT NULL, v_options jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CopyStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CopyStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{CopyStmt, query}', v_query);
+      result = ast.jsonb_set(result, '{CopyStmt, attlist}', v_attlist);
+      result = ast.jsonb_set(result, '{CopyStmt, is_from}', to_jsonb(v_is_from));
+      result = ast.jsonb_set(result, '{CopyStmt, is_program}', to_jsonb(v_is_program));
+      result = ast.jsonb_set(result, '{CopyStmt, filename}', to_jsonb(v_filename));
+      result = ast.jsonb_set(result, '{CopyStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{CopyStmt, whereClause}', v_whereClause);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.variable_set_stmt ( v_kind text DEFAULT NULL, v_name text DEFAULT NULL, v_args jsonb DEFAULT NULL, v_is_local boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"VariableSetStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{VariableSetStmt, kind}', to_jsonb(v_kind));
+      result = ast.jsonb_set(result, '{VariableSetStmt, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{VariableSetStmt, args}', v_args);
+      result = ast.jsonb_set(result, '{VariableSetStmt, is_local}', to_jsonb(v_is_local));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.variable_show_stmt ( v_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"VariableShowStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{VariableShowStmt, name}', to_jsonb(v_name));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_stmt ( v_relation jsonb DEFAULT NULL, v_tableelts jsonb DEFAULT NULL, v_inhrelations jsonb DEFAULT NULL, v_partbound jsonb DEFAULT NULL, v_partspec jsonb DEFAULT NULL, v_oftypename jsonb DEFAULT NULL, v_constraints jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_oncommit text DEFAULT NULL, v_tablespacename text DEFAULT NULL, v_accessmethod text DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{CreateStmt, tableElts}', v_tableElts);
+      result = ast.jsonb_set(result, '{CreateStmt, inhRelations}', v_inhRelations);
+      result = ast.jsonb_set(result, '{CreateStmt, partbound}', v_partbound);
+      result = ast.jsonb_set(result, '{CreateStmt, partspec}', v_partspec);
+      result = ast.jsonb_set(result, '{CreateStmt, ofTypename}', v_ofTypename);
+      result = ast.jsonb_set(result, '{CreateStmt, constraints}', v_constraints);
+      result = ast.jsonb_set(result, '{CreateStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{CreateStmt, oncommit}', to_jsonb(v_oncommit));
+      result = ast.jsonb_set(result, '{CreateStmt, tablespacename}', to_jsonb(v_tablespacename));
+      result = ast.jsonb_set(result, '{CreateStmt, accessMethod}', to_jsonb(v_accessMethod));
+      result = ast.jsonb_set(result, '{CreateStmt, if_not_exists}', to_jsonb(v_if_not_exists));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.constraint ( v_contype text DEFAULT NULL, v_conname text DEFAULT NULL, v_deferrable boolean DEFAULT NULL, v_initdeferred boolean DEFAULT NULL, v_is_no_inherit boolean DEFAULT NULL, v_raw_expr jsonb DEFAULT NULL, v_cooked_expr text DEFAULT NULL, v_generated_when text DEFAULT NULL, v_keys jsonb DEFAULT NULL, v_including jsonb DEFAULT NULL, v_exclusions jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_indexname text DEFAULT NULL, v_indexspace text DEFAULT NULL, v_reset_default_tblspc boolean DEFAULT NULL, v_access_method text DEFAULT NULL, v_where_clause jsonb DEFAULT NULL, v_pktable jsonb DEFAULT NULL, v_fk_attrs jsonb DEFAULT NULL, v_pk_attrs jsonb DEFAULT NULL, v_fk_matchtype text DEFAULT NULL, v_fk_upd_action text DEFAULT NULL, v_fk_del_action text DEFAULT NULL, v_old_conpfeqop jsonb DEFAULT NULL, v_old_pktable_oid jsonb DEFAULT NULL, v_skip_validation boolean DEFAULT NULL, v_initially_valid boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Constraint":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{Constraint, contype}', to_jsonb(v_contype));
+      result = ast.jsonb_set(result, '{Constraint, conname}', to_jsonb(v_conname));
+      result = ast.jsonb_set(result, '{Constraint, deferrable}', to_jsonb(v_deferrable));
+      result = ast.jsonb_set(result, '{Constraint, initdeferred}', to_jsonb(v_initdeferred));
+      result = ast.jsonb_set(result, '{Constraint, is_no_inherit}', to_jsonb(v_is_no_inherit));
+      result = ast.jsonb_set(result, '{Constraint, raw_expr}', v_raw_expr);
+      result = ast.jsonb_set(result, '{Constraint, cooked_expr}', to_jsonb(v_cooked_expr));
+      result = ast.jsonb_set(result, '{Constraint, generated_when}', to_jsonb(v_generated_when));
+      result = ast.jsonb_set(result, '{Constraint, keys}', v_keys);
+      result = ast.jsonb_set(result, '{Constraint, including}', v_including);
+      result = ast.jsonb_set(result, '{Constraint, exclusions}', v_exclusions);
+      result = ast.jsonb_set(result, '{Constraint, options}', v_options);
+      result = ast.jsonb_set(result, '{Constraint, indexname}', to_jsonb(v_indexname));
+      result = ast.jsonb_set(result, '{Constraint, indexspace}', to_jsonb(v_indexspace));
+      result = ast.jsonb_set(result, '{Constraint, reset_default_tblspc}', to_jsonb(v_reset_default_tblspc));
+      result = ast.jsonb_set(result, '{Constraint, access_method}', to_jsonb(v_access_method));
+      result = ast.jsonb_set(result, '{Constraint, where_clause}', v_where_clause);
+      result = ast.jsonb_set(result, '{Constraint, pktable}', v_pktable);
+      result = ast.jsonb_set(result, '{Constraint, fk_attrs}', v_fk_attrs);
+      result = ast.jsonb_set(result, '{Constraint, pk_attrs}', v_pk_attrs);
+      result = ast.jsonb_set(result, '{Constraint, fk_matchtype}', to_jsonb(v_fk_matchtype));
+      result = ast.jsonb_set(result, '{Constraint, fk_upd_action}', to_jsonb(v_fk_upd_action));
+      result = ast.jsonb_set(result, '{Constraint, fk_del_action}', to_jsonb(v_fk_del_action));
+      result = ast.jsonb_set(result, '{Constraint, old_conpfeqop}', v_old_conpfeqop);
+      result = ast.jsonb_set(result, '{Constraint, old_pktable_oid}', v_old_pktable_oid);
+      result = ast.jsonb_set(result, '{Constraint, skip_validation}', to_jsonb(v_skip_validation));
+      result = ast.jsonb_set(result, '{Constraint, initially_valid}', to_jsonb(v_initially_valid));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_table_space_stmt ( v_tablespacename text DEFAULT NULL, v_owner jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateTableSpaceStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateTableSpaceStmt, tablespacename}', to_jsonb(v_tablespacename));
+      result = ast.jsonb_set(result, '{CreateTableSpaceStmt, owner}', v_owner);
+      result = ast.jsonb_set(result, '{CreateTableSpaceStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.drop_table_space_stmt ( v_tablespacename text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DropTableSpaceStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DropTableSpaceStmt, tablespacename}', to_jsonb(v_tablespacename));
+      result = ast.jsonb_set(result, '{DropTableSpaceStmt, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_table_space_options_stmt ( v_tablespacename text DEFAULT NULL, v_options jsonb DEFAULT NULL, v_isreset boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterTableSpaceOptionsStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterTableSpaceOptionsStmt, tablespacename}', to_jsonb(v_tablespacename));
+      result = ast.jsonb_set(result, '{AlterTableSpaceOptionsStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{AlterTableSpaceOptionsStmt, isReset}', to_jsonb(v_isReset));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_table_move_all_stmt ( v_orig_tablespacename text DEFAULT NULL, v_objtype text DEFAULT NULL, v_roles jsonb DEFAULT NULL, v_new_tablespacename text DEFAULT NULL, v_nowait boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterTableMoveAllStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterTableMoveAllStmt, orig_tablespacename}', to_jsonb(v_orig_tablespacename));
+      result = ast.jsonb_set(result, '{AlterTableMoveAllStmt, objtype}', to_jsonb(v_objtype));
+      result = ast.jsonb_set(result, '{AlterTableMoveAllStmt, roles}', v_roles);
+      result = ast.jsonb_set(result, '{AlterTableMoveAllStmt, new_tablespacename}', to_jsonb(v_new_tablespacename));
+      result = ast.jsonb_set(result, '{AlterTableMoveAllStmt, nowait}', to_jsonb(v_nowait));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_extension_stmt ( v_extname text DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateExtensionStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateExtensionStmt, extname}', to_jsonb(v_extname));
+      result = ast.jsonb_set(result, '{CreateExtensionStmt, if_not_exists}', to_jsonb(v_if_not_exists));
+      result = ast.jsonb_set(result, '{CreateExtensionStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_extension_stmt ( v_extname text DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterExtensionStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterExtensionStmt, extname}', to_jsonb(v_extname));
+      result = ast.jsonb_set(result, '{AlterExtensionStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_extension_contents_stmt ( v_extname text DEFAULT NULL, v_action int DEFAULT NULL, v_objtype text DEFAULT NULL, v_object jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterExtensionContentsStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterExtensionContentsStmt, extname}', to_jsonb(v_extname));
+      result = ast.jsonb_set(result, '{AlterExtensionContentsStmt, action}', to_jsonb(v_action));
+      result = ast.jsonb_set(result, '{AlterExtensionContentsStmt, objtype}', to_jsonb(v_objtype));
+      result = ast.jsonb_set(result, '{AlterExtensionContentsStmt, object}', v_object);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_fdw_stmt ( v_fdwname text DEFAULT NULL, v_func_options jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateFdwStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateFdwStmt, fdwname}', to_jsonb(v_fdwname));
+      result = ast.jsonb_set(result, '{CreateFdwStmt, func_options}', v_func_options);
+      result = ast.jsonb_set(result, '{CreateFdwStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_fdw_stmt ( v_fdwname text DEFAULT NULL, v_func_options jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterFdwStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterFdwStmt, fdwname}', to_jsonb(v_fdwname));
+      result = ast.jsonb_set(result, '{AlterFdwStmt, func_options}', v_func_options);
+      result = ast.jsonb_set(result, '{AlterFdwStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_foreign_server_stmt ( v_servername text DEFAULT NULL, v_servertype text DEFAULT NULL, v_version text DEFAULT NULL, v_fdwname text DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateForeignServerStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateForeignServerStmt, servername}', to_jsonb(v_servername));
+      result = ast.jsonb_set(result, '{CreateForeignServerStmt, servertype}', to_jsonb(v_servertype));
+      result = ast.jsonb_set(result, '{CreateForeignServerStmt, version}', to_jsonb(v_version));
+      result = ast.jsonb_set(result, '{CreateForeignServerStmt, fdwname}', to_jsonb(v_fdwname));
+      result = ast.jsonb_set(result, '{CreateForeignServerStmt, if_not_exists}', to_jsonb(v_if_not_exists));
+      result = ast.jsonb_set(result, '{CreateForeignServerStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_foreign_server_stmt ( v_servername text DEFAULT NULL, v_version text DEFAULT NULL, v_options jsonb DEFAULT NULL, v_has_version boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterForeignServerStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterForeignServerStmt, servername}', to_jsonb(v_servername));
+      result = ast.jsonb_set(result, '{AlterForeignServerStmt, version}', to_jsonb(v_version));
+      result = ast.jsonb_set(result, '{AlterForeignServerStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{AlterForeignServerStmt, has_version}', to_jsonb(v_has_version));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_foreign_table_stmt ( v_base jsonb DEFAULT NULL, v_servername text DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateForeignTableStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateForeignTableStmt, base}', v_base);
+      result = ast.jsonb_set(result, '{CreateForeignTableStmt, servername}', to_jsonb(v_servername));
+      result = ast.jsonb_set(result, '{CreateForeignTableStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_user_mapping_stmt ( v_user jsonb DEFAULT NULL, v_servername text DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateUserMappingStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateUserMappingStmt, user}', v_user);
+      result = ast.jsonb_set(result, '{CreateUserMappingStmt, servername}', to_jsonb(v_servername));
+      result = ast.jsonb_set(result, '{CreateUserMappingStmt, if_not_exists}', to_jsonb(v_if_not_exists));
+      result = ast.jsonb_set(result, '{CreateUserMappingStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_user_mapping_stmt ( v_user jsonb DEFAULT NULL, v_servername text DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterUserMappingStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterUserMappingStmt, user}', v_user);
+      result = ast.jsonb_set(result, '{AlterUserMappingStmt, servername}', to_jsonb(v_servername));
+      result = ast.jsonb_set(result, '{AlterUserMappingStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.drop_user_mapping_stmt ( v_user jsonb DEFAULT NULL, v_servername text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DropUserMappingStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DropUserMappingStmt, user}', v_user);
+      result = ast.jsonb_set(result, '{DropUserMappingStmt, servername}', to_jsonb(v_servername));
+      result = ast.jsonb_set(result, '{DropUserMappingStmt, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.import_foreign_schema_stmt ( v_server_name text DEFAULT NULL, v_remote_schema text DEFAULT NULL, v_local_schema text DEFAULT NULL, v_list_type text DEFAULT NULL, v_table_list jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ImportForeignSchemaStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, server_name}', to_jsonb(v_server_name));
+      result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, remote_schema}', to_jsonb(v_remote_schema));
+      result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, local_schema}', to_jsonb(v_local_schema));
+      result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, list_type}', to_jsonb(v_list_type));
+      result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, table_list}', v_table_list);
+      result = ast.jsonb_set(result, '{ImportForeignSchemaStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_policy_stmt ( v_policy_name text DEFAULT NULL, v_table jsonb DEFAULT NULL, v_cmd_name text DEFAULT NULL, v_permissive boolean DEFAULT NULL, v_roles jsonb DEFAULT NULL, v_qual jsonb DEFAULT NULL, v_with_check jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreatePolicyStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreatePolicyStmt, policy_name}', to_jsonb(v_policy_name));
+      result = ast.jsonb_set(result, '{CreatePolicyStmt, table}', v_table);
+      result = ast.jsonb_set(result, '{CreatePolicyStmt, cmd_name}', to_jsonb(v_cmd_name));
+      result = ast.jsonb_set(result, '{CreatePolicyStmt, permissive}', to_jsonb(v_permissive));
+      result = ast.jsonb_set(result, '{CreatePolicyStmt, roles}', v_roles);
+      result = ast.jsonb_set(result, '{CreatePolicyStmt, qual}', v_qual);
+      result = ast.jsonb_set(result, '{CreatePolicyStmt, with_check}', v_with_check);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_policy_stmt ( v_policy_name text DEFAULT NULL, v_table jsonb DEFAULT NULL, v_roles jsonb DEFAULT NULL, v_qual jsonb DEFAULT NULL, v_with_check jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterPolicyStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterPolicyStmt, policy_name}', to_jsonb(v_policy_name));
+      result = ast.jsonb_set(result, '{AlterPolicyStmt, table}', v_table);
+      result = ast.jsonb_set(result, '{AlterPolicyStmt, roles}', v_roles);
+      result = ast.jsonb_set(result, '{AlterPolicyStmt, qual}', v_qual);
+      result = ast.jsonb_set(result, '{AlterPolicyStmt, with_check}', v_with_check);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_am_stmt ( v_amname text DEFAULT NULL, v_handler_name jsonb DEFAULT NULL, v_amtype text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateAmStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateAmStmt, amname}', to_jsonb(v_amname));
+      result = ast.jsonb_set(result, '{CreateAmStmt, handler_name}', v_handler_name);
+      result = ast.jsonb_set(result, '{CreateAmStmt, amtype}', to_jsonb(v_amtype));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_trig_stmt ( v_trigname text DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_funcname jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_row boolean DEFAULT NULL, v_timing int DEFAULT NULL, v_events int DEFAULT NULL, v_columns jsonb DEFAULT NULL, v_whenclause jsonb DEFAULT NULL, v_isconstraint boolean DEFAULT NULL, v_transitionrels jsonb DEFAULT NULL, v_deferrable boolean DEFAULT NULL, v_initdeferred boolean DEFAULT NULL, v_constrrel jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateTrigStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateTrigStmt, trigname}', to_jsonb(v_trigname));
+      result = ast.jsonb_set(result, '{CreateTrigStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{CreateTrigStmt, funcname}', v_funcname);
+      result = ast.jsonb_set(result, '{CreateTrigStmt, args}', v_args);
+      result = ast.jsonb_set(result, '{CreateTrigStmt, row}', to_jsonb(v_row));
+      result = ast.jsonb_set(result, '{CreateTrigStmt, timing}', to_jsonb(v_timing));
+      result = ast.jsonb_set(result, '{CreateTrigStmt, events}', to_jsonb(v_events));
+      result = ast.jsonb_set(result, '{CreateTrigStmt, columns}', v_columns);
+      result = ast.jsonb_set(result, '{CreateTrigStmt, whenClause}', v_whenClause);
+      result = ast.jsonb_set(result, '{CreateTrigStmt, isconstraint}', to_jsonb(v_isconstraint));
+      result = ast.jsonb_set(result, '{CreateTrigStmt, transitionRels}', v_transitionRels);
+      result = ast.jsonb_set(result, '{CreateTrigStmt, deferrable}', to_jsonb(v_deferrable));
+      result = ast.jsonb_set(result, '{CreateTrigStmt, initdeferred}', to_jsonb(v_initdeferred));
+      result = ast.jsonb_set(result, '{CreateTrigStmt, constrrel}', v_constrrel);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_event_trig_stmt ( v_trigname text DEFAULT NULL, v_eventname text DEFAULT NULL, v_whenclause jsonb DEFAULT NULL, v_funcname jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateEventTrigStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateEventTrigStmt, trigname}', to_jsonb(v_trigname));
+      result = ast.jsonb_set(result, '{CreateEventTrigStmt, eventname}', to_jsonb(v_eventname));
+      result = ast.jsonb_set(result, '{CreateEventTrigStmt, whenclause}', v_whenclause);
+      result = ast.jsonb_set(result, '{CreateEventTrigStmt, funcname}', v_funcname);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_event_trig_stmt ( v_trigname text DEFAULT NULL, v_tgenabled text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterEventTrigStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterEventTrigStmt, trigname}', to_jsonb(v_trigname));
+      result = ast.jsonb_set(result, '{AlterEventTrigStmt, tgenabled}', to_jsonb(v_tgenabled));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_p_lang_stmt ( v_replace boolean DEFAULT NULL, v_plname text DEFAULT NULL, v_plhandler jsonb DEFAULT NULL, v_plinline jsonb DEFAULT NULL, v_plvalidator jsonb DEFAULT NULL, v_pltrusted boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreatePLangStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreatePLangStmt, replace}', to_jsonb(v_replace));
+      result = ast.jsonb_set(result, '{CreatePLangStmt, plname}', to_jsonb(v_plname));
+      result = ast.jsonb_set(result, '{CreatePLangStmt, plhandler}', v_plhandler);
+      result = ast.jsonb_set(result, '{CreatePLangStmt, plinline}', v_plinline);
+      result = ast.jsonb_set(result, '{CreatePLangStmt, plvalidator}', v_plvalidator);
+      result = ast.jsonb_set(result, '{CreatePLangStmt, pltrusted}', to_jsonb(v_pltrusted));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_role_stmt ( v_stmt_type text DEFAULT NULL, v_role text DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateRoleStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateRoleStmt, stmt_type}', to_jsonb(v_stmt_type));
+      result = ast.jsonb_set(result, '{CreateRoleStmt, role}', to_jsonb(v_role));
+      result = ast.jsonb_set(result, '{CreateRoleStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_role_stmt ( v_role jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_action int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterRoleStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterRoleStmt, role}', v_role);
+      result = ast.jsonb_set(result, '{AlterRoleStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{AlterRoleStmt, action}', to_jsonb(v_action));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_role_set_stmt ( v_role jsonb DEFAULT NULL, v_database text DEFAULT NULL, v_setstmt jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterRoleSetStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterRoleSetStmt, role}', v_role);
+      result = ast.jsonb_set(result, '{AlterRoleSetStmt, database}', to_jsonb(v_database));
+      result = ast.jsonb_set(result, '{AlterRoleSetStmt, setstmt}', v_setstmt);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.drop_role_stmt ( v_roles jsonb DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DropRoleStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DropRoleStmt, roles}', v_roles);
+      result = ast.jsonb_set(result, '{DropRoleStmt, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_seq_stmt ( v_sequence jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_ownerid jsonb DEFAULT NULL, v_for_identity boolean DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateSeqStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateSeqStmt, sequence}', v_sequence);
+      result = ast.jsonb_set(result, '{CreateSeqStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{CreateSeqStmt, ownerId}', v_ownerId);
+      result = ast.jsonb_set(result, '{CreateSeqStmt, for_identity}', to_jsonb(v_for_identity));
+      result = ast.jsonb_set(result, '{CreateSeqStmt, if_not_exists}', to_jsonb(v_if_not_exists));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_seq_stmt ( v_sequence jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_for_identity boolean DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterSeqStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterSeqStmt, sequence}', v_sequence);
+      result = ast.jsonb_set(result, '{AlterSeqStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{AlterSeqStmt, for_identity}', to_jsonb(v_for_identity));
+      result = ast.jsonb_set(result, '{AlterSeqStmt, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.define_stmt ( v_kind text DEFAULT NULL, v_oldstyle boolean DEFAULT NULL, v_defnames jsonb DEFAULT NULL, v_args jsonb DEFAULT NULL, v_definition jsonb DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL, v_replace boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DefineStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DefineStmt, kind}', to_jsonb(v_kind));
+      result = ast.jsonb_set(result, '{DefineStmt, oldstyle}', to_jsonb(v_oldstyle));
+      result = ast.jsonb_set(result, '{DefineStmt, defnames}', v_defnames);
+      result = ast.jsonb_set(result, '{DefineStmt, args}', v_args);
+      result = ast.jsonb_set(result, '{DefineStmt, definition}', v_definition);
+      result = ast.jsonb_set(result, '{DefineStmt, if_not_exists}', to_jsonb(v_if_not_exists));
+      result = ast.jsonb_set(result, '{DefineStmt, replace}', to_jsonb(v_replace));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_domain_stmt ( v_domainname jsonb DEFAULT NULL, v_typename jsonb DEFAULT NULL, v_collclause jsonb DEFAULT NULL, v_constraints jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateDomainStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateDomainStmt, domainname}', v_domainname);
+      result = ast.jsonb_set(result, '{CreateDomainStmt, typeName}', v_typeName);
+      result = ast.jsonb_set(result, '{CreateDomainStmt, collClause}', v_collClause);
+      result = ast.jsonb_set(result, '{CreateDomainStmt, constraints}', v_constraints);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_op_class_stmt ( v_opclassname jsonb DEFAULT NULL, v_opfamilyname jsonb DEFAULT NULL, v_amname text DEFAULT NULL, v_datatype jsonb DEFAULT NULL, v_items jsonb DEFAULT NULL, v_isdefault boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateOpClassStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateOpClassStmt, opclassname}', v_opclassname);
+      result = ast.jsonb_set(result, '{CreateOpClassStmt, opfamilyname}', v_opfamilyname);
+      result = ast.jsonb_set(result, '{CreateOpClassStmt, amname}', to_jsonb(v_amname));
+      result = ast.jsonb_set(result, '{CreateOpClassStmt, datatype}', v_datatype);
+      result = ast.jsonb_set(result, '{CreateOpClassStmt, items}', v_items);
+      result = ast.jsonb_set(result, '{CreateOpClassStmt, isDefault}', to_jsonb(v_isDefault));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_op_class_item ( v_itemtype int DEFAULT NULL, v_name jsonb DEFAULT NULL, v_number int DEFAULT NULL, v_order_family jsonb DEFAULT NULL, v_class_args jsonb DEFAULT NULL, v_storedtype jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateOpClassItem":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateOpClassItem, itemtype}', to_jsonb(v_itemtype));
+      result = ast.jsonb_set(result, '{CreateOpClassItem, name}', v_name);
+      result = ast.jsonb_set(result, '{CreateOpClassItem, number}', to_jsonb(v_number));
+      result = ast.jsonb_set(result, '{CreateOpClassItem, order_family}', v_order_family);
+      result = ast.jsonb_set(result, '{CreateOpClassItem, class_args}', v_class_args);
+      result = ast.jsonb_set(result, '{CreateOpClassItem, storedtype}', v_storedtype);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_op_family_stmt ( v_opfamilyname jsonb DEFAULT NULL, v_amname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateOpFamilyStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateOpFamilyStmt, opfamilyname}', v_opfamilyname);
+      result = ast.jsonb_set(result, '{CreateOpFamilyStmt, amname}', to_jsonb(v_amname));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_op_family_stmt ( v_opfamilyname jsonb DEFAULT NULL, v_amname text DEFAULT NULL, v_isdrop boolean DEFAULT NULL, v_items jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterOpFamilyStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterOpFamilyStmt, opfamilyname}', v_opfamilyname);
+      result = ast.jsonb_set(result, '{AlterOpFamilyStmt, amname}', to_jsonb(v_amname));
+      result = ast.jsonb_set(result, '{AlterOpFamilyStmt, isDrop}', to_jsonb(v_isDrop));
+      result = ast.jsonb_set(result, '{AlterOpFamilyStmt, items}', v_items);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.drop_stmt ( v_objects jsonb DEFAULT NULL, v_removetype text DEFAULT NULL, v_behavior text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL, v_concurrent boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DropStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DropStmt, objects}', v_objects);
+      result = ast.jsonb_set(result, '{DropStmt, removeType}', to_jsonb(v_removeType));
+      result = ast.jsonb_set(result, '{DropStmt, behavior}', to_jsonb(v_behavior));
+      result = ast.jsonb_set(result, '{DropStmt, missing_ok}', to_jsonb(v_missing_ok));
+      result = ast.jsonb_set(result, '{DropStmt, concurrent}', to_jsonb(v_concurrent));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.truncate_stmt ( v_relations jsonb DEFAULT NULL, v_restart_seqs boolean DEFAULT NULL, v_behavior text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"TruncateStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{TruncateStmt, relations}', v_relations);
+      result = ast.jsonb_set(result, '{TruncateStmt, restart_seqs}', to_jsonb(v_restart_seqs));
+      result = ast.jsonb_set(result, '{TruncateStmt, behavior}', to_jsonb(v_behavior));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.comment_stmt ( v_objtype text DEFAULT NULL, v_object jsonb DEFAULT NULL, v_comment text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CommentStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CommentStmt, objtype}', to_jsonb(v_objtype));
+      result = ast.jsonb_set(result, '{CommentStmt, object}', v_object);
+      result = ast.jsonb_set(result, '{CommentStmt, comment}', to_jsonb(v_comment));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.sec_label_stmt ( v_objtype text DEFAULT NULL, v_object jsonb DEFAULT NULL, v_provider text DEFAULT NULL, v_label text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"SecLabelStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{SecLabelStmt, objtype}', to_jsonb(v_objtype));
+      result = ast.jsonb_set(result, '{SecLabelStmt, object}', v_object);
+      result = ast.jsonb_set(result, '{SecLabelStmt, provider}', to_jsonb(v_provider));
+      result = ast.jsonb_set(result, '{SecLabelStmt, label}', to_jsonb(v_label));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.declare_cursor_stmt ( v_portalname text DEFAULT NULL, v_options int DEFAULT NULL, v_query jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DeclareCursorStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DeclareCursorStmt, portalname}', to_jsonb(v_portalname));
+      result = ast.jsonb_set(result, '{DeclareCursorStmt, options}', to_jsonb(v_options));
+      result = ast.jsonb_set(result, '{DeclareCursorStmt, query}', v_query);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.close_portal_stmt ( v_portalname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ClosePortalStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ClosePortalStmt, portalname}', to_jsonb(v_portalname));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.fetch_stmt ( v_direction text DEFAULT NULL, v_howmany bigint DEFAULT NULL, v_portalname text DEFAULT NULL, v_ismove boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"FetchStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{FetchStmt, direction}', to_jsonb(v_direction));
+      result = ast.jsonb_set(result, '{FetchStmt, howMany}', to_jsonb(v_howMany));
+      result = ast.jsonb_set(result, '{FetchStmt, portalname}', to_jsonb(v_portalname));
+      result = ast.jsonb_set(result, '{FetchStmt, ismove}', to_jsonb(v_ismove));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.index_stmt ( v_idxname text DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_accessmethod text DEFAULT NULL, v_tablespace text DEFAULT NULL, v_indexparams jsonb DEFAULT NULL, v_indexincludingparams jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_excludeopnames jsonb DEFAULT NULL, v_idxcomment text DEFAULT NULL, v_indexoid jsonb DEFAULT NULL, v_oldnode jsonb DEFAULT NULL, v_oldcreatesubid jsonb DEFAULT NULL, v_oldfirstrelfilenodesubid jsonb DEFAULT NULL, v_unique boolean DEFAULT NULL, v_primary boolean DEFAULT NULL, v_isconstraint boolean DEFAULT NULL, v_deferrable boolean DEFAULT NULL, v_initdeferred boolean DEFAULT NULL, v_transformed boolean DEFAULT NULL, v_concurrent boolean DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL, v_reset_default_tblspc boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"IndexStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{IndexStmt, idxname}', to_jsonb(v_idxname));
+      result = ast.jsonb_set(result, '{IndexStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{IndexStmt, accessMethod}', to_jsonb(v_accessMethod));
+      result = ast.jsonb_set(result, '{IndexStmt, tableSpace}', to_jsonb(v_tableSpace));
+      result = ast.jsonb_set(result, '{IndexStmt, indexParams}', v_indexParams);
+      result = ast.jsonb_set(result, '{IndexStmt, indexIncludingParams}', v_indexIncludingParams);
+      result = ast.jsonb_set(result, '{IndexStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{IndexStmt, whereClause}', v_whereClause);
+      result = ast.jsonb_set(result, '{IndexStmt, excludeOpNames}', v_excludeOpNames);
+      result = ast.jsonb_set(result, '{IndexStmt, idxcomment}', to_jsonb(v_idxcomment));
+      result = ast.jsonb_set(result, '{IndexStmt, indexOid}', v_indexOid);
+      result = ast.jsonb_set(result, '{IndexStmt, oldNode}', v_oldNode);
+      result = ast.jsonb_set(result, '{IndexStmt, oldCreateSubid}', v_oldCreateSubid);
+      result = ast.jsonb_set(result, '{IndexStmt, oldFirstRelfilenodeSubid}', v_oldFirstRelfilenodeSubid);
+      result = ast.jsonb_set(result, '{IndexStmt, unique}', to_jsonb(v_unique));
+      result = ast.jsonb_set(result, '{IndexStmt, primary}', to_jsonb(v_primary));
+      result = ast.jsonb_set(result, '{IndexStmt, isconstraint}', to_jsonb(v_isconstraint));
+      result = ast.jsonb_set(result, '{IndexStmt, deferrable}', to_jsonb(v_deferrable));
+      result = ast.jsonb_set(result, '{IndexStmt, initdeferred}', to_jsonb(v_initdeferred));
+      result = ast.jsonb_set(result, '{IndexStmt, transformed}', to_jsonb(v_transformed));
+      result = ast.jsonb_set(result, '{IndexStmt, concurrent}', to_jsonb(v_concurrent));
+      result = ast.jsonb_set(result, '{IndexStmt, if_not_exists}', to_jsonb(v_if_not_exists));
+      result = ast.jsonb_set(result, '{IndexStmt, reset_default_tblspc}', to_jsonb(v_reset_default_tblspc));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_stats_stmt ( v_defnames jsonb DEFAULT NULL, v_stat_types jsonb DEFAULT NULL, v_exprs jsonb DEFAULT NULL, v_relations jsonb DEFAULT NULL, v_stxcomment text DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateStatsStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateStatsStmt, defnames}', v_defnames);
+      result = ast.jsonb_set(result, '{CreateStatsStmt, stat_types}', v_stat_types);
+      result = ast.jsonb_set(result, '{CreateStatsStmt, exprs}', v_exprs);
+      result = ast.jsonb_set(result, '{CreateStatsStmt, relations}', v_relations);
+      result = ast.jsonb_set(result, '{CreateStatsStmt, stxcomment}', to_jsonb(v_stxcomment));
+      result = ast.jsonb_set(result, '{CreateStatsStmt, if_not_exists}', to_jsonb(v_if_not_exists));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_stats_stmt ( v_defnames jsonb DEFAULT NULL, v_stxstattarget int DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterStatsStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterStatsStmt, defnames}', v_defnames);
+      result = ast.jsonb_set(result, '{AlterStatsStmt, stxstattarget}', to_jsonb(v_stxstattarget));
+      result = ast.jsonb_set(result, '{AlterStatsStmt, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_function_stmt ( v_is_procedure boolean DEFAULT NULL, v_replace boolean DEFAULT NULL, v_funcname jsonb DEFAULT NULL, v_parameters jsonb DEFAULT NULL, v_returntype jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateFunctionStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateFunctionStmt, is_procedure}', to_jsonb(v_is_procedure));
+      result = ast.jsonb_set(result, '{CreateFunctionStmt, replace}', to_jsonb(v_replace));
+      result = ast.jsonb_set(result, '{CreateFunctionStmt, funcname}', v_funcname);
+      result = ast.jsonb_set(result, '{CreateFunctionStmt, parameters}', v_parameters);
+      result = ast.jsonb_set(result, '{CreateFunctionStmt, returnType}', v_returnType);
+      result = ast.jsonb_set(result, '{CreateFunctionStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.function_parameter ( v_name text DEFAULT NULL, v_argtype jsonb DEFAULT NULL, v_mode text DEFAULT NULL, v_defexpr jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"FunctionParameter":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{FunctionParameter, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{FunctionParameter, argType}', v_argType);
+      result = ast.jsonb_set(result, '{FunctionParameter, mode}', to_jsonb(v_mode));
+      result = ast.jsonb_set(result, '{FunctionParameter, defexpr}', v_defexpr);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_function_stmt ( v_objtype text DEFAULT NULL, v_func jsonb DEFAULT NULL, v_actions jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterFunctionStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterFunctionStmt, objtype}', to_jsonb(v_objtype));
+      result = ast.jsonb_set(result, '{AlterFunctionStmt, func}', v_func);
+      result = ast.jsonb_set(result, '{AlterFunctionStmt, actions}', v_actions);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.do_stmt ( v_args jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DoStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DoStmt, args}', v_args);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.inline_code_block ( v_source_text text DEFAULT NULL, v_langoid jsonb DEFAULT NULL, v_langistrusted boolean DEFAULT NULL, v_atomic boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"InlineCodeBlock":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{InlineCodeBlock, source_text}', to_jsonb(v_source_text));
+      result = ast.jsonb_set(result, '{InlineCodeBlock, langOid}', v_langOid);
+      result = ast.jsonb_set(result, '{InlineCodeBlock, langIsTrusted}', to_jsonb(v_langIsTrusted));
+      result = ast.jsonb_set(result, '{InlineCodeBlock, atomic}', to_jsonb(v_atomic));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.call_stmt ( v_funccall jsonb DEFAULT NULL, v_funcexpr jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CallStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CallStmt, funccall}', v_funccall);
+      result = ast.jsonb_set(result, '{CallStmt, funcexpr}', v_funcexpr);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.call_context ( v_atomic boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CallContext":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CallContext, atomic}', to_jsonb(v_atomic));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.rename_stmt ( v_renametype text DEFAULT NULL, v_relationtype text DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_object jsonb DEFAULT NULL, v_subname text DEFAULT NULL, v_newname text DEFAULT NULL, v_behavior text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RenameStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RenameStmt, renameType}', to_jsonb(v_renameType));
+      result = ast.jsonb_set(result, '{RenameStmt, relationType}', to_jsonb(v_relationType));
+      result = ast.jsonb_set(result, '{RenameStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{RenameStmt, object}', v_object);
+      result = ast.jsonb_set(result, '{RenameStmt, subname}', to_jsonb(v_subname));
+      result = ast.jsonb_set(result, '{RenameStmt, newname}', to_jsonb(v_newname));
+      result = ast.jsonb_set(result, '{RenameStmt, behavior}', to_jsonb(v_behavior));
+      result = ast.jsonb_set(result, '{RenameStmt, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_object_depends_stmt ( v_objecttype text DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_object jsonb DEFAULT NULL, v_extname jsonb DEFAULT NULL, v_remove boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterObjectDependsStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterObjectDependsStmt, objectType}', to_jsonb(v_objectType));
+      result = ast.jsonb_set(result, '{AlterObjectDependsStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{AlterObjectDependsStmt, object}', v_object);
+      result = ast.jsonb_set(result, '{AlterObjectDependsStmt, extname}', v_extname);
+      result = ast.jsonb_set(result, '{AlterObjectDependsStmt, remove}', to_jsonb(v_remove));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_object_schema_stmt ( v_objecttype text DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_object jsonb DEFAULT NULL, v_newschema text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterObjectSchemaStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterObjectSchemaStmt, objectType}', to_jsonb(v_objectType));
+      result = ast.jsonb_set(result, '{AlterObjectSchemaStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{AlterObjectSchemaStmt, object}', v_object);
+      result = ast.jsonb_set(result, '{AlterObjectSchemaStmt, newschema}', to_jsonb(v_newschema));
+      result = ast.jsonb_set(result, '{AlterObjectSchemaStmt, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_owner_stmt ( v_objecttype text DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_object jsonb DEFAULT NULL, v_newowner jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterOwnerStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterOwnerStmt, objectType}', to_jsonb(v_objectType));
+      result = ast.jsonb_set(result, '{AlterOwnerStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{AlterOwnerStmt, object}', v_object);
+      result = ast.jsonb_set(result, '{AlterOwnerStmt, newowner}', v_newowner);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_operator_stmt ( v_opername jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterOperatorStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterOperatorStmt, opername}', v_opername);
+      result = ast.jsonb_set(result, '{AlterOperatorStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_type_stmt ( v_typename jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterTypeStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterTypeStmt, typeName}', v_typeName);
+      result = ast.jsonb_set(result, '{AlterTypeStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.rule_stmt ( v_relation jsonb DEFAULT NULL, v_rulename text DEFAULT NULL, v_whereclause jsonb DEFAULT NULL, v_event text DEFAULT NULL, v_instead boolean DEFAULT NULL, v_actions jsonb DEFAULT NULL, v_replace boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RuleStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RuleStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{RuleStmt, rulename}', to_jsonb(v_rulename));
+      result = ast.jsonb_set(result, '{RuleStmt, whereClause}', v_whereClause);
+      result = ast.jsonb_set(result, '{RuleStmt, event}', to_jsonb(v_event));
+      result = ast.jsonb_set(result, '{RuleStmt, instead}', to_jsonb(v_instead));
+      result = ast.jsonb_set(result, '{RuleStmt, actions}', v_actions);
+      result = ast.jsonb_set(result, '{RuleStmt, replace}', to_jsonb(v_replace));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.notify_stmt ( v_conditionname text DEFAULT NULL, v_payload text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"NotifyStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{NotifyStmt, conditionname}', to_jsonb(v_conditionname));
+      result = ast.jsonb_set(result, '{NotifyStmt, payload}', to_jsonb(v_payload));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.listen_stmt ( v_conditionname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ListenStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ListenStmt, conditionname}', to_jsonb(v_conditionname));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.unlisten_stmt ( v_conditionname text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"UnlistenStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{UnlistenStmt, conditionname}', to_jsonb(v_conditionname));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.transaction_stmt ( v_kind text DEFAULT NULL, v_options jsonb DEFAULT NULL, v_savepoint_name text DEFAULT NULL, v_gid text DEFAULT NULL, v_chain boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"TransactionStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{TransactionStmt, kind}', to_jsonb(v_kind));
+      result = ast.jsonb_set(result, '{TransactionStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{TransactionStmt, savepoint_name}', to_jsonb(v_savepoint_name));
+      result = ast.jsonb_set(result, '{TransactionStmt, gid}', to_jsonb(v_gid));
+      result = ast.jsonb_set(result, '{TransactionStmt, chain}', to_jsonb(v_chain));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.composite_type_stmt ( v_typevar jsonb DEFAULT NULL, v_coldeflist jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CompositeTypeStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CompositeTypeStmt, typevar}', v_typevar);
+      result = ast.jsonb_set(result, '{CompositeTypeStmt, coldeflist}', v_coldeflist);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_enum_stmt ( v_typename jsonb DEFAULT NULL, v_vals jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateEnumStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateEnumStmt, typeName}', v_typeName);
+      result = ast.jsonb_set(result, '{CreateEnumStmt, vals}', v_vals);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_range_stmt ( v_typename jsonb DEFAULT NULL, v_params jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateRangeStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateRangeStmt, typeName}', v_typeName);
+      result = ast.jsonb_set(result, '{CreateRangeStmt, params}', v_params);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_enum_stmt ( v_typename jsonb DEFAULT NULL, v_oldval text DEFAULT NULL, v_newval text DEFAULT NULL, v_newvalneighbor text DEFAULT NULL, v_newvalisafter boolean DEFAULT NULL, v_skipifnewvalexists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterEnumStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterEnumStmt, typeName}', v_typeName);
+      result = ast.jsonb_set(result, '{AlterEnumStmt, oldVal}', to_jsonb(v_oldVal));
+      result = ast.jsonb_set(result, '{AlterEnumStmt, newVal}', to_jsonb(v_newVal));
+      result = ast.jsonb_set(result, '{AlterEnumStmt, newValNeighbor}', to_jsonb(v_newValNeighbor));
+      result = ast.jsonb_set(result, '{AlterEnumStmt, newValIsAfter}', to_jsonb(v_newValIsAfter));
+      result = ast.jsonb_set(result, '{AlterEnumStmt, skipIfNewValExists}', to_jsonb(v_skipIfNewValExists));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.view_stmt ( v_view jsonb DEFAULT NULL, v_aliases jsonb DEFAULT NULL, v_query jsonb DEFAULT NULL, v_replace boolean DEFAULT NULL, v_options jsonb DEFAULT NULL, v_withcheckoption text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ViewStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ViewStmt, view}', v_view);
+      result = ast.jsonb_set(result, '{ViewStmt, aliases}', v_aliases);
+      result = ast.jsonb_set(result, '{ViewStmt, query}', v_query);
+      result = ast.jsonb_set(result, '{ViewStmt, replace}', to_jsonb(v_replace));
+      result = ast.jsonb_set(result, '{ViewStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{ViewStmt, withCheckOption}', to_jsonb(v_withCheckOption));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.load_stmt ( v_filename text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"LoadStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{LoadStmt, filename}', to_jsonb(v_filename));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.createdb_stmt ( v_dbname text DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreatedbStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreatedbStmt, dbname}', to_jsonb(v_dbname));
+      result = ast.jsonb_set(result, '{CreatedbStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_database_stmt ( v_dbname text DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterDatabaseStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterDatabaseStmt, dbname}', to_jsonb(v_dbname));
+      result = ast.jsonb_set(result, '{AlterDatabaseStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_database_set_stmt ( v_dbname text DEFAULT NULL, v_setstmt jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterDatabaseSetStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterDatabaseSetStmt, dbname}', to_jsonb(v_dbname));
+      result = ast.jsonb_set(result, '{AlterDatabaseSetStmt, setstmt}', v_setstmt);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.dropdb_stmt ( v_dbname text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DropdbStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DropdbStmt, dbname}', to_jsonb(v_dbname));
+      result = ast.jsonb_set(result, '{DropdbStmt, missing_ok}', to_jsonb(v_missing_ok));
+      result = ast.jsonb_set(result, '{DropdbStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_system_stmt ( v_setstmt jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterSystemStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterSystemStmt, setstmt}', v_setstmt);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.cluster_stmt ( v_relation jsonb DEFAULT NULL, v_indexname text DEFAULT NULL, v_options int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ClusterStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ClusterStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{ClusterStmt, indexname}', to_jsonb(v_indexname));
+      result = ast.jsonb_set(result, '{ClusterStmt, options}', to_jsonb(v_options));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.vacuum_stmt ( v_options jsonb DEFAULT NULL, v_rels jsonb DEFAULT NULL, v_is_vacuumcmd boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"VacuumStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{VacuumStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{VacuumStmt, rels}', v_rels);
+      result = ast.jsonb_set(result, '{VacuumStmt, is_vacuumcmd}', to_jsonb(v_is_vacuumcmd));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.vacuum_relation ( v_relation jsonb DEFAULT NULL, v_oid jsonb DEFAULT NULL, v_va_cols jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"VacuumRelation":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{VacuumRelation, relation}', v_relation);
+      result = ast.jsonb_set(result, '{VacuumRelation, oid}', v_oid);
+      result = ast.jsonb_set(result, '{VacuumRelation, va_cols}', v_va_cols);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.explain_stmt ( v_query jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ExplainStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ExplainStmt, query}', v_query);
+      result = ast.jsonb_set(result, '{ExplainStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_table_as_stmt ( v_query jsonb DEFAULT NULL, v_into jsonb DEFAULT NULL, v_relkind text DEFAULT NULL, v_is_select_into boolean DEFAULT NULL, v_if_not_exists boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateTableAsStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateTableAsStmt, query}', v_query);
+      result = ast.jsonb_set(result, '{CreateTableAsStmt, into}', v_into);
+      result = ast.jsonb_set(result, '{CreateTableAsStmt, relkind}', to_jsonb(v_relkind));
+      result = ast.jsonb_set(result, '{CreateTableAsStmt, is_select_into}', to_jsonb(v_is_select_into));
+      result = ast.jsonb_set(result, '{CreateTableAsStmt, if_not_exists}', to_jsonb(v_if_not_exists));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.refresh_mat_view_stmt ( v_concurrent boolean DEFAULT NULL, v_skipdata boolean DEFAULT NULL, v_relation jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"RefreshMatViewStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{RefreshMatViewStmt, concurrent}', to_jsonb(v_concurrent));
+      result = ast.jsonb_set(result, '{RefreshMatViewStmt, skipData}', to_jsonb(v_skipData));
+      result = ast.jsonb_set(result, '{RefreshMatViewStmt, relation}', v_relation);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.check_point_stmt (  ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CheckPointStmt":{}}'::jsonb;
+  BEGIN
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.discard_stmt ( v_target text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DiscardStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DiscardStmt, target}', to_jsonb(v_target));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.lock_stmt ( v_relations jsonb DEFAULT NULL, v_mode int DEFAULT NULL, v_nowait boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"LockStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{LockStmt, relations}', v_relations);
+      result = ast.jsonb_set(result, '{LockStmt, mode}', to_jsonb(v_mode));
+      result = ast.jsonb_set(result, '{LockStmt, nowait}', to_jsonb(v_nowait));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.constraints_set_stmt ( v_constraints jsonb DEFAULT NULL, v_deferred boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ConstraintsSetStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ConstraintsSetStmt, constraints}', v_constraints);
+      result = ast.jsonb_set(result, '{ConstraintsSetStmt, deferred}', to_jsonb(v_deferred));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.reindex_stmt ( v_kind text DEFAULT NULL, v_relation jsonb DEFAULT NULL, v_name text DEFAULT NULL, v_options int DEFAULT NULL, v_concurrent boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ReindexStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ReindexStmt, kind}', to_jsonb(v_kind));
+      result = ast.jsonb_set(result, '{ReindexStmt, relation}', v_relation);
+      result = ast.jsonb_set(result, '{ReindexStmt, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{ReindexStmt, options}', to_jsonb(v_options));
+      result = ast.jsonb_set(result, '{ReindexStmt, concurrent}', to_jsonb(v_concurrent));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_conversion_stmt ( v_conversion_name jsonb DEFAULT NULL, v_for_encoding_name text DEFAULT NULL, v_to_encoding_name text DEFAULT NULL, v_func_name jsonb DEFAULT NULL, v_def boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateConversionStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateConversionStmt, conversion_name}', v_conversion_name);
+      result = ast.jsonb_set(result, '{CreateConversionStmt, for_encoding_name}', to_jsonb(v_for_encoding_name));
+      result = ast.jsonb_set(result, '{CreateConversionStmt, to_encoding_name}', to_jsonb(v_to_encoding_name));
+      result = ast.jsonb_set(result, '{CreateConversionStmt, func_name}', v_func_name);
+      result = ast.jsonb_set(result, '{CreateConversionStmt, def}', to_jsonb(v_def));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_cast_stmt ( v_sourcetype jsonb DEFAULT NULL, v_targettype jsonb DEFAULT NULL, v_func jsonb DEFAULT NULL, v_context text DEFAULT NULL, v_inout boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateCastStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateCastStmt, sourcetype}', v_sourcetype);
+      result = ast.jsonb_set(result, '{CreateCastStmt, targettype}', v_targettype);
+      result = ast.jsonb_set(result, '{CreateCastStmt, func}', v_func);
+      result = ast.jsonb_set(result, '{CreateCastStmt, context}', to_jsonb(v_context));
+      result = ast.jsonb_set(result, '{CreateCastStmt, inout}', to_jsonb(v_inout));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_transform_stmt ( v_replace boolean DEFAULT NULL, v_type_name jsonb DEFAULT NULL, v_lang text DEFAULT NULL, v_fromsql jsonb DEFAULT NULL, v_tosql jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateTransformStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateTransformStmt, replace}', to_jsonb(v_replace));
+      result = ast.jsonb_set(result, '{CreateTransformStmt, type_name}', v_type_name);
+      result = ast.jsonb_set(result, '{CreateTransformStmt, lang}', to_jsonb(v_lang));
+      result = ast.jsonb_set(result, '{CreateTransformStmt, fromsql}', v_fromsql);
+      result = ast.jsonb_set(result, '{CreateTransformStmt, tosql}', v_tosql);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.prepare_stmt ( v_name text DEFAULT NULL, v_argtypes jsonb DEFAULT NULL, v_query jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"PrepareStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{PrepareStmt, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{PrepareStmt, argtypes}', v_argtypes);
+      result = ast.jsonb_set(result, '{PrepareStmt, query}', v_query);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.execute_stmt ( v_name text DEFAULT NULL, v_params jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ExecuteStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ExecuteStmt, name}', to_jsonb(v_name));
+      result = ast.jsonb_set(result, '{ExecuteStmt, params}', v_params);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.deallocate_stmt ( v_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DeallocateStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DeallocateStmt, name}', to_jsonb(v_name));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.drop_owned_stmt ( v_roles jsonb DEFAULT NULL, v_behavior text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DropOwnedStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DropOwnedStmt, roles}', v_roles);
+      result = ast.jsonb_set(result, '{DropOwnedStmt, behavior}', to_jsonb(v_behavior));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.reassign_owned_stmt ( v_roles jsonb DEFAULT NULL, v_newrole jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"ReassignOwnedStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{ReassignOwnedStmt, roles}', v_roles);
+      result = ast.jsonb_set(result, '{ReassignOwnedStmt, newrole}', v_newrole);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_ts_dictionary_stmt ( v_dictname jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterTSDictionaryStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterTSDictionaryStmt, dictname}', v_dictname);
+      result = ast.jsonb_set(result, '{AlterTSDictionaryStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_ts_configuration_stmt ( v_kind text DEFAULT NULL, v_cfgname jsonb DEFAULT NULL, v_tokentype jsonb DEFAULT NULL, v_dicts jsonb DEFAULT NULL, v_override boolean DEFAULT NULL, v_replace boolean DEFAULT NULL, v_missing_ok boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterTSConfigurationStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, kind}', to_jsonb(v_kind));
+      result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, cfgname}', v_cfgname);
+      result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, tokentype}', v_tokentype);
+      result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, dicts}', v_dicts);
+      result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, override}', to_jsonb(v_override));
+      result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, replace}', to_jsonb(v_replace));
+      result = ast.jsonb_set(result, '{AlterTSConfigurationStmt, missing_ok}', to_jsonb(v_missing_ok));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_publication_stmt ( v_pubname text DEFAULT NULL, v_options jsonb DEFAULT NULL, v_tables jsonb DEFAULT NULL, v_for_all_tables boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreatePublicationStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreatePublicationStmt, pubname}', to_jsonb(v_pubname));
+      result = ast.jsonb_set(result, '{CreatePublicationStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{CreatePublicationStmt, tables}', v_tables);
+      result = ast.jsonb_set(result, '{CreatePublicationStmt, for_all_tables}', to_jsonb(v_for_all_tables));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_publication_stmt ( v_pubname text DEFAULT NULL, v_options jsonb DEFAULT NULL, v_tables jsonb DEFAULT NULL, v_for_all_tables boolean DEFAULT NULL, v_tableaction text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterPublicationStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterPublicationStmt, pubname}', to_jsonb(v_pubname));
+      result = ast.jsonb_set(result, '{AlterPublicationStmt, options}', v_options);
+      result = ast.jsonb_set(result, '{AlterPublicationStmt, tables}', v_tables);
+      result = ast.jsonb_set(result, '{AlterPublicationStmt, for_all_tables}', to_jsonb(v_for_all_tables));
+      result = ast.jsonb_set(result, '{AlterPublicationStmt, tableAction}', to_jsonb(v_tableAction));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.create_subscription_stmt ( v_subname text DEFAULT NULL, v_conninfo text DEFAULT NULL, v_publication jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"CreateSubscriptionStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{CreateSubscriptionStmt, subname}', to_jsonb(v_subname));
+      result = ast.jsonb_set(result, '{CreateSubscriptionStmt, conninfo}', to_jsonb(v_conninfo));
+      result = ast.jsonb_set(result, '{CreateSubscriptionStmt, publication}', v_publication);
+      result = ast.jsonb_set(result, '{CreateSubscriptionStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.alter_subscription_stmt ( v_kind text DEFAULT NULL, v_subname text DEFAULT NULL, v_conninfo text DEFAULT NULL, v_publication jsonb DEFAULT NULL, v_options jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"AlterSubscriptionStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{AlterSubscriptionStmt, kind}', to_jsonb(v_kind));
+      result = ast.jsonb_set(result, '{AlterSubscriptionStmt, subname}', to_jsonb(v_subname));
+      result = ast.jsonb_set(result, '{AlterSubscriptionStmt, conninfo}', to_jsonb(v_conninfo));
+      result = ast.jsonb_set(result, '{AlterSubscriptionStmt, publication}', v_publication);
+      result = ast.jsonb_set(result, '{AlterSubscriptionStmt, options}', v_options);
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.drop_subscription_stmt ( v_subname text DEFAULT NULL, v_missing_ok boolean DEFAULT NULL, v_behavior text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"DropSubscriptionStmt":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{DropSubscriptionStmt, subname}', to_jsonb(v_subname));
+      result = ast.jsonb_set(result, '{DropSubscriptionStmt, missing_ok}', to_jsonb(v_missing_ok));
+      result = ast.jsonb_set(result, '{DropSubscriptionStmt, behavior}', to_jsonb(v_behavior));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.vac_attr_stats ( v_attr jsonb DEFAULT NULL, v_attrtypid jsonb DEFAULT NULL, v_attrtypmod int DEFAULT NULL, v_attrtype jsonb DEFAULT NULL, v_attrcollid jsonb DEFAULT NULL, v_anl_context jsonb DEFAULT NULL, v_compute_stats jsonb DEFAULT NULL, v_minrows int DEFAULT NULL, v_extra_data jsonb DEFAULT NULL, v_stats_valid boolean DEFAULT NULL, v_stanullfrac pg_catalog.float8 DEFAULT NULL, v_stawidth int DEFAULT NULL, v_stadistinct pg_catalog.float8 DEFAULT NULL, v_tupattnum int DEFAULT NULL, v_rows jsonb DEFAULT NULL, v_tupdesc jsonb DEFAULT NULL, v_exprvals jsonb DEFAULT NULL, v_exprnulls boolean DEFAULT NULL, v_rowstride int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"VacAttrStats":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{VacAttrStats, attr}', v_attr);
+      result = ast.jsonb_set(result, '{VacAttrStats, attrtypid}', v_attrtypid);
+      result = ast.jsonb_set(result, '{VacAttrStats, attrtypmod}', to_jsonb(v_attrtypmod));
+      result = ast.jsonb_set(result, '{VacAttrStats, attrtype}', v_attrtype);
+      result = ast.jsonb_set(result, '{VacAttrStats, attrcollid}', v_attrcollid);
+      result = ast.jsonb_set(result, '{VacAttrStats, anl_context}', v_anl_context);
+      result = ast.jsonb_set(result, '{VacAttrStats, compute_stats}', v_compute_stats);
+      result = ast.jsonb_set(result, '{VacAttrStats, minrows}', to_jsonb(v_minrows));
+      result = ast.jsonb_set(result, '{VacAttrStats, extra_data}', v_extra_data);
+      result = ast.jsonb_set(result, '{VacAttrStats, stats_valid}', to_jsonb(v_stats_valid));
+      result = ast.jsonb_set(result, '{VacAttrStats, stanullfrac}', to_jsonb(v_stanullfrac));
+      result = ast.jsonb_set(result, '{VacAttrStats, stawidth}', to_jsonb(v_stawidth));
+      result = ast.jsonb_set(result, '{VacAttrStats, stadistinct}', to_jsonb(v_stadistinct));
+      result = ast.jsonb_set(result, '{VacAttrStats, tupattnum}', to_jsonb(v_tupattnum));
+      result = ast.jsonb_set(result, '{VacAttrStats, rows}', v_rows);
+      result = ast.jsonb_set(result, '{VacAttrStats, tupDesc}', v_tupDesc);
+      result = ast.jsonb_set(result, '{VacAttrStats, exprvals}', v_exprvals);
+      result = ast.jsonb_set(result, '{VacAttrStats, exprnulls}', to_jsonb(v_exprnulls));
+      result = ast.jsonb_set(result, '{VacAttrStats, rowstride}', to_jsonb(v_rowstride));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.vacuum_params ( v_options int DEFAULT NULL, v_freeze_min_age int DEFAULT NULL, v_freeze_table_age int DEFAULT NULL, v_multixact_freeze_min_age int DEFAULT NULL, v_multixact_freeze_table_age int DEFAULT NULL, v_is_wraparound boolean DEFAULT NULL, v_log_min_duration int DEFAULT NULL, v_index_cleanup text DEFAULT NULL, v_truncate text DEFAULT NULL, v_nworkers int DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"VacuumParams":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{VacuumParams, options}', to_jsonb(v_options));
+      result = ast.jsonb_set(result, '{VacuumParams, freeze_min_age}', to_jsonb(v_freeze_min_age));
+      result = ast.jsonb_set(result, '{VacuumParams, freeze_table_age}', to_jsonb(v_freeze_table_age));
+      result = ast.jsonb_set(result, '{VacuumParams, multixact_freeze_min_age}', to_jsonb(v_multixact_freeze_min_age));
+      result = ast.jsonb_set(result, '{VacuumParams, multixact_freeze_table_age}', to_jsonb(v_multixact_freeze_table_age));
+      result = ast.jsonb_set(result, '{VacuumParams, is_wraparound}', to_jsonb(v_is_wraparound));
+      result = ast.jsonb_set(result, '{VacuumParams, log_min_duration}', to_jsonb(v_log_min_duration));
+      result = ast.jsonb_set(result, '{VacuumParams, index_cleanup}', to_jsonb(v_index_cleanup));
+      result = ast.jsonb_set(result, '{VacuumParams, truncate}', to_jsonb(v_truncate));
+      result = ast.jsonb_set(result, '{VacuumParams, nworkers}', to_jsonb(v_nworkers));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.integer ( v_ival bigint DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Integer":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{Integer, ival}', to_jsonb(v_ival));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.float ( v_str text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Float":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{Float, str}', to_jsonb(v_str));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.string ( v_str text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"String":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{String, str}', to_jsonb(v_str));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.bit_string ( v_str text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"BitString":{}}'::jsonb;
+  BEGIN
+      result = ast.jsonb_set(result, '{BitString, str}', to_jsonb(v_str));
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast.null (  ) RETURNS jsonb AS $EOFCODE$
+  DECLARE
+      result jsonb = '{"Null":{}}'::jsonb;
+  BEGIN
+      RETURN result;
+  END;
+  $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.json_to_smart_tags ( tags jsonb ) RETURNS text[] AS $EOFCODE$
 DECLARE
@@ -2100,14 +2999,30 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql STABLE;
 
-CREATE FUNCTION ast_helpers.equals ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.eq ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('=')
+      ]),
+      v_lexpr := v_lexpr,
+      v_rexpr := v_rexpr
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.neq ( v_lexpr jsonb, v_rexpr jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.a_expr(
+      v_kind := 'AEXPR_OP',
+      v_name := to_jsonb(ARRAY[
+          ast.string('<>')
       ]),
       v_lexpr := v_lexpr,
       v_rexpr := v_rexpr
@@ -2121,7 +3036,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('>')
       ]),
@@ -2137,7 +3052,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('<')
       ]),
@@ -2153,7 +3068,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('>=')
       ]),
@@ -2169,7 +3084,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('<=')
       ]),
@@ -2185,7 +3100,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 1,
+      v_kind := 'AEXPR_OP_ANY',
       v_name := to_jsonb(ARRAY[
           ast.string('=')
       ]),
@@ -2201,7 +3116,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.bool_expr(
-      v_boolop := 0,
+      v_boolop := 'AND_EXPR',
       v_args := to_jsonb($1)
   );
   RETURN ast_expr;
@@ -2213,7 +3128,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.bool_expr(
-      v_boolop := 1,
+      v_boolop := 'OR_EXPR',
       v_args := to_jsonb($1)
   );
   RETURN ast_expr;
@@ -2225,7 +3140,7 @@ DECLARE
   ast_expr jsonb;
 BEGIN
   ast_expr = ast.a_expr(
-      v_kind := 0,
+      v_kind := 'AEXPR_OP',
       v_name := to_jsonb(ARRAY[
           ast.string('~*')
       ]),
@@ -2361,7 +3276,7 @@ BEGIN
       v_argType := ast.type_name( 
         v_names := to_jsonb(ARRAY[ast.string(type)])
       ),
-      v_mode := 105
+      v_mode := 'FUNC_PARAM_IN'
     );
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
@@ -2373,7 +3288,7 @@ BEGIN
       v_argType := ast.type_name( 
         v_names := to_jsonb(ARRAY[ast.string(type)])
       ),
-      v_mode := 105,
+      v_mode := 'FUNC_PARAM_IN',
       v_defexpr := ast.string(default_value)
     );
 END;
@@ -2386,7 +3301,7 @@ BEGIN
       v_argType := ast.type_name( 
         v_names := to_jsonb(ARRAY[ast.string(type)])
       ),
-      v_mode := 105,
+      v_mode := 'FUNC_PARAM_IN',
       v_defexpr := default_value
     );
 END;
@@ -2405,7 +3320,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.a_expr_distinct_tg_field ( field text ) RETURNS jsonb AS $EOFCODE$
 BEGIN
-	RETURN ast.a_expr(v_kind := 3, 
+	RETURN ast.a_expr(v_kind := 'AEXPR_DISTINCT', 
         v_lexpr := ast.column_ref(
           to_jsonb(ARRAY[ ast.string('old'),ast.string(field) ])
         ),
@@ -2470,7 +3385,7 @@ BEGIN
         result = results[i];
       ELSE
         result = ast.a_expr(
-          v_kind := 0,
+          v_kind := 'AEXPR_OP',
           v_lexpr := results[i], 
           v_name := to_jsonb(ARRAY[ast.string('||')]),
           v_rexpr := result );
@@ -2481,27 +3396,10 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_trigger_distinct_fields ( v_trigger_name text, v_schema_name text, v_table_name text, v_trigger_fn_schema text, v_trigger_fn_name text, v_fields text[] DEFAULT ARRAY[]::text[], v_params text[] DEFAULT ARRAY[]::text[], v_timing int DEFAULT 2, v_events int DEFAULT 4 | 16 ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.create_trigger ( v_trigger_name text, v_schema_name text, v_table_name text, v_trigger_fn_schema text, v_trigger_fn_name text, v_whenclause jsonb DEFAULT NULL, v_params text[] DEFAULT ARRAY[]::text[], v_timing int DEFAULT 2, v_events int DEFAULT 4 | 16 ) RETURNS jsonb AS $EOFCODE$
 DECLARE
-  results jsonb[];
   result jsonb;
-  whenClause jsonb;
-	i int;
-
-  nodes jsonb[];
 BEGIN
-
-  FOR i IN SELECT * FROM generate_subscripts(v_fields, 1) g(i)
-  LOOP
-    nodes = array_append(nodes, ast_helpers.a_expr_distinct_tg_field(v_fields[i]));
-  END LOOP;
- 
-  IF (cardinality(nodes) > 1) THEN
-    whenClause = ast_helpers.or( variadic nodes := nodes );
-  ELSEIF (cardinality(nodes) = 1) THEN
-    whenClause = nodes[1];
-  END IF;
-
   result = ast.create_trig_stmt(
     v_trigname := v_trigger_name,
     v_relation := ast_helpers.range_var(
@@ -2513,11 +3411,47 @@ BEGIN
     v_row := true,
     v_timing := v_timing,
     v_events := v_events,
-    v_whenClause := whenClause
+    v_whenClause := v_whenClause
   );
 	RETURN ast.raw_stmt(
     v_stmt := result,
     v_stmt_len := 1
+  );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.create_trigger_distinct_fields ( v_trigger_name text, v_schema_name text, v_table_name text, v_trigger_fn_schema text, v_trigger_fn_name text, v_fields text[] DEFAULT ARRAY[]::text[], v_params text[] DEFAULT ARRAY[]::text[], v_timing int DEFAULT 2, v_events int DEFAULT 4 | 16 ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  whenClause jsonb;
+	i int;
+  nodes jsonb[];
+BEGIN
+
+  FOR i IN SELECT * FROM generate_subscripts(v_fields, 1) g(i)
+  LOOP
+    -- OLD.field <> NEW.field
+    nodes = array_append(nodes, ast_helpers.a_expr_distinct_tg_field(v_fields[i]));
+  END LOOP;
+ 
+  IF (cardinality(nodes) > 1) THEN
+    whenClause = ast_helpers.or( variadic nodes := nodes );
+  ELSEIF (cardinality(nodes) = 1) THEN
+    whenClause = nodes[1];
+  END IF;
+
+  RETURN ast_helpers.create_trigger(
+    v_trigger_name := v_trigger_name,
+    
+    v_schema_name := v_schema_name,
+    v_table_name := v_table_name,
+
+    v_trigger_fn_schema := v_trigger_fn_schema,
+    v_trigger_fn_name := v_trigger_fn_name,
+
+    v_whenClause := whenClause,
+    v_params := v_params,
+    v_timing := v_timing,
+    v_events := v_events
   );
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
@@ -2530,8 +3464,8 @@ CREATE FUNCTION ast_helpers.drop_trigger ( v_trigger_name text, v_schema_name te
         ast.string(v_table_name),
         ast.string(v_trigger_name)
       ]]),
-      v_removeType := ast_constants.object_type('OBJECT_TRIGGER'),
-      v_behavior:= (CASE when v_cascade IS TRUE then 1 else 0 END)
+      v_removeType := 'OBJECT_TRIGGER',
+      v_behavior:= (CASE when v_cascade IS TRUE then 'DROP_CASCADE' else 'DROP_RESTRICT' END)
     ),
     v_stmt_len := 1
   );
@@ -2544,37 +3478,37 @@ DECLARE
 BEGIN
 
   options = array_append(options, ast.def_elem(
-    'as',
-    to_jsonb(ARRAY[ast.string(v_body)])
+    v_defname := 'as',
+    v_arg := to_jsonb(ARRAY[ast.string(v_body)])
   ));
   
   options = array_append(options, ast.def_elem(
-    'language',
-    ast.string(v_language)
+    v_defname := 'language',
+    v_arg := ast.string(v_language)
   ));
 
   IF (v_volatility IS NOT NULL) THEN 
     options = array_append(options, ast.def_elem(
-      'volatility',
-      ast.string(v_volatility)
+      v_defname := 'volatility',
+      v_arg := ast.string(v_volatility)
     ));
   END IF;
 
   IF (v_security IS NOT NULL) THEN 
     options = array_append(options, ast.def_elem(
-      'security',
-      ast.integer(v_security)
+      v_defname := 'security',
+      v_arg := ast.integer(v_security)
     ));
   END IF;
 
-  select * FROM ast.create_function_stmt(
+  ast = ast.create_function_stmt(
     v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
     v_parameters := v_parameters,
     v_returnType := ast.type_name( 
         v_names := ast_helpers.array_of_strings(v_type)
     ),
     v_options := to_jsonb(options)
-  ) INTO ast;
+  );
 
   RETURN ast.raw_stmt(
     v_stmt := ast,
@@ -2594,7 +3528,7 @@ BEGIN
         ast.string(v_schema_name),
         ast.string(v_function_name)
       ]]),
-      v_removeType := ast_constants.object_type('OBJECT_FUNCTION')
+      v_removeType := 'OBJECT_FUNCTION'
     ),
     v_stmt_len := 1
   );
@@ -2617,19 +3551,15 @@ BEGIN
   -- if there are no roles then use PUBLIC
   IF (v_roles IS NULL OR cardinality(v_roles) = 0) THEN 
       roles = array_append(roles, ast.role_spec(
-        v_roletype:=ast_constants.role_spec_type(
-          'ROLESPEC_PUBLIC'
-        )
+        v_roletype := 'ROLESPEC_PUBLIC'
       ));
   ELSE
     FOR i IN 
     SELECT * FROM generate_series(1, cardinality(v_roles))
     LOOP
       roles = array_append(roles, ast.role_spec(
-        v_roletype:=ast_constants.role_spec_type(
-          'ROLESPEC_CSTRING'
-        ),
-        v_rolename:=v_roles[i]
+        v_roletype := 'ROLESPEC_CSTRING',
+        v_rolename := v_roles[i]
       ));
     END LOOP;
   END IF;
@@ -2654,6 +3584,43 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.alter_policy ( v_policy_name text DEFAULT NULL, v_schema_name text DEFAULT NULL, v_table_name text DEFAULT NULL, v_roles text[] DEFAULT NULL, v_qual jsonb DEFAULT NULL, v_with_check jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast jsonb;
+  roles jsonb[];
+  i int;
+BEGIN
+
+  -- if there are no roles then use PUBLIC
+  IF (v_roles IS NOT NULL OR cardinality(v_roles) > 0) THEN 
+    FOR i IN 
+    SELECT * FROM generate_series(1, cardinality(v_roles))
+    LOOP
+      roles = array_append(roles, ast.role_spec(
+        v_roletype := 'ROLESPEC_CSTRING',
+        v_rolename := v_roles[i]
+      ));
+    END LOOP;
+  END IF;
+
+  select * FROM ast.alter_policy_stmt(
+    v_policy_name := v_policy_name,
+    v_table := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_roles := to_jsonb(roles),
+    v_qual := v_qual,
+    v_with_check := v_with_check
+  ) INTO ast;
+
+  RETURN ast.raw_stmt(
+    v_stmt := ast,
+    v_stmt_len := 1
+  );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.drop_policy ( v_policy_name text DEFAULT NULL, v_schema_name text DEFAULT NULL, v_table_name text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast jsonb;
@@ -2665,7 +3632,7 @@ BEGIN
         ast.string(v_table_name),
         ast.string(v_policy_name)
       ]]),
-      v_removeType := ast_constants.object_type('OBJECT_POLICY')
+      v_removeType := 'OBJECT_POLICY'
     ),
     v_stmt_len := 1
   );
@@ -2682,7 +3649,7 @@ CREATE FUNCTION ast_helpers.create_table ( v_schema_name text, v_table_name text
         v_inh := TRUE,
         v_relpersistence := 'p'
       ),
-      v_oncommit := 0
+      v_oncommit := 'ONCOMMIT_NOOP'
     ),
     v_stmt_len := 1
   );
@@ -2695,16 +3662,17 @@ CREATE FUNCTION ast_helpers.drop_table ( v_schema_name text, v_table_name text, 
         ast.string(v_schema_name),
         ast.string(v_table_name)
       ]]),
-      v_removeType := ast_constants.object_type('OBJECT_TABLE'),
-      v_behavior:= (CASE when v_cascade IS TRUE then 1 else 0 END)
+      v_removeType := 'OBJECT_TABLE',
+      v_behavior:= (CASE when v_cascade IS TRUE then 'DROP_CASCADE' else 'DROP_RESTRICT' END)
     ),
     v_stmt_len := 1
   );
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_index ( v_index_name text, v_schema_name text, v_table_name text, v_fields text[], v_accessmethod text DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.create_index ( v_index_name text, v_schema_name text, v_table_name text, v_fields text[], v_include_fields text[] DEFAULT ARRAY[]::text[], v_accessmethod text DEFAULT NULL, v_unique boolean DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
 DECLARE
-  parameters jsonb[];
+  parameters jsonb[] = ARRAY[]::jsonb[];
+  includingParameters jsonb[] = ARRAY[]::jsonb[];
 
   item text;
   i int;
@@ -2716,12 +3684,22 @@ BEGIN
   LOOP
     parameters = array_append(parameters, ast.index_elem(
       v_name := v_fields[i],
-      v_ordering := 0,
-      v_nulls_ordering := 0
+      v_ordering := 'SORTBY_DEFAULT',
+      v_nulls_ordering := 'SORTBY_NULLS_DEFAULT'
     ));
   END LOOP;
 
-  SELECT ast.raw_stmt(
+  FOR i IN
+    SELECT * FROM generate_series(1, cardinality(v_include_fields)) g (i)
+  LOOP
+    includingParameters = array_append(includingParameters, ast.index_elem(
+      v_name := v_include_fields[i],
+      v_ordering := 'SORTBY_DEFAULT',
+      v_nulls_ordering := 'SORTBY_NULLS_DEFAULT'
+    ));
+  END LOOP;
+
+  ast = ast.raw_stmt(
     v_stmt := ast.index_stmt(
       v_idxname := v_index_name,
       v_relation := ast_helpers.range_var(
@@ -2729,10 +3707,12 @@ BEGIN
         v_relname := v_table_name
       ),
       v_accessMethod := v_accessMethod,
-      v_indexParams := to_jsonb(parameters)
+      v_indexParams := to_jsonb(parameters),
+      v_indexIncludingParams := to_jsonb(includingParameters),
+      v_unique := v_unique
     ),
     v_stmt_len:= 1
-  ) INTO ast;
+  );
 
   RETURN ast;
 END;
@@ -2747,8 +3727,8 @@ CREATE FUNCTION ast_helpers.drop_index ( v_schema_name text, v_index_name text )
           ast.string(v_index_name)
         ])
       ]),
-      v_removeType:= ast_constants.object_type('OBJECT_INDEX'),
-      v_behavior:= 0
+      v_removeType:= 'OBJECT_INDEX',
+      v_behavior:= 'DROP_RESTRICT'
     ),
     v_stmt_len := 1
   );
@@ -2769,8 +3749,8 @@ BEGIN
   SELECT ast.raw_stmt(
     v_stmt := ast.grant_stmt(
       v_is_grant := v_is_grant,
-      v_targtype := 0, -- why?
-      v_objtype := 1, --why?
+      v_targtype := 'ACL_TARGET_OBJECT',
+      v_objtype := 'OBJECT_TABLE',
       v_objects := to_jsonb(ARRAY[
         ast_helpers.range_var(
           v_schemaname := v_schema_name,
@@ -2785,9 +3765,7 @@ BEGIN
       ]),
       v_grantees := to_jsonb(ARRAY[
         ast.role_spec(
-          v_roletype:=ast_constants.role_spec_type(
-          'ROLESPEC_CSTRING'
-          ),
+          v_roletype := 'ROLESPEC_CSTRING',
           v_rolename:= v_role_name
         )
       ])
@@ -2831,16 +3809,16 @@ BEGIN
       ),
       v_cmds := to_jsonb(ARRAY[
         ast.alter_table_cmd(
-          v_subtype := ast_constants.alter_table_type('AT_AddColumn'),
+          v_subtype := 'AT_AddColumn',
           v_def := ast.column_def(
             v_colname := v_column_name,
             v_typeName := v_column_type,
             v_is_local := TRUE
           ),
-          v_behavior := 0 
+          v_behavior := 'DROP_RESTRICT' 
         )
       ]),
-      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+      v_relkind := 'OBJECT_TABLE'
     ),
     v_stmt_len:= 1
   );
@@ -2859,12 +3837,12 @@ BEGIN
       ),
       v_cmds := to_jsonb(ARRAY[
         ast.alter_table_cmd(
-          v_subtype := ast_constants.alter_table_type('AT_DropColumn'),
+          v_subtype := 'AT_DropColumn',
           v_name := v_column_name,
-          v_behavior := 0 
+          v_behavior := 'DROP_RESTRICT' 
         )
       ]),
-      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+      v_relkind := 'OBJECT_TABLE'
     ),
     v_stmt_len:= 1
   );
@@ -2877,8 +3855,8 @@ DECLARE
 BEGIN
   RETURN ast.raw_stmt(
     v_stmt := ast.rename_stmt(
-      v_renameType := ast_constants.object_type('OBJECT_COLUMN'),
-      v_relationType := ast_constants.object_type('OBJECT_TABLE'),
+      v_renameType := 'OBJECT_COLUMN',
+      v_relationType := 'OBJECT_TABLE',
       v_relation := ast_helpers.range_var(
         v_schemaname := v_schema_name,
         v_relname := v_table_name
@@ -2903,7 +3881,7 @@ BEGIN
       ),
       v_cmds := to_jsonb(ARRAY[
         ast.alter_table_cmd(
-          v_subtype := ast_constants.alter_table_type('AT_AlterColumnType'),
+          v_subtype := 'AT_AlterColumnType',
           v_name := v_column_name,
           v_def := ast.column_def(
             v_typeName := ast.type_name(
@@ -2924,10 +3902,10 @@ BEGIN
               )
             )
           ),
-          v_behavior := 0 
+          v_behavior := 'DROP_RESTRICT'
         )
       ]),
-      v_relkind := ast_constants.object_type('OBJECT_TABLE')
+      v_relkind := 'OBJECT_TABLE'
     ),
     v_stmt_len:= 1
   );
@@ -2946,17 +3924,17 @@ BEGIN
           ),
           v_cmds := to_jsonb(ARRAY[
             ast.alter_table_cmd(
-              v_subtype := ast_constants.alter_table_type('AT_AddConstraint'),
+              v_subtype := 'AT_AddConstraint',
               v_def := ast.constraint(
-                v_contype := ast_utils.constrainttypes('CHECK'),
+                v_contype := 'CONSTR_CHECK',
                 v_conname := v_constraint_name,
                 v_raw_expr := v_constraint_expr,
                 v_initially_valid := true
               ),
-              v_behavior := 0 
+              v_behavior := 'DROP_RESTRICT'
             )
           ]),
-          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+          v_relkind := 'OBJECT_TABLE'
         ),
         v_stmt_len:= 1
       );
@@ -2975,12 +3953,12 @@ BEGIN
           ),
           v_cmds := to_jsonb(ARRAY[
             ast.alter_table_cmd(
-              v_subtype := ast_constants.alter_table_type('AT_DropConstraint'),
+              v_subtype := 'AT_DropConstraint',
               v_name := v_constraint_name,
-              v_behavior := 0 
+              v_behavior := 'DROP_RESTRICT'
             )
           ]),
-          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+          v_relkind := 'OBJECT_TABLE'
         ),
         v_stmt_len:= 1
       );
@@ -3000,24 +3978,24 @@ BEGIN
           v_cmds := to_jsonb(ARRAY[
             -- DROP IT FIRST
             ast.alter_table_cmd(
-              v_subtype := ast_constants.alter_table_type('AT_DropConstraint'),
+              v_subtype := 'AT_DropConstraint',
               v_name := v_constraint_name,
-              v_behavior := 0,
+              v_behavior := 'DROP_RESTRICT',
               v_missing_ok := TRUE
             ),
             -- ADD IT BACK
             ast.alter_table_cmd(
-              v_subtype := ast_constants.alter_table_type('AT_AddConstraint'),
+              v_subtype := 'AT_AddConstraint',
               v_def := ast.constraint(
-                v_contype := ast_utils.constrainttypes('CHECK'),
+                v_contype := 'CONSTR_CHECK',
                 v_conname := v_constraint_name,
                 v_raw_expr := v_constraint_expr,
                 v_initially_valid := true
               ),
-              v_behavior := 0 
+              v_behavior := 'DROP_RESTRICT' 
             )
           ]),
-          v_relkind := ast_constants.object_type('OBJECT_TABLE')
+          v_relkind := 'OBJECT_TABLE'
         ),
         v_stmt_len:= 1
       );
@@ -3051,7 +4029,7 @@ BEGIN
 
   RETURN ast.raw_stmt(
         v_stmt := ast.comment_stmt(
-        v_objtype := ast_constants.object_type('OBJECT_FUNCTION'),
+        v_objtype := 'OBJECT_FUNCTION',
         v_object := ast.object_with_args(
                 v_objname := to_jsonb(names),
                 v_objargs := to_jsonb(types)
@@ -3082,7 +4060,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.set_comment ( v_objtype int, v_comment text DEFAULT NULL, VARIADIC v_name text[] DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.set_comment ( v_objtype text, v_comment text DEFAULT NULL, VARIADIC v_name text[] DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast jsonb;
   types jsonb[];
@@ -3109,7 +4087,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.set_comment ( v_objtype int, v_tags jsonb DEFAULT NULL, v_description text DEFAULT NULL, VARIADIC v_name text[] DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.set_comment ( v_objtype text, v_tags jsonb DEFAULT NULL, v_description text DEFAULT NULL, VARIADIC v_name text[] DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   v_comment text;
 BEGIN
@@ -3127,7 +4105,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_own_records ( rls_schema text, role_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_own_records ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
@@ -3135,16 +4113,16 @@ BEGIN
   -- Function(id), Field(id)
   -- SELECT db_migrate.text('policy_expression_current_role', 
 
-  policy_ast = ast_helpers.equals(
+  policy_ast = ast_helpers.eq(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(rls_schema, role_fn)
+      v_rexpr := policy_template_vars->'current_user_ast'
   );
 
   RETURN policy_ast;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_owned_records ( rls_schema text, role_fn text, groups_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_owned_records ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
@@ -3154,26 +4132,26 @@ BEGIN
 
   -- SELECT db_migrate.text('policy_expression_current_roles', 
   policy_ast = ast_helpers.or(
-    ast_helpers.equals(
+    ast_helpers.eq(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(rls_schema, role_fn)
+      v_rexpr := policy_template_vars->'current_user_ast'
     ),
     ast_helpers.any(
       v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-      v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+      v_rexpr := policy_template_vars->'current_groups_ast'
     )
   );
 
   -- policy_ast = ast_helpers.any(
   --   v_lexpr := ast_helpers.col(policy_template_vars->>'role_key'),
-  --   v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+  --   v_rexpr := policy_template_vars->'current_groups_ast'
   -- );
 
   RETURN policy_ast;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_multi_owners ( rls_schema text, role_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_multi_owners ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
   key_asts jsonb[];
@@ -3183,12 +4161,12 @@ BEGIN
   FOR item IN
     SELECT * FROM jsonb_array_elements(policy_template_vars->'role_keys')
     LOOP 
-    key_asts = array_append(key_asts, ast_helpers.equals(
+    key_asts = array_append(key_asts, ast_helpers.eq(
       -- NOTE if you have a string JSON element, item::text will keep " around it
       -- this just gets the root path unescaped.... a nice hack
       -- https://dba.stackexchange.com/questions/207984/unquoting-json-strings-print-json-strings-without-quotes
       v_lexpr := ast_helpers.col(item#>>'{}'),
-      v_rexpr := ast_helpers.rls_fn(rls_schema, role_fn)
+      v_rexpr := policy_template_vars->'current_user_ast'
     ));
   END LOOP;
 
@@ -3198,17 +4176,17 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_permission_name ( rls_schema text, groups_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_permission_name ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'permission_role_key'),
-                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
@@ -3221,7 +4199,7 @@ BEGIN
               )
           )
       ]),
-      v_whereClause := ast_helpers.equals(
+      v_whereClause := ast_helpers.eq(
           v_lexpr := ast_helpers.col('p', policy_template_vars->>'permission_name_key'),
           v_rexpr := ast.a_const(
               v_val := ast.string(policy_template_vars->>'this_value')
@@ -3230,7 +4208,7 @@ BEGIN
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -3238,7 +4216,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_owned_object_records ( rls_schema text, groups_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_owned_object_records ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
@@ -3247,12 +4225,12 @@ BEGIN
   -- SELECT db_migrate.text('policy_expression_owned_object_key', 
 
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key'),
-                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
@@ -3265,14 +4243,14 @@ BEGIN
               )
           )
       ]),
-      v_whereClause := ast_helpers.equals(
+      v_whereClause := ast_helpers.eq(
           v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
           v_rexpr := ast_helpers.col(policy_template_vars->>'this_object_key')
       )
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -3280,24 +4258,24 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_administrator_records ( rls_schema text, groups_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_administrator_records ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
 
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('d', 'owner_id'),
-                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
           ast.join_expr(
-              v_jointype := 0,
+              v_jointype := 'JOIN_INNER',
               v_larg := ast_helpers.range_var(
                   v_schemaname := 'collections_public',
                   v_relname := 'table',
@@ -3312,20 +4290,20 @@ BEGIN
                       v_aliasname := 'd'
                   )
               ),
-              v_quals := ast_helpers.equals(
+              v_quals := ast_helpers.eq(
                   v_lexpr := ast_helpers.col('t', 'database_id'),
                   v_rexpr := ast_helpers.col('d', 'id') 
               )
           )
       ]),
       v_whereClause := ast_helpers.and(
-          ast_helpers.equals(
+          ast_helpers.eq(
               v_lexpr := ast_helpers.col('t', 'database_id'),
               v_rexpr := ast.a_const( 
                 v_val := ast.string( policy_template_vars->>'database_id' )
               )
           ),
-          ast_helpers.equals(
+          ast_helpers.eq(
               v_lexpr := ast_helpers.col('t', 'id'),
               v_rexpr := ast.a_const( 
                 v_val := ast.string( policy_template_vars->>'table_id' )
@@ -3335,7 +4313,7 @@ BEGIN
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -3343,7 +4321,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records ( rls_schema text, groups_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
@@ -3352,18 +4330,18 @@ BEGIN
   -- SELECT db_migrate.text('policy_expression_owned_object_key_once_removed', 
 
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
                   v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key'),
-                  v_rexpr := ast_helpers.rls_fn(rls_schema, groups_fn)
+                  v_rexpr := policy_template_vars->'current_groups_ast'
               )
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
           ast.join_expr(
-              v_jointype := 0,
+              v_jointype := 'JOIN_INNER',
               v_larg := ast_helpers.range_var(
                   v_schemaname := policy_template_vars->>'object_schema',
                   v_relname := policy_template_vars->>'object_table',
@@ -3378,20 +4356,20 @@ BEGIN
                       v_aliasname := 'p'
                   )
               ),
-              v_quals := ast_helpers.equals(
+              v_quals := ast_helpers.eq(
                   v_lexpr := ast_helpers.col('p',policy_template_vars->>'owned_table_ref_key'),
                   v_rexpr := ast_helpers.col('c',policy_template_vars->>'object_table_owned_key')
               )
           )
       ]),
-      v_whereClause := ast_helpers.equals(
+      v_whereClause := ast_helpers.eq(
           v_lexpr := ast_helpers.col('c',policy_template_vars->>'object_table_ref_key'),
           v_rexpr := ast_helpers.col(policy_template_vars->>'this_object_key')
       )
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -3399,7 +4377,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records_group_array ( rls_schema text, role_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records_group_array ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
@@ -3408,18 +4386,18 @@ BEGIN
   -- SELECT db_migrate.text('policy_expression_owned_object_key_once_removed', 
 
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
-                  v_lexpr := ast_helpers.rls_fn(rls_schema, role_fn),
+                  v_lexpr := policy_template_vars->'current_user_ast',
                   v_rexpr := ast_helpers.col('g', policy_template_vars->>'owned_table_key')
               )
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
           ast.join_expr(
-              v_jointype := 0,
+              v_jointype := 'JOIN_INNER',
               v_larg := ast_helpers.range_var(
                   v_schemaname := policy_template_vars->>'object_schema',
                   v_relname := policy_template_vars->>'object_table',
@@ -3434,20 +4412,20 @@ BEGIN
                       v_aliasname := 'g'
                   )
               ),
-              v_quals := ast_helpers.equals(
+              v_quals := ast_helpers.eq(
                   v_lexpr := ast_helpers.col('g',policy_template_vars->>'owned_table_ref_key'),
                   v_rexpr := ast_helpers.col('m',policy_template_vars->>'object_table_owned_key')
               )
           )
       ]),
-      v_whereClause := ast_helpers.equals(
+      v_whereClause := ast_helpers.eq(
           v_lexpr := ast_helpers.col('m',policy_template_vars->>'object_table_ref_key'),
           v_rexpr := ast_helpers.col(policy_template_vars->>'this_object_key')
       )
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -3455,7 +4433,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records_with_ownership ( rls_schema text, groups_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_child_of_owned_object_records_with_ownership ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
@@ -3465,16 +4443,14 @@ BEGIN
   -- SELECT db_migrate.text('policy_expression_owned_object_key_once_removed_with_ownership', 
 
   policy_ast = ast_helpers.cpt_child_of_owned_object_records(
-    rls_schema,
-    groups_fn,
     policy_template_vars
   );
 
   policy_ast = jsonb_set(policy_ast, '{SubLink, subselect, SelectStmt, fromClause, 0, JoinExpr, quals}', ast.bool_expr(
-    v_boolop := 0,
+    v_boolop := 'AND_EXPR',
     v_args := to_jsonb(ARRAY[
         policy_ast->'SubLink'->'subselect'->'SelectStmt'->'fromClause'->0->'JoinExpr'->'quals',
-        ast_helpers.equals(
+        ast_helpers.eq(
             v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
             v_rexpr := ast_helpers.col(policy_template_vars->>'this_owned_key')
         )
@@ -3485,17 +4461,17 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_owned_object_records_group_array ( rls_schema text, role_fn text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_owned_object_records_group_array ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
 
   policy_ast = ast.select_stmt(
-      v_op := 0,
+      v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.any(
-                  v_lexpr := ast_helpers.rls_fn(rls_schema, role_fn),
+                  v_lexpr := policy_template_vars->'current_user_ast',
                   v_rexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_key')
               )
           )
@@ -3509,7 +4485,7 @@ BEGIN
               )
           )
       ]),
-      v_whereClause := ast_helpers.equals(
+      v_whereClause := ast_helpers.eq(
           v_lexpr := ast_helpers.col('p', policy_template_vars->>'owned_table_ref_key'),
           v_rexpr := ast_helpers.col(
             policy_template_vars->>'this_object_key'
@@ -3518,7 +4494,7 @@ BEGIN
   );
 
   policy_ast = ast.sub_link(
-    v_subLinkType := 4,
+    v_subLinkType := 'EXPR_SUBLINK',
     v_subselect := policy_ast
   );
 
@@ -3526,77 +4502,212 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_policy_template ( rls_schema text, role_fn text, groups_fn text, policy_template_name text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_entity_acl ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  policy_ast jsonb;
+  array_ast jsonb;
+BEGIN
+
+  array_ast = ast.sub_link(
+    v_subLinkType := 'ARRAY_SUBLINK',
+    v_subselect := ast.select_stmt(
+      v_op := 'SETOP_NONE',
+      v_targetList := to_jsonb(ARRAY[
+          ast.res_target(
+              v_val := ast_helpers.col('acl', 'entity_id')
+          )
+      ]),
+      v_fromClause := to_jsonb(ARRAY[
+          ast_helpers.range_var(
+              v_schemaname := policy_template_vars->>'acl_schema',
+              v_relname := policy_template_vars->>'acl_table',
+              v_alias := ast.alias(
+                  v_aliasname := 'acl'
+              )
+          )
+      ]),
+      v_whereClause := ast_helpers.acl_where_clause(policy_template_vars)
+    )
+  );
+
+  IF ((policy_template_vars->'include_current_user_id')::bool IS TRUE) THEN 
+    -- DO WE NEED TO CAST THE possible ARRAY(...)::uuid[] ?
+    -- postgres=# select array_append(NULL, 'sdf');
+    -- ERROR:  could not determine polymorphic type because input has type unknown
+    policy_ast = ast_helpers.any(
+      v_lexpr := ast_helpers.col(policy_template_vars->>'entity_field'),
+      v_rexpr := ast.func_call(
+        v_funcname := ast_helpers.array_of_strings('array_append'),
+        v_args := to_jsonb(ARRAY[
+          array_ast,
+          policy_template_vars->'current_user_ast'
+        ])
+      )
+    );
+  ELSE
+    policy_ast = ast_helpers.any(
+      v_lexpr := ast_helpers.col(policy_template_vars->>'entity_field'),
+      v_rexpr := array_ast
+    );
+  END IF;
+
+  RETURN policy_ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.acl_where_clause ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+BEGIN
+  RETURN (CASE WHEN policy_template_vars->'mask' IS NULL THEN
+      ast_helpers.eq(
+          v_lexpr := ast_helpers.col('acl', 'actor_id'),
+          v_rexpr := policy_template_vars->'current_user_ast'
+      )
+    ELSE
+      ast.bool_expr(
+        v_boolop := 'AND_EXPR',
+        v_args := to_jsonb(ARRAY[
+          ast_helpers.eq(
+              v_lexpr := ast.a_expr(
+                v_kind := 'AEXPR_OP',
+                v_name := to_jsonb(ARRAY[ast.string('&')]),
+                v_lexpr := ast_helpers.col('acl', 'permissions'),
+                v_rexpr := ast.a_const(v_val := ast.string(policy_template_vars->>'mask'))
+              ),
+              v_rexpr := ast.a_const(v_val := ast.string(policy_template_vars->>'mask'))
+          ),
+          ast_helpers.eq(
+              v_lexpr := ast_helpers.col('acl', 'actor_id'),
+              v_rexpr := policy_template_vars->'current_user_ast'
+          )
+        ]) 
+      )
+    END);
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.cpt_acl ( policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   policy_ast jsonb;
 BEGIN
+
+  policy_ast = ast.sub_link (
+    v_subLinkType := 'EXISTS_SUBLINK',
+    v_subselect := ast.select_stmt(
+       v_op := 'SETOP_NONE',
+       v_targetList := to_jsonb(ARRAY[
+         ast.res_target(
+            v_val := ast.a_const(ast.integer(1))
+         )
+       ]),
+       v_fromClause := to_jsonb(ARRAY[
+          ast_helpers.range_var(
+              v_schemaname := policy_template_vars->>'acl_schema',
+              v_relname := policy_template_vars->>'acl_table',
+              v_alias := ast.alias(
+                  v_aliasname := 'acl'
+              )
+          )
+      ]),
+      v_whereClause := ast_helpers.acl_where_clause(
+        policy_template_vars
+      )
+    )
+  );
+
+  RETURN policy_ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.create_policy_template ( policy_template_name text, policy_template_vars jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  policy_ast jsonb;
+BEGIN
+
+  -- TODO for safety, keep defaults. However, group_ids() should only return array of current_user_id()
+
+  IF (policy_template_vars->>'rls_role' IS NULL OR policy_template_vars->>'rls_role_schema' IS NULL) THEN 
+    policy_template_vars = jsonb_set(policy_template_vars, '{rls_role_schema}', to_jsonb('jwt_public'::text));
+    policy_template_vars = jsonb_set(policy_template_vars, '{rls_role}', to_jsonb('current_user_id'::text));
+  END IF;
+
+  IF (policy_template_vars->>'rls_groups' IS NULL OR policy_template_vars->>'rls_groups_schema' IS NULL) THEN 
+    policy_template_vars = jsonb_set(policy_template_vars, '{rls_groups_schema}', to_jsonb('jwt_public'::text));
+    policy_template_vars = jsonb_set(policy_template_vars, '{rls_groups}', to_jsonb('current_group_ids'::text));
+  END IF;
+
+  IF (policy_template_vars->'current_groups_ast' IS NULL) THEN 
+      policy_template_vars = jsonb_set(policy_template_vars, '{current_groups_ast}', 
+        ast_helpers.rls_fn(
+          policy_template_vars->>'rls_groups_schema',
+          policy_template_vars->>'rls_groups'
+        )
+      );
+  END IF;
+
+  IF (policy_template_vars->'current_user_ast' IS NULL) THEN 
+      policy_template_vars = jsonb_set(policy_template_vars, '{current_user_ast}', 
+        ast_helpers.rls_fn(
+          policy_template_vars->>'rls_role_schema',
+          policy_template_vars->>'rls_role')
+      );
+  END IF;
+
 
   -- Tag some functions, allow them to be "RLS functions"
   -- so they show up in the RLS UI
 
   IF (policy_template_name = 'own_records') THEN
       policy_ast = ast_helpers.cpt_own_records(
-          rls_schema,
-          role_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'owned_records') THEN
       policy_ast = ast_helpers.cpt_owned_records(
-          rls_schema,
-          role_fn,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'multi_owners') THEN
       policy_ast = ast_helpers.cpt_multi_owners(
-          rls_schema,
-          role_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'permission_name') THEN
       policy_ast = ast_helpers.cpt_permission_name(
-          rls_schema,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'owned_object_records') THEN
       policy_ast = ast_helpers.cpt_owned_object_records(
-          rls_schema,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'child_of_owned_object_records') THEN
       policy_ast = ast_helpers.cpt_child_of_owned_object_records(
-          rls_schema,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'child_of_owned_object_records_with_ownership') THEN
       policy_ast = ast_helpers.cpt_child_of_owned_object_records_with_ownership(
-          rls_schema,
-          groups_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'child_of_owned_object_records_group_array') THEN
       policy_ast = ast_helpers.cpt_child_of_owned_object_records_group_array(
-          rls_schema,
-          role_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'owned_object_records_group_array') THEN
       policy_ast = ast_helpers.cpt_owned_object_records_group_array(
-          rls_schema,
-          role_fn,
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'administrator_records') THEN
       policy_ast = ast_helpers.cpt_administrator_records(
-          rls_schema,
-          groups_fn,
+          policy_template_vars
+      );
+  ELSEIF (policy_template_name = 'entity_acl') THEN
+      policy_ast = ast_helpers.cpt_entity_acl(
+          policy_template_vars
+      );
+  ELSEIF (policy_template_name = 'acl') THEN
+      policy_ast = ast_helpers.cpt_acl(
           policy_template_vars
       );
   ELSEIF (policy_template_name = 'open') THEN
       policy_ast = ast.string('TRUE');
+  ELSEIF (policy_template_name = 'closed') THEN
+      policy_ast = ast.string('FALSE');
   ELSE 
       RAISE EXCEPTION 'UNSUPPORTED POLICY';
   END IF;
@@ -3642,7 +4753,7 @@ BEGIN
           )
         )
       ]),
-      v_op := 0
+      v_op := 'SETOP_NONE'
     ),
     v_stmt_len := 1
   ) INTO ast;
@@ -3778,87 +4889,121 @@ CREATE FUNCTION ast_utils.reserved ( str text ) RETURNS boolean AS $EOFCODE$
 	select exists( select 1 from pg_get_keywords() where catcode = 'R' AND word=str  );
 $EOFCODE$ LANGUAGE sql SECURITY DEFINER;
 
-CREATE FUNCTION ast_utils.objtypes (  ) RETURNS text[] AS $EOFCODE$
-	select ARRAY[ 'ACCESS METHOD', 'AGGREGATE', NULL, NULL, 'ATTRIBUTE', 'CAST', 'COLUMN', 'COLLATION', 'CONVERSION', 'DATABASE', NULL, NULL, 'DOMAIN', 'CONSTRAINT', NULL, 'EXTENSION', 'FOREIGN DATA WRAPPER', 'SERVER', 'FOREIGN TABLE', 'FUNCTION', 'INDEX', 'LANGUAGE', 'LARGE OBJECT', 'MATERIALIZED VIEW', 'OPERATOR CLASS', 'OPERATOR', 'OPERATOR FAMILY', 'POLICY', NULL, NULL, 'ROLE', 'RULE', 'SCHEMA', 'SEQUENCE', NULL, 'STATISTICS', 'CONSTRAINT', 'TABLE', 'TABLESPACE', 'TRANSFORM', 'TRIGGER', 'TEXT SEARCH CONFIGURATION', 'TEXT SEARCH DICTIONARY', 'TEXT SEARCH PARSER', 'TEXT SEARCH TEMPLATE', 'TYPE', NULL, 'VIEW' ]::text[];
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_utils.objtype_name ( typenum int ) RETURNS text AS $EOFCODE$
-	select (ast_utils.objtypes())[typenum + 1];
-$EOFCODE$ LANGUAGE sql IMMUTABLE;
-
-CREATE FUNCTION ast_utils.constrainttypes ( contype int ) RETURNS text AS $EOFCODE$
-  select (CASE contype
-WHEN 0 THEN 'NULL'
-WHEN 1 THEN 'NOT NULL'
-WHEN 2 THEN 'DEFAULT'
-WHEN 4 THEN 'CHECK'
-WHEN 5 THEN 'PRIMARY KEY'
-WHEN 6 THEN 'UNIQUE'
-WHEN 7 THEN 'EXCLUDE'
-WHEN 8 THEN 'REFERENCES'
+CREATE FUNCTION ast_utils.objtype_name ( objtype text ) RETURNS text AS $EOFCODE$
+  select (CASE objtype
+WHEN 'OBJECT_ACCESS_METHOD' THEN 'ACCESS METHOD'
+WHEN 'OBJECT_AGGREGATE' THEN 'AGGREGATE'
+WHEN 'OBJECT_AMOP' THEN NULL -- TODO  
+WHEN 'OBJECT_AMPROC' THEN NULL -- TODO 
+WHEN 'OBJECT_ATTRIBUTE' THEN 'ATTRIBUTE'
+WHEN 'OBJECT_CAST' THEN 'CAST'
+WHEN 'OBJECT_COLUMN' THEN 'COLUMN'
+WHEN 'OBJECT_COLLATION' THEN 'COLLATION'
+WHEN 'OBJECT_CONVERSION' THEN 'CONVERSION'
+WHEN 'OBJECT_DATABASE' THEN 'DATABASE'
+WHEN 'OBJECT_DEFAULT' THEN NULL -- TODO 
+WHEN 'OBJECT_DEFACL' THEN NULL -- TODO 
+WHEN 'OBJECT_DOMAIN' THEN 'DOMAIN'
+WHEN 'OBJECT_DOMCONSTRAINT' THEN 'CONSTRAINT'
+WHEN 'OBJECT_EVENT_TRIGGER' THEN 'EVENT TRIGGER'
+WHEN 'OBJECT_EXTENSION' THEN 'EXTENSION'
+WHEN 'OBJECT_FDW' THEN 'FOREIGN DATA WRAPPER'
+WHEN 'OBJECT_FOREIGN_SERVER' THEN 'SERVER'
+WHEN 'OBJECT_FOREIGN_TABLE' THEN 'FOREIGN TABLE'
+WHEN 'OBJECT_FUNCTION' THEN 'FUNCTION'
+WHEN 'OBJECT_INDEX' THEN 'INDEX'
+WHEN 'OBJECT_LANGUAGE' THEN 'LANGUAGE'
+WHEN 'OBJECT_LARGEOBJECT' THEN 'LARGE OBJECT'
+WHEN 'OBJECT_MATVIEW' THEN 'MATERIALIZED VIEW'
+WHEN 'OBJECT_OPCLASS' THEN 'OPERATOR CLASS'
+WHEN 'OBJECT_OPERATOR' THEN 'OPERATOR'
+WHEN 'OBJECT_OPFAMILY' THEN 'OPERATOR FAMILY'
+WHEN 'OBJECT_POLICY' THEN 'POLICY'
+WHEN 'OBJECT_PROCEDURE' THEN 'PROCEDURE'
+WHEN 'OBJECT_PUBLICATION' THEN 'PUBLICATION'
+WHEN 'OBJECT_PUBLICATION_REL' THEN NULL -- TODO 
+WHEN 'OBJECT_ROLE' THEN 'ROLE'
+WHEN 'OBJECT_ROUTINE' THEN 'ROUTINE'
+WHEN 'OBJECT_RULE' THEN 'RULE'
+WHEN 'OBJECT_SCHEMA' THEN 'SCHEMA'
+WHEN 'OBJECT_SEQUENCE' THEN 'SEQUENCE'
+WHEN 'OBJECT_SUBSCRIPTION' THEN 'SUBSCRIPTION'
+WHEN 'OBJECT_STATISTIC_EXT' THEN 'STATISTICS'
+WHEN 'OBJECT_TABCONSTRAINT' THEN 'CONSTRAINT'
+WHEN 'OBJECT_TABLE' THEN 'TABLE'
+WHEN 'OBJECT_TABLESPACE' THEN 'TABLESPACE'
+WHEN 'OBJECT_TRANSFORM' THEN 'TRANSFORM'
+WHEN 'OBJECT_TRIGGER' THEN 'TRIGGER'
+WHEN 'OBJECT_TSCONFIGURATION' THEN 'TEXT SEARCH CONFIGURATION'
+WHEN 'OBJECT_TSDICTIONARY' THEN 'TEXT SEARCH DICTIONARY'
+WHEN 'OBJECT_TSPARSER' THEN 'TEXT SEARCH PARSER'
+WHEN 'OBJECT_TSTEMPLATE' THEN 'TEXT SEARCH TEMPLATE'
+WHEN 'OBJECT_TYPE' THEN 'TYPE'
+WHEN 'OBJECT_USER_MAPPING' THEN 'USER MAPPING'
+WHEN 'OBJECT_VIEW' THEN 'VIEW'
 END);
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
-CREATE FUNCTION ast_utils.constrainttypes ( contype text ) RETURNS int AS $EOFCODE$
+CREATE FUNCTION ast_utils.constrainttypes ( contype text ) RETURNS text AS $EOFCODE$
   select (CASE contype
-WHEN 'NULL' THEN 0
-WHEN 'NOT NULL' THEN 1
-WHEN 'DEFAULT' THEN 2
-WHEN 'CHECK' THEN 4
-WHEN 'PRIMARY KEY' THEN 5
-WHEN 'UNIQUE' THEN 6
-WHEN 'EXCLUDE' THEN 7
-WHEN 'REFERENCES' THEN 8
+WHEN 'CONSTR_NULL' THEN 'NULL'
+WHEN 'CONSTR_NOTNULL' THEN 'NOT NULL'
+WHEN 'CONSTR_DEFAULT' THEN 'DEFAULT'
+WHEN 'CONSTR_CHECK' THEN 'CHECK'
+WHEN 'CONSTR_PRIMARY' THEN 'PRIMARY KEY'
+WHEN 'CONSTR_UNIQUE' THEN 'UNIQUE'
+WHEN 'CONSTR_EXCLUSION' THEN 'EXCLUDE'
+WHEN 'CONSTR_FOREIGN' THEN 'REFERENCES'
 END);
 $EOFCODE$ LANGUAGE sql IMMUTABLE;
 
 CREATE FUNCTION ast_utils.getgrantobject ( node jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
-  objtype int;
-  targtype int;
+  objtype text;
+  targtype text;
 BEGIN 
 
-  objtype = (node->'objtype')::int;
+  objtype = node->>'objtype';
   IF (node->'targtype') IS NOT NULL THEN
-    targtype = (node->'targtype')::int;
+    targtype = node->>'targtype';
   END IF;
 
-  IF (objtype = 0) THEN
+  IF (objtype = 'OBJECT_COLUMN') THEN
     RETURN 'COLUMN';
-  ELSIF (objtype = 1) THEN
-    IF (targtype = 1) THEN 
+  ELSIF (objtype = 'OBJECT_TABLE') THEN
+    IF (targtype = 'ACL_TARGET_ALL_IN_SCHEMA') THEN 
       RETURN 'ALL TABLES IN SCHEMA';
-    ELSIF (targtype = 2) THEN 
+    ELSIF (targtype = 'ACL_TARGET_DEFAULTS') THEN 
       RETURN 'TABLES';
     END IF;
     -- TODO could be a view
     RETURN 'TABLE';
-  ELSIF (objtype = 2) THEN
+  ELSIF (objtype = 'OBJECT_SEQUENCE') THEN
     RETURN 'SEQUENCE';
-  ELSIF (objtype = 3) THEN
+  ELSIF (objtype = 'OBJECT_DATABASE') THEN
     RETURN 'DATABASE';
-  ELSIF (objtype = 4) THEN
+  ELSIF (objtype = 'OBJECT_DOMAIN') THEN
     RETURN 'DOMAIN';
-  ELSIF (objtype = 5) THEN
+  ELSIF (objtype = 'OBJECT_FDW') THEN
     RETURN 'FOREIGN DATA WRAPPER';
-  ELSIF (objtype = 6) THEN
+  ELSIF (objtype = 'OBJECT_FOREIGN_SERVER') THEN
     RETURN 'FOREIGN SERVER';
-  ELSIF (objtype = 7) THEN
-    IF (targtype = 1) THEN 
+  ELSIF (objtype = 'OBJECT_FUNCTION') THEN
+    IF (targtype = 'ACL_TARGET_ALL_IN_SCHEMA') THEN 
       RETURN 'ALL FUNCTIONS IN SCHEMA';
-    ELSIF (targtype = 2) THEN 
+    ELSIF (targtype = 'ACL_TARGET_DEFAULTS') THEN 
       RETURN 'FUNCTIONS';
     END IF;
     RETURN 'FUNCTION';
-  ELSIF (objtype = 8) THEN
+  ELSIF (objtype = 'OBJECT_LANGUAGE') THEN
     RETURN 'LANGUAGE';
-  ELSIF (objtype = 9) THEN
+  ELSIF (objtype = 'OBJECT_LARGEOBJECT') THEN
     RETURN 'LARGE OBJECT';
-  ELSIF (objtype = 10) THEN
+  ELSIF (objtype = 'OBJECT_SCHEMA') THEN
     RETURN 'SCHEMA';
-  ELSIF (objtype = 11) THEN
+  ELSIF (objtype = 'OBJECT_TABLESPACE') THEN
     RETURN 'TABLESPACE';
-  ELSIF (objtype = 12) THEN
+  ELSIF (objtype = 'OBJECT_TYPE') THEN
     RETURN 'TYPE';
   END IF;
 
@@ -4018,11 +5163,9 @@ DECLARE
   lastname jsonb;
   typ text[];
 BEGIN
-    IF (node->'TypeName') IS NULL THEN  
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeName';
+    IF (node->'TypeName') IS NOT NULL THEN  
+      node = node->'TypeName';
     END IF;
-
-    node = node->'TypeName';
 
     IF (node->'names') IS NULL THEN  
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeName';
@@ -4062,17 +5205,15 @@ DECLARE
   type text;
   arg text;
 BEGIN
-    IF (node->'TypeCast') IS NULL THEN  
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeCast';
+    IF (node->'TypeCast') IS NOT NULL THEN  
+      node = node->'TypeCast';
     END IF;
-
-    node = node->'TypeCast';
 
     IF (node->'typeName') IS NULL THEN  
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TypeCast';
     END IF;
 
-    type = deparser.expression(node->'typeName', context);
+    type = deparser.type_name(node->'typeName', context);
 
     -- PARENS
     IF (node#>'{arg, A_Expr}' IS NOT NULL) THEN 
@@ -4130,11 +5271,9 @@ DECLARE
   output text[];
     
 BEGIN
-    IF (node->'RangeVar') IS NULL THEN  
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RangeVar';
+    IF (node->'RangeVar') IS NOT NULL THEN  
+      node = node->'RangeVar';
     END IF;
-
-    node = node->'RangeVar';
 
     IF ((node->'inh')::bool = FALSE) THEN
       output = array_append(output, 'ONLY');
@@ -4155,7 +5294,7 @@ BEGIN
     END IF;
 
     IF (node->'alias') IS NOT NULL THEN
-      output = array_append(output, deparser.expression(node->'alias', context));
+      output = array_append(output, deparser.alias(node->'alias', context));
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -4280,23 +5419,23 @@ BEGIN
   left_expr = deparser.expression(expr->'lexpr', context);
   operator = deparser.expression(expr->'name'->0, context);
 
-  IF (operator = '!~') THEN
-    IF (expr->'rexpr'->'FuncCall'->'args'->1->'Null') IS NOT NULL THEN
-      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
-      RETURN format('%s NOT SIMILAR TO %s', left_expr, right_expr);
-    ELSE 
-      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
-      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->1, context) INTO right_expr2;
-      RETURN format('%s NOT SIMILAR TO %s ESCAPE %s', left_expr, right_expr, right_expr2);
-    END IF;
-  ELSE
-    IF (expr->'rexpr'->'FuncCall'->'args'->1->'Null') IS NOT NULL THEN
-      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
-      RETURN format('%s SIMILAR TO %s', left_expr, right_expr);
-    ELSE 
+  IF (operator = '~') THEN
+    IF ( jsonb_array_length( expr->'rexpr'->'FuncCall'->'args' ) > 1 ) THEN
       SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
       SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->1, context) INTO right_expr2;
       RETURN format('%s SIMILAR TO %s ESCAPE %s', left_expr, right_expr, right_expr2);
+    ELSE 
+      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
+      RETURN format('%s SIMILAR TO %s', left_expr, right_expr);
+    END IF;
+  ELSE
+    IF ( jsonb_array_length( expr->'rexpr'->'FuncCall'->'args' ) > 1) THEN
+      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
+      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->1, context) INTO right_expr2;
+      RETURN format('%s NOT SIMILAR TO %s ESCAPE %s', left_expr, right_expr, right_expr2);
+    ELSE 
+      SELECT deparser.expression(expr->'rexpr'->'FuncCall'->'args'->0, context) INTO right_expr;
+      RETURN format('%s NOT SIMILAR TO %s', left_expr, right_expr);
     END IF;
   END IF;
 
@@ -4525,7 +5664,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.a_expr ( expr jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
-  kind int;
+  kind text;
 BEGIN
 
   IF (expr->>'A_Expr') IS NULL THEN  
@@ -4538,37 +5677,37 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_Expr';
   END IF;
 
-  kind = (expr->>'kind')::int;
+  kind = expr->>'kind';
 
-  IF (kind = ast_constants.a_expr_kind('AEXPR_OP')) THEN
+  IF (kind = 'AEXPR_OP') THEN
     RETURN deparser.a_expr_op(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_OP_ANY')) THEN
+  ELSEIF (kind = 'AEXPR_OP_ANY') THEN
     RETURN deparser.a_expr_op_any(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_OP_ALL')) THEN
+  ELSEIF (kind = 'AEXPR_OP_ALL') THEN
     RETURN deparser.a_expr_op_all(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_DISTINCT')) THEN
+  ELSEIF (kind = 'AEXPR_DISTINCT') THEN
     RETURN deparser.a_expr_distinct(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_NOT_DISTINCT')) THEN
+  ELSEIF (kind = 'AEXPR_NOT_DISTINCT') THEN
     RETURN deparser.a_expr_not_distinct(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_NULLIF')) THEN
+  ELSEIF (kind = 'AEXPR_NULLIF') THEN
     RETURN deparser.a_expr_nullif(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_OF')) THEN
+  ELSEIF (kind = 'AEXPR_OF') THEN
     RETURN deparser.a_expr_of(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_IN')) THEN
+  ELSEIF (kind = 'AEXPR_IN') THEN
     RETURN deparser.a_expr_in(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_LIKE')) THEN
+  ELSEIF (kind = 'AEXPR_LIKE') THEN
     RETURN deparser.a_expr_like(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_ILIKE')) THEN
+  ELSEIF (kind = 'AEXPR_ILIKE') THEN
     RETURN deparser.a_expr_ilike(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_SIMILAR')) THEN
+  ELSEIF (kind = 'AEXPR_SIMILAR') THEN
     RETURN deparser.a_expr_similar(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_BETWEEN')) THEN
+  ELSEIF (kind = 'AEXPR_BETWEEN') THEN
     RETURN deparser.a_expr_between(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_NOT_BETWEEN')) THEN
+  ELSEIF (kind = 'AEXPR_NOT_BETWEEN') THEN
     RETURN deparser.a_expr_not_between(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_BETWEEN_SYM')) THEN
+  ELSEIF (kind = 'AEXPR_BETWEEN_SYM') THEN
     RETURN deparser.a_expr_between_sym(expr, context);
-  ELSEIF (kind = ast_constants.a_expr_kind('AEXPR_NOT_BETWEEN_SYM')) THEN
+  ELSEIF (kind = 'AEXPR_NOT_BETWEEN_SYM') THEN
     RETURN deparser.a_expr_not_between_sym(expr, context);
   END IF;
 
@@ -4578,36 +5717,36 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.bool_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
-  boolop int;
+  boolop text;
   ctx jsonb;
   fmt_str text = '%s';
 BEGIN
 
   IF (node->>'BoolExpr') IS NULL THEN  
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr (node)';
   END IF;
 
   node = node->'BoolExpr';
 
   IF (node->'boolop') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr (missing boolop)';
   END IF;
   IF (node->'args') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr';
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'BoolExpr (missing args)';
   END IF;
 
-  boolop = (node->'boolop')::int;
+  boolop = node->>'boolop';
 
   IF ((context->'bool')::bool IS TRUE) THEN 
     fmt_str = '(%s)';
   END IF;
   ctx = jsonb_set(context, '{bool}', to_jsonb(TRUE));
 
-  IF (boolop = ast_constants.bool_expr_type('AND_EXPR')) THEN
+  IF (boolop = 'AND_EXPR') THEN
     RETURN format(fmt_str, array_to_string(deparser.expressions_array(node->'args', ctx), ' AND '));
-  ELSEIF (boolop = ast_constants.bool_expr_type('OR_EXPR')) THEN
+  ELSEIF (boolop = 'OR_EXPR') THEN
     RETURN format(fmt_str, array_to_string(deparser.expressions_array(node->'args', ctx), ' OR '));
-  ELSEIF (boolop = 2) THEN -- purposely use original context for less parens
+  ELSEIF (boolop = 'NOT_EXPR') THEN -- purposely use original context for less parens
     RETURN format('NOT (%s)', deparser.expression(node->'args'->0, context));
   END IF;
 
@@ -4682,7 +5821,7 @@ BEGIN
   END IF;
 
   IF (node->'A_ArrayExpr'->'elements') IS NULL THEN
-    RAISE EXCEPTION 'BAD_EXPRESSION %', 'A_ArrayExpr';
+    RETURN format('ARRAY[]');
   END IF;
 
   node = node->'A_ArrayExpr';
@@ -4710,7 +5849,7 @@ BEGIN
     output = array_append(output, quote_ident(node->>'colname'));
   END IF;
 
-  output = array_append(output, deparser.expression(node->'typeName', context));
+  output = array_append(output, deparser.type_name(node->'typeName', context));
 
   IF (node->'raw_default') IS NOT NULL THEN
     output = array_append(output, 'USING');
@@ -4723,7 +5862,7 @@ BEGIN
 
   IF (node->'collClause') IS NOT NULL THEN
     output = array_append(output, 'COLLATE');
-    output = array_append(output, quote_ident(node->'collClause'->'CollateClause'->'collname'->0->'String'->>'str'));
+    output = array_append(output, quote_ident(node->'collClause'->'collname'->0->'String'->>'str'));
   END IF;
 
   RETURN array_to_string(output, ' ');
@@ -4732,7 +5871,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.sql_value_function ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
-  op int;
+  op text;
   value text;
 BEGIN
 
@@ -4745,38 +5884,38 @@ BEGIN
   END IF;
 
   node = node->'SQLValueFunction';
-  op = (node->'op')::int;
+  op = node->>'op';
 
   SELECT (CASE
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_DATE'))
+  WHEN (op = 'SVFOP_CURRENT_DATE')
       THEN 'CURRENT_DATE' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIME'))
+  WHEN (op = 'SVFOP_CURRENT_TIME')
       THEN 'CURRENT_TIME' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIME_N'))
+  WHEN (op = 'SVFOP_CURRENT_TIME_N')
       THEN 'CURRENT_TIME_N' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIMESTAMP'))
+  WHEN (op = 'SVFOP_CURRENT_TIMESTAMP')
       THEN 'CURRENT_TIMESTAMP' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_TIMESTAMP_N'))
+  WHEN (op = 'SVFOP_CURRENT_TIMESTAMP_N')
       THEN 'CURRENT_TIMESTAMP_N' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIME'))
+  WHEN (op = 'SVFOP_LOCALTIME')
       THEN 'LOCALTIME' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIME_N'))
+  WHEN (op = 'SVFOP_LOCALTIME_N')
       THEN 'LOCALTIME_N' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIMESTAMP'))
+  WHEN (op = 'SVFOP_LOCALTIMESTAMP')
       THEN 'LOCALTIMESTAMP' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_LOCALTIMESTAMP_N'))
+  WHEN (op = 'SVFOP_LOCALTIMESTAMP_N')
       THEN 'LOCALTIMESTAMP_N' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_ROLE'))
+  WHEN (op = 'SVFOP_CURRENT_ROLE')
       THEN 'CURRENT_ROLE' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_USER'))
+  WHEN (op = 'SVFOP_CURRENT_USER')
       THEN 'CURRENT_USER'
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_USER'))
+  WHEN (op = 'SVFOP_USER')
       THEN 'USER' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_SESSION_USER'))
+  WHEN (op = 'SVFOP_SESSION_USER')
       THEN 'SESSION_USER' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_CATALOG'))
+  WHEN (op = 'SVFOP_CURRENT_CATALOG')
       THEN 'CURRENT_CATALOG' 
-  WHEN (op = ast_constants.sql_value_function_op('SVFOP_CURRENT_SCHEMA'))
+  WHEN (op = 'SVFOP_CURRENT_SCHEMA')
       THEN 'CURRENT_SCHEMA'
   END)
   INTO value;
@@ -4884,7 +6023,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.boolean_test ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  booltesttype int;
+  booltesttype text;
 BEGIN
 
   IF (node->'BooleanTest') IS NULL THEN
@@ -4901,17 +6040,17 @@ BEGIN
     RAISE EXCEPTION 'BAD_EXPRESSION %', 'BooleanTest';
   END IF;
 
-  booltesttype = (node->'booltesttype')::int;
+  booltesttype = node->>'booltesttype';
 
   output = array_append(output, deparser.expression(node->'arg'));
 
   output = array_append(output, (CASE
-      WHEN booltesttype = 0 THEN 'IS TRUE'
-      WHEN booltesttype = 1 THEN 'IS NOT TRUE'
-      WHEN booltesttype = 2 THEN 'IS FALSE'
-      WHEN booltesttype = 3 THEN 'IS NOT FALSE'
-      WHEN booltesttype = 4 THEN 'IS UNKNOWN'
-      WHEN booltesttype = 5 THEN 'IS NOT UNKNOWN'
+      WHEN booltesttype = 'IS_TRUE' THEN 'IS TRUE'
+      WHEN booltesttype = 'IS_NOT_TRUE' THEN 'IS NOT TRUE'
+      WHEN booltesttype = 'IS_FALSE' THEN 'IS FALSE'
+      WHEN booltesttype = 'IS_NOT_FALSE' THEN 'IS NOT FALSE'
+      WHEN booltesttype = 'IS_UNKNOWN' THEN 'IS UNKNOWN'
+      WHEN booltesttype = 'IS_NOT_UNKNOWN' THEN 'IS NOT UNKNOWN'
   END));
 
   RETURN array_to_string(output, ' ');
@@ -4987,7 +6126,7 @@ BEGIN
 
   -- on
   output = array_append(output, 'ON');
-  output = array_append(output, deparser.expression(node->'relation', context));
+  output = array_append(output, deparser.range_var(node->'relation', context));
   output = array_append(output, chr(10));
 
   -- transitionRels
@@ -5164,7 +6303,7 @@ BEGIN
 
     IF (node->'table') IS NOT NULL THEN
       output = array_append(output, 'ON');
-      output = array_append(output, deparser.expression(node->'table'));
+      output = array_append(output, deparser.range_var(node->'table'));
     END IF;
 
 
@@ -5185,15 +6324,65 @@ BEGIN
     output = array_append(output, 'TO');
     output = array_append(output, deparser.list(node->'roles'));
 
+    IF (node->'qual') IS NOT NULL THEN
+      output = array_append(output, 'USING');
+      output = array_append(output, '(');
+      output = array_append(output, deparser.expression(node->'qual'));
+      output = array_append(output, ')');
+    END IF;
+
     IF (node->'with_check') IS NOT NULL THEN
       output = array_append(output, 'WITH CHECK');
       output = array_append(output, '(');
       output = array_append(output, deparser.expression(node->'with_check'));
       output = array_append(output, ')');
-    ELSE 
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION deparser.alter_policy_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+  permissive bool;
+BEGIN
+    IF (node->'AlterPolicyStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterPolicyStmt';
+    END IF;
+
+    IF (node->'AlterPolicyStmt'->'policy_name') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterPolicyStmt';
+    END IF;
+
+    node = node->'AlterPolicyStmt';
+
+    output = array_append(output, 'ALTER');
+    output = array_append(output, 'POLICY');
+    output = array_append(output, quote_ident(node->>'policy_name'));
+
+    IF (node->'table') IS NOT NULL THEN
+      output = array_append(output, 'ON');
+      output = array_append(output, deparser.range_var(node->'table'));
+    END IF;
+
+    IF (node->'roles') IS NOT NULL THEN
+      output = array_append(output, 'TO');
+      output = array_append(output, deparser.list(node->'roles'));
+    END IF;
+
+   IF (node->'qual') IS NOT NULL THEN
       output = array_append(output, 'USING');
       output = array_append(output, '(');
       output = array_append(output, deparser.expression(node->'qual'));
+      output = array_append(output, ')');
+    END IF;
+
+    IF (node->'with_check') IS NOT NULL THEN
+      output = array_append(output, 'WITH CHECK');
+      output = array_append(output, '(');
+      output = array_append(output, deparser.expression(node->'with_check'));
       output = array_append(output, ')');
     END IF;
 
@@ -5204,26 +6393,25 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.role_spec ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
-  roletype int;
+  roletype text;
 BEGIN
-    IF (node->'RoleSpec') IS NULL THEN
+    IF (node->'RoleSpec') IS NOT NULL THEN
+      node = node->'RoleSpec';
+    END IF;
+
+    IF (node->'roletype') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'RoleSpec';
     END IF;
 
-    IF (node->'RoleSpec'->'roletype') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'RoleSpec';
-    END IF;
+    roletype = node->>'roletype';
 
-    node = node->'RoleSpec';
-    roletype = (node->'roletype')::int;
-
-    IF (roletype = ast_constants.role_spec_type('ROLESPEC_CSTRING')) THEN
+    IF (roletype = 'ROLESPEC_CSTRING') THEN
       RETURN quote_ident(node->>'rolename');
-    ELSIF (roletype = ast_constants.role_spec_type('ROLESPEC_CURRENT_USER')) THEN 
+    ELSIF (roletype = 'ROLESPEC_CURRENT_USER') THEN 
       RETURN 'CURRENT_USER';
-    ELSIF (roletype = ast_constants.role_spec_type('ROLESPEC_SESSION_USER')) THEN 
+    ELSIF (roletype = 'ROLESPEC_SESSION_USER') THEN 
       RETURN 'SESSION_USER';
-    ELSIF (roletype = ast_constants.role_spec_type('ROLESPEC_PUBLIC')) THEN 
+    ELSIF (roletype = 'ROLESPEC_PUBLIC') THEN 
       RETURN 'PUBLIC';
     END IF;
 
@@ -5246,7 +6434,7 @@ BEGIN
     node = node->'InsertStmt';
 
     output = array_append(output, 'INSERT INTO');
-    output = array_append(output, deparser.expression(node->'relation'));
+    output = array_append(output, deparser.range_var(node->'relation'));
 
     IF (node->'cols' IS NOT NULL AND jsonb_array_length(node->'cols') > 0) THEN 
       output = array_append(output, deparser.parens(deparser.list(node->'cols')));
@@ -5259,7 +6447,7 @@ BEGIN
     END IF;
 
     IF (node->'onConflictClause') IS NOT NULL THEN
-      output = array_append(output, deparser.expression(node->'onConflictClause'));
+      output = array_append(output, deparser.on_conflict_clause(node->'onConflictClause'));
     END IF;
 
     IF (node->'returningList' IS NOT NULL) THEN 
@@ -5367,11 +6555,11 @@ BEGIN
       output = array_append(output, 'FOREIGN KEY');
       output = array_append(output, deparser.parens(deparser.list_quotes(node->'fk_attrs')));
       output = array_append(output, 'REFERENCES');
-      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.range_var(node->'pktable'));
       output = array_append(output, deparser.parens(deparser.list_quotes(node->'pk_attrs')));
     ELSIF (has_pk_attrs) THEN 
       output = array_append(output, deparser.constraint_stmt(node));
-      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.range_var(node->'pktable'));
       output = array_append(output, deparser.parens(deparser.list_quotes(node->'pk_attrs')));
     ELSIF (has_fk_attrs) THEN 
       IF (node->'conname' IS NOT NULL) THEN
@@ -5382,10 +6570,10 @@ BEGIN
       output = array_append(output, 'FOREIGN KEY');
       output = array_append(output, deparser.parens(deparser.list_quotes(node->'fk_attrs')));
       output = array_append(output, 'REFERENCES');
-      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.range_var(node->'pktable'));
     ELSE 
       output = array_append(output, deparser.constraint_stmt(node));
-      output = array_append(output, deparser.expression(node->'pktable'));
+      output = array_append(output, deparser.range_var(node->'pktable'));
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -5395,10 +6583,37 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.constraint_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  contype int;
+  contype text;
   constrainttype text;
 BEGIN
-  contype = (node->'contype')::int;
+  contype = node->>'contype';
+
+  IF (contype = 'CONSTR_IDENTITY') THEN
+    output = array_append(output, 'GENERATED');
+    IF (node->>'generated_when' = 'a') THEN 
+      output = array_append(output, 'ALWAYS AS');
+    ELSE
+      output = array_append(output, 'BY DEFAULT AS');
+    END IF;
+    output = array_append(output, 'IDENTITY');
+    IF (node->'options' IS NOT NULL) THEN 
+      output = array_append(output, 
+        deparser.parens(deparser.list(node->'options', ' ', 
+          jsonb_set(context, '{generated}', to_jsonb(TRUE))
+        ))
+      );
+    END IF;
+    RETURN array_to_string(output, ' ');
+
+  ELSIF (contype = 'CONSTR_GENERATED') THEN
+    output = array_append(output, 'GENERATED');
+    IF (node->>'generated_when' = 'a') THEN 
+      output = array_append(output, 'ALWAYS AS');
+    END IF;
+    RETURN array_to_string(output, ' ');
+
+  END IF;
+
   constrainttype = ast_utils.constrainttypes(contype);
   IF (node->'conname' IS NOT NULL) THEN
     output = array_append(output, 'CONSTRAINT');
@@ -5429,7 +6644,7 @@ BEGIN
     node = node->'CreateSeqStmt';
 
     output = array_append(output, 'CREATE SEQUENCE');
-    output = array_append(output, deparser.expression(node->'sequence'));
+    output = array_append(output, deparser.range_var(node->'sequence'));
 
     IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
       output = array_append(output, deparser.list(node->'options', ' ', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
@@ -5488,7 +6703,7 @@ BEGIN
     node = node->'CreateTableAsStmt';
 
     output = array_append(output, 'CREATE MATERIALIZED VIEW');
-    output = array_append(output, deparser.expression(node->'into'));
+    output = array_append(output, deparser.into_clause(node->'into'));
     output = array_append(output, 'AS');
     output = array_append(output, deparser.expression(node->'query'));
 
@@ -5499,7 +6714,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.constraint ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  contype int;
+  contype text;
 BEGIN
 
     IF (node->'Constraint') IS NULL THEN
@@ -5511,9 +6726,9 @@ BEGIN
     END IF;
 
     node = node->'Constraint';
-    contype = (node->'contype')::int;
+    contype = node->>'contype';
 
-    IF (contype = ast_constants.constr_type('CONSTR_FOREIGN')) THEN 
+    IF (contype = 'CONSTR_FOREIGN') THEN 
       output = array_append(output, deparser.reference_constraint(node));
     ELSE
       output = array_append(output, deparser.constraint_stmt(node));
@@ -5525,6 +6740,9 @@ BEGIN
 
     IF (node->'raw_expr' IS NOT NULL) THEN 
       output = array_append(output, deparser.parens(deparser.expression(node->'raw_expr')));
+      IF (contype = 'CONSTR_GENERATED') THEN 
+        output = array_append(output, 'STORED');
+      END IF;
     END IF;
 
     IF (node->'fk_del_action' IS NOT NULL) THEN 
@@ -5559,7 +6777,7 @@ BEGIN
       output = array_append(output, 'NOT VALID');
     END IF;
 
-    IF (contype = ast_constants.constr_type('CONSTR_EXCLUSION')) THEN 
+    IF (contype = 'CONSTR_EXCLUSION') THEN 
       output = array_append(output, deparser.exclusion_constraint(node));
     END IF;
 
@@ -5612,6 +6830,16 @@ BEGIN
       defname = node->>'defnamespace' || '.' || node->>'defname';
     END IF;
 
+    IF ((context->'generated')::bool IS TRUE) THEN
+      IF (defname = 'start') THEN 
+        RETURN 'START WITH ' || deparser.expression(node->'arg');
+      ELSIF (defname = 'increment') THEN 
+        RETURN 'INCREMENT BY ' || deparser.expression(node->'arg');
+      ELSE 
+        RAISE EXCEPTION 'BAD_EXPRESSION %', 'DefElem (generated)';
+      END IF;
+    END IF;
+
     IF ((context->'sequence')::bool IS TRUE) THEN
       IF (defname = 'cycle') THEN 
         IF (trim(deparser.expression(node->'arg')) = '1') THEN
@@ -5645,7 +6873,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.comment_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  objtype int;
+  objtype text;
 
   cmt text;
 BEGIN
@@ -5658,44 +6886,44 @@ BEGIN
     END IF;
 
     node = node->'CommentStmt';
-    objtype = (node->'objtype')::int;
+    objtype = node->>'objtype';
     output = array_append(output, 'COMMENT');
     output = array_append(output, 'ON');
     output = array_append(output, ast_utils.objtype_name(objtype));
 
-    IF (objtype = ast_constants.object_type('OBJECT_CAST')) THEN
+    IF (objtype = 'OBJECT_CAST') THEN
       output = array_append(output, '(');
       output = array_append(output, deparser.expression(node->'object'->0));
       output = array_append(output, 'AS');
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, ')');
-    ELSIF (objtype = ast_constants.object_type('OBJECT_DOMCONSTRAINT')) THEN
+    ELSIF (objtype = 'OBJECT_DOMCONSTRAINT') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, 'DOMAIN');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_OPCLASS')) THEN
+    ELSIF (objtype = 'OBJECT_OPCLASS') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'USING');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_OPFAMILY')) THEN
+    ELSIF (objtype = 'OBJECT_OPFAMILY') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'USING');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_OPERATOR')) THEN
+    ELSIF (objtype = 'OBJECT_OPERATOR') THEN
       -- TODO lookup noquotes context in pgsql-parser
       output = array_append(output, deparser.expression(node->'object', 'noquotes'));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_POLICY')) THEN
+    ELSIF (objtype = 'OBJECT_POLICY') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_ROLE')) THEN
+    ELSIF (objtype = 'OBJECT_ROLE') THEN
       output = array_append(output, deparser.expression(node->'object'));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_RULE')) THEN
+    ELSIF (objtype = 'OBJECT_RULE') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_TABCONSTRAINT')) THEN
+    ELSIF (objtype = 'OBJECT_TABCONSTRAINT') THEN
       IF (jsonb_array_length(node->'object') = 3) THEN 
         output = array_append(output, 
           quote_ident(deparser.expression(node->'object'->2))
@@ -5713,16 +6941,16 @@ BEGIN
         output = array_append(output, 'ON');
         output = array_append(output, deparser.expression(node->'object'->0));
       END IF;
-    ELSIF (objtype = ast_constants.object_type('OBJECT_TRANSFORM')) THEN
+    ELSIF (objtype = 'OBJECT_TRANSFORM') THEN
       output = array_append(output, 'FOR');
       output = array_append(output, deparser.expression(node->'object'->0));
       output = array_append(output, 'LANGUAGE');
       output = array_append(output, deparser.expression(node->'object'->1));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_TRIGGER')) THEN
+    ELSIF (objtype = 'OBJECT_TRIGGER') THEN
       output = array_append(output, deparser.expression(node->'object'->1));
       output = array_append(output, 'ON');
       output = array_append(output, deparser.expression(node->'object'->0));
-    ELSIF (objtype = ast_constants.object_type('OBJECT_LARGEOBJECT')) THEN
+    ELSIF (objtype = 'OBJECT_LARGEOBJECT') THEN
       output = array_append(output, deparser.expression(node->'object'));
     ELSE 
       IF (jsonb_typeof(node->'object') = 'array') THEN 
@@ -5787,7 +7015,7 @@ BEGIN
       END IF;
     END IF;
 
-    output = array_append(output, deparser.expression(node->'action'));
+    output = array_append(output, deparser.grant_stmt(node->'action'));
 
     RETURN array_to_string(output, ' ');
 END;
@@ -5853,15 +7081,14 @@ CREATE FUNCTION deparser.with_clause ( node jsonb, context jsonb DEFAULT '{}'::j
 DECLARE
   output text[];
 BEGIN
-    IF (node->'WithClause') IS NULL THEN
+    IF (node->'WithClause') IS NOT NULL THEN
+      node = node->'WithClause';
+    END IF;
+
+    IF (node->'ctes') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'WithClause';
     END IF;
 
-    IF (node->'WithClause'->'ctes') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'WithClause';
-    END IF;
-
-    node = node->'WithClause';
     output = array_append(output, 'WITH');
     IF ((node->'recursive')::bool IS TRUE) THEN 
       output = array_append(output, 'RECURSIVE');
@@ -5875,7 +7102,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.variable_set_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  kind int;
+  kind text;
   local text = '';
   multi text = '';
 BEGIN
@@ -5889,26 +7116,26 @@ BEGIN
 
     node = node->'VariableSetStmt';
 
-    kind = (node->'kind')::int;
-    IF (kind = ast_constants.variable_set_kind('VAR_SET_VALUE')) THEN 
+    kind = node->>'kind';
+    IF (kind = 'VAR_SET_VALUE') THEN 
       IF (node->'is_local' IS NOT NULL AND (node->'is_local')::bool IS TRUE) THEN 
         local = 'LOCAL ';
       END IF;
       output = array_append(output, format('SET %s%s = %s', local, node->>'name', deparser.list(node->'args', ', ', jsonb_set(context, '{simple}', to_jsonb(TRUE)))));
-    ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_DEFAULT')) THEN
+    ELSIF (kind = 'VAR_SET_DEFAULT') THEN
       output = array_append(output, format('SET %s TO DEFAULT', node->>'name'));
-    ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_CURRENT')) THEN
+    ELSIF (kind = 'VAR_SET_CURRENT') THEN
       output = array_append(output, format('SET %s FROM CURRENT', node->>'name'));
-    ELSIF (kind = ast_constants.variable_set_kind('VAR_SET_MULTI')) THEN
+    ELSIF (kind = 'VAR_SET_MULTI') THEN
       IF (node->>'name' = 'TRANSACTION') THEN
         multi = 'TRANSACTION';
       ELSIF (node->>'name' = 'SESSION CHARACTERISTICS') THEN
         multi = 'SESSION CHARACTERISTICS AS TRANSACTION';
       END IF;
       output = array_append(output, format('SET %s %s', multi, deparser.list(node->'args', ', ', jsonb_set(context, '{simple}', to_jsonb(TRUE)))));
-    ELSIF (kind = ast_constants.variable_set_kind('VAR_RESET')) THEN
+    ELSIF (kind = 'VAR_RESET') THEN
       output = array_append(output, format('RESET %s', node->>'name'));
-    ELSIF (kind = ast_constants.variable_set_kind('VAR_RESET_ALL')) THEN
+    ELSIF (kind = 'VAR_RESET_ALL') THEN
       output = array_append(output, 'RESET ALL');
     ELSE
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'VariableSetStmt';
@@ -5941,15 +7168,13 @@ CREATE FUNCTION deparser.alias ( node jsonb, context jsonb DEFAULT '{}'::jsonb )
 DECLARE
   output text[];
 BEGIN
-    IF (node->'Alias') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'Alias';
+    IF (node->'Alias') IS NOT NULL THEN
+      node = node->'Alias';
     END IF;
 
-    IF (node->'Alias'->'aliasname') IS NULL THEN
+    IF (node->'aliasname') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'Alias';
     END IF;
-
-    node = node->'Alias';
 
     output = array_append(output, 'AS');
     output = array_append(output, quote_ident(node->>'aliasname'));
@@ -5984,7 +7209,7 @@ BEGIN
     output = array_append(output, deparser.parens(deparser.expression(node->'subquery')));
 
     IF (node->'alias' IS NOT NULL) THEN 
-      output = array_append(output, deparser.expression(node->'alias'));
+      output = array_append(output, deparser.alias(node->'alias'));
     END IF;
 
     RETURN array_to_string(output, ' ');
@@ -6007,7 +7232,7 @@ BEGIN
 
     output = array_append(output, 'DELETE');
     output = array_append(output, 'FROM');
-    output = array_append(output, deparser.expression(node->'relation'));
+    output = array_append(output, deparser.range_var(node->'relation'));
 
     IF (node->'whereClause' IS NOT NULL) THEN 
       output = array_append(output, 'WHERE');
@@ -6074,7 +7299,7 @@ BEGIN
 
     output = array_append(output, deparser.quoted_name(node->'domainname'));
     output = array_append(output, 'AS');
-    output = array_append(output, deparser.expression(node->'typeName'));
+    output = array_append(output, deparser.type_name(node->'typeName'));
 
     IF (node->'constraints' IS NOT NULL) THEN 
       output = array_append(output, deparser.list(node->'constraints'));
@@ -6087,20 +7312,19 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.grant_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  objtype int;
+  objtype text;
 BEGIN
-    IF (node->'GrantStmt') IS NULL THEN
+    IF (node->'GrantStmt') IS NOT NULL THEN
+      node = node->'GrantStmt';
+    END IF;
+
+    IF (node->'objtype') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantStmt';
     END IF;
 
-    IF (node->'GrantStmt'->'objtype') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'GrantStmt';
-    END IF;
+    objtype = node->>'objtype';
 
-    node = node->'GrantStmt';
-    objtype = (node->'objtype')::int;
-
-    IF (objtype != 0) THEN 
+    IF (objtype != 'OBJECT_ACCESS_METHOD') THEN 
       IF (node->'is_grant' IS NULL OR (node->'is_grant')::bool IS FALSE) THEN 
         output = array_append(output, 'REVOKE');
         IF (node->'grant_option' IS NOT NULL AND (node->'grant_option')::bool IS TRUE) THEN 
@@ -6114,7 +7338,9 @@ BEGIN
         END IF;
         output = array_append(output, 'ON');
         output = array_append(output, ast_utils.getgrantobject(node));
-        IF ( objtype = ast_constants.object_type('OBJECT_DOMAIN') ) THEN 
+        IF ( objtype = 'OBJECT_DOMAIN' ) THEN 
+          output = array_append(output, deparser.list(node->'objects'->0));
+        ELSIF (jsonb_typeof (node->'objects'->0) = 'array') THEN 
           output = array_append(output, deparser.list(node->'objects'->0));
         ELSE
           output = array_append(output, deparser.list(node->'objects'));
@@ -6138,7 +7364,7 @@ BEGIN
         END IF;
       END IF;
       
-      IF (node->'behavior' IS NOT NULL AND (node->'behavior')::int = 1) THEN
+      IF (node->>'behavior' = 'DROP_CASCADE') THEN
         output = array_append(output, 'CASCADE');
       END IF;
 
@@ -6168,7 +7394,7 @@ BEGIN
 
     output = array_append(output, 'CREATE');
     output = array_append(output, 'TYPE');
-    output = array_append(output, deparser.expression(node->'typevar'));
+    output = array_append(output, deparser.range_var(node->'typevar', context));
     output = array_append(output, 'AS');
     output = array_append(output, deparser.parens(
       deparser.list(node->'coldeflist', E',')
@@ -6230,7 +7456,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.alter_table_cmd ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  subtype int;
+  subtype text;
   subtypeName text;
 BEGIN
     IF (node->'AlterTableCmd') IS NULL THEN
@@ -6242,14 +7468,14 @@ BEGIN
     END IF;
 
     node = node->'AlterTableCmd';
-    subtype = (node->'subtype')::int;
+    subtype = node->>'subtype';
     
     subtypeName = 'COLUMN';
     IF ( context->>'alterType' = 'OBJECT_TYPE' ) THEN 
       subtypeName = 'ATTRIBUTE';
     END IF;
 
-    IF (subtype = ast_constants.alter_table_type('AT_AddColumn')) THEN 
+    IF (subtype = 'AT_AddColumn') THEN 
       output = array_append(output, 'ADD');
       output = array_append(output, subtypeName);
       IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
@@ -6257,7 +7483,7 @@ BEGIN
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ColumnDefault')) THEN
+    ELSIF (subtype = 'AT_ColumnDefault') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
@@ -6267,28 +7493,28 @@ BEGIN
       ELSE
         output = array_append(output, 'DROP DEFAULT');
       END IF;
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropNotNull')) THEN
+    ELSIF (subtype = 'AT_DropNotNull') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'DROP NOT NULL');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_SetNotNull')) THEN
+    ELSIF (subtype = 'AT_SetNotNull') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET NOT NULL');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_SetStatistics')) THEN
+    ELSIF (subtype = 'AT_SetStatistics') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET STATISTICS');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_SetOptions')) THEN
+    ELSIF (subtype = 'AT_SetOptions') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_SetStorage')) THEN
+    ELSIF (subtype = 'AT_SetStorage') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'SET STORAGE');
@@ -6297,73 +7523,73 @@ BEGIN
       ELSE
         output = array_append(output, 'PLAIN');
       END IF;
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropColumn')) THEN
+    ELSIF (subtype = 'AT_DropColumn') THEN
       output = array_append(output, 'DROP');
       output = array_append(output, subtypeName);
       IF ( (node->'missing_ok')::bool IS TRUE ) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_AddConstraint')) THEN
+    ELSIF (subtype = 'AT_AddConstraint') THEN
       output = array_append(output, 'ADD');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ValidateConstraint')) THEN
+    ELSIF (subtype = 'AT_ValidateConstraint') THEN
       output = array_append(output, 'VALIDATE CONSTRAINT');
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropConstraint')) THEN
+    ELSIF (subtype = 'AT_DropConstraint') THEN
       output = array_append(output, 'DROP CONSTRAINT');
       IF ( (node->'missing_ok')::bool IS TRUE ) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_AlterColumnType')) THEN
+    ELSIF (subtype = 'AT_AlterColumnType') THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, subtypeName);
       output = array_append(output, quote_ident(node->>'name'));
       output = array_append(output, 'TYPE');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ChangeOwner')) THEN
+    ELSIF (subtype = 'AT_ChangeOwner') THEN
       output = array_append(output, 'OWNER TO');
-      output = array_append(output, deparser.expression(node->'newowner'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ClusterOn')) THEN
+      output = array_append(output, deparser.role_spec(node->'newowner'));
+    ELSIF (subtype = 'AT_ClusterOn') THEN
       output = array_append(output, 'CLUSTER ON');
       output = array_append(output, quote_ident(node->>'name'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropCluster')) THEN
+    ELSIF (subtype = 'AT_DropCluster') THEN
       output = array_append(output, 'SET WITHOUT CLUSTER');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_AddOids')) THEN
+    ELSIF (subtype = 'AT_AddOids') THEN
       output = array_append(output, 'SET WITH OIDS');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropOids')) THEN
+    ELSIF (subtype = 'AT_DropOids') THEN
       output = array_append(output, 'SET WITHOUT OIDS');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_SetRelOptions')) THEN
+    ELSIF (subtype = 'AT_SetRelOptions') THEN
       output = array_append(output, 'SET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ResetRelOptions')) THEN
+    ELSIF (subtype = 'AT_ResetRelOptions') THEN
       output = array_append(output, 'RESET');
       output = array_append(output, deparser.parens(deparser.list(node->'def')));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_AddInherit')) THEN
+    ELSIF (subtype = 'AT_AddInherit') THEN
       output = array_append(output, 'INHERIT');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropInherit')) THEN
+    ELSIF (subtype = 'AT_DropInherit') THEN
       output = array_append(output, 'NO INHERIT');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_AddOf')) THEN
+    ELSIF (subtype = 'AT_AddOf') THEN
       output = array_append(output, 'OF');
       output = array_append(output, deparser.expression(node->'def'));
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DropOf')) THEN
+    ELSIF (subtype = 'AT_DropOf') THEN
       output = array_append(output, 'NOT OF');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_EnableRowSecurity')) THEN
+    ELSIF (subtype = 'AT_EnableRowSecurity') THEN
       output = array_append(output, 'ENABLE ROW LEVEL SECURITY');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_DisableRowSecurity')) THEN
+    ELSIF (subtype = 'AT_DisableRowSecurity') THEN
       output = array_append(output, 'DISABLE ROW LEVEL SECURITY');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_ForceRowSecurity')) THEN
+    ELSIF (subtype = 'AT_ForceRowSecurity') THEN
       output = array_append(output, 'FORCE ROW SECURITY');
-    ELSIF (subtype = ast_constants.alter_table_type('AT_NoForceRowSecurity')) THEN
+    ELSIF (subtype = 'AT_NoForceRowSecurity') THEN
       output = array_append(output, 'NO FORCE ROW SECURITY');
     ELSE 
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableCmd may need to implement more alter_table_type(s)';
     END IF;
 
-    IF ( (node->'behavior')::int = 1 ) THEN
+    IF ( node->>'behavior' = 'DROP_CASCADE') THEN
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -6374,7 +7600,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.alter_table_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  relkind int;
+  relkind text;
   ninh bool;
 BEGIN
     IF (node->'AlterTableStmt') IS NULL THEN
@@ -6390,30 +7616,35 @@ BEGIN
     END IF;
 
     node = node->'AlterTableStmt';
-    relkind = (node->'relkind')::int;
+    relkind = node->>'relkind';
     output = array_append(output, 'ALTER');
 
-    IF (relkind = ast_constants.object_type('OBJECT_TABLE') ) THEN 
+    IF (relkind = 'OBJECT_TABLE' ) THEN 
       output = array_append(output, 'TABLE');
 
-      ninh = (node->'relation'->'RangeVar'->'inh')::bool;
+      -- MARKED AS backwards compat (RangeVar/no RangeVar)
+      IF (node->'relation'->'RangeVar' IS NOT NULL) THEN 
+        ninh = (node->'relation'->'RangeVar'->'inh')::bool;
+      ELSE
+        ninh = (node->'relation'->'inh')::bool;
+      END IF;
       IF ( ninh IS FALSE OR ninh IS NULL ) THEN 
         output = array_append(output, 'ONLY');
       END IF;
 
-    ELSEIF (relkind = ast_constants.object_type('OBJECT_TYPE')) THEN 
+    ELSEIF (relkind = 'OBJECT_TYPE') THEN 
       output = array_append(output, 'TYPE');
     ELSE 
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterTableStmt (relkind impl)';
+      RAISE EXCEPTION 'BAD_EXPRESSION % %', 'AlterTableStmt (relkind impl)', relkind;
     END IF;
 
     IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
       output = array_append(output, 'IF EXISTS');
     END IF;
 
-    context = jsonb_set(context, '{alterType}', to_jsonb(ast_constants.object_type(relkind)));
+    context = jsonb_set(context, '{alterType}', to_jsonb(relkind));
 
-    output = array_append(output, deparser.expression(node->'relation', context));
+    output = array_append(output, deparser.range_var(node->'relation', context));
     output = array_append(output, deparser.list(node->'cmds', ', ', context));
 
     RETURN array_to_string(output, ' ');
@@ -6462,7 +7693,7 @@ BEGIN
     END IF;
 
     IF (node->'alias' IS NOT NULL) THEN
-      output = array_append(output, deparser.expression(node->'alias'));
+      output = array_append(output, deparser.alias(node->'alias'));
     END IF;
 
     IF (node->'coldeflist' IS NOT NULL AND jsonb_array_length(node->'coldeflist') > 0) THEN
@@ -6492,7 +7723,7 @@ BEGIN
     node = node->'IndexStmt';
 
     output = array_append(output, 'CREATE');
-    IF (node->'unique' IS NOT NULL) THEN 
+    IF ((node->'unique')::bool IS TRUE) THEN 
       output = array_append(output, 'UNIQUE');
     END IF;
     
@@ -6508,7 +7739,7 @@ BEGIN
     END IF;
 
     output = array_append(output, 'ON');
-    output = array_append(output, deparser.expression(node->'relation'));
+    output = array_append(output, deparser.range_var(node->'relation'));
 
     -- BTREE is default, don't need to explicitly put it there
     IF (node->'accessMethod' IS NOT NULL AND upper(node->>'accessMethod') != 'BTREE') THEN
@@ -6518,6 +7749,11 @@ BEGIN
 
     IF (node->'indexParams' IS NOT NULL AND jsonb_array_length(node->'indexParams') > 0) THEN 
       output = array_append(output, deparser.parens(deparser.list(node->'indexParams')));
+    END IF; 
+
+    IF (node->'indexIncludingParams' IS NOT NULL AND jsonb_array_length(node->'indexIncludingParams') > 0) THEN 
+      output = array_append(output, 'INCLUDE');
+      output = array_append(output, deparser.parens(deparser.list(node->'indexIncludingParams')));
     END IF; 
 
     IF (node->'whereClause' IS NOT NULL) THEN 
@@ -6549,7 +7785,7 @@ BEGIN
   
     output = array_append(output, 'UPDATE');
     IF (node->'relation' IS NOT NULL) THEN 
-      output = array_append(output, deparser.expression(node->'relation'));
+      output = array_append(output, deparser.range_var(node->'relation'));
     END IF;
     output = array_append(output, 'SET');
 
@@ -6634,21 +7870,21 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.join_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  jointype int;
+  jointype text;
   jointxt text;
   wrapped text;
   is_natural bool = false;
 BEGIN
     IF (node->'JoinExpr') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr (node)';
     END IF;
 
     IF (node->'JoinExpr'->'larg') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr (larg)';
     END IF;
 
     IF (node->'JoinExpr'->'jointype') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr';
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'JoinExpr (jointype)';
     END IF;
 
     node = node->'JoinExpr';
@@ -6660,8 +7896,8 @@ BEGIN
       is_natural = TRUE;
     END IF;
 
-    jointype = (node->'jointype')::int;
-    IF (jointype = ast_constants.join_type('JOIN_INNER')) THEN 
+    jointype = node->>'jointype';
+    IF (jointype = 'JOIN_INNER') THEN 
       IF (node->'quals' IS NOT NULL) THEN 
         jointxt = 'INNER JOIN';
       ELSIF (
@@ -6673,11 +7909,11 @@ BEGIN
       ELSE
         jointxt = 'JOIN';
       END IF;
-    ELSIF (jointype = ast_constants.join_type('JOIN_LEFT')) THEN
+    ELSIF (jointype = 'JOIN_LEFT') THEN
         jointxt = 'LEFT OUTER JOIN';
-    ELSIF (jointype = ast_constants.join_type('JOIN_FULL')) THEN
+    ELSIF (jointype = 'JOIN_FULL') THEN
         jointxt = 'FULL OUTER JOIN';
-    ELSIF (jointype = ast_constants.join_type('JOIN_RIGHT')) THEN
+    ELSIF (jointype = 'JOIN_RIGHT') THEN
         jointxt = 'RIGHT OUTER JOIN';
     ELSE
       -- TODO need to implement more joins
@@ -6710,7 +7946,7 @@ BEGIN
     END IF;
 
     IF (node->'alias' IS NOT NULL) THEN 
-      wrapped = wrapped || ' ' || deparser.expression(node->'alias');
+      wrapped = wrapped || ' ' || deparser.alias(node->'alias');
     END IF;
 
     RETURN wrapped;
@@ -6751,27 +7987,27 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.sub_link ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  subLinkType int;
+  subLinkType text;
 BEGIN
     IF (node->'SubLink') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'SubLink';
     END IF;
 
     node = node->'SubLink';
-    subLinkType = (node->'subLinkType')::int;
-    IF (subLinkType = 0) THEN
+    subLinkType = node->>'subLinkType';
+    IF (subLinkType = 'EXISTS_SUBLINK') THEN
       output = array_append(output, format(
         'EXISTS (%s)', 
         deparser.expression(node->'subselect')
       ));
-    ELSIF (subLinkType = 1) THEN
+    ELSIF (subLinkType = 'ALL_SUBLINK') THEN
       output = array_append(output, format(
         '%s %s ALL (%s)',
         deparser.expression(node->'testexpr'),
         deparser.expression(node->'operName'->0),
         deparser.expression(node->'subselect')
       ));
-    ELSIF (subLinkType = 2) THEN
+    ELSIF (subLinkType = 'ANY_SUBLINK') THEN
       IF (node->'operName' IS NOT NULL) THEN 
         output = array_append(output, format(
           '%s %s ANY (%s)',
@@ -6786,21 +8022,19 @@ BEGIN
           deparser.expression(node->'subselect')
         ));
       END IF;
-    ELSIF (subLinkType = 3) THEN
+    ELSIF (subLinkType = 'ROWCOMPARE_SUBLINK') THEN
       output = array_append(output, format(
         '%s %s (%s)',
         deparser.expression(node->'testexpr'),
         deparser.expression(node->'operName'->0),
         deparser.expression(node->'subselect')
       ));
-    ELSIF (subLinkType = 4) THEN
+    ELSIF (subLinkType = 'EXPR_SUBLINK') THEN
       output = array_append(output, format(
         '(%s)',
         deparser.expression(node->'subselect')
       ));
-    ELSIF (subLinkType = 5) THEN
-       RAISE EXCEPTION 'BAD_EXPRESSION %', 'unknown kind SubLink';
-    ELSIF (subLinkType = 6) THEN
+    ELSIF (subLinkType = 'ARRAY_SUBLINK') THEN
       output = array_append(output, format(
         'ARRAY (%s)',
         deparser.expression(node->'subselect')
@@ -7000,7 +8234,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.rule_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  event int;
+  event text;
 BEGIN
     IF (node->'RuleStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'RuleStmt';
@@ -7028,14 +8262,14 @@ BEGIN
     output = array_append(output, 'ON');
 
     -- events
-    event = (node->'event')::int;
-    IF (event = 1) THEN
+    event = node->>'event';
+    IF (event = 'CMD_SELECT') THEN
       output = array_append(output, 'SELECT');
-    ELSIF (event = 2) THEN 
+    ELSIF (event = 'CMD_UPDATE') THEN 
       output = array_append(output, 'UPDATE');
-    ELSIF (event = 3) THEN 
+    ELSIF (event = 'CMD_INSERT') THEN 
       output = array_append(output, 'INSERT');
-    ELSIF (event = 4) THEN 
+    ELSIF (event = 'CMD_DELETE') THEN 
       output = array_append(output, 'DELETE');
     ELSE
       RAISE EXCEPTION 'event type not yet implemented for RuleStmt';
@@ -7044,7 +8278,7 @@ BEGIN
     -- relation
 
     output = array_append(output, 'TO');
-    output = array_append(output, deparser.expression(node->'relation', context));
+    output = array_append(output, deparser.range_var(node->'relation', context));
 
     IF (node->'instead') IS NOT NULL THEN 
       output = array_append(output, 'DO');
@@ -7073,7 +8307,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.create_role_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  stmt_type int;
+  stmt_type text;
   option jsonb;
   opts_len int;
   defname text;
@@ -7087,15 +8321,15 @@ BEGIN
     END IF;
 
     node = node->'CreateRoleStmt';
-    stmt_type = (node->'stmt_type')::int;
+    stmt_type = node->>'stmt_type';
 
     output = array_append(output, 'CREATE');
     
-    IF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_ROLE')) THEN 
+    IF (stmt_type = 'ROLESTMT_ROLE') THEN 
       output = array_append(output, 'ROLE');
-    ELSEIF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_USER')) THEN 
+    ELSEIF (stmt_type = 'ROLESTMT_USER') THEN 
       output = array_append(output, 'USER');
-    ELSEIF (stmt_type = ast_constants.role_stmt_type('ROLESTMT_GROUP')) THEN 
+    ELSEIF (stmt_type = 'ROLESTMT_GROUP') THEN 
       output = array_append(output, 'GROUP');
     ELSE 
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateRoleStmt';
@@ -7123,7 +8357,7 @@ BEGIN
           output = array_append(output, deparser.list(option->'DefElem'->'arg'));
         ELSEIF (defname = 'password') THEN
           output = array_append(output, 'PASSWORD');
-          output = array_append(output, deparser.expression(option->'DefElem'->'arg'));
+          output = array_append(output, '''' || deparser.expression(option->'DefElem'->'arg') || '''' );
         ELSEIF (defname = 'adminmembers') THEN
           output = array_append(output, 'ADMIN');
           output = array_append(output, deparser.list(option->'DefElem'->'arg'));
@@ -7193,7 +8427,13 @@ BEGIN
 
     node = node->'CreateStmt';
 
-    relpersistence = node#>>'{relation, RangeVar, relpersistence}';
+    -- MARKED AS backwar
+          -- MARKED AS backwards compat (RangeVar/no RangeVar)ds compat (RangeVar/no RangeVar)
+    IF (node->'relation'->'RangeVar' IS NOT NULL) THEN 
+      relpersistence = node#>>'{relation, RangeVar, relpersistence}';
+    ELSE
+      relpersistence = node#>>'{relation, relpersistence}';
+    END IF;
 
     IF (relpersistence = 't') THEN 
       output = array_append(output, 'CREATE');
@@ -7201,7 +8441,7 @@ BEGIN
       output = array_append(output, 'CREATE TABLE');
     END IF;
 
-    output = array_append(output, deparser.expression(node->'relation', context));
+    output = array_append(output, deparser.range_var(node->'relation', context));
     output = array_append(output, E'(\n');
     -- TODO add tabs (see pgsql-parser)
     output = array_append(output, deparser.list(node->'tableElts', E',\n', context));
@@ -7232,7 +8472,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.transaction_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  kind int;
+  kind text;
 BEGIN
     IF (node->'TransactionStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TransactionStmt';
@@ -7243,34 +8483,34 @@ BEGIN
     END IF;
 
     node = node->'TransactionStmt';
-    kind = (node->'kind')::int;
+    kind = node->>'kind';
 
-    IF (kind = 0) THEN
+    IF (kind = 'TRANS_STMT_BEGIN') THEN
       -- TODO implement other options
       output = array_append(output, 'BEGIN');
-    ELSIF (kind = 1) THEN
+    ELSIF (kind = 'TRANS_STMT_START') THEN
       -- TODO implement other options
       output = array_append(output, 'START TRANSACTION');
-    ELSIF (kind = 2) THEN
+    ELSIF (kind = 'TRANS_STMT_COMMIT') THEN
       output = array_append(output, 'COMMIT');
-    ELSIF (kind = 3) THEN
+    ELSIF (kind = 'TRANS_STMT_ROLLBACK') THEN
       output = array_append(output, 'ROLLBACK');
-    ELSIF (kind = 4) THEN
+    ELSIF (kind = 'TRANS_STMT_SAVEPOINT') THEN
       output = array_append(output, 'SAVEPOINT');
       output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
-    ELSIF (kind = 5) THEN
+    ELSIF (kind = 'TRANS_STMT_RELEASE') THEN
       output = array_append(output, 'RELEASE SAVEPOINT');
       output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
-    ELSIF (kind = 6) THEN
+    ELSIF (kind = 'TRANS_STMT_ROLLBACK_TO') THEN
       output = array_append(output, 'ROLLBACK TO');
       output = array_append(output, deparser.expression(node->'options'->0->'DefElem'->'arg'));
-    ELSIF (kind = 7) THEN
+    ELSIF (kind = 'TRANS_STMT_PREPARE') THEN
       output = array_append(output, 'PREPARE TRANSACTION');
       output = array_append(output, '''' || node->>'gid' || '''');
-    ELSIF (kind = 8) THEN
+    ELSIF (kind = 'TRANS_STMT_COMMIT_PREPARED') THEN
       output = array_append(output, 'COMMIT PREPARED');
       output = array_append(output, '''' || node->>'gid' || '''');
-    ELSIF (kind = 9) THEN
+    ELSIF (kind = 'TRANS_STMT_ROLLBACK_PREPARED') THEN
       output = array_append(output, 'ROLLBACK PREPARED');
       output = array_append(output, '''' || node->>'gid' || '''');
     END IF;
@@ -7298,7 +8538,7 @@ BEGIN
 
     node = node->'ViewStmt';
     output = array_append(output, 'CREATE VIEW');
-    output = array_append(output, deparser.expression(node->'view', context));
+    output = array_append(output, deparser.range_var(node->'view', context));
     output = array_append(output, 'AS');
     output = array_append(output, deparser.expression(node->'query', context));
     RETURN array_to_string(output, ' ');
@@ -7308,8 +8548,8 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.sort_by ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  dir int;
-  nulls int;
+  dir text;
+  nulls text;
 BEGIN
     IF (node->'SortBy') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'SortBy';
@@ -7325,14 +8565,14 @@ BEGIN
       output = array_append(output, deparser.expression(node->'node'));
     END IF;
 
-    dir = (node->'sortby_dir')::int;
-    IF (dir = ast_constants.sort_by_dir('SORTBY_DEFAULT')) THEN 
+    dir = node->>'sortby_dir';
+    IF (dir = 'SORTBY_DEFAULT') THEN 
       -- noop
-    ELSIF (dir = ast_constants.sort_by_dir('SORTBY_ASC')) THEN
+    ELSIF (dir = 'SORTBY_ASC') THEN
       output = array_append(output, 'ASC');
-    ELSIF (dir = ast_constants.sort_by_dir('SORTBY_DESC')) THEN
+    ELSIF (dir = 'SORTBY_DESC') THEN
       output = array_append(output, 'DESC');
-    ELSIF (dir = ast_constants.sort_by_dir('SORTBY_USING')) THEN
+    ELSIF (dir = 'SORTBY_USING') THEN
       output = array_append(output, 'USING');
       output = array_append(output, deparser.list(node->'useOp'));
     ELSE 
@@ -7340,12 +8580,12 @@ BEGIN
     END IF;
 
     IF (node->'sortby_nulls' IS NOT NULL) THEN
-      nulls = (node->'sortby_nulls')::int;
-      IF (nulls = ast_constants.sort_by_nulls('SORTBY_NULLS_DEFAULT')) THEN 
+      nulls = node->>'sortby_nulls';
+      IF (nulls = 'SORTBY_NULLS_DEFAULT') THEN 
         -- noop
-      ELSIF (nulls = ast_constants.sort_by_nulls('SORTBY_NULLS_FIRST')) THEN
+      ELSIF (nulls = 'SORTBY_NULLS_FIRST') THEN
         output = array_append(output, 'NULLS FIRST');
-      ELSIF (nulls = ast_constants.sort_by_nulls('SORTBY_NULLS_LAST')) THEN
+      ELSIF (nulls = 'SORTBY_NULLS_LAST') THEN
         output = array_append(output, 'NULLS LAST');
       END IF;
     END IF;
@@ -7408,7 +8648,7 @@ BEGIN
       output = array_append(output, '(');
       FOR item in SELECT * FROM jsonb_array_elements(node->'objargs')
       LOOP 
-        IF (item IS NULL) THEN
+        IF (item IS NULL OR item = '{}'::jsonb) THEN
           rets = array_append(rets, 'NONE');
         ELSE
           rets = array_append(rets, deparser.expression(item));
@@ -7451,7 +8691,7 @@ BEGIN
       output = array_append(output, quote_ident(node->>'name'));
     END IF;
 
-    IF ((node->'behavior')::int = 1) THEN 
+    IF ( node->>'behavior' = 'DROP_CASCADE') THEN
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -7485,7 +8725,7 @@ BEGIN
       output = array_append(output, '''' || txt || '''');
     END IF;
 
-    IF ((node->'behavior')::int = 1) THEN 
+    IF ( node->>'behavior' = 'DROP_CASCADE') THEN
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -7520,15 +8760,15 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.row_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
-  row_format int;
+  row_format text;
 BEGIN
     IF (node->'RowExpr') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'RowExpr';
     END IF;
 
     node = node->'RowExpr';
-    row_format = (node->'row_format')::int;
-    IF (row_format = 2) THEN 
+    row_format = node->>'row_format';
+    IF (row_format = 'COERCE_IMPLICIT_CAST') THEN 
       RETURN deparser.parens(deparser.list(node->'args'));
     END IF;
 
@@ -7557,19 +8797,18 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.into_clause ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
-    IF (node->'IntoClause') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'IntoClause';
+    IF (node->'IntoClause') IS NOT NULL THEN
+      node = node->'IntoClause';
     END IF;
-    node = node->'IntoClause';
-    RETURN deparser.expression(node->'rel');
+    RETURN deparser.range_var(node->'rel');
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.rename_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  renameType int;
-  relationType int;
+  renameType text;
+  relationType text;
   typObj jsonb;
 BEGIN
     IF (node->'RenameStmt') IS NULL THEN
@@ -7577,13 +8816,13 @@ BEGIN
     END IF;
 
     node = node->'RenameStmt';
-    renameType = (node->'renameType')::int;
-    relationType = (node->'relationType')::int;
+    renameType = node->>'renameType';
+    relationType = node->>'relationType';
     IF (
-      renameType = ast_constants.object_type('OBJECT_FUNCTION') OR
-      renameType = ast_constants.object_type('OBJECT_FOREIGN_TABLE') OR
-      renameType = ast_constants.object_type('OBJECT_FDW') OR
-      renameType = ast_constants.object_type('OBJECT_FOREIGN_SERVER')
+      renameType = 'OBJECT_FUNCTION' OR
+      renameType = 'OBJECT_FOREIGN_TABLE' OR
+      renameType = 'OBJECT_FDW' OR
+      renameType = 'OBJECT_FOREIGN_SERVER'
     ) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, ast_utils.objtype_name(renameType) );
@@ -7594,21 +8833,21 @@ BEGIN
       output = array_append(output, 'RENAME');
       output = array_append(output, 'TO');
       output = array_append(output, quote_ident(node->>'newname'));
-    ELSEIF ( renameType = ast_constants.object_type('OBJECT_ATTRIBUTE') ) THEN
+    ELSEIF ( renameType = 'OBJECT_ATTRIBUTE' ) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, ast_utils.objtype_name(relationType) );
       IF ((node->'missing_ok')::bool is TRUE) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
-      output = array_append(output, deparser.expression(node->'relation'));
+      output = array_append(output, deparser.range_var(node->'relation'));
       output = array_append(output, 'RENAME');
       output = array_append(output, ast_utils.objtype_name(renameType) );
       output = array_append(output, quote_ident(node->>'subname'));
       output = array_append(output, 'TO');
       output = array_append(output, quote_ident(node->>'newname'));
     ELSEIF ( 
-      renameType = ast_constants.object_type('OBJECT_DOMAIN') OR
-      renameType = ast_constants.object_type('OBJECT_TYPE') 
+      renameType = 'OBJECT_DOMAIN' OR
+      renameType = 'OBJECT_TYPE' 
      ) THEN
 
       output = array_append(output, 'ALTER');
@@ -7624,7 +8863,7 @@ BEGIN
       output = array_append(output, 'TO');
       output = array_append(output, quote_ident(node->>'newname'));
 
-    ELSEIF ( renameType = ast_constants.object_type('OBJECT_DOMCONSTRAINT') ) THEN
+    ELSEIF ( renameType = 'OBJECT_DOMCONSTRAINT' ) THEN
 
       output = array_append(output, 'ALTER');
       output = array_append(output, 'DOMAIN');
@@ -7646,9 +8885,9 @@ BEGIN
       IF ((node->'missing_ok')::bool is TRUE) THEN
         output = array_append(output, 'IF EXISTS');
       END IF;
-      output = array_append(output, deparser.expression(node->'relation'));
+      output = array_append(output, deparser.range_var(node->'relation'));
       output = array_append(output, 'RENAME');
-      IF (renameType = ast_constants.object_type('OBJECT_COLUMN')) THEN 
+      IF (renameType = 'OBJECT_COLUMN') THEN 
         -- not necessary, but why not
         output = array_append(output, 'COLUMN');
       END IF;
@@ -7658,7 +8897,7 @@ BEGIN
 
     END IF;
 
-    IF ( (node->'behavior')::int = 1 ) THEN
+    IF ( node->>'behavior' = 'DROP_CASCADE') THEN
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -7669,26 +8908,26 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.alter_owner_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  objectType int;
+  objectType text;
 BEGIN
     IF (node->'AlterOwnerStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterOwnerStmt';
     END IF;
 
     node = node->'AlterOwnerStmt';
-    objectType = (node->'objectType')::int;
+    objectType = node->>'objectType';
     IF (
-      objectType = ast_constants.object_type('OBJECT_FUNCTION') OR
-      objectType = ast_constants.object_type('OBJECT_FOREIGN_TABLE') OR
-      objectType = ast_constants.object_type('OBJECT_FDW') OR
-      objectType = ast_constants.object_type('OBJECT_FOREIGN_SERVER')
+      objectType = 'OBJECT_FUNCTION' OR
+      objectType = 'OBJECT_FOREIGN_TABLE' OR
+      objectType = 'OBJECT_FDW' OR
+      objectType = 'OBJECT_FOREIGN_SERVER'
     ) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, ast_utils.objtype_name(objectType) );
       output = array_append(output, deparser.expression(node->'object'));
       output = array_append(output, 'OWNER');
       output = array_append(output, 'TO');
-      output = array_append(output, deparser.expression(node->'newowner'));
+      output = array_append(output, deparser.role_spec(node->'newowner'));
     ELSE
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterOwnerStmt new objectType';
     END IF;
@@ -7700,21 +8939,21 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.alter_object_schema_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  objectType int;
+  objectType text;
 BEGIN
     IF (node->'AlterObjectSchemaStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterObjectSchemaStmt';
     END IF;
 
     node = node->'AlterObjectSchemaStmt';
-    objectType = (node->'objectType')::int;
-    IF ( objectType = ast_constants.object_type('OBJECT_TABLE') ) THEN
+    objectType = node->>'objectType';
+    IF ( objectType = 'OBJECT_TABLE' ) THEN
       output = array_append(output, 'ALTER');
       output = array_append(output, ast_utils.objtype_name(objectType) );
       IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
         output = array_append(output, 'IF EXISTS');
       END IF;
-      output = array_append(output, deparser.expression(node->'relation'));
+      output = array_append(output, deparser.range_var(node->'relation'));
       output = array_append(output, 'SET SCHEMA');
       output = array_append(output, quote_ident(node->>'newschema'));
     ELSE
@@ -7751,42 +8990,47 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.select_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  sets text[];
   values text[];
   pvalues text[];
   value text;
-  op int;
+  op text;
   valueSet jsonb;
   valueArr text[];
 BEGIN
-    IF (node->'SelectStmt') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt';
+    IF (node->'SelectStmt') IS NOT NULL THEN
+      node = node->'SelectStmt';
     END IF;
 
-    IF (node->'SelectStmt'->'op') IS NULL THEN
+    IF (node->'op') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt';
     END IF;
-
-    node = node->'SelectStmt';
 
     IF (node->'withClause') IS NOT NULL THEN 
-      output = array_append(output, deparser.expression(node->'withClause', context));
+      output = array_append(output, deparser.with_clause(node->'withClause', context));
     END IF;
 
-    op = (node->'op')::int;
+    op = node->>'op';
 
-    IF (op = 0) THEN 
+    IF (op = 'SETOP_NONE') THEN 
        IF (node->'valuesLists') IS NULL THEN 
         output = array_append(output, 'SELECT');
        END IF;
     ELSE 
         output = array_append(output, '(');
-        output = array_append(output, deparser.expression(node->'larg', context));
+        output = array_append(output, deparser.select_stmt(node->'larg', context));
         output = array_append(output, ')');
-        
-        -- sets
-        sets = ARRAY['NONE', 'UNION', 'INTERSECT', 'EXCEPT']::text[];
-        output = array_append(output, sets[op+1]);
+
+        IF (op = 'SETOP_NONE') THEN 
+          output = array_append(output, 'NONE');
+        ELSEIF (op = 'SETOP_UNION') THEN 
+          output = array_append(output, 'UNION');
+        ELSEIF (op = 'SETOP_INTERSECT') THEN 
+          output = array_append(output, 'INTERSECT');
+        ELSEIF (op = 'SETOP_EXCEPT') THEN 
+          output = array_append(output, 'EXCEPT');
+        ELSE
+          RAISE EXCEPTION 'BAD_EXPRESSION %', 'SelectStmt (op)';
+        END IF;
         
         -- all
         IF (node->'all') IS NOT NULL THEN
@@ -7795,14 +9039,18 @@ BEGIN
 
         -- rarg
         output = array_append(output, '(');
-        output = array_append(output, deparser.expression(node->'rarg', context));
+        output = array_append(output, deparser.select_stmt(node->'rarg', context));
         output = array_append(output, ')');
     END IF;
 
     -- distinct
     IF (node->'distinctClause') IS NOT NULL THEN 
       IF (node->'distinctClause'->0 IS NOT NULL) THEN 
-        IF (jsonb_typeof(node->'distinctClause'->0) = 'null') THEN 
+        IF (
+           jsonb_typeof(node->'distinctClause'->0) = 'null' 
+           OR 
+           node->'distinctClause'->0 = '{}'::jsonb
+        ) THEN 
           -- fix for custom.sql test case
           output = array_append(output, 'DISTINCT');
         ELSE
@@ -7824,7 +9072,7 @@ BEGIN
     -- into
     IF (node->'intoClause') IS NOT NULL THEN 
       output = array_append(output, 'INTO');
-      output = array_append(output, deparser.expression(node->'intoClause', context));
+      output = array_append(output, deparser.into_clause(node->'intoClause', context));
     END IF;
 
     -- from
@@ -7933,7 +9181,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.locking_clause ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  strength int;
+  strength text;
 BEGIN
     IF (node->'LockingClause') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'LockingClause';
@@ -7944,16 +9192,16 @@ BEGIN
     END IF;
 
     node = node->'LockingClause';
-    strength = (node->'strength')::int;
-    IF (strength = ast_constants.lock_clause_strength('LCS_NONE')) THEN 
+    strength = node->>'strength';
+    IF (strength = 'LCS_NONE') THEN 
       output = array_append(output, 'NONE');
-    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORKEYSHARE')) THEN
+    ELSIF (strength = 'LCS_FORKEYSHARE') THEN
       output = array_append(output, 'FOR KEY SHARE');
-    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORSHARE')) THEN
+    ELSIF (strength = 'LCS_FORSHARE') THEN
       output = array_append(output, 'FOR SHARE');
-    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORNOKEYUPDATE')) THEN
+    ELSIF (strength = 'LCS_FORNOKEYUPDATE') THEN
       output = array_append(output, 'FOR NO KEY UPDATE');
-    ELSIF (strength = ast_constants.lock_clause_strength('LCS_FORUPDATE')) THEN
+    ELSIF (strength = 'LCS_FORUPDATE') THEN
       output = array_append(output, 'FOR UPDATE');
     END IF;
 
@@ -7984,7 +9232,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.min_max_expr ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
-  op int;
+  op text;
   output text[];
 BEGIN
     IF (node->'MinMaxExpr') IS NULL THEN
@@ -7996,8 +9244,8 @@ BEGIN
     END IF;
 
     node = node->'MinMaxExpr';
-    op = (node->'op')::int;
-    IF (op = 0) THEN 
+    op = node->>'op';
+    IF (op = 'IS_GREATEST') THEN 
       output = array_append(output, 'GREATEST');
     ELSE 
       output = array_append(output, 'LEAST');
@@ -8011,7 +9259,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION deparser.null_test ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
-  nulltesttype int;
+  nulltesttype text;
   output text[];
 BEGIN
     IF (node->'NullTest') IS NULL THEN
@@ -8027,10 +9275,10 @@ BEGIN
     END IF;
 
     node = node->'NullTest';
-    nulltesttype = (node->'nulltesttype')::int;
+    nulltesttype = node->>'nulltesttype';
 
     output = array_append(output, deparser.expression(node->'arg'));
-    IF (nulltesttype = ast_constants.null_test_type('IS_NULL')) THEN 
+    IF (nulltesttype = 'IS_NULL') THEN 
       output = array_append(output, 'IS NULL');
     ELSE 
       output = array_append(output, 'IS NOT NULL');
@@ -8070,7 +9318,7 @@ CREATE FUNCTION deparser.drop_stmt ( node jsonb, context jsonb DEFAULT '{}'::jso
 DECLARE
   output text[];
   objtypes text[];
-  objtype int;
+  objtype text;
   obj jsonb;
   quoted text[];
 BEGIN
@@ -8089,7 +9337,7 @@ BEGIN
     node = node->'DropStmt';
 
     output = array_append(output, 'DROP');
-    objtype = (node->'removeType')::int;
+    objtype = node->>'removeType';
     output = array_append(output, ast_utils.objtype_name(objtype));
     
     IF (node->'missing_ok' IS NOT NULL AND (node->'missing_ok')::bool IS TRUE) THEN 
@@ -8100,9 +9348,9 @@ BEGIN
     FOR obj IN SELECT * FROM jsonb_array_elements(node->'objects')
     LOOP
       IF ( 
-        objtype = ast_constants.object_type('OBJECT_POLICY')
-        OR objtype = ast_constants.object_type('OBJECT_RULE')
-        OR objtype = ast_constants.object_type('OBJECT_TRIGGER')
+        objtype = 'OBJECT_POLICY'
+        OR objtype = 'OBJECT_RULE'
+        OR objtype = 'OBJECT_TRIGGER'
       ) THEN
         IF (jsonb_typeof(obj) = 'array') THEN
           IF (jsonb_array_length(obj) = 2) THEN
@@ -8134,7 +9382,7 @@ BEGIN
         ELSE
           RAISE EXCEPTION 'BAD_EXPRESSION %', 'DropStmt (POLICY)';
         END IF;
-      ELSEIF (objtype = ast_constants.object_type('OBJECT_CAST')) THEN 
+      ELSEIF (objtype = 'OBJECT_CAST') THEN 
         output = array_append(output, '(');
         output = array_append(output, deparser.expression(obj->0));
         output = array_append(output, 'AS');
@@ -8152,7 +9400,7 @@ BEGIN
     output = array_append(output, array_to_string(quoted, ', '));
 
     -- behavior
-    IF (node->'behavior' IS NOT NULL AND (node->'behavior')::int = 1) THEN 
+    IF (node->>'behavior' = 'DROP_CASCADE') THEN 
       output = array_append(output, 'CASCADE');
     END IF;
 
@@ -8165,11 +9413,10 @@ DECLARE
   output text[];
   action int;
 BEGIN
-    IF (node->'InferClause') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'InferClause';
+    IF (node->'InferClause') IS NOT NULL THEN
+      node = node->'InferClause';
     END IF;
 
-    node = node->'InferClause';
 
     IF (node->'indexElems' IS NOT NULL) THEN
       output = array_append(output, deparser.parens(deparser.list(node->'indexElems')));
@@ -8185,25 +9432,27 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.on_conflict_clause ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
-  action int;
+  action text;
 BEGIN
-    IF (node->'OnConflictClause') IS NULL THEN
+    IF (node->'OnConflictClause') IS NOT NULL THEN
+      node = node->'OnConflictClause';
+    END IF;
+
+    IF (node->'infer') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'OnConflictClause';
     END IF;
 
-    IF (node->'OnConflictClause'->'infer') IS NULL THEN
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'OnConflictClause';
-    END IF;
-
-    node = node->'OnConflictClause';
 
     output = array_append(output, 'ON CONFLICT');
-    output = array_append(output, deparser.expression(node->'infer'));
 
-    action = (node->'action')::int;
-    IF (action = 1) THEN 
+    IF (node->'infer' IS NOT NULL) THEN
+      output = array_append(output, deparser.infer_clause(node->'infer'));
+    END IF;
+
+    action = node->>'action';
+    IF (action = 'ONCONFLICT_NOTHING') THEN 
       output = array_append(output, 'DO NOTHING');
-    ELSIF (action = 2) THEN 
+    ELSIF (action = 'ONCONFLICT_UPDATE') THEN 
       output = array_append(output, 'DO');
       output = array_append(output, deparser.update_stmt(node));
     END IF;
@@ -8243,9 +9492,9 @@ BEGIN
       FOR param IN
       SELECT * FROM jsonb_array_elements(node->'parameters')
       LOOP
-        IF ((param->'FunctionParameter'->'mode')::int = ANY(ARRAY[118, 111, 98, 105]::int[])) THEN
+        IF (param->'FunctionParameter'->>'mode' = ANY(ARRAY['FUNC_PARAM_VARIADIC', 'FUNC_PARAM_OUT', 'FUNC_PARAM_INOUT', 'FUNC_PARAM_IN'])) THEN
           params = array_append(params, param);
-        ELSEIF ((param->'FunctionParameter'->'mode')::int = 116) THEN
+        ELSEIF (param->'FunctionParameter'->>'mode' = 'FUNC_PARAM_TABLE') THEN
           returnsTableElements = array_append(returnsTableElements, param);
         END IF;
       END LOOP;
@@ -8265,7 +9514,7 @@ BEGIN
       output = array_append(output, ')');      
     ELSE
       output = array_append(output, 'RETURNS');
-      output = array_append(output, deparser.expression(node->'returnType'));
+      output = array_append(output, deparser.type_name(node->'returnType'));
     END IF;
 
     -- options
@@ -8334,20 +9583,20 @@ BEGIN
 
     node = node->'FunctionParameter';
 
-    IF ((node->'mode')::int = 118) THEN
+    IF (node->>'mode' = 'FUNC_PARAM_VARIADIC') THEN
       output = array_append(output, 'VARIADIC');
     END IF;
 
-    IF ((node->'mode')::int = 111) THEN
+    IF (node->>'mode' = 'FUNC_PARAM_OUT') THEN
       output = array_append(output, 'OUT');
     END IF;
 
-    IF ((node->'mode')::int = 98) THEN
+    IF (node->>'mode' = 'FUNC_PARAM_INOUT') THEN
       output = array_append(output, 'INOUT');
     END IF;
 
     output = array_append(output, quote_ident(node->>'name'));
-    output = array_append(output, deparser.expression(node->'argType'));
+    output = array_append(output, deparser.type_name(node->'argType'));
 
     IF (node->'defexpr') IS NOT NULL THEN
       output = array_append(output, 'DEFAULT');
@@ -8388,6 +9637,8 @@ BEGIN
     RETURN deparser.alter_domain_stmt(expr, context);
   ELSEIF (expr->>'AlterEnumStmt') IS NOT NULL THEN
     RETURN deparser.alter_enum_stmt(expr, context);
+  ELSEIF (expr->>'AlterPolicyStmt') IS NOT NULL THEN
+    RETURN deparser.alter_policy_stmt(expr, context);
   ELSEIF (expr->>'AlterTableCmd') IS NOT NULL THEN
     RETURN deparser.alter_table_cmd(expr, context);
   ELSEIF (expr->>'AlterTableStmt') IS NOT NULL THEN
@@ -8583,7 +9834,7 @@ CREATE FUNCTION ast_helpers.create_insert ( v_schema text, v_table text, v_cols 
 DECLARE
   ast_expr jsonb;
   i int;
-  cols jsonb[];
+  cols jsonb[] = ARRAY[]::jsonb[];
 BEGIN
 
   -- cols
@@ -8601,9 +9852,325 @@ BEGIN
     v_cols := to_jsonb(cols),
     v_selectStmt := ast.select_stmt(
       v_valuesLists := v_values,
-      v_op := 0
+      v_op := 'SETOP_NONE'
     ),
-    v_override := 0
+    v_override := 'OVERRIDING_NOT_SET'
+  );
+
+  RETURN ast.raw_stmt (
+    v_stmt := ast_expr,
+    v_stmt_len := 1
+  );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.create_fixture ( v_schema text, v_table text, v_cols text[], v_values jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+  i int;
+  j int;
+  cols jsonb[];
+  
+  records jsonb;
+  recordArray jsonb;
+  node jsonb;
+
+  col_typeof text;
+  col_type text;
+  col_val text;
+BEGIN
+
+  -- cols
+  FOR i IN 1 .. cardinality(v_cols) LOOP
+    cols = array_append(cols, ast.res_target(
+      v_name := v_cols[i]
+    ));
+  END LOOP;
+
+  records = '[]';
+  FOR i IN 0 .. jsonb_array_length(v_values)-1 LOOP
+    recordArray = '[]';
+    FOR j IN 0 .. jsonb_array_length(v_values->i)-1 LOOP
+      col_type = v_values->i->j->>'type';
+      col_typeof = jsonb_typeof(v_values->i->j->'value');
+      col_val = v_values->i->j->>'value';
+
+      IF (col_typeof = 'null') THEN 
+        node = ast.null();
+      ELSIF (col_type = 'int') THEN 
+        node = ast.a_const( v_val := ast.integer( (col_val)::int ) );
+      ELSIF (col_type = 'float') THEN 
+        node = ast.a_const( v_val := ast.float( col_val ) );
+      ELSIF (col_type = 'text') THEN 
+        node = ast.a_const( v_val := ast.string( col_val ) );
+      ELSIF (col_type = 'uuid') THEN 
+        node = ast.a_const( v_val := ast.string( col_val ) );
+      ELSIF (col_type = 'bool') THEN 
+        IF (col_val)::bool IS TRUE THEN 
+          node = ast.string( 'TRUE' );
+        ELSE 
+          node = ast.string( 'FALSE' );
+        END IF;
+      ELSIF (col_type = 'jsonb' OR col_type = 'json') THEN 
+        node = ast.type_cast(
+          v_arg := ast.a_const(
+             ast.string(
+               col_val
+             )
+          ),
+          v_typeName := ast.type_name(
+            v_names := ast_helpers.array_of_strings(col_type),
+            v_typemod := -1
+          )
+        );
+      ELSE
+        RAISE EXCEPTION 'MISSING_FIXTURE_TYPE';
+      END IF;
+      recordArray = recordArray || to_jsonb(ARRAY[ node ]);
+    END LOOP;
+    records = records || to_jsonb(ARRAY[recordArray]);
+  END LOOP;
+
+  ast_expr = ast.insert_stmt(
+    v_relation := ast_helpers.range_var(
+      v_schemaname := v_schema,
+      v_relname := v_table
+    ),
+    v_cols := to_jsonb(cols),
+    v_selectStmt := ast.select_stmt(
+      v_valuesLists := records,
+      v_op := 'SETOP_NONE'
+    ),
+    v_override := 'OVERRIDING_NOT_SET'
+  );
+
+  RETURN ast.raw_stmt (
+    v_stmt := ast_expr,
+    v_stmt_len := 1
+  );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.rls_membership_type_select ( v_schema_name text, v_table_name text, v_membership_type_name text ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+
+  ast_expr = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast_helpers.col('mt', 'id')
+        )
+    ]),
+    v_fromClause := to_jsonb(ARRAY[
+        ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name,
+            v_alias := ast.alias(
+                v_aliasname := 'mt'
+            )
+        )
+    ]),
+    v_whereClause := ast_helpers.eq(
+        v_lexpr := ast_helpers.col('mt', 'name'),
+        v_rexpr := ast.a_const(
+            v_val := ast.string(v_membership_type_name)
+        )
+    )
+  );
+
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.rls_policy_permission_mask_select ( v_schema_name text, v_function_name text, v_permission text ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+
+  ast_expr = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast.func_call (
+              v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
+              v_args := to_jsonb(ARRAY[
+                ast.type_cast(
+                  v_arg := ast.a_array_expr(
+                    v_elements := to_jsonb(ARRAY[
+                      -- each permission goes here... maybe make an array
+                      ast.a_const(
+                        ast.string(v_permission)
+                      )
+                    ])
+                  ),
+                  v_typeName := ast.type_name(
+                    v_names := ast_helpers.array_of_strings('citext'),
+                    v_typemod := -1,
+                    v_arrayBounds := to_jsonb(ARRAY[
+                      ast.integer(-1)
+                    ])
+                  )
+                )
+              ])
+            )
+        )
+    ])
+  );
+
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.rls_policy_permission_mask_select ( v_schema_name text, v_function_name text, v_permissions text[] ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  nodes jsonb[];
+  i int;
+
+  ast_expr jsonb;
+BEGIN
+
+  FOR i IN SELECT * FROM generate_subscripts(v_permissions, 1) g(i)
+  LOOP
+    nodes = array_append(nodes, 
+        ast.a_const(
+          ast.string(v_permissions[i])
+        )
+     );
+  END LOOP;
+
+
+  ast_expr = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast.func_call (
+              v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
+              v_args := to_jsonb(ARRAY[
+                ast.type_cast(
+                  v_arg := ast.a_array_expr(
+                    v_elements := to_jsonb(nodes)
+                  ),
+                  v_typeName := ast.type_name(
+                    v_names := ast_helpers.array_of_strings('citext'),
+                    v_typemod := -1,
+                    v_arrayBounds := to_jsonb(ARRAY[
+                      ast.integer(-1)
+                    ])
+                  )
+                )
+              ])
+            )
+        )
+    ])
+  );
+
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_perm_bitlen ( v_schema_name text, v_table_name text, v_field_name text, v_bitlen int ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.alter_table_stmt(
+    v_relkind := 'OBJECT_TABLE',
+    v_relation := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_cmds := to_jsonb(ARRAY[
+      ast.alter_table_cmd(
+        v_subtype := 'AT_AlterColumnType',
+        v_name := v_field_name,
+        v_def := ast.column_def(
+          v_typeName := ast.type_name(
+            v_names := to_jsonb(ARRAY[
+              ast.string('pg_catalog'),
+              ast.string('bit')
+            ]),
+            v_typmods := to_jsonb(ARRAY[
+              ast.a_const( v_val := ast.integer(v_bitlen))
+            ]),
+            v_typemod := -1
+          ),
+          v_raw_default := ast.type_cast (
+            v_arg := ast.func_call(
+              v_funcname := to_jsonb(ARRAY[
+                ast.string('utils'),
+                ast.string('bitmask_pad')
+              ]),
+              v_args := to_jsonb(ARRAY[
+                ast_helpers.col(v_field_name),
+                ast.a_const(
+                  v_val := ast.integer( v_bitlen )
+                ),
+                ast.a_const(
+                  v_val := ast.string( '0' )
+                )
+              ])
+            ),
+            v_typeName := ast.type_name(
+              v_names := to_jsonb(ARRAY[
+                ast.string('pg_catalog'),
+                ast.string('bit')
+              ]),
+              v_typmods := to_jsonb(ARRAY[
+                ast.a_const( v_val := ast.integer(v_bitlen))
+              ]),
+              v_typemod := -1
+            )
+          )
+        ),
+        v_behavior := 'DROP_RESTRICT'
+      )
+    ])
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_perm_bitlen_default ( v_schema_name text, v_table_name text, v_field_name text, v_bitlen int ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.alter_table_stmt(
+    v_relkind := 'OBJECT_TABLE',
+    v_relation := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_cmds := to_jsonb(ARRAY[
+      ast.alter_table_cmd(
+        v_subtype := 'AT_ColumnDefault',
+        v_name := v_field_name,
+        v_def := ast.type_cast(
+          v_arg := ast.func_call(
+            v_funcname := ast_helpers.array_of_strings('lpad'),
+            v_args := to_jsonb(ARRAY[
+              ast.a_const(
+                v_val := ast.string('')
+              ),
+              ast.a_const(
+                v_val := ast.integer(v_bitlen)
+              ),
+              ast.a_const(
+                v_val := ast.string('0')
+              )
+            ])
+          ),
+          v_typeName := ast.type_name(
+            v_names := ast_helpers.array_of_strings('pg_catalog', 'bit'),
+            v_typmods := to_jsonb(ARRAY[
+              ast.a_const(ast.integer(v_bitlen))
+            ]),
+            v_typemod := -1
+          )
+        ),
+        v_behavior := 'DROP_RESTRICT'
+      )
+    ])
   );
   RETURN ast_expr;
 END;

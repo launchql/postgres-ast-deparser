@@ -74,9 +74,9 @@ it('modify_constraint', async () => {
 
     
     ast.alter_table_cmd(
-      v_subtype := ast_constants.alter_table_type('AT_DropConstraint'),
+      v_subtype := 'AT_DropConstraint',
       v_name := 'v_constraint_name',
-      v_behavior := 0,
+      v_behavior := 'DROP_RESTRICT',
       v_missing_ok := TRUE -- DO WE WANT THIS BY DEFAULT?
     )
 

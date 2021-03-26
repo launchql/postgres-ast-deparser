@@ -1,6 +1,6 @@
 module.exports = {
   A_Expr: {
-    kind: 11,
+    kind: 'AEXPR_BETWEEN',
     lexpr: {
       ColumnRef: {
         fields: [
@@ -9,7 +9,7 @@ module.exports = {
               str: 'd'
             }
           }
-        ],
+        ]
       }
     },
     name: [

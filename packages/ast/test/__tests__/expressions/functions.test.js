@@ -38,14 +38,14 @@ select deparser.deparse( ast.create_function_stmt(
       v_argType := ast.type_name( 
         v_names := to_jsonb(ARRAY[ast.string('text')])
       ),
-      v_mode := 105
+      v_mode := 'FUNC_PARAM_IN'
     ),
     ast.function_parameter(
       v_name := 'param1',
       v_argType := ast.type_name( 
         v_names := to_jsonb(ARRAY[ast.string('text')])
       ),
-      v_mode := 105
+      v_mode := 'FUNC_PARAM_IN'
     ),
     ast.function_parameter(
       v_name := 'param2',
@@ -53,7 +53,7 @@ select deparser.deparse( ast.create_function_stmt(
         v_names := to_jsonb(ARRAY[ast.string('text')]),
         v_arrayBounds := to_jsonb(ARRAY[ast.integer(-1)])
       ),
-      v_mode := 105,
+      v_mode := 'FUNC_PARAM_IN',
       v_defexpr := ast.a_const(ast.null())
     ),
     ast.function_parameter(
@@ -62,7 +62,7 @@ select deparser.deparse( ast.create_function_stmt(
         v_names := to_jsonb(ARRAY[ast.string('text')]),
         v_arrayBounds := to_jsonb(ARRAY[ast.integer(-1)])
       ),
-      v_mode := 105,
+      v_mode := 'FUNC_PARAM_IN',
       v_defexpr := ast.a_const(ast.null())
     )
   ]::jsonb[]),
@@ -73,16 +73,16 @@ select deparser.deparse( ast.create_function_stmt(
 
   v_options := to_jsonb(ARRAY[
     ast.def_elem(
-      'volatility',
-      ast.string('volatile')
+      v_defname := 'volatility',
+      v_arg := ast.string('volatile')
     ),
     ast.def_elem(
-      'language',
-      ast.string('plpgsql')
+      v_defname := 'language',
+      v_arg := ast.string('plpgsql')
     ),
     ast.def_elem(
-      'security',
-      ast.integer(1)
+      v_defname := 'security',
+      v_arg := ast.integer(1)
     )
   ]::jsonb[])
 ))`);
@@ -99,7 +99,7 @@ select ast.create_function_stmt(
       v_argType := ast.type_name( 
         v_names := to_jsonb(ARRAY[ast.string('text')])
       ),
-      v_mode := 105
+      v_mode := 'FUNC_PARAM_IN'
     ),
     ast.function_parameter(
       v_name := 'param2',
@@ -107,7 +107,7 @@ select ast.create_function_stmt(
         v_names := to_jsonb(ARRAY[ast.string('text')]),
         v_arrayBounds := to_jsonb(ARRAY[ast.integer(-1)])
       ),
-      v_mode := 105
+      v_mode := 'FUNC_PARAM_IN'
       --ast.a_const(ast.null())
     )
   ]::jsonb[]),
@@ -118,16 +118,16 @@ select ast.create_function_stmt(
 
   v_options := to_jsonb(ARRAY[
     ast.def_elem(
-      'volatility',
-      ast.string('volatile')
+      v_defname := 'volatility',
+      v_arg := ast.string('volatile')
     ),
     ast.def_elem(
-      'language',
-      ast.string('plpgsql')
+      v_defname := 'language',
+      v_arg := ast.string('plpgsql')
     ),
     ast.def_elem(
-      'security',
-      ast.integer(1)
+      v_defname := 'security',
+      v_arg := ast.integer(1)
     )
   ]::jsonb[])
 )`);
@@ -146,7 +146,7 @@ SELECT ast_helpers.create_function(
       v_argType := ast.type_name( 
         v_names := to_jsonb(ARRAY[ast.string('text')])
       ),
-      v_mode := 105
+      v_mode := 'FUNC_PARAM_IN'
     ),
     ast.function_parameter(
       v_name := 'param2',
@@ -154,7 +154,7 @@ SELECT ast_helpers.create_function(
         v_names := to_jsonb(ARRAY[ast.string('text')]),
         v_arrayBounds := to_jsonb(ARRAY[ast.integer(-1)])
       ),
-      v_mode := 105
+      v_mode := 'FUNC_PARAM_IN'
       --ast.a_const(ast.null())
     )
   ]::jsonb[]),

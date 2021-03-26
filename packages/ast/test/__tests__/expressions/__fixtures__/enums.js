@@ -77,7 +77,6 @@ export const enums = [
           ]
         }
       },
-      stmt_location: 83,
       stmt_len: 57
     }
   },
@@ -96,7 +95,6 @@ export const enums = [
           newValIsAfter: true
         }
       },
-      stmt_location: 141,
       stmt_len: 38
     }
   },
@@ -115,7 +113,6 @@ export const enums = [
           newValNeighbor: 'venus'
         }
       },
-      stmt_location: 180,
       stmt_len: 54
     }
   },
@@ -135,7 +132,6 @@ export const enums = [
           newValIsAfter: true
         }
       },
-      stmt_location: 235,
       stmt_len: 54
     }
   },
@@ -162,8 +158,7 @@ export const enums = [
                             A_Const: {
                               val: {
                                 Null: {}
-                              },
-                              location: 308
+                              }
                             }
                           },
                           typeName: {
@@ -175,25 +170,20 @@ export const enums = [
                                   }
                                 }
                               ],
-                              typemod: -1,
-                              location: 314
+                              typemod: -1
                             }
-                          },
-                          location: 312
+                          }
                         }
                       }
-                    ],
-                    location: 298
+                    ]
                   }
-                },
-                location: 298
+                }
               }
             }
           ],
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 290,
       stmt_len: 32
     }
   },
@@ -222,7 +212,6 @@ export const enums = [
           ]
         }
       },
-      stmt_location: 323,
       stmt_len: 41
     }
   },
@@ -234,8 +223,7 @@ export const enums = [
             RangeVar: {
               relname: 'enumtest',
               inh: true,
-              relpersistence: 'p',
-              location: 378
+              relpersistence: 'p'
             }
           },
           selectStmt: {
@@ -248,8 +236,7 @@ export const enums = [
                         String: {
                           str: 'red'
                         }
-                      },
-                      location: 395
+                      }
                     }
                   }
                 ],
@@ -260,8 +247,7 @@ export const enums = [
                         String: {
                           str: 'orange'
                         }
-                      },
-                      location: 404
+                      }
                     }
                   }
                 ],
@@ -272,8 +258,7 @@ export const enums = [
                         String: {
                           str: 'yellow'
                         }
-                      },
-                      location: 416
+                      }
                     }
                   }
                 ],
@@ -284,19 +269,17 @@ export const enums = [
                         String: {
                           str: 'green'
                         }
-                      },
-                      location: 428
+                      }
                     }
                   }
                 ]
               ],
-              op: 0
+              op: 'SETOP_NONE'
             }
           },
           override: 0
         }
       },
-      stmt_location: 365,
       stmt_len: 71
     }
   },
@@ -320,18 +303,16 @@ export const enums = [
                   }
                 }
               ],
-              typemod: -1,
-              location: 459
+              typemod: -1
             }
           },
           constraints: [
             {
               Constraint: {
-                contype: 4,
-                location: 467,
+                contype: 'CONSTR_CHECK',
                 raw_expr: {
                   A_Expr: {
-                    kind: 7,
+                    kind: 'AEXPR_IN',
                     name: [
                       {
                         String: {
@@ -347,8 +328,7 @@ export const enums = [
                               str: 'value'
                             }
                           }
-                        ],
-                        location: 474
+                        ]
                       }
                     },
                     rexpr: [
@@ -358,8 +338,7 @@ export const enums = [
                             String: {
                               str: 'red'
                             }
-                          },
-                          location: 484
+                          }
                         }
                       },
                       {
@@ -368,8 +347,7 @@ export const enums = [
                             String: {
                               str: 'green'
                             }
-                          },
-                          location: 491
+                          }
                         }
                       },
                       {
@@ -378,12 +356,10 @@ export const enums = [
                             String: {
                               str: 'blue'
                             }
-                          },
-                          location: 500
+                          }
                         }
                       }
-                    ],
-                    location: 480
+                    ]
                   }
                 },
                 initially_valid: true
@@ -392,7 +368,6 @@ export const enums = [
           ]
         }
       },
-      stmt_location: 437,
       stmt_len: 71
     }
   },
@@ -409,7 +384,6 @@ export const enums = [
           ]
         }
       },
-      stmt_location: 509,
       stmt_len: 28
     }
   },
@@ -426,11 +400,10 @@ export const enums = [
               }
             ]
           ],
-          removeType: 37,
-          behavior: 0
+          removeType: 'OBJECT_TABLE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 538,
       stmt_len: 26
     }
   },
@@ -447,11 +420,10 @@ export const enums = [
               }
             ]
           ],
-          removeType: 37,
-          behavior: 0
+          removeType: 'OBJECT_TABLE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 565,
       stmt_len: 27
     }
   },
@@ -468,11 +440,10 @@ export const enums = [
               }
             ]
           ],
-          removeType: 37,
-          behavior: 0
+          removeType: 'OBJECT_TABLE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 593,
       stmt_len: 20
     }
   },
@@ -490,16 +461,14 @@ export const enums = [
                     }
                   }
                 ],
-                typemod: -1,
-                location: 625
+                typemod: -1
               }
             }
           ],
-          removeType: 45,
-          behavior: 0
+          removeType: 'OBJECT_TYPE',
+          behavior: 'DROP_RESTRICT'
         }
       },
-      stmt_location: 614,
       stmt_len: 18
     }
   },
@@ -519,11 +488,9 @@ export const enums = [
                         }
                       }
                     ],
-                    agg_star: true,
-                    location: 641
+                    agg_star: true
                   }
-                },
-                location: 641
+                }
               }
             }
           ],
@@ -532,14 +499,13 @@ export const enums = [
               RangeVar: {
                 relname: 'pg_type',
                 inh: true,
-                relpersistence: 'p',
-                location: 655
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             A_Expr: {
-              kind: 0,
+              kind: 'AEXPR_OP',
               name: [
                 {
                   String: {
@@ -555,8 +521,7 @@ export const enums = [
                         str: 'typname'
                       }
                     }
-                  ],
-                  location: 669
+                  ]
                 }
               },
               rexpr: {
@@ -565,17 +530,14 @@ export const enums = [
                     String: {
                       str: 'rainbow'
                     }
-                  },
-                  location: 679
+                  }
                 }
-              },
-              location: 677
+              }
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 633,
       stmt_len: 55
     }
   },
@@ -592,11 +554,9 @@ export const enums = [
                       {
                         A_Star: {}
                       }
-                    ],
-                    location: 697
+                    ]
                   }
-                },
-                location: 697
+                }
               }
             }
           ],
@@ -605,18 +565,17 @@ export const enums = [
               RangeVar: {
                 relname: 'pg_enum',
                 inh: true,
-                relpersistence: 'p',
-                location: 704
+                relpersistence: 'p'
               }
             }
           ],
           whereClause: {
             BoolExpr: {
-              boolop: 2,
+              boolop: 'NOT_EXPR',
               args: [
                 {
                   SubLink: {
-                    subLinkType: 0,
+                    subLinkType: 'EXISTS_SUBLINK',
                     subselect: {
                       SelectStmt: {
                         targetList: [
@@ -628,11 +587,9 @@ export const enums = [
                                     Integer: {
                                       ival: 1
                                     }
-                                  },
-                                  location: 739
+                                  }
                                 }
-                              },
-                              location: 739
+                              }
                             }
                           }
                         ],
@@ -641,14 +598,13 @@ export const enums = [
                             RangeVar: {
                               relname: 'pg_type',
                               inh: true,
-                              relpersistence: 'p',
-                              location: 746
+                              relpersistence: 'p'
                             }
                           }
                         ],
                         whereClause: {
                           A_Expr: {
-                            kind: 0,
+                            kind: 'AEXPR_OP',
                             name: [
                               {
                                 String: {
@@ -669,8 +625,7 @@ export const enums = [
                                       str: 'oid'
                                     }
                                   }
-                                ],
-                                location: 760
+                                ]
                               }
                             },
                             rexpr: {
@@ -681,27 +636,22 @@ export const enums = [
                                       str: 'enumtypid'
                                     }
                                   }
-                                ],
-                                location: 774
+                                ]
                               }
-                            },
-                            location: 772
+                            }
                           }
                         },
-                        op: 0
+                        op: 'SETOP_NONE'
                       }
-                    },
-                    location: 722
+                    }
                   }
                 }
-              ],
-              location: 718
+              ]
             }
           },
-          op: 0
+          op: 'SETOP_NONE'
         }
       },
-      stmt_location: 689,
       stmt_len: 95
     }
   }

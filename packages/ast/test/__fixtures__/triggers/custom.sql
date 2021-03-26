@@ -37,7 +37,7 @@ BEGIN
   END IF;
   RETURN NEW;
 END
-$$ LANGUAGE plpgsql IMMUTABLE
+$$ LANGUAGE plpgsql
    SET search_path FROM CURRENT;
 
 CREATE CONSTRAINT TRIGGER friendship_symmetry
