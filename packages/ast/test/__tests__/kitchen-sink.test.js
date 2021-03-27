@@ -110,6 +110,9 @@ describe('kitchen sink', () => {
   it('enums', async () => {
     await check('enums/create.sql');
   });
+  it('alter enums', async () => {
+    await check('enums/alter.sql');
+  });
   it('do stmt', async () => {
     await check('do/custom.sql');
   });

@@ -572,6 +572,26 @@ DROP DOMAIN testdomain1;
 ALTER TABLE mytable ADD COLUMN  height_in numeric GENERATED ALWAYS AS ( height_cm / 2.54 ) STORED;"
 `;
 
+exports[`kitchen sink alter enums 1`] = `
+"ALTER TYPE electronic_mail RENAME TO email;
+ALTER TYPE email OWNER TO joe;
+ALTER TYPE email SET SCHEMA customers;
+ALTER TYPE compfoo ADD ATTRIBUTE f3 int;
+ALTER TYPE colors ADD VALUE 'orange' AFTER 'red';
+ALTER TYPE colors ADD VALUE 'orange' BEFORE 'red';
+ALTER TYPE enum_type ADD VALUE 'new_value';"
+`;
+
+exports[`kitchen sink alter enums 2`] = `
+"ALTER TYPE electronic_mail RENAME TO email;
+ALTER TYPE email OWNER TO joe;
+ALTER TYPE email SET SCHEMA customers;
+ALTER TYPE compfoo ADD ATTRIBUTE  f3 int;
+ALTER TYPE colors ADD VALUE 'orange' AFTER 'red';
+ALTER TYPE colors ADD VALUE 'orange' BEFORE 'red';
+ALTER TYPE enum_type ADD VALUE 'new_value';"
+`;
+
 exports[`kitchen sink conflicts 1`] = `
 "INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name;
 INSERT INTO yo.\\"table\\" (project_id, name, field_name) VALUES (v_obj_key_id, v_secret_name::bytea, v_secret_value) ON CONFLICT (project_id, name) DO UPDATE SET field_name = EXCLUDED.field_name WHERE prop = 1;

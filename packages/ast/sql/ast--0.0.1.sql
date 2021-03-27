@@ -4976,9 +4976,13 @@ BEGIN
     ELSIF (targtype = 'ACL_TARGET_DEFAULTS') THEN 
       RETURN 'TABLES';
     END IF;
-    -- TODO could be a view
     RETURN 'TABLE';
   ELSIF (objtype = 'OBJECT_SEQUENCE') THEN
+    IF (targtype = 'ACL_TARGET_ALL_IN_SCHEMA') THEN 
+      RETURN 'ALL SEQUENCES IN SCHEMA';
+    ELSIF (targtype = 'ACL_TARGET_DEFAULTS') THEN 
+      RETURN 'SEQUENCES';
+    END IF;
     RETURN 'SEQUENCE';
   ELSIF (objtype = 'OBJECT_DATABASE') THEN
     RETURN 'DATABASE';
@@ -8916,21 +8920,17 @@ BEGIN
 
     node = node->'AlterOwnerStmt';
     objectType = node->>'objectType';
-    IF (
-      objectType = 'OBJECT_FUNCTION' OR
-      objectType = 'OBJECT_FOREIGN_TABLE' OR
-      objectType = 'OBJECT_FDW' OR
-      objectType = 'OBJECT_FOREIGN_SERVER'
-    ) THEN
-      output = array_append(output, 'ALTER');
-      output = array_append(output, ast_utils.objtype_name(objectType) );
-      output = array_append(output, deparser.expression(node->'object'));
-      output = array_append(output, 'OWNER');
-      output = array_append(output, 'TO');
-      output = array_append(output, deparser.role_spec(node->'newowner'));
+
+    output = array_append(output, 'ALTER');
+    output = array_append(output, ast_utils.objtype_name(objectType) );
+    IF (jsonb_typeof(node->'object') = 'array') THEN 
+      output = array_append(output, deparser.list_quotes(node->'object', '.'));
     ELSE
-      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterOwnerStmt new objectType';
+      output = array_append(output, deparser.expression(node->'object'));
     END IF;
+    output = array_append(output, 'OWNER');
+    output = array_append(output, 'TO');
+    output = array_append(output, deparser.role_spec(node->'newowner'));
 
     RETURN array_to_string(output, ' ');
 END;
@@ -8962,7 +8962,13 @@ BEGIN
       IF ( (node->'missing_ok')::bool IS TRUE ) THEN 
         output = array_append(output, 'IF EXISTS');
       END IF;
-      output = array_append(output, deparser.expression(node->'object'));
+      
+      IF (jsonb_typeof(node->'object') = 'array') THEN 
+        output = array_append(output, deparser.list_quotes(node->'object', '.'));
+      ELSE 
+        output = array_append(output, deparser.expression(node->'object'));
+      END IF;
+
       output = array_append(output, 'SET SCHEMA');
       output = array_append(output, quote_ident(node->>'newschema'));
     END IF;
