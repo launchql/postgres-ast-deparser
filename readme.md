@@ -14,6 +14,7 @@ If you're on the mobile dev team, this is probably useful!
 
 ## postgres
 
+* [Policy Templates](docs/rls/templates.md)
 * [Postgres Testing](docs/postgres.md)
 
 # Development
