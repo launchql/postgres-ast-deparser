@@ -721,7 +721,7 @@ BEGIN
   ELSEIF (name = 'closed') THEN
       policy_ast = ast.string('FALSE');
   ELSE 
-      RAISE EXCEPTION 'UNSUPPORTED POLICY';
+      RAISE EXCEPTION 'UNSUPPORTED POLICY (%)', name;
   END IF;
 
   RETURN policy_ast;
