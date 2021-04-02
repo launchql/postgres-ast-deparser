@@ -8,4 +8,3 @@ GRANT anonymous TO administrator;
 GRANT authenticated TO administrator;
 GRANT administrator TO app_admin;
 
-ALTER USER app_admin WITH CREATEDB;
