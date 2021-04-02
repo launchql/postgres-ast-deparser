@@ -513,18 +513,33 @@ BEGIN
     v_subLinkType := 'ARRAY_SUBLINK',
     v_subselect := ast.select_stmt(
       v_op := 'SETOP_NONE',
+      v_limitOption := 'LIMIT_OPTION_DEFAULT',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
               v_val := ast_helpers.col('acl', 'entity_id')
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
-          ast_helpers.range_var(
+          ast.join_expr(
+            v_jointype := 'JOIN_INNER',
+            v_larg := ast_helpers.range_var(
               v_schemaname := data->>'acl_schema',
               v_relname := data->>'acl_table',
               v_alias := ast.alias(
-                  v_aliasname := 'acl'
+                v_aliasname := 'acl'
               )
+            ),
+            v_rarg := ast_helpers.range_var(
+              v_schemaname := data->>'obj_schema',
+              v_relname := data->>'obj_table',
+              v_alias := ast.alias(
+                v_aliasname := 'obj'
+              )
+            ),
+            v_quals := ast_helpers.eq(
+              ast_helpers.col('acl', 'entity_id'),
+              ast_helpers.col('obj', data->>'obj_field')
+            )
           )
       ]),
       v_whereClause := ast_helpers.acl_where_clause(data)

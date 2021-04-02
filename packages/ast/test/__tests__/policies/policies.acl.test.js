@@ -24,8 +24,8 @@ const getPolicyResult = async (name, vars) => {
     `
   SELECT deparser.deparse(
     ast_helpers.create_policy_template(
-    $1::text,
-    $2::jsonb
+      $1::text,
+      $2::jsonb
     ))`,
     [name, JSON.stringify(vars)]
   );
@@ -52,7 +52,7 @@ it('acl mask', async () => {
 
 it('entity_acl', async () => {
   const result = await getPolicyResult('entity_acl', {
-    entity_field: 'entity_id',
+    entity_field: 'owner_id',
     acl_schema: 'acl_schema',
     acl_table: 'acl_table'
   });
@@ -62,7 +62,7 @@ it('entity_acl', async () => {
 it('entity_acl include user', async () => {
   const result = await getPolicyResult('entity_acl', {
     include_current_user_id: true,
-    entity_field: 'entity_id',
+    entity_field: 'owner_id',
     acl_schema: 'acl_schema',
     acl_table: 'acl_table'
   });
@@ -71,7 +71,7 @@ it('entity_acl include user', async () => {
 
 it('entity_acl_mask', async () => {
   const result = await getPolicyResult('entity_acl', {
-    entity_field: 'entity_id',
+    entity_field: 'owner_id',
     acl_schema: 'acl_schema',
     acl_table: 'acl_table',
     mask: '1010010100101010111111'
@@ -82,7 +82,7 @@ it('entity_acl_mask', async () => {
 it('entity_acl_mask include user', async () => {
   const result = await getPolicyResult('entity_acl', {
     include_current_user_id: true,
-    entity_field: 'entity_id',
+    entity_field: 'owner_id',
     acl_schema: 'acl_schema',
     acl_table: 'acl_table',
     mask: '1010010100101010111111'
@@ -92,9 +92,38 @@ it('entity_acl_mask include user', async () => {
 
 it('entity_acl_join', async () => {
   const result = await getPolicyResult('entity_acl_join', {
-    entity_field: 'entity_id',
+    entity_field: 'owner_id',
     acl_schema: 'acl_schema',
-    acl_table: 'acl_table'
+    acl_table: 'acl_table',
+    obj_schema: 'obj_schema',
+    obj_table: 'obj_table',
+    obj_field: 'group_id'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('entity_acl_join include user', async () => {
+  const result = await getPolicyResult('entity_acl_join', {
+    include_current_user_id: true,
+    entity_field: 'owner_id',
+    acl_schema: 'acl_schema',
+    acl_table: 'acl_table',
+    obj_schema: 'obj_schema',
+    obj_table: 'obj_table',
+    obj_field: 'group_id'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('entity_acl_join_mask', async () => {
+  const result = await getPolicyResult('entity_acl_join', {
+    entity_field: 'owner_id',
+    acl_schema: 'acl_schema',
+    acl_table: 'acl_table',
+    obj_schema: 'obj_schema',
+    obj_table: 'obj_table',
+    obj_field: 'group_id',
+    mask: '1010010100101010111111'
   });
   expect(result).toMatchSnapshot();
 });
