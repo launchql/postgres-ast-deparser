@@ -24,8 +24,8 @@ const getPolicyResult = async (name, vars) => {
     `
   SELECT deparser.deparse(
     ast_helpers.create_policy_template(
-    policy_template_name := $1::text,
-    policy_template_vars := $2::jsonb
+    $1::text,
+    $2::jsonb
     ))`,
     [name, JSON.stringify(vars)]
   );
@@ -86,6 +86,15 @@ it('entity_acl_mask include user', async () => {
     acl_schema: 'acl_schema',
     acl_table: 'acl_table',
     mask: '1010010100101010111111'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('entity_acl_join', async () => {
+  const result = await getPolicyResult('entity_acl_join', {
+    entity_field: 'entity_id',
+    acl_schema: 'acl_schema',
+    acl_table: 'acl_table'
   });
   expect(result).toMatchSnapshot();
 });

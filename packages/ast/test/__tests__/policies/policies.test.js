@@ -81,8 +81,8 @@ SELECT deparser.deparse(
     v_cmd_name := 'INSERT',
     v_permissive := TRUE,
     v_with_check := ast_helpers.create_policy_template(
-        policy_template_name := $1::text,
-        policy_template_vars := $2::jsonb
+        $1::text,
+        $2::jsonb
     )
   )
 )`,
@@ -103,8 +103,8 @@ SELECT deparser.deparse(
     v_cmd_name := 'UPDATE',
     v_permissive := TRUE,
     v_qual := ast_helpers.create_policy_template(
-        policy_template_name := $1::text,
-        policy_template_vars := $2::jsonb
+        $1::text,
+        $2::jsonb
     )
   )
 )`,
@@ -118,8 +118,8 @@ const getPolicyResult = async (name, vars) => {
     `
 SELECT deparser.deparse(
   ast_helpers.create_policy_template(
-  policy_template_name := $1::text,
-  policy_template_vars := $2::jsonb
+  $1::text,
+  $2::jsonb
   ))`,
     [name, JSON.stringify(vars)]
   );
