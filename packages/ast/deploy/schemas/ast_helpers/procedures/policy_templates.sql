@@ -465,7 +465,7 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_entity_acl(
+CREATE FUNCTION ast_helpers.cpt_acl_field(
   data jsonb
 ) returns jsonb as $$
 DECLARE
@@ -478,7 +478,7 @@ BEGIN
       v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
-              v_val := ast_helpers.col('acl', 'entity_id')
+              v_val := ast_helpers.col('acl', coalesce(data->>'acl_sel_field', 'entity_id'))
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
@@ -502,7 +502,7 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_entity_acl_join(
+CREATE FUNCTION ast_helpers.cpt_acl_field_join(
   data jsonb
 ) returns jsonb as $$
 DECLARE
@@ -516,7 +516,7 @@ BEGIN
       v_limitOption := 'LIMIT_OPTION_DEFAULT',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
-              v_val := ast_helpers.col('acl', 'entity_id')
+              v_val := ast_helpers.col('acl', coalesce(data->>'acl_sel_field', 'entity_id'))
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
@@ -537,7 +537,7 @@ BEGIN
               )
             ),
             v_quals := ast_helpers.eq(
-              ast_helpers.col('acl', 'entity_id'),
+              ast_helpers.col('acl', coalesce(data->>'acl_join_field', 'entity_id')),
               ast_helpers.col('obj', data->>'obj_field')
             )
           )
@@ -587,7 +587,7 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_acl(
+CREATE FUNCTION ast_helpers.cpt_acl_exists(
   data jsonb
 ) returns jsonb as $$
 DECLARE
@@ -704,16 +704,16 @@ BEGIN
       policy_ast = ast_helpers.cpt_administrator_records(
           data
       );
-  ELSEIF (name = 'entity_acl_join') THEN
-      policy_ast = ast_helpers.cpt_entity_acl_join(
+  ELSEIF (name = 'acl_field_join') THEN
+      policy_ast = ast_helpers.cpt_acl_field_join(
           data
       );
-  ELSEIF (name = 'entity_acl') THEN
-      policy_ast = ast_helpers.cpt_entity_acl(
+  ELSEIF (name = 'acl_field') THEN
+      policy_ast = ast_helpers.cpt_acl_field(
           data
       );
-  ELSEIF (name = 'acl') THEN
-      policy_ast = ast_helpers.cpt_acl(
+  ELSEIF (name = 'acl_exists') THEN
+      policy_ast = ast_helpers.cpt_acl_exists(
           data
       );
   ELSEIF (name = 'open') THEN

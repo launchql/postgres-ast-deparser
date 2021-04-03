@@ -4530,7 +4530,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_entity_acl ( data jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_acl_field ( data jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   node jsonb;
 BEGIN
@@ -4564,7 +4564,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_entity_acl_join ( data jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_acl_field_join ( data jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   node jsonb;
 BEGIN
@@ -4643,7 +4643,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.cpt_acl ( data jsonb ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.cpt_acl_exists ( data jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   node jsonb;
 BEGIN
@@ -4754,16 +4754,16 @@ BEGIN
       policy_ast = ast_helpers.cpt_administrator_records(
           data
       );
-  ELSEIF (name = 'entity_acl_join') THEN
-      policy_ast = ast_helpers.cpt_entity_acl_join(
+  ELSEIF (name = 'acl_field_join') THEN
+      policy_ast = ast_helpers.cpt_acl_field_join(
           data
       );
-  ELSEIF (name = 'entity_acl') THEN
-      policy_ast = ast_helpers.cpt_entity_acl(
+  ELSEIF (name = 'acl_field') THEN
+      policy_ast = ast_helpers.cpt_acl_field(
           data
       );
-  ELSEIF (name = 'acl') THEN
-      policy_ast = ast_helpers.cpt_acl(
+  ELSEIF (name = 'acl_exists') THEN
+      policy_ast = ast_helpers.cpt_acl_exists(
           data
       );
   ELSEIF (name = 'open') THEN
