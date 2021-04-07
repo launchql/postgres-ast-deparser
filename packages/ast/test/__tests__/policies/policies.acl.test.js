@@ -59,10 +59,10 @@ it('acl_field', async () => {
   expect(result).toMatchSnapshot();
 });
 
-it('acl_field w/acl_sel_field', async () => {
+it('acl_field w/sel_field', async () => {
   const result = await getPolicyResult('acl_field', {
     entity_field: 'owner_id',
-    acl_sel_field: 'actor_id',
+    sel_field: 'actor_id',
     acl_schema: 'acl_schema',
     acl_table: 'acl_table'
   });
@@ -112,10 +112,10 @@ it('acl_field_join', async () => {
   expect(result).toMatchSnapshot();
 });
 
-it('acl_field_join w/acl_sel_field + acl_join_field', async () => {
+it('acl_field_join w/sel_field + acl_join_field', async () => {
   const result = await getPolicyResult('acl_field_join', {
     entity_field: 'owner_id',
-    acl_sel_field: 'actor_id',
+    sel_field: 'actor_id',
     acl_join_field: 'joiner_id',
     acl_schema: 'acl_schema',
     acl_table: 'acl_table',
@@ -148,6 +148,20 @@ it('acl_field_join_mask', async () => {
     obj_table: 'obj_table',
     obj_field: 'group_id',
     mask: '1010010100101010111111'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('group acl via acl_field_join', async () => {
+  const result = await getPolicyResult('acl_field_join', {
+    entity_field: 'group_id',
+    sel_obj: true,
+    sel_field: 'id',
+    acl_schema: 'acl_schema',
+    acl_table: 'acl_table',
+    obj_schema: 'obj_schema',
+    obj_table: 'obj_table',
+    obj_field: 'owner_id'
   });
   expect(result).toMatchSnapshot();
 });

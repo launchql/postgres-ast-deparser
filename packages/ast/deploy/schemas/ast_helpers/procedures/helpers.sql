@@ -204,6 +204,42 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.is_true (
+  v_arg jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.boolean_test(
+    v_booltesttype := 'IS_TRUE',
+    v_arg := v_arg
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.is_false (
+  v_arg jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.boolean_test(
+    v_booltesttype := 'IS_FALSE',
+    v_arg := v_arg
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.matches (
   v_lexpr jsonb,
   v_regexp text

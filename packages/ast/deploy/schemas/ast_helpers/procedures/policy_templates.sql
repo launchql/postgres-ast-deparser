@@ -478,7 +478,7 @@ BEGIN
       v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
-              v_val := ast_helpers.col('acl', coalesce(data->>'acl_sel_field', 'entity_id'))
+              v_val := ast_helpers.col('acl', coalesce(data->>'sel_field', 'entity_id'))
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
@@ -516,7 +516,7 @@ BEGIN
       v_limitOption := 'LIMIT_OPTION_DEFAULT',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
-              v_val := ast_helpers.col('acl', coalesce(data->>'acl_sel_field', 'entity_id'))
+              v_val := ast_helpers.col( (CASE (data->>'sel_obj')::bool WHEN TRUE THEN 'obj' ELSE 'acl' END), coalesce(data->>'sel_field', 'entity_id'))
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
@@ -557,32 +557,63 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 CREATE FUNCTION ast_helpers.acl_where_clause(
   data jsonb
 ) returns jsonb as $$
+DECLARE
+  stmts jsonb[];
+  acl_filter jsonb[];
 BEGIN
-  RETURN (CASE WHEN data->'mask' IS NULL THEN
-      ast_helpers.eq(
-          v_lexpr := ast_helpers.col('acl', 'actor_id'),
-          v_rexpr := data->'current_user_ast'
+
+  stmts = array_append(stmts, ast_helpers.eq(
+      v_lexpr := ast_helpers.col('acl', 'actor_id'),
+      v_rexpr := data->'current_user_ast'
+  ));
+
+  IF (data->'mask' IS NOT NULL) THEN 
+    stmts = array_append(stmts, ast_helpers.eq(
+        v_lexpr := ast.a_expr(
+          v_kind := 'AEXPR_OP',
+          v_name := to_jsonb(ARRAY[ast.string('&')]),
+          v_lexpr := ast_helpers.col('acl', 'permissions'),
+          v_rexpr := ast.a_const(v_val := ast.string(data->>'mask'))
+        ),
+        v_rexpr := ast.a_const(v_val := ast.string(data->>'mask'))
+    ));
+  END IF;
+
+  -- NOTE: is_admin/is_owner ARE NOT included in index
+  -- these should really only be used sparingly on CHECKs not quals
+
+  IF ((data->'is_admin')::bool IS TRUE) THEN 
+    acl_filter = array_append(acl_filter, 
+      ast_helpers.is_true(ast_helpers.col('acl', 'is_admin'))
+    );
+  END IF;
+ 
+  IF ((data->'is_owner')::bool IS TRUE) THEN 
+    acl_filter = array_append(acl_filter, 
+      ast_helpers.is_true(ast_helpers.col('acl', 'is_owner'))
+    );
+  END IF;
+
+  IF (cardinality(acl_filter) = 1) THEN 
+    stmts = array_append(stmts, acl_filter[1]);
+  ELSIF (cardinality(acl_filter) = 2) THEN 
+    stmts = array_append(stmts, 
+      ast_helpers.or(
+          acl_filter[1],
+          acl_filter[2]
       )
-    ELSE
-      ast.bool_expr(
-        v_boolop := 'AND_EXPR',
-        v_args := to_jsonb(ARRAY[
-          ast_helpers.eq(
-              v_lexpr := ast.a_expr(
-                v_kind := 'AEXPR_OP',
-                v_name := to_jsonb(ARRAY[ast.string('&')]),
-                v_lexpr := ast_helpers.col('acl', 'permissions'),
-                v_rexpr := ast.a_const(v_val := ast.string(data->>'mask'))
-              ),
-              v_rexpr := ast.a_const(v_val := ast.string(data->>'mask'))
-          ),
-          ast_helpers.eq(
-              v_lexpr := ast_helpers.col('acl', 'actor_id'),
-              v_rexpr := data->'current_user_ast'
-          )
-        ]) 
-      )
-    END);
+    );
+  END IF;
+
+  IF (cardinality(stmts) = 1) THEN 
+    RETURN stmts[1];
+  END IF;
+
+  RETURN ast.bool_expr(
+    v_boolop := 'AND_EXPR',
+    v_args := to_jsonb(stmts)
+  );
+
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;

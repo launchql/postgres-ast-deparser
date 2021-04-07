@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`group_messages via groups ACL 1`] = `"group_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.group_memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`group_messages via once-removed owned object 1`] = `"group_id = ANY( ARRAY (SELECT obj.id FROM priv.memberships_acl AS acl INNER JOIN pub.groups AS obj ON acl.entity_id = obj.owner_id WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`insert member into organization's group 1`] = `"entity_id = ANY( ARRAY (SELECT obj.entity_id FROM priv.memberships AS acl INNER JOIN priv.group_memberships AS obj ON acl.actor_id = obj.actor_id WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`insert member into organization's group 2`] = `"entity_id = ANY( ARRAY (SELECT obj.entity_id FROM priv.memberships AS acl INNER JOIN priv.group_memberships AS obj ON acl.actor_id = obj.actor_id WHERE acl.actor_id = jwt_public.current_user_id() AND (acl.is_admin IS TRUE OR acl.is_owner IS TRUE)) )"`;
+
+exports[`owned_records v2 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`owned_removed 1`] = `"group_id = ANY( ARRAY (SELECT obj.id FROM acl_schema.acl_table AS acl INNER JOIN obj_schema.owned_objects AS obj ON acl.entity_id = obj.owner_id WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
