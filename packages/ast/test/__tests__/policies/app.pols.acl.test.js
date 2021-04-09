@@ -130,3 +130,18 @@ it("insert member into organization's group", async () => {
   });
   expect(result).toMatchSnapshot();
 });
+
+it('owned m2m key', async () => {
+  const result = await getPolicyResult('acl_field_join', {
+    entity_field: 'action_id',
+    sel_obj: true,
+    sel_field: 'id',
+    acl_schema: 'priv',
+    acl_table: 'memberships',
+    // acl_join_field: 'entity_id',
+    obj_schema: 'public',
+    obj_table: 'actions',
+    obj_field: 'owner_id'
+  });
+  expect(result).toMatchSnapshot();
+});
