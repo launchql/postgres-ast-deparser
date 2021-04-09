@@ -3135,6 +3135,30 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.is_true ( v_arg jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.boolean_test(
+    v_booltesttype := 'IS_TRUE',
+    v_arg := v_arg
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.is_false ( v_arg jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.boolean_test(
+    v_booltesttype := 'IS_FALSE',
+    v_arg := v_arg
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.matches ( v_lexpr jsonb, v_regexp text ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast_expr jsonb;
@@ -4105,6 +4129,20 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.bool ( v_true boolean ) RETURNS jsonb AS $EOFCODE$
+BEGIN
+
+  RETURN ast.type_cast(
+    v_arg := ast.a_const( v_val := ast.string( (CASE WHEN v_true THEN 't' ELSE 'f' END) ) ),
+    v_typeName := ast.type_name(
+      v_names := ast_helpers.array_of_strings('pg_catalog', 'bool'),
+      v_typemod := -1
+    )
+  ); 
+
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.cpt_own_records ( data jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   node jsonb;
@@ -4541,7 +4579,7 @@ BEGIN
       v_op := 'SETOP_NONE',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
-              v_val := ast_helpers.col('acl', 'entity_id')
+              v_val := ast_helpers.col('acl', coalesce(data->>'sel_field', 'entity_id'))
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
@@ -4576,7 +4614,7 @@ BEGIN
       v_limitOption := 'LIMIT_OPTION_DEFAULT',
       v_targetList := to_jsonb(ARRAY[
           ast.res_target(
-              v_val := ast_helpers.col('acl', 'entity_id')
+              v_val := ast_helpers.col( (CASE (data->>'sel_obj')::bool WHEN TRUE THEN 'obj' ELSE 'acl' END), coalesce(data->>'sel_field', 'entity_id'))
           )
       ]),
       v_fromClause := to_jsonb(ARRAY[
@@ -4597,7 +4635,7 @@ BEGIN
               )
             ),
             v_quals := ast_helpers.eq(
-              ast_helpers.col('acl', 'entity_id'),
+              ast_helpers.col('acl', coalesce(data->>'acl_join_field', 'entity_id')),
               ast_helpers.col('obj', data->>'obj_field')
             )
           )
@@ -4614,32 +4652,63 @@ END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.acl_where_clause ( data jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  stmts jsonb[];
+  acl_filter jsonb[];
 BEGIN
-  RETURN (CASE WHEN data->'mask' IS NULL THEN
-      ast_helpers.eq(
-          v_lexpr := ast_helpers.col('acl', 'actor_id'),
-          v_rexpr := data->'current_user_ast'
+
+  stmts = array_append(stmts, ast_helpers.eq(
+      v_lexpr := ast_helpers.col('acl', 'actor_id'),
+      v_rexpr := data->'current_user_ast'
+  ));
+
+  IF (data->'mask' IS NOT NULL) THEN 
+    stmts = array_append(stmts, ast_helpers.eq(
+        v_lexpr := ast.a_expr(
+          v_kind := 'AEXPR_OP',
+          v_name := to_jsonb(ARRAY[ast.string('&')]),
+          v_lexpr := ast_helpers.col('acl', 'permissions'),
+          v_rexpr := ast.a_const(v_val := ast.string(data->>'mask'))
+        ),
+        v_rexpr := ast.a_const(v_val := ast.string(data->>'mask'))
+    ));
+  END IF;
+
+  -- NOTE: is_admin/is_owner ARE NOT included in index
+  -- these should really only be used sparingly on CHECKs not quals
+
+  IF ((data->'is_admin')::bool IS TRUE) THEN 
+    acl_filter = array_append(acl_filter, 
+      ast_helpers.is_true(ast_helpers.col('acl', 'is_admin'))
+    );
+  END IF;
+ 
+  IF ((data->'is_owner')::bool IS TRUE) THEN 
+    acl_filter = array_append(acl_filter, 
+      ast_helpers.is_true(ast_helpers.col('acl', 'is_owner'))
+    );
+  END IF;
+
+  IF (cardinality(acl_filter) = 1) THEN 
+    stmts = array_append(stmts, acl_filter[1]);
+  ELSIF (cardinality(acl_filter) = 2) THEN 
+    stmts = array_append(stmts, 
+      ast_helpers.or(
+          acl_filter[1],
+          acl_filter[2]
       )
-    ELSE
-      ast.bool_expr(
-        v_boolop := 'AND_EXPR',
-        v_args := to_jsonb(ARRAY[
-          ast_helpers.eq(
-              v_lexpr := ast.a_expr(
-                v_kind := 'AEXPR_OP',
-                v_name := to_jsonb(ARRAY[ast.string('&')]),
-                v_lexpr := ast_helpers.col('acl', 'permissions'),
-                v_rexpr := ast.a_const(v_val := ast.string(data->>'mask'))
-              ),
-              v_rexpr := ast.a_const(v_val := ast.string(data->>'mask'))
-          ),
-          ast_helpers.eq(
-              v_lexpr := ast_helpers.col('acl', 'actor_id'),
-              v_rexpr := data->'current_user_ast'
-          )
-        ]) 
-      )
-    END);
+    );
+  END IF;
+
+  IF (cardinality(stmts) = 1) THEN 
+    RETURN stmts[1];
+  END IF;
+
+  RETURN ast.bool_expr(
+    v_boolop := 'AND_EXPR',
+    v_args := to_jsonb(stmts)
+  );
+
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
@@ -10016,6 +10085,39 @@ BEGIN
     v_stmt := ast_expr,
     v_stmt_len := 1
   );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.rls_membership_type_select_field ( v_schema_name text, v_table_name text, v_field text, v_membership_type int ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+
+  ast_expr = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast_helpers.col('mt', v_field)
+        )
+    ]),
+    v_fromClause := to_jsonb(ARRAY[
+        ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name,
+            v_alias := ast.alias(
+                v_aliasname := 'mt'
+            )
+        )
+    ]),
+    v_whereClause := ast_helpers.eq(
+        v_lexpr := ast_helpers.col('mt', 'id'),
+        v_rexpr := ast.a_const(
+            v_val := ast.integer(v_membership_type)
+        )
+    )
+  );
+
+  RETURN ast_expr;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 

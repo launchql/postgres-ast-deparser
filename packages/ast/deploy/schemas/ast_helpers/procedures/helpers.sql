@@ -1558,4 +1558,24 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.bool (
+  v_true boolean
+)
+    RETURNS jsonb
+    AS $$
+BEGIN
+
+  RETURN ast.type_cast(
+    v_arg := ast.a_const( v_val := ast.string( (CASE WHEN v_true THEN 't' ELSE 'f' END) ) ),
+    v_typeName := ast.type_name(
+      v_names := ast_helpers.array_of_strings('pg_catalog', 'bool'),
+      v_typemod := -1
+    )
+  ); 
+
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 COMMIT;
