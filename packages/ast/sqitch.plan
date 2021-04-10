@@ -18,3 +18,4 @@ schemas/deparser/procedures/deparse [schemas/deparser/schema schemas/ast_utils/p
 schemas/ast_helpers/procedures/fixtures [schemas/ast_helpers/schema] 2021-02-12T05:15:42Z Dan Lynch <dlynch@Dans-MacBook-Pro-3.local> # add schemas/ast_helpers/procedures/fixtures
 schemas/ast_helpers/procedures/rls [schemas/ast_helpers/schema] 2021-03-12T21:28:28Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/ast_helpers/procedures/rls
 schemas/ast_helpers/procedures/permissions [schemas/ast_helpers/schema] 2021-03-12T21:28:44Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/ast_helpers/procedures/permissions
+schemas/ast_helpers/procedures/fields [schemas/ast_helpers/schema] 2021-04-09T22:11:41Z Dan Lynch <dlynch@Dans-MBP-3> # add schemas/ast_helpers/procedures/fields
