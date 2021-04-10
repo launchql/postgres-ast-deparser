@@ -4143,6 +4143,233 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.create_insert ( v_schema text, v_table text, v_cols text[], v_values jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+  i int;
+  cols jsonb[] = ARRAY[]::jsonb[];
+BEGIN
+
+  -- cols
+  FOR i IN 1 .. cardinality(v_cols) LOOP
+    cols = array_append(cols, ast.res_target(
+      v_name := v_cols[i]
+    ));
+  END LOOP;
+
+  ast_expr = ast.insert_stmt(
+    v_relation := ast_helpers.range_var(
+      v_schemaname := v_schema,
+      v_relname := v_table
+    ),
+    v_cols := to_jsonb(cols),
+    v_selectStmt := ast.select_stmt(
+      v_valuesLists := v_values,
+      v_op := 'SETOP_NONE'
+    ),
+    v_override := 'OVERRIDING_NOT_SET'
+  );
+
+  RETURN ast.raw_stmt (
+    v_stmt := ast_expr,
+    v_stmt_len := 1
+  );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.create_fixture ( v_schema text, v_table text, v_cols text[], v_values jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+  i int;
+  j int;
+  cols jsonb[];
+  
+  records jsonb;
+  recordArray jsonb;
+  node jsonb;
+
+  col_typeof text;
+  col_type text;
+  col_val text;
+BEGIN
+
+  -- cols
+  FOR i IN 1 .. cardinality(v_cols) LOOP
+    cols = array_append(cols, ast.res_target(
+      v_name := v_cols[i]
+    ));
+  END LOOP;
+
+  records = '[]';
+  FOR i IN 0 .. jsonb_array_length(v_values)-1 LOOP
+    recordArray = '[]';
+    FOR j IN 0 .. jsonb_array_length(v_values->i)-1 LOOP
+      col_type = v_values->i->j->>'type';
+      col_typeof = jsonb_typeof(v_values->i->j->'value');
+      col_val = v_values->i->j->>'value';
+
+      IF (col_typeof = 'null') THEN 
+        node = ast.null();
+      ELSIF (col_type = 'int') THEN 
+        node = ast.a_const( v_val := ast.integer( (col_val)::int ) );
+      ELSIF (col_type = 'float') THEN 
+        node = ast.a_const( v_val := ast.float( col_val ) );
+      ELSIF (col_type = 'text') THEN 
+        node = ast.a_const( v_val := ast.string( col_val ) );
+      ELSIF (col_type = 'uuid') THEN 
+        node = ast.a_const( v_val := ast.string( col_val ) );
+      ELSIF (col_type = 'bool') THEN 
+        IF (col_val)::bool IS TRUE THEN 
+          node = ast.string( 'TRUE' );
+        ELSE 
+          node = ast.string( 'FALSE' );
+        END IF;
+      ELSIF (col_type = 'jsonb' OR col_type = 'json') THEN 
+        node = ast.type_cast(
+          v_arg := ast.a_const(
+             ast.string(
+               col_val
+             )
+          ),
+          v_typeName := ast.type_name(
+            v_names := ast_helpers.array_of_strings(col_type),
+            v_typemod := -1
+          )
+        );
+      ELSE
+        RAISE EXCEPTION 'MISSING_FIXTURE_TYPE';
+      END IF;
+      recordArray = recordArray || to_jsonb(ARRAY[ node ]);
+    END LOOP;
+    records = records || to_jsonb(ARRAY[recordArray]);
+  END LOOP;
+
+  ast_expr = ast.insert_stmt(
+    v_relation := ast_helpers.range_var(
+      v_schemaname := v_schema,
+      v_relname := v_table
+    ),
+    v_cols := to_jsonb(cols),
+    v_selectStmt := ast.select_stmt(
+      v_valuesLists := records,
+      v_op := 'SETOP_NONE'
+    ),
+    v_override := 'OVERRIDING_NOT_SET'
+  );
+
+  RETURN ast.raw_stmt (
+    v_stmt := ast_expr,
+    v_stmt_len := 1
+  );
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_perm_bitlen ( v_schema_name text, v_table_name text, v_field_name text, v_bitlen int ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.alter_table_stmt(
+    v_relkind := 'OBJECT_TABLE',
+    v_relation := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_cmds := to_jsonb(ARRAY[
+      ast.alter_table_cmd(
+        v_subtype := 'AT_AlterColumnType',
+        v_name := v_field_name,
+        v_def := ast.column_def(
+          v_typeName := ast.type_name(
+            v_names := to_jsonb(ARRAY[
+              ast.string('pg_catalog'),
+              ast.string('bit')
+            ]),
+            v_typmods := to_jsonb(ARRAY[
+              ast.a_const( v_val := ast.integer(v_bitlen))
+            ]),
+            v_typemod := -1
+          ),
+          v_raw_default := ast.type_cast (
+            v_arg := ast.func_call(
+              v_funcname := to_jsonb(ARRAY[
+                ast.string('utils'),
+                ast.string('bitmask_pad')
+              ]),
+              v_args := to_jsonb(ARRAY[
+                ast_helpers.col(v_field_name),
+                ast.a_const(
+                  v_val := ast.integer( v_bitlen )
+                ),
+                ast.a_const(
+                  v_val := ast.string( '0' )
+                )
+              ])
+            ),
+            v_typeName := ast.type_name(
+              v_names := to_jsonb(ARRAY[
+                ast.string('pg_catalog'),
+                ast.string('bit')
+              ]),
+              v_typmods := to_jsonb(ARRAY[
+                ast.a_const( v_val := ast.integer(v_bitlen))
+              ]),
+              v_typemod := -1
+            )
+          )
+        ),
+        v_behavior := 'DROP_RESTRICT'
+      )
+    ])
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_perm_bitlen_default ( v_schema_name text, v_table_name text, v_field_name text, v_bitlen int ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.alter_table_stmt(
+    v_relkind := 'OBJECT_TABLE',
+    v_relation := ast_helpers.range_var(
+      v_schemaname := v_schema_name,
+      v_relname := v_table_name
+    ),
+    v_cmds := to_jsonb(ARRAY[
+      ast.alter_table_cmd(
+        v_subtype := 'AT_ColumnDefault',
+        v_name := v_field_name,
+        v_def := ast.type_cast(
+          v_arg := ast.func_call(
+            v_funcname := ast_helpers.array_of_strings('lpad'),
+            v_args := to_jsonb(ARRAY[
+              ast.a_const(
+                v_val := ast.string('')
+              ),
+              ast.a_const(
+                v_val := ast.integer(v_bitlen)
+              ),
+              ast.a_const(
+                v_val := ast.string('0')
+              )
+            ])
+          ),
+          v_typeName := ast.type_name(
+            v_names := ast_helpers.array_of_strings('pg_catalog', 'bit'),
+            v_typmods := to_jsonb(ARRAY[
+              ast.a_const(ast.integer(v_bitlen))
+            ]),
+            v_typemod := -1
+          )
+        ),
+        v_behavior := 'DROP_RESTRICT'
+      )
+    ])
+  );
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.cpt_own_records ( data jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   node jsonb;
@@ -4844,6 +5071,158 @@ BEGIN
   END IF;
 
   RETURN policy_ast;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.rls_membership_type_select_field ( v_schema_name text, v_table_name text, v_field text, v_membership_type int ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+
+  ast_expr = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast_helpers.col('mt', v_field)
+        )
+    ]),
+    v_fromClause := to_jsonb(ARRAY[
+        ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name,
+            v_alias := ast.alias(
+                v_aliasname := 'mt'
+            )
+        )
+    ]),
+    v_whereClause := ast_helpers.eq(
+        v_lexpr := ast_helpers.col('mt', 'id'),
+        v_rexpr := ast.a_const(
+            v_val := ast.integer(v_membership_type)
+        )
+    )
+  );
+
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.rls_membership_type_select ( v_schema_name text, v_table_name text, v_membership_type_name text ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+
+  ast_expr = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast_helpers.col('mt', 'id')
+        )
+    ]),
+    v_fromClause := to_jsonb(ARRAY[
+        ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name,
+            v_alias := ast.alias(
+                v_aliasname := 'mt'
+            )
+        )
+    ]),
+    v_whereClause := ast_helpers.eq(
+        v_lexpr := ast_helpers.col('mt', 'name'),
+        v_rexpr := ast.a_const(
+            v_val := ast.string(v_membership_type_name)
+        )
+    )
+  );
+
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.rls_policy_permission_mask_select ( v_schema_name text, v_function_name text, v_permission text ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+
+  ast_expr = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast.func_call (
+              v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
+              v_args := to_jsonb(ARRAY[
+                ast.type_cast(
+                  v_arg := ast.a_array_expr(
+                    v_elements := to_jsonb(ARRAY[
+                      -- each permission goes here... maybe make an array
+                      ast.a_const(
+                        ast.string(v_permission)
+                      )
+                    ])
+                  ),
+                  v_typeName := ast.type_name(
+                    v_names := ast_helpers.array_of_strings('citext'),
+                    v_typemod := -1,
+                    v_arrayBounds := to_jsonb(ARRAY[
+                      ast.integer(-1)
+                    ])
+                  )
+                )
+              ])
+            )
+        )
+    ])
+  );
+
+  RETURN ast_expr;
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.rls_policy_permission_mask_select ( v_schema_name text, v_function_name text, v_permissions text[] ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  nodes jsonb[];
+  i int;
+
+  ast_expr jsonb;
+BEGIN
+
+  FOR i IN SELECT * FROM generate_subscripts(v_permissions, 1) g(i)
+  LOOP
+    nodes = array_append(nodes, 
+        ast.a_const(
+          ast.string(v_permissions[i])
+        )
+     );
+  END LOOP;
+
+
+  ast_expr = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast.func_call (
+              v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
+              v_args := to_jsonb(ARRAY[
+                ast.type_cast(
+                  v_arg := ast.a_array_expr(
+                    v_elements := to_jsonb(nodes)
+                  ),
+                  v_typeName := ast.type_name(
+                    v_names := ast_helpers.array_of_strings('citext'),
+                    v_typemod := -1,
+                    v_arrayBounds := to_jsonb(ARRAY[
+                      ast.integer(-1)
+                    ])
+                  )
+                )
+              ])
+            )
+        )
+    ])
+  );
+
+  RETURN ast_expr;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
@@ -9964,412 +10343,5 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.deparse ( ast jsonb ) RETURNS text AS $EOFCODE$
 BEGIN
 	RETURN deparser.expression(ast);
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.create_insert ( v_schema text, v_table text, v_cols text[], v_values jsonb ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-  ast_expr jsonb;
-  i int;
-  cols jsonb[] = ARRAY[]::jsonb[];
-BEGIN
-
-  -- cols
-  FOR i IN 1 .. cardinality(v_cols) LOOP
-    cols = array_append(cols, ast.res_target(
-      v_name := v_cols[i]
-    ));
-  END LOOP;
-
-  ast_expr = ast.insert_stmt(
-    v_relation := ast_helpers.range_var(
-      v_schemaname := v_schema,
-      v_relname := v_table
-    ),
-    v_cols := to_jsonb(cols),
-    v_selectStmt := ast.select_stmt(
-      v_valuesLists := v_values,
-      v_op := 'SETOP_NONE'
-    ),
-    v_override := 'OVERRIDING_NOT_SET'
-  );
-
-  RETURN ast.raw_stmt (
-    v_stmt := ast_expr,
-    v_stmt_len := 1
-  );
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.create_fixture ( v_schema text, v_table text, v_cols text[], v_values jsonb ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-  ast_expr jsonb;
-  i int;
-  j int;
-  cols jsonb[];
-  
-  records jsonb;
-  recordArray jsonb;
-  node jsonb;
-
-  col_typeof text;
-  col_type text;
-  col_val text;
-BEGIN
-
-  -- cols
-  FOR i IN 1 .. cardinality(v_cols) LOOP
-    cols = array_append(cols, ast.res_target(
-      v_name := v_cols[i]
-    ));
-  END LOOP;
-
-  records = '[]';
-  FOR i IN 0 .. jsonb_array_length(v_values)-1 LOOP
-    recordArray = '[]';
-    FOR j IN 0 .. jsonb_array_length(v_values->i)-1 LOOP
-      col_type = v_values->i->j->>'type';
-      col_typeof = jsonb_typeof(v_values->i->j->'value');
-      col_val = v_values->i->j->>'value';
-
-      IF (col_typeof = 'null') THEN 
-        node = ast.null();
-      ELSIF (col_type = 'int') THEN 
-        node = ast.a_const( v_val := ast.integer( (col_val)::int ) );
-      ELSIF (col_type = 'float') THEN 
-        node = ast.a_const( v_val := ast.float( col_val ) );
-      ELSIF (col_type = 'text') THEN 
-        node = ast.a_const( v_val := ast.string( col_val ) );
-      ELSIF (col_type = 'uuid') THEN 
-        node = ast.a_const( v_val := ast.string( col_val ) );
-      ELSIF (col_type = 'bool') THEN 
-        IF (col_val)::bool IS TRUE THEN 
-          node = ast.string( 'TRUE' );
-        ELSE 
-          node = ast.string( 'FALSE' );
-        END IF;
-      ELSIF (col_type = 'jsonb' OR col_type = 'json') THEN 
-        node = ast.type_cast(
-          v_arg := ast.a_const(
-             ast.string(
-               col_val
-             )
-          ),
-          v_typeName := ast.type_name(
-            v_names := ast_helpers.array_of_strings(col_type),
-            v_typemod := -1
-          )
-        );
-      ELSE
-        RAISE EXCEPTION 'MISSING_FIXTURE_TYPE';
-      END IF;
-      recordArray = recordArray || to_jsonb(ARRAY[ node ]);
-    END LOOP;
-    records = records || to_jsonb(ARRAY[recordArray]);
-  END LOOP;
-
-  ast_expr = ast.insert_stmt(
-    v_relation := ast_helpers.range_var(
-      v_schemaname := v_schema,
-      v_relname := v_table
-    ),
-    v_cols := to_jsonb(cols),
-    v_selectStmt := ast.select_stmt(
-      v_valuesLists := records,
-      v_op := 'SETOP_NONE'
-    ),
-    v_override := 'OVERRIDING_NOT_SET'
-  );
-
-  RETURN ast.raw_stmt (
-    v_stmt := ast_expr,
-    v_stmt_len := 1
-  );
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.rls_membership_type_select_field ( v_schema_name text, v_table_name text, v_field text, v_membership_type int ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-  ast_expr jsonb;
-BEGIN
-
-  ast_expr = ast.select_stmt(
-    v_op := 'SETOP_NONE',
-    v_targetList := to_jsonb(ARRAY[
-        ast.res_target(
-            v_val := ast_helpers.col('mt', v_field)
-        )
-    ]),
-    v_fromClause := to_jsonb(ARRAY[
-        ast_helpers.range_var(
-            v_schemaname := v_schema_name,
-            v_relname := v_table_name,
-            v_alias := ast.alias(
-                v_aliasname := 'mt'
-            )
-        )
-    ]),
-    v_whereClause := ast_helpers.eq(
-        v_lexpr := ast_helpers.col('mt', 'id'),
-        v_rexpr := ast.a_const(
-            v_val := ast.integer(v_membership_type)
-        )
-    )
-  );
-
-  RETURN ast_expr;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.rls_membership_type_select ( v_schema_name text, v_table_name text, v_membership_type_name text ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-  ast_expr jsonb;
-BEGIN
-
-  ast_expr = ast.select_stmt(
-    v_op := 'SETOP_NONE',
-    v_targetList := to_jsonb(ARRAY[
-        ast.res_target(
-            v_val := ast_helpers.col('mt', 'id')
-        )
-    ]),
-    v_fromClause := to_jsonb(ARRAY[
-        ast_helpers.range_var(
-            v_schemaname := v_schema_name,
-            v_relname := v_table_name,
-            v_alias := ast.alias(
-                v_aliasname := 'mt'
-            )
-        )
-    ]),
-    v_whereClause := ast_helpers.eq(
-        v_lexpr := ast_helpers.col('mt', 'name'),
-        v_rexpr := ast.a_const(
-            v_val := ast.string(v_membership_type_name)
-        )
-    )
-  );
-
-  RETURN ast_expr;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.rls_policy_permission_mask_select ( v_schema_name text, v_function_name text, v_permission text ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-  ast_expr jsonb;
-BEGIN
-
-  ast_expr = ast.select_stmt(
-    v_op := 'SETOP_NONE',
-    v_targetList := to_jsonb(ARRAY[
-        ast.res_target(
-            v_val := ast.func_call (
-              v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
-              v_args := to_jsonb(ARRAY[
-                ast.type_cast(
-                  v_arg := ast.a_array_expr(
-                    v_elements := to_jsonb(ARRAY[
-                      -- each permission goes here... maybe make an array
-                      ast.a_const(
-                        ast.string(v_permission)
-                      )
-                    ])
-                  ),
-                  v_typeName := ast.type_name(
-                    v_names := ast_helpers.array_of_strings('citext'),
-                    v_typemod := -1,
-                    v_arrayBounds := to_jsonb(ARRAY[
-                      ast.integer(-1)
-                    ])
-                  )
-                )
-              ])
-            )
-        )
-    ])
-  );
-
-  RETURN ast_expr;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.rls_policy_permission_mask_select ( v_schema_name text, v_function_name text, v_permissions text[] ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-  nodes jsonb[];
-  i int;
-
-  ast_expr jsonb;
-BEGIN
-
-  FOR i IN SELECT * FROM generate_subscripts(v_permissions, 1) g(i)
-  LOOP
-    nodes = array_append(nodes, 
-        ast.a_const(
-          ast.string(v_permissions[i])
-        )
-     );
-  END LOOP;
-
-
-  ast_expr = ast.select_stmt(
-    v_op := 'SETOP_NONE',
-    v_targetList := to_jsonb(ARRAY[
-        ast.res_target(
-            v_val := ast.func_call (
-              v_funcname := ast_helpers.array_of_strings(v_schema_name, v_function_name),
-              v_args := to_jsonb(ARRAY[
-                ast.type_cast(
-                  v_arg := ast.a_array_expr(
-                    v_elements := to_jsonb(nodes)
-                  ),
-                  v_typeName := ast.type_name(
-                    v_names := ast_helpers.array_of_strings('citext'),
-                    v_typemod := -1,
-                    v_arrayBounds := to_jsonb(ARRAY[
-                      ast.integer(-1)
-                    ])
-                  )
-                )
-              ])
-            )
-        )
-    ])
-  );
-
-  RETURN ast_expr;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.alter_table_perm_bitlen ( v_schema_name text, v_table_name text, v_field_name text, v_bitlen int ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-  ast_expr jsonb;
-BEGIN
-  ast_expr = ast.alter_table_stmt(
-    v_relkind := 'OBJECT_TABLE',
-    v_relation := ast_helpers.range_var(
-      v_schemaname := v_schema_name,
-      v_relname := v_table_name
-    ),
-    v_cmds := to_jsonb(ARRAY[
-      ast.alter_table_cmd(
-        v_subtype := 'AT_AlterColumnType',
-        v_name := v_field_name,
-        v_def := ast.column_def(
-          v_typeName := ast.type_name(
-            v_names := to_jsonb(ARRAY[
-              ast.string('pg_catalog'),
-              ast.string('bit')
-            ]),
-            v_typmods := to_jsonb(ARRAY[
-              ast.a_const( v_val := ast.integer(v_bitlen))
-            ]),
-            v_typemod := -1
-          ),
-          v_raw_default := ast.type_cast (
-            v_arg := ast.func_call(
-              v_funcname := to_jsonb(ARRAY[
-                ast.string('utils'),
-                ast.string('bitmask_pad')
-              ]),
-              v_args := to_jsonb(ARRAY[
-                ast_helpers.col(v_field_name),
-                ast.a_const(
-                  v_val := ast.integer( v_bitlen )
-                ),
-                ast.a_const(
-                  v_val := ast.string( '0' )
-                )
-              ])
-            ),
-            v_typeName := ast.type_name(
-              v_names := to_jsonb(ARRAY[
-                ast.string('pg_catalog'),
-                ast.string('bit')
-              ]),
-              v_typmods := to_jsonb(ARRAY[
-                ast.a_const( v_val := ast.integer(v_bitlen))
-              ]),
-              v_typemod := -1
-            )
-          )
-        ),
-        v_behavior := 'DROP_RESTRICT'
-      )
-    ])
-  );
-  RETURN ast_expr;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.alter_table_perm_bitlen_default ( v_schema_name text, v_table_name text, v_field_name text, v_bitlen int ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-  ast_expr jsonb;
-BEGIN
-  ast_expr = ast.alter_table_stmt(
-    v_relkind := 'OBJECT_TABLE',
-    v_relation := ast_helpers.range_var(
-      v_schemaname := v_schema_name,
-      v_relname := v_table_name
-    ),
-    v_cmds := to_jsonb(ARRAY[
-      ast.alter_table_cmd(
-        v_subtype := 'AT_ColumnDefault',
-        v_name := v_field_name,
-        v_def := ast.type_cast(
-          v_arg := ast.func_call(
-            v_funcname := ast_helpers.array_of_strings('lpad'),
-            v_args := to_jsonb(ARRAY[
-              ast.a_const(
-                v_val := ast.string('')
-              ),
-              ast.a_const(
-                v_val := ast.integer(v_bitlen)
-              ),
-              ast.a_const(
-                v_val := ast.string('0')
-              )
-            ])
-          ),
-          v_typeName := ast.type_name(
-            v_names := ast_helpers.array_of_strings('pg_catalog', 'bit'),
-            v_typmods := to_jsonb(ARRAY[
-              ast.a_const(ast.integer(v_bitlen))
-            ]),
-            v_typemod := -1
-          )
-        ),
-        v_behavior := 'DROP_RESTRICT'
-      )
-    ])
-  );
-  RETURN ast_expr;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.owned_field_func_body ( v_role_key text, v_func_schema text DEFAULT 'jwt_public', v_func text DEFAULT 'current_user_id' ) RETURNS text AS $EOFCODE$
-DECLARE
-  ast_expr jsonb;
-  body text;
-BEGIN
-
-  ast_expr = ast_helpers.neq(
-    ast_helpers.col('new', v_role_key),
-    ast.func_call(
-      v_funcname := ast_helpers.array_of_strings(
-        v_func_schema, v_func
-      )
-    )
-  );
-
-  body = trim(format('
-  BEGIN
-    IF (%1s) THEN
-      RAISE EXCEPTION ''OWNED_PROPS'';
-    END IF;
-  RETURN NEW;
-  END;
-  ', deparser.deparse(ast_expr)));
-
-  RETURN body;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
