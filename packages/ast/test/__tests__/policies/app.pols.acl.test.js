@@ -97,6 +97,30 @@ it('owned_records v2', async () => {
   expect(result).toMatchSnapshot();
 });
 
+it('RLS database', async () => {
+  const result = await getPolicyResult('acl_field', {
+    entity_field: 'owner_id',
+    acl_schema: 'mem_priv',
+    acl_table: 'memberships'
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('RLS table', async () => {
+  const result = await getPolicyResult('acl_field_join', {
+    entity_field: 'database_id',
+    sel_obj: true,
+    sel_field: 'id',
+    acl_schema: 'priv',
+    acl_table: 'memberships',
+    acl_join_field: 'entity_id',
+    obj_schema: 'collections_public',
+    obj_table: 'database',
+    obj_field: 'owner_id'
+  });
+  expect(result).toMatchSnapshot();
+});
+
 it("insert member into organization's group", async () => {
   const result = await getPolicyResult('acl_field_join', {
     entity_field: 'entity_id',
