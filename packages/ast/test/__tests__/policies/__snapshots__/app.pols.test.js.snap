@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`1 core database 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM mem_priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`1 core table 1`] = `"database_id = ANY( ARRAY (SELECT obj.id FROM priv.memberships_acl AS acl INNER JOIN collections_public.database AS obj ON acl.entity_id = obj.owner_id WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`action_items INSERT 1`] = `"action_id = ANY( ARRAY (SELECT obj.id FROM priv.memberships_acl AS acl INNER JOIN public.actions AS obj ON acl.entity_id = obj.owner_id WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`action_items WRITE 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`actions READ 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`actions WRITE 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`app_memberships ADMIN READ/WRITE 1`] = `"EXISTS (SELECT 1 FROM priv.app_memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE)"`;
+
+exports[`app_memberships READ 1`] = `"entity_id = ANY( ARRAY (SELECT obj.actor_id FROM priv.memberships_acl AS acl INNER JOIN priv.app_memberships_acl AS obj ON acl.entity_id = obj.actor_id WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`emails READ 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`emails WRITE 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`group_memberships READ 1`] = `"entity_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.group_memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`group_memberships WRITE 1`] = `"entity_id = ANY( ARRAY (SELECT obj.entity_id FROM priv.memberships_acl AS acl INNER JOIN priv.group_memberships_acl AS obj ON acl.actor_id = obj.actor_id WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`groups READ 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.group_memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`groups WRITE 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.group_memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`memberships READ 1`] = `"entity_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`memberships WRITE 1`] = `"entity_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`org_profiles WRITE 1`] = `"organization_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`users WRITE 1`] = `"id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
