@@ -17,15 +17,3 @@ Object {
   "deparse": "SELECT v_schema_name.v_function_name(ARRAY['Can I do this?', 'Can I also do this']::citext[])",
 }
 `;
-
-exports[`rls_policy_permission_select 1`] = `
-Object {
-  "deparse": "SELECT v_schema_name.v_function_name(ARRAY['Can I do this?']::citext[])",
-}
-`;
-
-exports[`rls_policy_permission_select 2`] = `
-Object {
-  "deparse": "SELECT v_schema_name.v_function_name(ARRAY['Can I do this?', 'Can I also do this']::citext[])",
-}
-`;
