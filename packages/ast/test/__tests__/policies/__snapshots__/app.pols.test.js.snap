@@ -8,6 +8,10 @@ exports[`action_items INSERT 1`] = `"action_id = ANY( ARRAY (SELECT obj.id FROM 
 
 exports[`action_items WRITE 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
 
+exports[`action_items verifier SELECT 1`] = `"action_id = ANY( ARRAY (SELECT obj.id FROM priv.memberships_acl AS acl INNER JOIN public.actions AS obj ON acl.entity_id = obj.owner_id WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;
+
+exports[`actions INSERT entity_has_permission 1`] = `"owner_id = ANY( ARRAY (SELECT acl.actor_id FROM priv.app_memberships_acl AS acl WHERE acl.actor_id = owner_id AND (acl.permissions & '1010101') = '1010101') )"`;
+
 exports[`actions READ 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
 
 exports[`actions WRITE 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM priv.memberships_acl AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND acl.is_admin IS TRUE) )"`;

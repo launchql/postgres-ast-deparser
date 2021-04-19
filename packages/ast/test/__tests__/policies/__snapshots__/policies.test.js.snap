@@ -28,49 +28,49 @@ Object {
 
 exports[`own_records 1`] = `
 Object {
-  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = rls_schema.role_fn() );",
-  "policy": "role_key = rls_schema.role_fn()",
-  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = rls_schema.role_fn() );",
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( entity_field = rls_schema.role_fn() );",
+  "policy": "entity_field = rls_schema.role_fn()",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( entity_field = rls_schema.role_fn() );",
 }
 `;
 
 exports[`own_records defaults 1`] = `
 Object {
-  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = jwt_public.current_user_id() );",
-  "policy": "role_key = jwt_public.current_user_id()",
-  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = jwt_public.current_user_id() );",
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( entity_field = jwt_public.current_user_id() );",
+  "policy": "entity_field = jwt_public.current_user_id()",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( entity_field = jwt_public.current_user_id() );",
 }
 `;
 
 exports[`owned_records 1`] = `
 Object {
-  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = rls_schema.role_fn() );",
-  "policy": "role_key = rls_schema.role_fn()",
-  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = rls_schema.role_fn() );",
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( entity_field = rls_schema.role_fn() );",
+  "policy": "entity_field = rls_schema.role_fn()",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( entity_field = rls_schema.role_fn() );",
 }
 `;
 
 exports[`owned_records defaults 1`] = `
 Object {
-  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = jwt_public.current_user_id() );",
-  "policy": "role_key = jwt_public.current_user_id()",
-  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = jwt_public.current_user_id() );",
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( entity_field = jwt_public.current_user_id() );",
+  "policy": "entity_field = jwt_public.current_user_id()",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( entity_field = jwt_public.current_user_id() );",
 }
 `;
 
 exports[`owned_records w bits 1`] = `
 Object {
-  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = rls_schema.role_fn() );",
-  "policy": "role_key = rls_schema.role_fn()",
-  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = rls_schema.role_fn() );",
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( entity_field = rls_schema.role_fn() );",
+  "policy": "entity_field = rls_schema.role_fn()",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( entity_field = rls_schema.role_fn() );",
 }
 `;
 
 exports[`owned_records w bits 2`] = `
 Object {
-  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( role_key = rls_schema.role_fn() );",
-  "policy": "role_key = rls_schema.role_fn()",
-  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( role_key = rls_schema.role_fn() );",
+  "insert": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR INSERT TO authenticated WITH CHECK ( entity_field = rls_schema.role_fn() );",
+  "policy": "entity_field = rls_schema.role_fn()",
+  "update": "CREATE POLICY v_policy_name ON v_schema_name.v_table_name FOR UPDATE TO authenticated USING ( entity_field = rls_schema.role_fn() );",
 }
 `;
 

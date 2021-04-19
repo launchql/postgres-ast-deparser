@@ -136,12 +136,3 @@ it('owned m2m key', async () => {
   });
   expect(result).toMatchSnapshot();
 });
-
-it('owned_records v2', async () => {
-  const result = await getPolicyResult('acl_field', {
-    entity_field: 'owner_id',
-    acl_schema: 'acl_schema',
-    acl_table: 'acl_table'
-  });
-  expect(result).toMatchSnapshot();
-});

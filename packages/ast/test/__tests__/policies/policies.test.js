@@ -133,65 +133,23 @@ SELECT deparser.deparse(
 
 it('own_records', async () => {
   const result = await getPolicyResult('own_records', {
-    role_key: 'role_key',
+    entity_field: 'entity_field',
     rls_role_schema: 'rls_schema',
     rls_role: 'role_fn'
-  });
-  expect(result).toMatchSnapshot();
-});
-
-it('owned_records', async () => {
-  const result = await getPolicyResult('owned_records', {
-    role_key: 'role_key',
-    rls_groups_schema: 'rls_schema',
-    rls_groups: 'group_fn',
-    rls_role_schema: 'rls_schema',
-    rls_role: 'role_fn'
-  });
-  expect(result).toMatchSnapshot();
-});
-
-it('owned_records w bits', async () => {
-  const result = await getPolicyResult('owned_records', {
-    role_key: 'role_key',
-    rls_groups_schema: 'rls_schema',
-    rls_groups: 'group_fn',
-    rls_role_schema: 'rls_schema',
-    rls_role: 'role_fn',
-    current_groups_ast
-  });
-  expect(result).toMatchSnapshot();
-});
-
-it('owned_records w bits', async () => {
-  const result = await getPolicyResult('owned_records', {
-    role_key: 'role_key',
-    rls_groups_schema: 'rls_schema',
-    rls_groups: 'group_fn',
-    rls_role_schema: 'rls_schema',
-    rls_role: 'role_fn',
-    current_groups_ast: current_groups_ast2
   });
   expect(result).toMatchSnapshot();
 });
 
 it('own_records defaults', async () => {
   const result = await getPolicyResult('own_records', {
-    role_key: 'role_key'
-  });
-  expect(result).toMatchSnapshot();
-});
-
-it('owned_records defaults', async () => {
-  const result = await getPolicyResult('owned_records', {
-    role_key: 'role_key'
+    entity_field: 'entity_field'
   });
   expect(result).toMatchSnapshot();
 });
 
 it('multi_owners', async () => {
   const result = await getPolicyResult('multi_owners', {
-    role_keys: ['requester_id', 'responder_id', 'verifier_id'],
+    entity_fields: ['requester_id', 'responder_id', 'verifier_id'],
     rls_role_schema: 'rls_schema',
     rls_role: 'role_fn'
   });

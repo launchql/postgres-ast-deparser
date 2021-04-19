@@ -122,6 +122,18 @@ it('actions WRITE', async () => {
   expect(result).toMatchSnapshot();
 });
 
+it('actions INSERT entity_has_permission', async () => {
+  const result = await getPolicyResult('acl_field', {
+    entity_field: 'owner_id',
+    entity_permission_check: true,
+    sel_field: 'actor_id',
+    acl_schema: 'priv',
+    acl_table: 'app_memberships_acl',
+    mask: '1010101'
+  });
+  expect(result).toMatchSnapshot();
+});
+
 it('action_items WRITE', async () => {
   const result = await getPolicyResult('acl_field', {
     entity_field: 'owner_id',
@@ -133,6 +145,22 @@ it('action_items WRITE', async () => {
 });
 
 it('action_items INSERT', async () => {
+  const result = await getPolicyResult('acl_field_join', {
+    entity_field: 'action_id',
+    sel_obj: true,
+    sel_field: 'id',
+    acl_schema: 'priv',
+    acl_table: 'memberships_acl',
+    acl_join_field: 'entity_id',
+    obj_schema: 'public',
+    obj_table: 'actions',
+    obj_field: 'owner_id',
+    is_admin: true
+  });
+  expect(result).toMatchSnapshot();
+});
+
+it('action_items verifier SELECT', async () => {
   const result = await getPolicyResult('acl_field_join', {
     entity_field: 'action_id',
     sel_obj: true,
