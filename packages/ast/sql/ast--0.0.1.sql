@@ -4379,30 +4379,9 @@ BEGIN
   -- SELECT db_migrate.text('policy_expression_current_role', 
 
   node = ast_helpers.eq(
-      v_lexpr := ast_helpers.col(data->>'role_key'),
+      v_lexpr := ast_helpers.col(data->>'entity_field'),
       v_rexpr := data->'current_user_ast'
   );
-
-  RETURN node;
-END;
-$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
-
-CREATE FUNCTION ast_helpers.cpt_owned_records ( data jsonb ) RETURNS jsonb AS $EOFCODE$
-DECLARE
-  node jsonb;
-BEGIN
-  -- Function(id), Field(id)
-
-  -- SELECT db_migrate.text('policy_expression_current_roles', 
-    node = ast_helpers.eq(
-      v_lexpr := ast_helpers.col(data->>'role_key'),
-      v_rexpr := data->'current_user_ast'
-    );
-
-  -- node = ast_helpers.any(
-  --   v_lexpr := ast_helpers.col(data->>'role_key'),
-  --   v_rexpr := data->'current_groups_ast'
-  -- );
 
   RETURN node;
 END;
@@ -4416,7 +4395,7 @@ DECLARE
 BEGIN
 
   FOR item IN
-    SELECT * FROM jsonb_array_elements(data->'role_keys')
+    SELECT * FROM jsonb_array_elements(data->'entity_fields')
     LOOP 
     key_asts = array_append(key_asts, ast_helpers.eq(
       -- NOTE if you have a string JSON element, item::text will keep " around it
@@ -4591,10 +4570,17 @@ DECLARE
   acl_filter jsonb[];
 BEGIN
 
-  stmts = array_append(stmts, ast_helpers.eq(
-      v_lexpr := ast_helpers.col('acl', 'actor_id'),
-      v_rexpr := data->'current_user_ast'
-  ));
+  IF ( (data->'entity_permission_check')::bool IS TRUE ) THEN 
+    stmts = array_append(stmts, ast_helpers.eq(
+        v_lexpr := ast_helpers.col('acl', 'actor_id'),
+        v_rexpr := ast_helpers.col(data->>'entity_field')
+    ));
+  ELSE
+    stmts = array_append(stmts, ast_helpers.eq(
+        v_lexpr := ast_helpers.col('acl', 'actor_id'),
+        v_rexpr := data->'current_user_ast'
+    ));
+  END IF;
 
   IF (data->'mask' IS NOT NULL) THEN 
     stmts = array_append(stmts, ast_helpers.eq(
@@ -4708,7 +4694,8 @@ BEGIN
           data
       );
   ELSEIF (name = 'owned_records') THEN
-      policy_ast = ast_helpers.cpt_owned_records(
+      -- uses acl_field!
+      policy_ast = ast_helpers.cpt_acl_field(
           data
       );
   ELSEIF (name = 'multi_owners') THEN
