@@ -9,6 +9,51 @@ BEGIN;
 -- SELECT mt.id FROM v_schema_name.v_table_name AS mt
 -- WHERE mt.name = 'Organization'
 
+CREATE FUNCTION ast_helpers.rls_membership_type_select_field (
+  v_schema_name text,
+  v_table_name text,
+  v_field text,
+  v_membership_type int
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+
+  ast_expr = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast_helpers.col('mt', v_field)
+        )
+    ]),
+    v_fromClause := to_jsonb(ARRAY[
+        ast_helpers.range_var(
+            v_schemaname := v_schema_name,
+            v_relname := v_table_name,
+            v_alias := ast.alias(
+                v_aliasname := 'mt'
+            )
+        )
+    ]),
+    v_whereClause := ast_helpers.eq(
+        v_lexpr := ast_helpers.col('mt', 'id'),
+        v_rexpr := ast.a_const(
+            v_val := ast.integer(v_membership_type)
+        )
+    )
+  );
+
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+-- SELECT mt.id FROM v_schema_name.v_table_name AS mt
+-- WHERE mt.name = 'Organization'
+
 CREATE FUNCTION ast_helpers.rls_membership_type_select (
   v_schema_name text,
   v_table_name text,

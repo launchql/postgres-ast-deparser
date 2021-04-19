@@ -204,6 +204,42 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.is_true (
+  v_arg jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.boolean_test(
+    v_booltesttype := 'IS_TRUE',
+    v_arg := v_arg
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.is_false (
+  v_arg jsonb
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast_expr jsonb;
+BEGIN
+  ast_expr = ast.boolean_test(
+    v_booltesttype := 'IS_FALSE',
+    v_arg := v_arg
+  );
+  RETURN ast_expr;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.matches (
   v_lexpr jsonb,
   v_regexp text
@@ -1517,6 +1553,26 @@ BEGIN
     v_comment := v_comment,
     variadic v_name := v_name
   );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.bool (
+  v_true boolean
+)
+    RETURNS jsonb
+    AS $$
+BEGIN
+
+  RETURN ast.type_cast(
+    v_arg := ast.a_const( v_val := ast.string( (CASE WHEN v_true THEN 't' ELSE 'f' END) ) ),
+    v_typeName := ast.type_name(
+      v_names := ast_helpers.array_of_strings('pg_catalog', 'bool'),
+      v_typemod := -1
+    )
+  ); 
+
 END;
 $$
 LANGUAGE 'plpgsql'

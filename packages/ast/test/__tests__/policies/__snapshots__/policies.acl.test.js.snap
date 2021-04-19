@@ -1,17 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`acl 1`] = `"EXISTS (SELECT 1 FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id())"`;
+exports[`acl_exists 1`] = `"EXISTS (SELECT 1 FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id())"`;
 
-exports[`acl mask 1`] = `"EXISTS (SELECT 1 FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010101111') = '1010101111' AND acl.actor_id = jwt_public.current_user_id())"`;
+exports[`acl_exists mask 1`] = `"EXISTS (SELECT 1 FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND (acl.permissions & '1010101111') = '1010101111')"`;
 
-exports[`entity_acl 1`] = `"entity_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+exports[`acl_field 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
 
-exports[`entity_acl include user 1`] = `"entity_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()), jwt_public.current_user_id()) )"`;
+exports[`acl_field include user 1`] = `"owner_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()), jwt_public.current_user_id()) )"`;
 
-exports[`entity_acl_mask 1`] = `"entity_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010010100101010111111') = '1010010100101010111111' AND acl.actor_id = jwt_public.current_user_id()) )"`;
+exports[`acl_field w/sel_field 1`] = `"owner_id = ANY( ARRAY (SELECT acl.actor_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
 
-exports[`entity_acl_mask include user 1`] = `"entity_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE (acl.permissions & '1010010100101010111111') = '1010010100101010111111' AND acl.actor_id = jwt_public.current_user_id()), jwt_public.current_user_id()) )"`;
+exports[`acl_field_join 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl INNER JOIN obj_schema.obj_table AS obj ON acl.entity_id = obj.group_id WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
 
-exports[`owned_object_records 1`] = `"(SELECT p.owned_table_key = ANY( rls_schema.group_fn() ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key)"`;
+exports[`acl_field_join include user 1`] = `"owner_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl INNER JOIN obj_schema.obj_table AS obj ON acl.entity_id = obj.group_id WHERE acl.actor_id = jwt_public.current_user_id()), jwt_public.current_user_id()) )"`;
 
-exports[`owned_object_records_group_array 1`] = `"(SELECT rls_schema.role_fn() = ANY( p.owned_table_key ) FROM owned_schema.owned_table AS p WHERE p.owned_table_ref_key = this_object_key)"`;
+exports[`acl_field_join w/sel_field + acl_join_field 1`] = `"owner_id = ANY( ARRAY (SELECT acl.actor_id FROM acl_schema.acl_table AS acl INNER JOIN obj_schema.obj_table AS obj ON acl.joiner_id = obj.group_id WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
+
+exports[`acl_field_join_mask 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl INNER JOIN obj_schema.obj_table AS obj ON acl.entity_id = obj.group_id WHERE acl.actor_id = jwt_public.current_user_id() AND (acl.permissions & '1010010100101010111111') = '1010010100101010111111') )"`;
+
+exports[`acl_field_mask 1`] = `"owner_id = ANY( ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND (acl.permissions & '1010010100101010111111') = '1010010100101010111111') )"`;
+
+exports[`acl_field_mask include user 1`] = `"owner_id = ANY( array_append(ARRAY (SELECT acl.entity_id FROM acl_schema.acl_table AS acl WHERE acl.actor_id = jwt_public.current_user_id() AND (acl.permissions & '1010010100101010111111') = '1010010100101010111111'), jwt_public.current_user_id()) )"`;
+
+exports[`group acl via acl_field_join 1`] = `"group_id = ANY( ARRAY (SELECT obj.id FROM acl_schema.acl_table AS acl INNER JOIN obj_schema.obj_table AS obj ON acl.entity_id = obj.owner_id WHERE acl.actor_id = jwt_public.current_user_id()) )"`;
