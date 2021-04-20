@@ -508,19 +508,31 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.a_expr_distinct_tg_field (field text)
+CREATE FUNCTION ast_helpers.distinct (
+  v_lexpr jsonb,
+  v_rexpr jsonb
+)
     RETURNS jsonb
     AS $$
 BEGIN
 	RETURN ast.a_expr(v_kind := 'AEXPR_DISTINCT', 
-        v_lexpr := ast.column_ref(
-          to_jsonb(ARRAY[ ast.string('old'),ast.string(field) ])
-        ),
+        v_lexpr := v_lexpr,
         v_name := to_jsonb(ARRAY[ast.string('=')]),
-        v_rexpr := ast.column_ref(
-          to_jsonb(ARRAY[ ast.string('new'),ast.string(field) ])
-        ) 
+        v_rexpr := v_rexpr
     );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.a_expr_distinct_tg_field (field text)
+    RETURNS jsonb
+    AS $$
+BEGIN
+	RETURN ast_helpers.distinct(
+    v_lexpr := ast_helpers.col('old', field),
+    v_rexpr := ast_helpers.col('new', field)
+  );
 END;
 $$
 LANGUAGE 'plpgsql'

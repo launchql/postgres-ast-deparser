@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ast 1`] = `
+Array [
+  "new.verified = 1;",
+  "new.approved = func();",
+]
+`;
+
+exports[`basic 1`] = `
+Array [
+  "new.verified = 1;",
+  "new.approved = TRUE;",
+]
+`;
+
+exports[`distinct from values 1`] = `"new.verified IS DISTINCT FROM 1 OR new.approved IS DISTINCT FROM func()"`;
