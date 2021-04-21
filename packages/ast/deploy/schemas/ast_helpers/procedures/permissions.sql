@@ -6,6 +6,10 @@
 
 BEGIN;
 
+-- ALTER TABLE v_schema_name.v_table_name
+--   ALTER COLUMN v_field_name TYPE bit(123)
+--   USING utils.bitmask_pad (v_field_name, 123, '0')::bit(123)
+
 CREATE FUNCTION ast_helpers.alter_table_perm_bitlen (
   v_schema_name text,
   v_table_name text,
@@ -75,6 +79,9 @@ END;
 $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
+
+-- ALTER TABLE v_schema_name.v_table_name
+--   ALTER COLUMN v_field_name SET DEFAULT lpad('', 123, '0')::bit(123)
 
 CREATE FUNCTION ast_helpers.alter_table_perm_bitlen_default (
   v_schema_name text,
