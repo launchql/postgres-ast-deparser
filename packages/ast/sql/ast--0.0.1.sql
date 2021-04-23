@@ -4544,28 +4544,49 @@ END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE FUNCTION ast_helpers.entity_wrap_array ( node jsonb, data jsonb ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  entity_field jsonb;
 BEGIN
 
-  IF ((data->'include_current_user_id')::bool IS TRUE) THEN 
-    -- DO WE NEED TO CAST THE possible ARRAY(...)::uuid[] ?
-    -- postgres=# select array_append(NULL, 'sdf');
-    -- ERROR:  could not determine polymorphic type because input has type unknown
-    node = ast_helpers.any(
-      v_lexpr := ast_helpers.col(data->>'entity_field'),
-      v_rexpr := ast.func_call(
-        v_funcname := ast_helpers.array_of_strings('array_append'),
-        v_args := to_jsonb(ARRAY[
-          node,
-          data->'current_user_ast'
-        ])
-      )
-    );
+  entity_field = ast_helpers.col(data->>'entity_field');
+
+  IF (data->'any_array')::bool IS TRUE THEN 
+    IF ((data->'include_current_user_id')::bool IS TRUE) THEN 
+      -- DO WE NEED TO CAST THE possible ARRAY(...)::uuid[] ?
+      -- postgres=# select array_append(NULL, 'sdf');
+      -- ERROR:  could not determine polymorphic type because input has type unknown
+      node = ast_helpers.any(
+        v_lexpr := entity_field,
+        v_rexpr := ast.func_call(
+          v_funcname := ast_helpers.array_of_strings('array_append'),
+          v_args := to_jsonb(ARRAY[
+            node,
+            data->'current_user_ast'
+          ])
+        )
+      );
+    ELSE
+      node = ast_helpers.any(
+        v_lexpr := entity_field,
+        v_rexpr := node
+      );
+    END IF;
+  
   ELSE
-    node = ast_helpers.any(
-      v_lexpr := ast_helpers.col(data->>'entity_field'),
-      v_rexpr := node
-    );
+
+    IF (data->'include_current_user_id')::bool IS TRUE THEN 
+      RAISE EXCEPTION 'include_current_user_id NOT SUPPORTED for SETOF';
+    ELSE
+      node = ast.sub_link(
+        v_subLinkType := 'ANY_SUBLINK',
+        v_testexpr := entity_field,
+        v_subselect := node
+      );
+    END IF;
+
+
   END IF;
+
 
   RETURN node;
 END;
@@ -4576,27 +4597,33 @@ DECLARE
   node jsonb;
 BEGIN
 
-  node = ast.sub_link(
-    v_subLinkType := 'ARRAY_SUBLINK',
-    v_subselect := ast.select_stmt(
-      v_op := 'SETOP_NONE',
-      v_targetList := to_jsonb(ARRAY[
-          ast.res_target(
-              v_val := ast_helpers.col('acl', coalesce(data->>'sel_field', 'entity_id'))
-          )
-      ]),
-      v_fromClause := to_jsonb(ARRAY[
-          ast_helpers.range_var(
-              v_schemaname := data->>'acl_schema',
-              v_relname := data->>'acl_table',
-              v_alias := ast.alias(
-                  v_aliasname := 'acl'
-              )
-          )
-      ]),
-      v_whereClause := ast_helpers.acl_where_clause(data)
-    )
+  node = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast_helpers.col('acl', coalesce(data->>'sel_field', 'entity_id'))
+        )
+    ]),
+    v_fromClause := to_jsonb(ARRAY[
+        ast_helpers.range_var(
+            v_schemaname := data->>'acl_schema',
+            v_relname := data->>'acl_table',
+            v_alias := ast.alias(
+                v_aliasname := 'acl'
+            )
+        )
+    ]),
+    v_whereClause := ast_helpers.acl_where_clause(data)
   );
+
+  IF (data->'any_array')::bool IS TRUE THEN
+    node = ast.sub_link(
+      v_subLinkType := 'ARRAY_SUBLINK',
+      v_subselect := node
+    );
+  ELSE
+
+  END IF;
 
   RETURN ast_helpers.entity_wrap_array(
     node,
@@ -4609,43 +4636,46 @@ CREATE FUNCTION ast_helpers.cpt_acl_field_join ( data jsonb ) RETURNS jsonb AS $
 DECLARE
   node jsonb;
 BEGIN
-
-  node = ast.sub_link(
-    v_subLinkType := 'ARRAY_SUBLINK',
-    v_subselect := ast.select_stmt(
-      v_op := 'SETOP_NONE',
-      v_limitOption := 'LIMIT_OPTION_DEFAULT',
-      v_targetList := to_jsonb(ARRAY[
-          ast.res_target(
-              v_val := ast_helpers.col( (CASE (data->>'sel_obj')::bool WHEN TRUE THEN 'obj' ELSE 'acl' END), coalesce(data->>'sel_field', 'entity_id'))
-          )
-      ]),
-      v_fromClause := to_jsonb(ARRAY[
-          ast.join_expr(
-            v_jointype := 'JOIN_INNER',
-            v_larg := ast_helpers.range_var(
-              v_schemaname := data->>'acl_schema',
-              v_relname := data->>'acl_table',
-              v_alias := ast.alias(
-                v_aliasname := 'acl'
-              )
-            ),
-            v_rarg := ast_helpers.range_var(
-              v_schemaname := data->>'obj_schema',
-              v_relname := data->>'obj_table',
-              v_alias := ast.alias(
-                v_aliasname := 'obj'
-              )
-            ),
-            v_quals := ast_helpers.eq(
-              ast_helpers.col('acl', coalesce(data->>'acl_join_field', 'entity_id')),
-              ast_helpers.col('obj', data->>'obj_field')
+  node = ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_limitOption := 'LIMIT_OPTION_DEFAULT',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast_helpers.col( (CASE (data->>'sel_obj')::bool WHEN TRUE THEN 'obj' ELSE 'acl' END), coalesce(data->>'sel_field', 'entity_id'))
+        )
+    ]),
+    v_fromClause := to_jsonb(ARRAY[
+        ast.join_expr(
+          v_jointype := 'JOIN_INNER',
+          v_larg := ast_helpers.range_var(
+            v_schemaname := data->>'acl_schema',
+            v_relname := data->>'acl_table',
+            v_alias := ast.alias(
+              v_aliasname := 'acl'
             )
+          ),
+          v_rarg := ast_helpers.range_var(
+            v_schemaname := data->>'obj_schema',
+            v_relname := data->>'obj_table',
+            v_alias := ast.alias(
+              v_aliasname := 'obj'
+            )
+          ),
+          v_quals := ast_helpers.eq(
+            ast_helpers.col('acl', coalesce(data->>'acl_join_field', 'entity_id')),
+            ast_helpers.col('obj', data->>'obj_field')
           )
-      ]),
-      v_whereClause := ast_helpers.acl_where_clause(data)
-    )
+        )
+    ]),
+    v_whereClause := ast_helpers.acl_where_clause(data)
   );
+
+  IF (data->'any_array')::bool IS TRUE THEN
+    node = ast.sub_link(
+      v_subLinkType := 'ARRAY_SUBLINK',
+      v_subselect := node
+    );
+  END IF;
 
   RETURN ast_helpers.entity_wrap_array(
     node,

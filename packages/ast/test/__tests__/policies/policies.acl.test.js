@@ -72,6 +72,7 @@ it('acl_field w/sel_field', async () => {
 it('acl_field include user', async () => {
   const result = await getPolicyResult('acl_field', {
     include_current_user_id: true,
+    any_array: true,
     entity_field: 'owner_id',
     acl_schema: 'acl_schema',
     acl_table: 'acl_table'
@@ -92,6 +93,7 @@ it('acl_field_mask', async () => {
 it('acl_field_mask include user', async () => {
   const result = await getPolicyResult('acl_field', {
     include_current_user_id: true,
+    any_array: true,
     entity_field: 'owner_id',
     acl_schema: 'acl_schema',
     acl_table: 'acl_table',
@@ -129,6 +131,7 @@ it('acl_field_join w/sel_field + acl_join_field', async () => {
 it('acl_field_join include user', async () => {
   const result = await getPolicyResult('acl_field_join', {
     include_current_user_id: true,
+    any_array: true,
     entity_field: 'owner_id',
     acl_schema: 'acl_schema',
     acl_table: 'acl_table',
