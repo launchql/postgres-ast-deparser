@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test 1`] = `
+"
+  BEGIN
+  SELECT parent.a,
+parent.b,
+parent.c FROM v_schema_name.v_table_name AS parent WHERE new.v_ref_key = parent.v_parent_key
+  INTO new.d,
+new.e,
+new.f;
+  RETURN NEW;
+  END;
+"
+`;
