@@ -25,11 +25,11 @@ it('test', async () => {
         SELECT ast_helpers.denormalized_fields_trigger_body (
             v_schema_name := 'v_schema_name',
             v_table_name := 'v_table_name',
-            v_parent_key := 'v_parent_key',
-            v_ref_key := 'v_ref_key',
+            v_ref_field := 'v_ref_field',
+            v_table_field := 'v_table_field',
             
-            v_sel_fields := '{a,b,c}',
-            v_into_fields := '{d,e,f}'
+            v_ref_fields := '{a,b,c}',
+            v_set_fields := '{d,e,f}'
         )`,
     []
   );
