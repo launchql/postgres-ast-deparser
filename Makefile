@@ -26,8 +26,9 @@ k8-install:
 	$(eval POD_NAME := $(shell kubectl get pods -l app=postgres -n webinc -o jsonpath="{.items[*].metadata.name}"))
 	kubectl exec -n webinc -it $(POD_NAME) /sql-bin/install.sh
 
+# lql dump --deps --project dbs --path $(WEBINC_PATH)/services/packages/graphql-server-service/bootstrap/app.sql
 dump:
-	lql dump --deps --project dbs --path $(WEBINC_PATH)/services/packages/graphql-server-service/bootstrap/app.sql
+	lql dump --deps --project dbs --path dump.sql
 
 seed:
 	createdb launchql
@@ -72,4 +73,3 @@ objects:
 	@cd packages/objects && lql package 
 	@cd packages/transactor && lql package 
 	$(MAKE) install
-
