@@ -393,6 +393,7 @@ BEGIN
           data
       );
   ELSEIF (name = 'multi_owners') THEN
+      -- TODO DEPRECATE multi_owners in favor of using BoolExpr
       policy_ast = ast_helpers.cpt_multi_owners(
           data
       );
