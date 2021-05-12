@@ -83,6 +83,18 @@ BEGIN
     ELSE 
       RETURN ast.string( 'FALSE' );
     END IF;
+  ELSIF (col_type = 'interval') THEN 
+    RETURN ast.type_cast(
+      v_arg := ast.a_const(
+          ast.string(
+            col_val
+          )
+      ),
+      v_typeName := ast.type_name(
+        v_names := ast_helpers.array_of_strings('pg_catalog', col_type),
+        v_typemod := -1
+      )
+    );
   ELSIF (col_type = 'jsonb' OR col_type = 'json') THEN 
     RETURN ast.type_cast(
       v_arg := ast.a_const(
