@@ -4286,6 +4286,18 @@ BEGIN
       output = array_append(output, 'TO');
       output = array_append(output, quote_ident(node->>'newname'));
 
+    ELSEIF ( renameType = 'OBJECT_SCHEMA' ) THEN
+
+      output = array_append(output, 'ALTER');
+      output = array_append(output, 'SCHEMA');
+      IF ((node->'missing_ok')::bool is TRUE) THEN
+        output = array_append(output, 'IF EXISTS');
+      END IF;
+      output = array_append(output, quote_ident(node->>'subname'));
+      output = array_append(output, 'RENAME');
+      output = array_append(output, 'TO');
+      output = array_append(output, quote_ident(node->>'newname'));
+
     ELSEIF ( renameType = 'OBJECT_DOMCONSTRAINT' ) THEN
 
       output = array_append(output, 'ALTER');

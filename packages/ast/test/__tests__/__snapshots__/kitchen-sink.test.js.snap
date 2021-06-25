@@ -461,7 +461,9 @@ CREATE DOMAIN testdomain1 AS int CONSTRAINT unsigned CHECK (value > 0);
 ALTER DOMAIN testdomain1 RENAME CONSTRAINT unsigned TO unsigned_foo;
 ALTER DOMAIN testdomain1 DROP CONSTRAINT unsigned_foo;
 DROP DOMAIN testdomain1;
-ALTER TABLE mytable ADD COLUMN height_in numeric GENERATED ALWAYS AS (height_cm / 2.54) STORED;"
+ALTER TABLE mytable ADD COLUMN height_in numeric GENERATED ALWAYS AS (height_cm / 2.54) STORED;
+ALTER SCHEMA schemaname RENAME TO newname;
+ALTER SCHEMA schemaname OWNER TO newowner;"
 `;
 
 exports[`kitchen sink alter 2`] = `
@@ -569,7 +571,9 @@ CREATE DOMAIN testdomain1 AS int CONSTRAINT unsigned CHECK ( value > 0 );
 ALTER DOMAIN testdomain1 RENAME CONSTRAINT unsigned TO unsigned_foo;
 ALTER DOMAIN testdomain1 DROP CONSTRAINT unsigned_foo;
 DROP DOMAIN testdomain1;
-ALTER TABLE mytable ADD COLUMN  height_in numeric GENERATED ALWAYS AS ( height_cm / 2.54 ) STORED;"
+ALTER TABLE mytable ADD COLUMN  height_in numeric GENERATED ALWAYS AS ( height_cm / 2.54 ) STORED;
+ALTER SCHEMA schemaname RENAME TO newname;
+ALTER SCHEMA schemaname OWNER TO newowner;"
 `;
 
 exports[`kitchen sink alter enums 1`] = `
