@@ -837,6 +837,7 @@ BEGIN
   IF ((context->'bool')::bool IS TRUE) THEN 
     fmt_str = '(%s)';
   END IF;
+
   ctx = jsonb_set(context, '{bool}', to_jsonb(TRUE));
 
   IF (boolop = 'AND_EXPR') THEN
@@ -1164,6 +1165,7 @@ CREATE FUNCTION deparser.boolean_test(
 DECLARE
   output text[];
   booltesttype text;
+  ctx jsonb;
 BEGIN
 
   IF (node->'BooleanTest') IS NULL THEN
@@ -1182,7 +1184,9 @@ BEGIN
 
   booltesttype = node->>'booltesttype';
 
-  output = array_append(output, deparser.expression(node->'arg'));
+  ctx = jsonb_set(context, '{bool}', to_jsonb(TRUE));
+
+  output = array_append(output, deparser.expression(node->'arg', ctx));
 
   output = array_append(output, (CASE
       WHEN booltesttype = 'IS_TRUE' THEN 'IS TRUE'
