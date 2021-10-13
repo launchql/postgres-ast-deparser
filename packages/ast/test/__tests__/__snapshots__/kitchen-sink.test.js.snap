@@ -1186,18 +1186,34 @@ SELECT character,
 
 exports[`kitchen sink sequences 1`] = `
 "CREATE SEQUENCE foo.bar;
-CREATE SEQUENCE mysequence increment 5 start 100;
-CREATE SEQUENCE three increment -1 minvalue 1 maxvalue 3 start 3 CYCLE;
-CREATE SEQUENCE three3 increment -1 minvalue 1 maxvalue 3 start 3 NO CYCLE;
-CREATE SEQUENCE app_jobs.jobs_id_seq start 1 increment 1 NO MINVALUE NO MAXVALUE cache 1;"
+CREATE SEQUENCE mysequence increment 5 START WITH 100;
+CREATE SEQUENCE three increment -1 minvalue 1 maxvalue 3 START WITH 3 CYCLE;
+CREATE SEQUENCE three3 increment -1 minvalue 1 maxvalue 3 START WITH 3 NO CYCLE;
+CREATE SEQUENCE app_jobs.jobs_id_seq START WITH 1 increment 1 NO MINVALUE NO MAXVALUE cache 1;"
 `;
 
 exports[`kitchen sink sequences 2`] = `
 "CREATE SEQUENCE foo.bar;
-CREATE SEQUENCE mysequence increment 5 start 100;
-CREATE SEQUENCE three increment -1 minvalue 1 maxvalue 3 start 3 CYCLE;
-CREATE SEQUENCE three3 increment -1 minvalue 1 maxvalue 3 start 3 NO CYCLE;
-CREATE SEQUENCE app_jobs.jobs_id_seq start 1 increment 1 NO MINVALUE NO MAXVALUE cache 1;"
+CREATE SEQUENCE mysequence increment 5 START WITH 100;
+CREATE SEQUENCE three increment -1 minvalue 1 maxvalue 3 START WITH 3 CYCLE;
+CREATE SEQUENCE three3 increment -1 minvalue 1 maxvalue 3 START WITH 3 NO CYCLE;
+CREATE SEQUENCE app_jobs.jobs_id_seq START WITH 1 increment 1 NO MINVALUE NO MAXVALUE cache 1;"
+`;
+
+exports[`kitchen sink sequences 3`] = `
+"ALTER SEQUENCE public.\\"User_id_seq\\" OWNED BY public.\\"User\\".id;
+ALTER SEQUENCE serial RESTART WITH 105;
+ALTER SEQUENCE payments_id_seq RESTART WITH 22;
+ALTER SEQUENCE payments_id_seq START WITH 22;
+ALTER SEQUENCE payments_id_seq RESTART;"
+`;
+
+exports[`kitchen sink sequences 4`] = `
+"ALTER SEQUENCE public.\\"User_id_seq\\" OWNED BY public.\\"User\\".id;
+ALTER SEQUENCE serial RESTART WITH 105;
+ALTER SEQUENCE payments_id_seq RESTART WITH 22;
+ALTER SEQUENCE payments_id_seq START WITH 22;
+ALTER SEQUENCE payments_id_seq RESTART;"
 `;
 
 exports[`kitchen sink set 1`] = `

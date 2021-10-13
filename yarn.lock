@@ -8752,10 +8752,10 @@ pgpass@1.x:
   dependencies:
     split2 "^3.1.1"
 
-pgsql-deparser@13.1.7, pgsql-deparser@^13.1.7:
-  version "13.1.7"
-  resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-13.1.7.tgz#87d9ec43a40f5aefa343c56193ee41dd03fad225"
-  integrity sha512-VozcqTNfW8xSrV+Qn6PdGWJJ/9jtUJ9F7aDXDBNTWfroSOZkFETP3M71OKzwVBMoBFiifcU+/ryOVGv7XluGhw==
+pgsql-deparser@13.1.9, pgsql-deparser@^13.1.9:
+  version "13.1.9"
+  resolved "https://registry.npmjs.org/pgsql-deparser/-/pgsql-deparser-13.1.9.tgz#3a1f4f70caee9b66100aca3708210d09a8556616"
+  integrity sha512-bhxKh9tTtVr45CkfJYCUdE3cyX0Ikcp3KRZLmYEUiFxwm3xP+xSS+gQocBUj1J7Ulwk/a2rBUzsZxyNU++l57g==
   dependencies:
     "@babel/runtime" "^7.11.2"
     dotty "0.1.0"
@@ -8790,15 +8790,15 @@ pgsql-parser@13.1.6:
     pgsql-deparser "^13.1.6"
     pgsql-enums "^13.1.2"
 
-pgsql-parser@13.1.7:
-  version "13.1.7"
-  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-13.1.7.tgz#d8e81c62d625342245c4ae0a42f909eec138257f"
-  integrity sha512-iLxtU06NEg0RjEB/WMBaQz2PLhZLhwyoVswO5PLhn/iu53rLc6T0pjBcuugEiWJ6k92ivna1Aj9W/q8b2rBUIw==
+pgsql-parser@13.1.9:
+  version "13.1.9"
+  resolved "https://registry.npmjs.org/pgsql-parser/-/pgsql-parser-13.1.9.tgz#e70140fd9a8f54373e6e1393434520a3a88f6053"
+  integrity sha512-wI+04o8q8CfeEr+u1ax0xQOJ9RkRqfgSUJ7u7ewnangF/V1AdH5NNAsDpDoCGYzSAjy8z9zg4v4JdBYsYEfrSA==
   dependencies:
     "@babel/runtime" "^7.11.2"
     libpg-query "13.1.1"
     minimist "^1.2.5"
-    pgsql-deparser "^13.1.7"
+    pgsql-deparser "^13.1.9"
     pgsql-enums "^13.1.2"
 
 picomatch@^2.0.4, picomatch@^2.2.3:

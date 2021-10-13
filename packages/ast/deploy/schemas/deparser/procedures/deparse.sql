@@ -1873,6 +1873,35 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.alter_seq_stmt(
+  node jsonb,
+  context jsonb default '{}'::jsonb
+) returns text as $$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'AlterSeqStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterSeqStmt';
+    END IF;
+
+    IF (node->'AlterSeqStmt'->'sequence') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterSeqStmt';
+    END IF;
+
+    node = node->'AlterSeqStmt';
+
+    output = array_append(output, 'ALTER SEQUENCE');
+    output = array_append(output, deparser.range_var(node->'sequence'));
+
+    IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
+      output = array_append(output, deparser.list(node->'options', ' ', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.do_stmt(
   node jsonb,
   context jsonb default '{}'::jsonb
@@ -2026,6 +2055,7 @@ CREATE FUNCTION deparser.def_elem(
 ) returns text as $$
 DECLARE
   defname text;
+  output text[];
 BEGIN
     IF (node->'DefElem') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'DefElem';
@@ -2093,6 +2123,33 @@ BEGIN
         ELSE 
           RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
         END IF;
+      ELSIF (defname = 'owned_by') THEN 
+        output = ARRAY['OWNED BY']::text;
+
+        IF (node->'arg' IS NOT NULL AND jsonb_array_length(node->'arg') > 0) THEN 
+          output = array_append(output, deparser.list_quotes(node->'arg', '.', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
+        END IF;
+
+        RETURN array_to_string(output, ' ');
+
+      ELSIF (defname = 'start') THEN 
+
+        output = ARRAY['START WITH']::text;
+        output = array_append(output, deparser.expression(node->'arg', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
+
+        RETURN array_to_string(output, ' ');
+
+      ELSIF (defname = 'restart') THEN 
+
+        IF (node->'arg' IS NOT NULL) THEN 
+          output = ARRAY['RESTART WITH']::text;
+          output = array_append(output, deparser.expression(node->'arg', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
+        ELSE
+          output = ARRAY['RESTART']::text;
+        END IF;
+
+        RETURN array_to_string(output, ' ');
+
       ELSIF (node->'arg' IS NOT NULL) THEN
         RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
       END IF;
@@ -5184,6 +5241,8 @@ BEGIN
     RETURN deparser.alter_enum_stmt(expr, context);
   ELSEIF (expr->>'AlterPolicyStmt') IS NOT NULL THEN
     RETURN deparser.alter_policy_stmt(expr, context);
+  ELSEIF (expr->>'AlterSeqStmt') IS NOT NULL THEN
+    RETURN deparser.alter_seq_stmt(expr, context);
   ELSEIF (expr->>'AlterTableCmd') IS NOT NULL THEN
     RETURN deparser.alter_table_cmd(expr, context);
   ELSEIF (expr->>'AlterTableStmt') IS NOT NULL THEN

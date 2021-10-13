@@ -91,6 +91,7 @@ describe('kitchen sink', () => {
   });
   it('sequences', async () => {
     await check('sequences/sequences.sql');
+    await check('sequences/alter.sql');
   });
   it('policies', async () => {
     await check('policies/custom.sql');
