@@ -6043,6 +6043,7 @@ BEGIN
   IF ((context->'bool')::bool IS TRUE) THEN 
     fmt_str = '(%s)';
   END IF;
+
   ctx = jsonb_set(context, '{bool}', to_jsonb(TRUE));
 
   IF (boolop = 'AND_EXPR') THEN
@@ -6327,6 +6328,7 @@ CREATE FUNCTION deparser.boolean_test ( node jsonb, context jsonb DEFAULT '{}'::
 DECLARE
   output text[];
   booltesttype text;
+  ctx jsonb;
 BEGIN
 
   IF (node->'BooleanTest') IS NULL THEN
@@ -6345,7 +6347,9 @@ BEGIN
 
   booltesttype = node->>'booltesttype';
 
-  output = array_append(output, deparser.expression(node->'arg'));
+  ctx = jsonb_set(context, '{bool}', to_jsonb(TRUE));
+
+  output = array_append(output, deparser.expression(node->'arg', ctx));
 
   output = array_append(output, (CASE
       WHEN booltesttype = 'IS_TRUE' THEN 'IS TRUE'
@@ -6957,6 +6961,31 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION deparser.alter_seq_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'AlterSeqStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterSeqStmt';
+    END IF;
+
+    IF (node->'AlterSeqStmt'->'sequence') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'AlterSeqStmt';
+    END IF;
+
+    node = node->'AlterSeqStmt';
+
+    output = array_append(output, 'ALTER SEQUENCE');
+    output = array_append(output, deparser.range_var(node->'sequence'));
+
+    IF (node->'options' IS NOT NULL AND jsonb_array_length(node->'options') > 0) THEN 
+      output = array_append(output, deparser.list(node->'options', ' ', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
+    END IF;
+
+    RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION deparser.do_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
@@ -7095,6 +7124,7 @@ $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 CREATE FUNCTION deparser.def_elem ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
 DECLARE
   defname text;
+  output text[];
 BEGIN
     IF (node->'DefElem') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'DefElem';
@@ -7162,6 +7192,33 @@ BEGIN
         ELSE 
           RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
         END IF;
+      ELSIF (defname = 'owned_by') THEN 
+        output = ARRAY['OWNED BY']::text;
+
+        IF (node->'arg' IS NOT NULL AND jsonb_array_length(node->'arg') > 0) THEN 
+          output = array_append(output, deparser.list_quotes(node->'arg', '.', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
+        END IF;
+
+        RETURN array_to_string(output, ' ');
+
+      ELSIF (defname = 'start') THEN 
+
+        output = ARRAY['START WITH']::text;
+        output = array_append(output, deparser.expression(node->'arg', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
+
+        RETURN array_to_string(output, ' ');
+
+      ELSIF (defname = 'restart') THEN 
+
+        IF (node->'arg' IS NOT NULL) THEN 
+          output = ARRAY['RESTART WITH']::text;
+          output = array_append(output, deparser.expression(node->'arg', jsonb_set(context, '{sequence}', to_jsonb(TRUE))));
+        ELSE
+          output = ARRAY['RESTART']::text;
+        END IF;
+
+        RETURN array_to_string(output, ' ');
+
       ELSIF (node->'arg' IS NOT NULL) THEN
         RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
       END IF;
@@ -9166,6 +9223,18 @@ BEGIN
       output = array_append(output, 'TO');
       output = array_append(output, quote_ident(node->>'newname'));
 
+    ELSEIF ( renameType = 'OBJECT_SCHEMA' ) THEN
+
+      output = array_append(output, 'ALTER');
+      output = array_append(output, 'SCHEMA');
+      IF ((node->'missing_ok')::bool is TRUE) THEN
+        output = array_append(output, 'IF EXISTS');
+      END IF;
+      output = array_append(output, quote_ident(node->>'subname'));
+      output = array_append(output, 'RENAME');
+      output = array_append(output, 'TO');
+      output = array_append(output, quote_ident(node->>'newname'));
+
     ELSEIF ( renameType = 'OBJECT_DOMCONSTRAINT' ) THEN
 
       output = array_append(output, 'ALTER');
@@ -9944,6 +10013,8 @@ BEGIN
     RETURN deparser.alter_enum_stmt(expr, context);
   ELSEIF (expr->>'AlterPolicyStmt') IS NOT NULL THEN
     RETURN deparser.alter_policy_stmt(expr, context);
+  ELSEIF (expr->>'AlterSeqStmt') IS NOT NULL THEN
+    RETURN deparser.alter_seq_stmt(expr, context);
   ELSEIF (expr->>'AlterTableCmd') IS NOT NULL THEN
     RETURN deparser.alter_table_cmd(expr, context);
   ELSEIF (expr->>'AlterTableStmt') IS NOT NULL THEN
@@ -10175,11 +10246,14 @@ BEGIN
 
   body = trim(format('
   BEGIN
-  %1s
-  INTO %2s;
+  IF (NEW.%1s IS NOT NULL) THEN
+   %2s
+   INTO %3s;
+  END IF;
   RETURN NEW;
   END;
   ', 
+  v_table_field,
   deparser.deparse(ast_expr),
   deparser.list(to_jsonb(set_fields), E',\n')
   ));
