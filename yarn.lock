@@ -1038,6 +1038,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.15.3":
+  version "7.16.5"
+  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.16.5.tgz#7f3e34bf8bdbbadf03fbb7b1ea0d929569c9487a"
+  integrity sha512-TXWihFIS3Pyv5hzR7j6ihmeLkZfrXGxAr5UfSl8CHf+6q/wpiYDkUau0czckpYG8QmnCIuPpdLtuA9VmuGGyMA==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.10.4", "@babel/template@^7.14.5", "@babel/template@^7.3.3", "@babel/template@^7.8.6":
   version "7.14.5"
   resolved "https://registry.npmjs.org/@babel/template/-/template-7.14.5.tgz#a9bc9d8b33354ff6e55a9c60d1109200a68974f4"
@@ -1386,6 +1393,14 @@
     "@babel/runtime" "^7.12.1"
     envalid "^6.0.2"
 
+"@launchql/db-env@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/@launchql/db-env/-/db-env-0.2.0.tgz#0350b79684bb236af009bb1af2b972c35291279a"
+  integrity sha512-L6Q0IkQsdvbuvPLv8eF2oGaQXUt+P4Hd8AwUnFdKTjrSJvlQgcUDEzt1T7PVtkD15LWctv29z4rs1dvr5Y8F+g==
+  dependencies:
+    "@babel/runtime" "^7.15.3"
+    envalid "^6.0.2"
+
 "@launchql/db-template@^1.0.2":
   version "1.0.2"
   resolved "https://registry.npmjs.org/@launchql/db-template/-/db-template-1.0.2.tgz#79280f9720c35f9711907b5536afa53095ffe7e3"
@@ -1417,12 +1432,33 @@
     streamify-string "1.0.1"
     uuid "8.3.1"
 
+"@launchql/db-testing@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.npmjs.org/@launchql/db-testing/-/db-testing-2.2.1.tgz#47a2b8a6c81856d87935e1c22ce4a1f61aecdf13"
+  integrity sha512-kVMe/vctOmBwfsfGZSxV3R/AIvs7JpaANxDPlekaY69E7rVMtaTZT0u+t0jWnEfWt5XziKgddTewLegQj5geJQ==
+  dependencies:
+    "@babel/runtime" "^7.15.3"
+    "@launchql/db-utils" "^2.2.0"
+    envalid "6.0.2"
+    pg "8.7.1"
+    pg-promise "10.11.0"
+    streamify-string "1.0.1"
+    uuid "8.3.2"
+
 "@launchql/db-transform@^1.1.4":
   version "1.1.4"
   resolved "https://registry.npmjs.org/@launchql/db-transform/-/db-transform-1.1.4.tgz#0d4ccbbac7cc0f8c5f06a0c97c7f2a96aee0b1b2"
   integrity sha512-NJreyzgdducwE7tO3Fbs+zFRN5oBHPGPoun4YJZAFqW+eBkZPNHeHZCdYaRctpZ6QxoIbwe9qWEuEYuMjmH8lA==
   dependencies:
     "@babel/runtime" "^7.12.1"
+    pgsql-parser "13.1.6"
+
+"@launchql/db-transform@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/@launchql/db-transform/-/db-transform-1.2.0.tgz#411678eddf7511c13f8accaa497075177b8887af"
+  integrity sha512-sgT90IN4TkycifcHBzUKA05p3SOe3seN3nHv2BZqT95yL0XyXbQ4YpKxSsxZxZda2H7ACy6rU/3BUaWoJflO0g==
+  dependencies:
+    "@babel/runtime" "^7.15.3"
     pgsql-parser "13.1.6"
 
 "@launchql/db-utils@^2.1.2", "@launchql/db-utils@^2.1.4":
@@ -1441,6 +1477,27 @@
     node-walkup "^1.1.1"
     parse-package-name "0.1.0"
     pg "^8.4.2"
+    pgsql-parser "13.1.6"
+    rimraf "^3.0.2"
+    semver "^5.5.1"
+    shelljs "^0.8.2"
+
+"@launchql/db-utils@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.npmjs.org/@launchql/db-utils/-/db-utils-2.2.0.tgz#bd0ebed8a6fcc21f5f4de1b6c38475ae76e07fe1"
+  integrity sha512-Y+DbvxsPJ4Egrno1530OLw95RZ4DQRC+QR92JK2nAazihHEULTjtINUkbG0rUeoWQlsG8o4yMYv97Eodm8zw+A==
+  dependencies:
+    "@babel/runtime" "^7.15.3"
+    "@launchql/db-env" "^0.2.0"
+    "@launchql/db-template" "^1.0.2"
+    "@launchql/db-transform" "^1.2.0"
+    envalid "6.0.2"
+    fuzzy "0.1.3"
+    glob "7.1.7"
+    mkdirp "^1.0.4"
+    node-walkup "^1.1.1"
+    parse-package-name "0.1.0"
+    pg "^8.7.1"
     pgsql-parser "13.1.6"
     rimraf "^3.0.2"
     semver "^5.5.1"
@@ -3065,6 +3122,11 @@ assert-options@0.6.2:
   version "0.6.2"
   resolved "https://registry.npmjs.org/assert-options/-/assert-options-0.6.2.tgz#cf0b27097b61aa1987d63628cbbaea11353f999a"
   integrity sha512-KP9S549XptFAPGYmLRnIjQBL4/Ry8Jx5YNLQZ/l+eejqbTidBMnw4uZSAsUrzBq/lgyqDYqxcTF7cOxZb9gyEw==
+
+assert-options@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/assert-options/-/assert-options-0.7.0.tgz#82c27618d9c0baa5e9da8ef607ee261a44ed6e5e"
+  integrity sha512-7q9uNH/Dh8gFgpIIb9ja8PJEWA5AQy3xnBC8jtKs8K/gNVCr1K6kIvlm59HUyYgvM7oEDoLzGgPcGd9FqhtXEQ==
 
 assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
@@ -5547,7 +5609,7 @@ glob@7.1.6:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^7.0.0, glob@^7.0.3, glob@^7.1.1, glob@^7.1.2, glob@^7.1.3, glob@^7.1.4, glob@^7.1.6:
+glob@7.1.7, glob@^7.0.0, glob@^7.0.3, glob@^7.1.1, glob@^7.1.2, glob@^7.1.3, glob@^7.1.4, glob@^7.1.6:
   version "7.1.7"
   resolved "https://registry.npmjs.org/glob/-/glob-7.1.7.tgz#3b193e9233f01d42d0b3f78294bbeeb418f94a90"
   integrity sha512-OvD9ENzPLbegENnYP5UUfJIirTg4+XwMWGaQfQTY0JenxNvvIKP3U3/tAQSPIu/lHxXYSZmpXlUHeqAIdKzBLQ==
@@ -8642,10 +8704,30 @@ pg-minify@1.6.1:
   resolved "https://registry.npmjs.org/pg-minify/-/pg-minify-1.6.1.tgz#d2c735cdaab171f9ab82bb73aded99ace2d88b8c"
   integrity sha512-ujanxJJB9CSDUvlAOshtjdKAywOPR2vY0a7D+vvgk5rbrYcthZA7TjpN+Z+UwZsz/G/bUexYDT6huE33vYVN0g==
 
+pg-minify@1.6.2:
+  version "1.6.2"
+  resolved "https://registry.npmjs.org/pg-minify/-/pg-minify-1.6.2.tgz#055acfe862cfca3ca0a529020846b0f308d68e70"
+  integrity sha512-1KdmFGGTP6jplJoI8MfvRlfvMiyBivMRP7/ffh4a11RUFJ7kC2J0ZHlipoKiH/1hz+DVgceon9U2qbaHpPeyPg==
+
 pg-pool@^3.2.1, pg-pool@^3.2.2, pg-pool@^3.3.0:
   version "3.3.0"
   resolved "https://registry.npmjs.org/pg-pool/-/pg-pool-3.3.0.tgz#12d5c7f65ea18a6e99ca9811bd18129071e562fc"
   integrity sha512-0O5huCql8/D6PIRFAlmccjphLYWC+JIzvUhSzXSpGaf+tjTZc4nn+Lr7mLXBbFJfvwbP0ywDv73EiaBsxn7zdg==
+
+pg-pool@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.npmjs.org/pg-pool/-/pg-pool-3.4.1.tgz#0e71ce2c67b442a5e862a9c182172c37eda71e9c"
+  integrity sha512-TVHxR/gf3MeJRvchgNHxsYsTCHQ+4wm3VIHSS19z8NC0+gioEhq1okDY1sm/TYbfoP6JLFx01s0ShvZ3puP/iQ==
+
+pg-promise@10.11.0:
+  version "10.11.0"
+  resolved "https://registry.npmjs.org/pg-promise/-/pg-promise-10.11.0.tgz#ae6708983650eee438d976e71d1d36476fefb559"
+  integrity sha512-UntgHZNv+gpGJKhh+tzGSGHLkniKWV+ZQ8/SNdtvElsg9Aa7ZJ4Fgyl6pl2x0ZtJ7uFNy+OIq3Z+Ei6iplqTDQ==
+  dependencies:
+    assert-options "0.7.0"
+    pg "8.7.1"
+    pg-minify "1.6.2"
+    spex "3.2.0"
 
 pg-promise@10.7.1:
   version "10.7.1"
@@ -8729,6 +8811,19 @@ pg@8.4.2:
     pg-connection-string "^2.4.0"
     pg-pool "^3.2.2"
     pg-protocol "^1.3.0"
+    pg-types "^2.1.0"
+    pgpass "1.x"
+
+pg@8.7.1, pg@^8.7.1:
+  version "8.7.1"
+  resolved "https://registry.npmjs.org/pg/-/pg-8.7.1.tgz#9ea9d1ec225980c36f94e181d009ab9f4ce4c471"
+  integrity sha512-7bdYcv7V6U3KAtWjpQJJBww0UEsWuh4yQ/EjNf2HeO/NnvKjpvhEIe/A/TleP6wtmSKnUnghs5A9jUoK6iDdkA==
+  dependencies:
+    buffer-writer "2.0.0"
+    packet-reader "1.0.0"
+    pg-connection-string "^2.5.0"
+    pg-pool "^3.4.1"
+    pg-protocol "^1.5.0"
     pg-types "^2.1.0"
     pgpass "1.x"
 
@@ -10006,6 +10101,11 @@ spex@3.0.2:
   resolved "https://registry.npmjs.org/spex/-/spex-3.0.2.tgz#7d0df635d92210847d5d92ce8abf45dfba3a8549"
   integrity sha512-ZNCrOso+oNv5P01HCO4wuxV9Og5rS6ms7gGAqugfBPjx1QwfNXJI3T02ldfaap1O0dlT1sB0Rk+mhDqxt3Z27w==
 
+spex@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.npmjs.org/spex/-/spex-3.2.0.tgz#fa4a21922407e112624977b445a6d634578a1127"
+  integrity sha512-9srjJM7NaymrpwMHvSmpDeIK5GoRMX/Tq0E8aOlDPS54dDnDUIp30DrP9SphMPEETDLzEM9+4qo+KipmbtPecg==
+
 split-on-first@^1.0.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/split-on-first/-/split-on-first-1.1.0.tgz#f610afeee3b12bce1d0c30425e76398b78249a5f"
@@ -10858,15 +10958,15 @@ uuid@8.3.1:
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.1.tgz#2ba2e6ca000da60fce5a196954ab241131e05a31"
   integrity sha512-FOmRr+FmWEIG8uhZv6C2bTgEVXsHk08kE7mPlrBbEe+c3r9pjceVPgupIfNIhc4yx55H69OXANrUaSuu9eInKg==
 
+uuid@8.3.2, uuid@^8.3.0:
+  version "8.3.2"
+  resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
 uuid@^3.0.1, uuid@^3.3.2:
   version "3.4.0"
   resolved "https://registry.npmjs.org/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
-
-uuid@^8.3.0:
-  version "8.3.2"
-  resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
-  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"

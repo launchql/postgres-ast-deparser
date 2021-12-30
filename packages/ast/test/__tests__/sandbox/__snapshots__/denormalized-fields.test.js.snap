@@ -3,12 +3,14 @@
 exports[`test 1`] = `
 "
   BEGIN
-  SELECT ref.a,
+  IF (NEW.v_table_field IS NOT NULL) THEN
+   SELECT ref.a,
 ref.b,
 ref.c FROM v_schema_name.v_table_name AS ref WHERE ref.v_ref_field = new.v_table_field
-  INTO new.d,
+   INTO new.d,
 new.e,
 new.f;
+  END IF;
   RETURN NEW;
   END;
 "

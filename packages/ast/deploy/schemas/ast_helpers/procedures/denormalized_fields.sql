@@ -56,11 +56,14 @@ BEGIN
 
   body = trim(format('
   BEGIN
-  %1s
-  INTO %2s;
+  IF (NEW.%1s IS NOT NULL) THEN
+   %2s
+   INTO %3s;
+  END IF;
   RETURN NEW;
   END;
   ', 
+  v_table_field,
   deparser.deparse(ast_expr),
   deparser.list(to_jsonb(set_fields), E',\n')
   ));
