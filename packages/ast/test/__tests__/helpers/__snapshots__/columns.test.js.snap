@@ -1,0 +1,409 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`alter_table_add_column bigint 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.bigint;",
+}
+`;
+
+exports[`alter_table_add_column bigserial 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.bigserial;",
+}
+`;
+
+exports[`alter_table_add_column bit 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name bit;",
+}
+`;
+
+exports[`alter_table_add_column bit(4) 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.bit(4);",
+}
+`;
+
+exports[`alter_table_add_column boolean 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.boolean;",
+}
+`;
+
+exports[`alter_table_add_column box 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.box;",
+}
+`;
+
+exports[`alter_table_add_column bytea 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.bytea;",
+}
+`;
+
+exports[`alter_table_add_column char(1) 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.char(1);",
+}
+`;
+
+exports[`alter_table_add_column cidr 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.cidr;",
+}
+`;
+
+exports[`alter_table_add_column circle 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.circle;",
+}
+`;
+
+exports[`alter_table_add_column citext 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.citext;",
+}
+`;
+
+exports[`alter_table_add_column date 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.date;",
+}
+`;
+
+exports[`alter_table_add_column float(1) 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.float(1);",
+}
+`;
+
+exports[`alter_table_add_column float8 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.float8;",
+}
+`;
+
+exports[`alter_table_add_column geometry(point, 4326) 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.geometry(point, 4326);",
+}
+`;
+
+exports[`alter_table_add_column geometry(polygon, 4326) 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.geometry(polygon, 4326);",
+}
+`;
+
+exports[`alter_table_add_column inet 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.inet;",
+}
+`;
+
+exports[`alter_table_add_column int 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name int;",
+}
+`;
+
+exports[`alter_table_add_column interval 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name interval;",
+}
+`;
+
+exports[`alter_table_add_column json 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.json;",
+}
+`;
+
+exports[`alter_table_add_column lseg 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.lseg;",
+}
+`;
+
+exports[`alter_table_add_column macaddr 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.macaddr;",
+}
+`;
+
+exports[`alter_table_add_column money 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.money;",
+}
+`;
+
+exports[`alter_table_add_column numeric(1,0) 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.numeric(1,0);",
+}
+`;
+
+exports[`alter_table_add_column path 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.path;",
+}
+`;
+
+exports[`alter_table_add_column point 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.point;",
+}
+`;
+
+exports[`alter_table_add_column polygon 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.polygon;",
+}
+`;
+
+exports[`alter_table_add_column real 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.real;",
+}
+`;
+
+exports[`alter_table_add_column serial 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.serial;",
+}
+`;
+
+exports[`alter_table_add_column smallint 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.smallint;",
+}
+`;
+
+exports[`alter_table_add_column smallserial 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.smallserial;",
+}
+`;
+
+exports[`alter_table_add_column text 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.text;",
+}
+`;
+
+exports[`alter_table_add_column time 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name time;",
+}
+`;
+
+exports[`alter_table_add_column time with time zone 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.time with time zone;",
+}
+`;
+
+exports[`alter_table_add_column timestamp 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name timestamp;",
+}
+`;
+
+exports[`alter_table_add_column timestamp with time zone 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.timestamp with time zone;",
+}
+`;
+
+exports[`alter_table_add_column tsquery 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.tsquery;",
+}
+`;
+
+exports[`alter_table_add_column tsvector 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.tsvector;",
+}
+`;
+
+exports[`alter_table_add_column uuid 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.uuid;",
+}
+`;
+
+exports[`alter_table_add_column uuid[] 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.uuid[];",
+}
+`;
+
+exports[`alter_table_add_column varbit 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.varbit;",
+}
+`;
+
+exports[`alter_table_add_column varbit(4) 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.varbit(4);",
+}
+`;
+
+exports[`alter_table_add_column varchar(10) 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.varchar(10);",
+}
+`;
+
+exports[`alter_table_add_column xml 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name pg_catalog.xml;",
+}
+`;
+
+exports[`arrays 1`] = `
+Object {
+  "deparse": "ALTER TABLE v_schema_name.v_table_name ADD COLUMN v_column_name uuid[];",
+}
+`;
+
+exports[`geometry 1`] = `
+Object {
+  "deparse": "geometry(polygon, 4326)",
+}
+`;
+
+exports[`types test bigint 1`] = `undefined`;
+
+exports[`types test bigserial 1`] = `undefined`;
+
+exports[`types test bit 1`] = `undefined`;
+
+exports[`types test bit(4) 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test boolean 1`] = `undefined`;
+
+exports[`types test box 1`] = `undefined`;
+
+exports[`types test bytea 1`] = `undefined`;
+
+exports[`types test char(1) 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test cidr 1`] = `undefined`;
+
+exports[`types test circle 1`] = `undefined`;
+
+exports[`types test citext 1`] = `undefined`;
+
+exports[`types test date 1`] = `undefined`;
+
+exports[`types test float(1) 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test float8 1`] = `undefined`;
+
+exports[`types test geometry(point, 4326) 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test geometry(polygon, 4326) 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test inet 1`] = `undefined`;
+
+exports[`types test int 1`] = `undefined`;
+
+exports[`types test interval 1`] = `undefined`;
+
+exports[`types test json 1`] = `undefined`;
+
+exports[`types test lseg 1`] = `undefined`;
+
+exports[`types test macaddr 1`] = `undefined`;
+
+exports[`types test money 1`] = `undefined`;
+
+exports[`types test numeric(1,0) 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test path 1`] = `undefined`;
+
+exports[`types test point 1`] = `undefined`;
+
+exports[`types test polygon 1`] = `undefined`;
+
+exports[`types test real 1`] = `undefined`;
+
+exports[`types test serial 1`] = `undefined`;
+
+exports[`types test smallint 1`] = `undefined`;
+
+exports[`types test smallserial 1`] = `undefined`;
+
+exports[`types test text 1`] = `undefined`;
+
+exports[`types test time 1`] = `undefined`;
+
+exports[`types test time with time zone 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test timestamp 1`] = `undefined`;
+
+exports[`types test timestamp with time zone 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test tsquery 1`] = `undefined`;
+
+exports[`types test tsvector 1`] = `undefined`;
+
+exports[`types test uuid 1`] = `undefined`;
+
+exports[`types test uuid[] 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test varbit 1`] = `undefined`;
+
+exports[`types test varbit(4) 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test varchar(10) 1`] = `
+Object {
+  "contains": true,
+}
+`;
+
+exports[`types test xml 1`] = `undefined`;

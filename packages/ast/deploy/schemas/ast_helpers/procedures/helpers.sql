@@ -1161,6 +1161,97 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.column_type_identifier (
+  v_column_name text,
+  v_column_type text,
+  v_is_array bool 
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  IF (v_is_array IS TRUE) THEN 
+    ast = ast.type_name(
+      v_names := to_jsonb(ARRAY[
+        -- ast.string('pg_catalog'),
+        ast.string(v_column_type)
+      ]),
+      v_arrayBounds := to_jsonb(ARRAY[
+        ast.integer(-1)
+      ])
+    );
+  ELSE 
+    ast = ast.type_name(
+      v_names := to_jsonb(ARRAY[
+        -- ast.string('pg_catalog'),
+        ast.string(v_column_type)
+      ])
+    );
+  END IF;
+  RETURN ast;
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.column_geotype_identifier (
+  v_column_geo_type text,
+  v_column_geo_num int DEFAULT 4326
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  RETURN ast.type_name(
+    v_names := to_jsonb(ARRAY[
+      ast.string('geometry')
+    ]),
+    v_typmods := to_jsonb(ARRAY[
+      ast.column_ref(
+        v_fields := to_jsonb(ARRAY[
+          ast.string(v_column_geo_type)
+        ])
+      ),
+      ast.a_const( ast.integer(v_column_geo_num) )
+    ]),
+    v_typemod := -1
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
+CREATE FUNCTION ast_helpers.alter_table_add_column (
+  v_schema_name text,
+  v_table_name text,
+  v_column_name text,
+  v_column_type text,
+  v_is_array bool 
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  ast jsonb;
+BEGIN
+  ast = ast_helpers.column_type_identifier(
+    v_column_name := v_column_name,
+    v_column_type := v_column_type,
+    v_is_array := v_is_array
+  );
+
+  RETURN ast_helpers.alter_table_add_column(
+    v_schema_name := v_schema_name,
+    v_table_name := v_table_name,
+    v_column_name := v_column_name,
+    v_column_type := ast
+  );
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 -- for control over more complex types, use this
 CREATE FUNCTION ast_helpers.alter_table_add_column (
   v_schema_name text,
