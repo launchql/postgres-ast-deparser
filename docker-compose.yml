@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 services:
   postgres:
     container_name: launchql-postgres
@@ -14,3 +14,11 @@ services:
       - ./bin:/sql-bin
       - ./extensions:/sql-extensions
       - ./packages:/sql-packages
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 8G
