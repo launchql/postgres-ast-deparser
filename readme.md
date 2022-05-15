@@ -12,9 +12,9 @@ Written in pure plpgsql so that it can be installed anywhere, including managed 
 
 ### areas of interest
 
-- [packages/ast/deploy/schemas/ast/procedures/types.sql](AST Nodes and types)
-- [packages/ast/deploy/schemas/ast_helpers/procedures/helpers.sql](Helpers) for higher level things, like `create_table`
-- [packages/ast/deploy/schemas/deparser/procedures/deparse.sql](Deparser) AST Node Deparser — where the magic happens ✨ 
+- [AST Nodes and types](packages/ast/deploy/schemas/ast/procedures/types.sql)
+- [Helpers for higher level things, like `create_table`](packages/ast/deploy/schemas/ast_helpers/procedures/helpers.sql)
+- [Deparser](packages/ast/deploy/schemas/deparser/procedures/deparse.sql) — where the magic happens ✨ 
 ## Usage
 
 Use the `deparser.deparse()` function to deparse Postgres ASTs, in SQL:
