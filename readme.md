@@ -56,6 +56,29 @@ produces
 DROP FUNCTION schema.name;
 ```
 
+#### alter table set column data type
+
+```sql
+select deparser.expression(
+    ast_helpers.alter_table_set_column_data_type(
+        v_schema_name := 'myschema',
+        v_table_name := 'mytable',
+        v_column_name := 'mycolumn1',
+        v_old_column_type := 'othertype',
+        v_new_column_type := 'mycustomtype'
+    )
+);
+```
+
+produces
+
+```sql
+ALTER TABLE
+    myschema.mytable
+ALTER COLUMN
+    mycolumn1 TYPE mycustomtype USING mycolumn1::mycustomtype;
+```
+
 #### create function
 
 Here is an example that uses `create_function`:
@@ -111,6 +134,92 @@ CREATE FUNCTION schema.name (
 $LQLCODEZ$ LANGUAGE plpgsql VOLATILE;
  ```
 
+#### table grant
+
+```sql
+select deparser.expression(
+    ast_helpers.table_grant(
+        v_schema_name := 'myschema',
+        v_table_name := 'mytable',
+        v_priv_name := 'update',
+        v_cols := ARRAY['col1', 'column-name-dashes'],
+        v_is_grant := true,
+        v_role_name := 'authenticated'
+        )
+    );
+```
+
+produces
+
+```sql
+GRANT UPDATE ( col1, "column-name-dashes" )
+    ON TABLE myschema.mytable TO authenticated;
+```
+
+#### create policy
+
+```sql
+select deparser.expression(
+    ast_helpers.create_policy(
+        v_policy_name := 'mypolicy'::text,
+        v_schema_name := 'myschema'::text,
+        v_table_name := 'mytable'::text,
+        v_roles := '{app_user, auth_user}'::text[],
+        v_qual := ast.bool_expr(
+            v_boolop := 'OR_EXPR',
+            v_args := to_jsonb(
+                ARRAY[
+                    ast.a_expr(
+                        v_kind := 'AEXPR_OP',
+                        v_name := to_jsonb(ARRAY[
+                            ast.string('=')
+                        ]),
+                        v_lexpr := ast.func_call(
+                            v_funcname := to_jsonb(ARRAY[
+                                ast.string('roles_public'),
+                                ast.string('current_role_id')
+                            ])
+                        ),
+                        v_rexpr := ast.column_ref(
+                            v_fields := to_jsonb(ARRAY[
+                                ast.string('role_id')
+                            ])
+                        )
+                    ),
+                    ast.func_call(
+                        v_funcname := to_jsonb(ARRAY[
+                            ast.string('permissions_private'),
+                            ast.string('permitted_on_role')
+                        ]),
+                        v_args := to_jsonb(ARRAY[
+                            ast.column_ref(
+                                v_fields := to_jsonb(ARRAY[
+                                    ast.string('group_id')
+                                ])
+                            )
+                        ])
+                    )
+                ]
+            )
+        ),
+        v_cmd_name := 'SELECT'::text,
+        v_permissive := false::boolean
+    )
+);
+```
+
+produces
+
+```sql
+CREATE POLICY mypolicy ON myschema.mytable AS RESTRICTIVE FOR
+SELECT
+    TO app_user,
+    auth_user USING (
+        roles_public.current_role_id() = role_id
+        OR permissions_private.permitted_on_role(group_id)
+    );
+```
+
 #### alter policy
 
 ```sql
@@ -154,6 +263,37 @@ ALTER POLICY mypolicy
     OR requester_id = dbe.get_other_uid(c, b)
 );
 ```
+
+#### denormalized fields trigger
+
+```sql
+SELECT ast_helpers.denormalized_fields_trigger_body (
+    v_schema_name := 'v_schema_name',
+    v_table_name := 'v_table_name',
+    v_ref_field := 'v_ref_field',
+    v_table_field := 'v_table_field',
+    
+    v_ref_fields := '{a,b,c}',
+    v_set_fields := '{d,e,f}'
+);
+```
+
+produces
+
+```sql
+BEGIN
+  IF (NEW.v_table_field IS NOT NULL) THEN
+   SELECT ref.a,
+ref.b,
+ref.c FROM v_schema_name.v_table_name AS ref WHERE ref.v_ref_field = new.v_table_field
+   INTO new.d,
+new.e,
+new.f;
+  END IF;
+  RETURN NEW;
+  END;
+```
+
 ## installation
 
 If you know how to use extensions, or perhaps even just grab the sql and run with it, you can use the bundled extension here [packages/ast/sql](packages/ast/sql). If you run it manually, you just need to make sure to install the `uuid-ossp` extension. 
