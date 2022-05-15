@@ -1,9 +1,9 @@
 {
-  "name": "ast",
+  "name": "@launchql/ast",
   "version": "0.0.1",
   "description": "PostgreSQL AST utils",
   "author": "Dan Lynch <pyramation@gmail.com>",
-  "private": true,
+  "private": false,
   "scripts": {
     "test": "FAST_TEST=1 launchql-templatedb && jest",
     "test:watch": "FAST_TEST=1 jest --watch"
@@ -29,6 +29,7 @@
     "graphql": "^14.0.2",
     "graphql-tag": "2.10.3",
     "jest": "26.1.0",
+    "jest-in-case": "1.0.2",
     "pgsql-deparser": "13.1.9",
     "pgsql-parser": "13.1.9",
     "prettier": "2.0.5",
