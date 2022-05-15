@@ -9,6 +9,12 @@ Because string concatenation is bad, and ASTs are the DNA of software itself.
 ### a note on compatibility
 
 Written in pure plpgsql so that it can be installed anywhere, including managed RDBMS environments that don't support untrusted extensions.
+
+### areas of interest
+
+- [packages/ast/deploy/schemas/ast/procedures/types.sql](AST Nodes and types)
+- [packages/ast/deploy/schemas/ast_helpers/procedures/helpers.sql](Helpers) for higher level things, like `create_table`
+- [packages/ast/deploy/schemas/deparser/procedures/deparse.sql](Deparser) AST Node Deparser — where the magic happens ✨ 
 ## Usage
 
 Use the `deparser.deparse()` function to deparse Postgres ASTs, in SQL:
