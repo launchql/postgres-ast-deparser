@@ -4,7 +4,7 @@ A pure plpgsql AST toolkit and deparser for PostgreSQL. This is the plpgsql equi
 
 ## Why?
 
-Because string concatenation is bad, and ASTs are the DNA of software itself.
+For dynamic SQL, string concatenation can be problematic, and AST trees are the DNA of software itself — why not use them instead?
 
 ### a note on compatibility
 
