@@ -10,11 +10,12 @@ For dynamic SQL, string concatenation can be problematic, and AST trees are the 
 
 Written entirely in plpgsql and can be installed anywhere, even in managed RDBMS environments that don't support untrusted extensions.
 
-### areas of interest
+## Schemas of interest
 
-- [AST Nodes and types](packages/ast/deploy/schemas/ast/procedures/types.sql)
-- [Helpers for higher level things, like `create_table`](packages/ast/deploy/schemas/ast_helpers/procedures/helpers.sql)
-- [Deparser](packages/ast/deploy/schemas/deparser/procedures/deparse.sql) — where the magic happens ✨ 
+ - `deparser` contains the deparser [(the `deparse()` function)](packages/ast/deploy/schemas/deparser/procedures/deparse.sql) — where the magic happens ✨ 
+ - `ast` contains [tools for building AST trees](packages/ast/deploy/schemas/ast/procedures/types.sql)
+ - `ast_helpers` contains [Helpers for higher level AST trees, like `create_table`](packages/ast/deploy/schemas/ast_helpers/procedures/helpers.sql)
+
 ## Usage
 
 Use the `deparser.deparse()` function to deparse Postgres AST trees, in SQL:
@@ -22,11 +23,6 @@ Use the `deparser.deparse()` function to deparse Postgres AST trees, in SQL:
 ```sql
 select deparser.deparse( $1::jsonb );
 ```
-## Schemas
-
- - `deparser` contains the deparser (the `deparse()` function)
- - `ast` contains tools for building AST trees
- - `ast_helpers` contains higher-level tools for building AST trees
 ## Examples
 
 #### alter table add column
