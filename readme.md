@@ -25,6 +25,42 @@ select deparser.deparse( $1::jsonb );
 ```
 ## Examples
 
+#### select
+
+```sql
+SELECT * FROM deparser.deparse(
+  ast.select_stmt(
+    v_op := 'SETOP_NONE',
+    v_targetList := to_jsonb(ARRAY[
+        ast.res_target(
+            v_val := ast_helpers.col('mt', 'my_field')
+        )
+    ]),
+    v_fromClause := to_jsonb(ARRAY[
+        ast_helpers.range_var(
+            v_schemaname := 'my_schema_name',
+            v_relname := 'my_table_name',
+            v_alias := ast.alias(
+                v_aliasname := 'mt'
+            )
+        )
+    ]),
+    v_whereClause := ast_helpers.eq(
+        v_lexpr := ast_helpers.col('mt', 'id'),
+        v_rexpr := ast.a_const(
+            v_val := ast.integer(2)
+        )
+    )
+  )
+);
+```
+
+produces
+
+```sql
+SELECT mt.my_field FROM my_schema_name.my_table_name AS mt WHERE mt.id = 2
+```
+
 #### alter table add column
 
 ```sql
