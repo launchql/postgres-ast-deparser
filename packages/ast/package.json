@@ -1,9 +1,17 @@
 {
   "name": "@launchql/ast",
-  "version": "0.0.1",
+  "version": "13.0.0",
   "description": "PostgreSQL AST utils",
   "author": "Dan Lynch <pyramation@gmail.com>",
-  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "postgres",
+    "AST",
+    "plpgsql",
+    "deparser"
+  ],
   "scripts": {
     "test": "FAST_TEST=1 launchql-templatedb && jest",
     "test:watch": "FAST_TEST=1 jest --watch"
