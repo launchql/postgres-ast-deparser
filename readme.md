@@ -25,6 +25,7 @@ select deparser.deparse( $1::jsonb );
 ```
 ## Examples
 
+You can pretty much write any SQL statement you can think of. Here are only a few examples. Read the [the tests](packages/ast/test) for more.
 #### select
 
 ```sql
