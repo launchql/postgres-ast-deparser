@@ -1,6 +1,6 @@
-# PostgreSQL ASTs in PostgreSQL
+# Postgres AST Deparser for Postgres
 
-This project is the plpgsql companion to https://github.com/pyramation/pgsql-parser. A PostgreSQL AST toolkit and deparser, written in pure plpgsql.
+This project is the plpgsql analogue to https://github.com/pyramation/pgsql-parser. A PostgreSQL AST toolkit and deparser, written in pure plpgsql.
 
 ## Why?
 
