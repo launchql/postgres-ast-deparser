@@ -17,12 +17,16 @@ Written entirely in plpgsql and can be installed anywhere, even in managed RDBMS
 - [Deparser](packages/ast/deploy/schemas/deparser/procedures/deparse.sql) — where the magic happens ✨ 
 ## Usage
 
-Use the `deparser.deparse()` function to deparse Postgres ASTs, in SQL:
+Use the `deparser.deparse()` function to deparse Postgres AST trees, in SQL:
 
 ```sql
 select deparser.deparse( $1::jsonb );
 ```
+## Schemas
 
+ - `deparser` contains the deparser (the `deparse()` function)
+ - `ast` contains tools for building AST trees
+ - `ast_helpers` contains higher-level tools for building AST trees
 ## Examples
 
 #### alter table add column
