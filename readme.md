@@ -1,6 +1,6 @@
 # Postgres AST Deparser for Postgres
 
-This project is the plpgsql analogue to https://github.com/pyramation/pgsql-parser. A PostgreSQL AST toolkit and deparser, written in pure plpgsql.
+A pure plpgsql AST toolkit and deparser for PostgreSQL. This is the plpgsql equivalent of https://github.com/pyramation/pgsql-parser for deparsing, which can be used to create ASTs and deparse them back into strings in native Postgres.
 
 ## Why?
 
@@ -8,7 +8,7 @@ Because string concatenation is bad, and ASTs are the DNA of software itself.
 
 ### a note on compatibility
 
-Written in pure plpgsql so that it can be installed anywhere, including managed RDBMS environments that don't support untrusted extensions.
+Written entirely in plpgsql and can be installed anywhere, even in managed RDBMS environments that don't support untrusted extensions.
 
 ### areas of interest
 
