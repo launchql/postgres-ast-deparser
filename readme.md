@@ -423,3 +423,22 @@ For example
 cd ./packages/ast
 yarn test:watch
 ```
+
+
+## Versions
+
+As of PG 13, PG majors versions maintained will have a matching dedicated major npm version. Only the latest Postgres stable release receives active updates.
+
+Our latest is built with `13-latest` branch from libpg_query
+
+| PostgreSQL Major Version | libpg_query | Status              | npm 
+|--------------------------|-------------|---------------------|---------|
+| 13                       | 13-latest   | Active development  | `latest`
+
+## Special Thanks and Resources
+
+* [pgsql-parser](https://github.com/pyramation/pgsql-parser)
+* [libpg-query-node](https://github.com/pyramation/libpg-query-node)
+* [libpg_query](https://github.com/pganalyze/libpg_query)
+* [pg_query](https://github.com/lfittl/pg_query)
+* [sqitch](https://sqitch.org/)
