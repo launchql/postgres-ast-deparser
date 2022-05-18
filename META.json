@@ -1,0 +1,19 @@
+{
+    "name": "ast",
+    "abstract": "Postgres AST toolkit and Deparser",
+    "version": "13.0.2",
+    "maintainer": "Dan Lynch <pyramation@gmail.com>",
+    "license": "MIT",
+    "provides": {
+       "ast": {
+          "abstract": "Postgres AST toolkit and Deparser",
+          "file": "packages/ast/sql/ast--13.0.2.sql",
+          "docfile": "readme.md",
+          "version": "13.0.2"
+       }
+    },
+    "meta-spec": {
+       "version": "1.0.0",
+       "url": "https://pgxn.org/meta/spec.txt"
+    }
+ }
