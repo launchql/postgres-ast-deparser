@@ -1,0 +1,36 @@
+{
+   "name": "ast",
+   "abstract": "Postgres AST toolkit and Deparser",
+   "version": "13.0.2",
+   "maintainer": "Dan Lynch <pyramation@gmail.com>",
+   "license": "MIT",
+   "provides": {
+      "ast": {
+         "abstract": "Postgres AST toolkit and Deparser",
+         "file": "sql/ast--13.0.2.sql",
+         "docfile": "readme.md",
+         "version": "13.0.2"
+      }
+   },
+   "resources": {
+      "bugtracker": {
+         "web": "https://github.com/pyramation/postgres-ast-deparser/issues"
+      },
+      "repository": {
+         "url": "git@github.com:pyramation/postgres-ast-deparser.git",
+         "web": "https://github.com/pyramation/postgres-ast-deparser",
+         "type": "git"
+      }
+   },
+   "generated_by": "Dan Lynch",
+   "meta-spec": {
+      "version": "1.0.0",
+      "url": "https://pgxn.org/meta/spec.txt"
+   },
+   "tags": [
+      "AST",
+      "deparser",
+      "codegen",
+      "abstract syntax tree"
+   ]
+}
