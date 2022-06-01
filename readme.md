@@ -541,7 +541,7 @@ COMMENT ON CONSTRAINT my_constraint ON my_schema.my_table IS E'@type object\n@pr
 
 ## installation
 
-If you know how to use extensions, or perhaps even just grab the sql and run with it, you can use the bundled extension here [packages/ast/sql](packages/ast/sql). If you run it manually, you just need to make sure to install the `uuid-ossp` extension. 
+If you know how to use extensions, or perhaps even just grab the sql and run with it, you can use the bundled extension here [packages/ast/sql](packages/ast/sql). 
 
 To do an automated recursive deploy that automatically installs deps, you can use `sqitch` and `launchql`.
 ### Recursive Deploy

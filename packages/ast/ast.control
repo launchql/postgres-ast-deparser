@@ -2,7 +2,7 @@
 comment = 'ast extension'
 default_version = '13.0.2'
 module_pathname = '$libdir/ast'
-requires = 'plpgsql,uuid-ossp'
+requires = 'plpgsql'
 relocatable = false
 superuser = false
   
