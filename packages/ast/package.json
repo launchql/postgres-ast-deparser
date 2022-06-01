@@ -1,6 +1,6 @@
 {
   "name": "@launchql/ast",
-  "version": "13.0.2",
+  "version": "13.0.3",
   "description": "PostgreSQL AST utils",
   "author": "Dan Lynch <pyramation@gmail.com>",
   "publishConfig": {
