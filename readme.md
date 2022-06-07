@@ -74,8 +74,8 @@ SELECT mt.my_field FROM my_schema_name.my_table_name AS mt WHERE mt.id = 2
 ```sql
 select deparser.deparse(
     ast_helpers.create_table(
-		v_schema_name := 'my_schema_name',
-		v_table_name := 'my_table_name',
+        v_schema_name := 'my_schema_name',
+        v_table_name := 'my_table_name',
         v_table_cols := to_jsonb(ARRAY[
             ast.column_def(
                 v_colname := 'my_col_id',
@@ -103,7 +103,7 @@ select deparser.deparse(
                 )
             )
         ])
-	)
+    )
 );
 ```
 
