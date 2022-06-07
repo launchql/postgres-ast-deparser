@@ -970,6 +970,30 @@ $$
 LANGUAGE 'sql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.create_table (
+  v_schema_name text,
+  v_table_name text,
+  v_table_cols jsonb
+)
+    RETURNS jsonb
+    AS $$
+  select ast.raw_stmt(
+    v_stmt := ast.create_stmt(
+      v_relation := ast.range_var(
+        v_schemaname:= v_schema_name,
+        v_relname:= v_table_name,
+        v_inh := TRUE,
+        v_relpersistence := 'p'
+      ),
+      v_tableElts := v_table_cols,
+      v_oncommit := 'ONCOMMIT_NOOP'
+    ),
+    v_stmt_len := 1
+  );
+$$
+LANGUAGE 'sql'
+IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.drop_table (
   v_schema_name text,
   v_table_name text,
