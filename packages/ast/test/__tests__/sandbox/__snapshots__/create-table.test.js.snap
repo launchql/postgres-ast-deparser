@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`empty 1`] = `
+"CREATE TABLE my_schema_name.my_table_name (
+  
+);"
+`;
+
+exports[`with fields 1`] = `
+"CREATE TABLE my_schema_name.my_table_name (
+ my_col_id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+my_col_text text NOT NULL,
+my_col_timestamptz timestamptz 
+);"
+`;
