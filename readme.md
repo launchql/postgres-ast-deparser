@@ -74,9 +74,36 @@ SELECT mt.my_field FROM my_schema_name.my_table_name AS mt WHERE mt.id = 2
 ```sql
 select deparser.deparse(
     ast_helpers.create_table(
-		v_schema_name := 'my_schema_name',
-		v_table_name := 'my_table_name'
-	)
+        v_schema_name := 'my_schema_name',
+        v_table_name := 'my_table_name',
+        v_table_cols := to_jsonb(ARRAY[
+            ast.column_def(
+                v_colname := 'my_col_id',
+                v_typeName := ast.type_name(
+                    v_names := ast_helpers.array_of_strings('pg_catalog', 'int4')
+                ),
+                v_constraints := to_jsonb(ARRAY[
+                    ast.constraint(v_contype := 'CONSTR_PRIMARY'),
+                    ast.constraint(v_contype := 'CONSTR_IDENTITY', v_generated_when := 'a')
+                ])
+            ),
+            ast.column_def(
+                v_colname := 'my_col_text',
+                v_typeName := ast.type_name(
+                    v_names := ast_helpers.array_of_strings('text')
+                ),
+                v_constraints := to_jsonb(ARRAY[
+                    ast.constraint(v_contype := 'CONSTR_NOTNULL')
+                ])
+            ),
+            ast.column_def(
+                v_colname := 'my_col_timestamptz',
+                v_typeName := ast.type_name(
+                    v_names := ast_helpers.array_of_strings('timestamptz')
+                )
+            )
+        ])
+    )
 );
 ```
 
@@ -84,7 +111,9 @@ produces
 
 ```sql
 CREATE TABLE my_schema_name.my_table_name (
-  
+    my_col_id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    my_col_text text NOT NULL,
+    my_col_timestamptz timestamptz
 );
 ```
 
