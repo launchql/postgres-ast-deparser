@@ -3669,7 +3669,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION ast_helpers.create_table ( v_schema_name text, v_table_name text, v_table_cols jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+CREATE FUNCTION ast_helpers.create_table ( v_schema_name text, v_table_name text, v_table_elts jsonb DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
   select ast.raw_stmt(
     v_stmt := ast.create_stmt(
       v_relation := ast.range_var(
@@ -3678,7 +3678,7 @@ CREATE FUNCTION ast_helpers.create_table ( v_schema_name text, v_table_name text
         v_inh := TRUE,
         v_relpersistence := 'p'
       ),
-      v_tableElts := v_table_cols,
+      v_tableElts := v_table_elts,
       v_oncommit := 'ONCOMMIT_NOOP'
     ),
     v_stmt_len := 1

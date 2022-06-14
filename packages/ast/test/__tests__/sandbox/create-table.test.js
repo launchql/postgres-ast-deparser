@@ -26,7 +26,7 @@ it('with fields', async () => {
         ast_helpers.create_table(
             v_schema_name := 'my_schema_name',
             v_table_name := 'my_table_name',
-            v_table_cols := to_jsonb(ARRAY[
+            v_table_elts := to_jsonb(ARRAY[
                 ast.column_def(
                     v_colname := 'my_col_id',
                     v_typeName := ast.type_name(
