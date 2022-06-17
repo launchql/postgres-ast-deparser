@@ -2149,15 +2149,18 @@ BEGIN
         END IF;
 
         RETURN array_to_string(output, ' ');
-
-      ELSIF (node->'arg' IS NOT NULL) THEN
-        RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
       END IF;
-    ELSE
-        RETURN defname || '=' || deparser.expression(node->'arg');
     END IF;
 
-    RETURN defname;
+    IF ((context->'option')::bool IS TRUE) THEN
+      RETURN format('%s ''%s''', defname, deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE))));
+    END IF;
+
+    IF (node->'arg' IS NOT NULL) THEN
+      RETURN defname || '=' || deparser.expression(node->'arg');
+    ELSE
+      RETURN defname;
+    END IF;
 END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
@@ -5129,6 +5132,55 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE;
 
+CREATE FUNCTION deparser.import_foreign_schema_stmt(
+  node jsonb,
+  context jsonb default '{}'::jsonb
+) returns text as $$
+DECLARE
+  output text[];
+BEGIN
+    IF (node->'ImportForeignSchemaStmt') IS NULL THEN
+      RAISE EXCEPTION 'BAD_EXPRESSION %', 'ImportForeignSchemaStmt';
+    END IF;
+
+    node = node->'ImportForeignSchemaStmt';
+
+    output = array_append(output, 'IMPORT FOREIGN SCHEMA');
+    output = array_append(output, quote_ident(node->>'remote_schema'));
+
+    -- table filtering rules
+    IF (node->'list_type' IS NOT NULL AND jsonb_array_length(node->'table_list') > 0) THEN
+      IF (node->>'list_type' = 'LIMIT_TO') THEN
+        output = array_append(output, 'LIMIT TO');
+      ELSEIF (node->>'list_type' = 'EXCEPT') THEN
+        output = array_append(output, 'EXCEPT');
+      ELSE
+        RAISE EXCEPTION 'BAD_EXPRESSION %', 'ImportForeignSchemaStmt (ListType)';
+      END IF;
+
+      output = array_append(output, deparser.parens(
+        deparser.list_quotes(node->'table_list'))
+      );
+    END IF;
+
+    output = array_append(output, 'FROM SERVER');
+    output = array_append(output, quote_ident(node->>'server_name'));
+    output = array_append(output, 'INTO');
+    output = array_append(output, quote_ident(node->>'local_schema'));
+
+    -- options
+    IF (node->'options') IS NOT NULL THEN
+      output = array_append(output, 'OPTIONS');
+      output = array_append(output, deparser.parens(
+        deparser.list(node->'options', ', ', jsonb_set(context, '{option}', to_jsonb(TRUE)))
+      ));
+    END IF;
+
+  RETURN array_to_string(output, ' ');
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE;
+
 CREATE FUNCTION deparser.function_parameter(
   node jsonb,
   context jsonb default '{}'::jsonb
@@ -5325,6 +5377,8 @@ BEGIN
     RETURN deparser.grouping_func(expr, context);
   ELSEIF (expr->>'GroupingSet') IS NOT NULL THEN
     RETURN deparser.grouping_set(expr, context);
+  ELSEIF (expr->>'ImportForeignSchemaStmt') IS NOT NULL THEN
+    RETURN deparser.import_foreign_schema_stmt(expr, context);
   ELSEIF (expr->>'IndexElem') IS NOT NULL THEN
     RETURN deparser.index_elem(expr, context);
   ELSEIF (expr->>'IndexStmt') IS NOT NULL THEN
