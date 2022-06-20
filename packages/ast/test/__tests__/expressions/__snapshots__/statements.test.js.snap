@@ -277,6 +277,14 @@ exports[`select_stmt 79`] = `"SELECT * FROM (VALUES (2), (NULL), (1)) AS v (k) W
 
 exports[`select_stmt 80`] = `"SELECT * FROM (VALUES (2), (NULL), (1)) AS v (k) WHERE k = k;"`;
 
+exports[`trans_stmt_begin 1`] = `"BEGIN"`;
+
+exports[`trans_stmt_begin_isolation 1`] = `"BEGIN ISOLATION LEVEL READ COMMITTED"`;
+
+exports[`trans_stmt_begin_isolation 2`] = `"BEGIN ISOLATION LEVEL REPEATABLE READ"`;
+
+exports[`trans_stmt_begin_isolation 3`] = `"BEGIN ISOLATION LEVEL SERIALIZABLE"`;
+
 exports[`type_cast 1`] = `"NULL::text[]"`;
 
 exports[`type_name 1`] = `"text"`;

@@ -1515,19 +1515,6 @@ select deparser.deparse(
 //   expect(result).toMatchSnapshot();
 // });
 
-// it('transaction_stmt', async () => {
-//   const [{ deparse: result }] = await db.any(
-//     `
-// select deparser.deparse(
-//   ast.transaction_stmt(
-//     0
-//     )
-// );
-//   `
-//   );
-//   expect(result).toMatchSnapshot();
-// });
-
 // it('case_when', async () => {
 //   const [{ deparse: result }] = await db.any(
 //     `
@@ -1754,6 +1741,41 @@ it('drop_stmt drop', async () => {
         ),
         behavior
       ]
+    );
+    expect(result).toMatchSnapshot();
+  }
+});
+
+it('trans_stmt_begin', async () => {
+  const [{ deparse: result }] = await db.any(
+    `
+    select deparser.deparse(
+      ast.transaction_stmt(
+        v_kind := 'TRANS_STMT_BEGIN'
+      )
+    );
+    `
+  );
+  expect(result).toMatchSnapshot();
+});
+
+it('trans_stmt_begin_isolation', async () => {
+ 
+  for (const level of ['read committed', 'repeatable read', 'serializable']) {
+    const [{ deparse: result }] = await db.any(
+      `
+      select deparser.deparse(
+        ast.transaction_stmt(
+          v_kind := 'TRANS_STMT_BEGIN',
+          v_options := to_jsonb(ARRAY[
+            ast.def_elem(
+              v_defname := 'transaction_isolation',
+              v_arg := ast.a_const(v_val := ast.string($1::text))
+            )
+          ])
+        )
+      );
+      `, level
     );
     expect(result).toMatchSnapshot();
   }

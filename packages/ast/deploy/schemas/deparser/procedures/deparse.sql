@@ -1148,7 +1148,7 @@ BEGIN
 
   txt = deparser.expression(node->'val', context);
 
-  IF (node->'val'->'String') IS NOT NULL THEN
+  IF (node->'val'->'String') IS NOT NULL AND ((context->'noquotes') IS NULL) THEN
     RETURN deparser.escape(txt);
   END IF;
 
@@ -3915,6 +3915,9 @@ CREATE FUNCTION deparser.transaction_stmt(
 DECLARE
   output text[];
   kind text;
+  option jsonb;
+  defname text;
+  defvalue text;
 BEGIN
     IF (node->'TransactionStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TransactionStmt';
@@ -3927,12 +3930,40 @@ BEGIN
     node = node->'TransactionStmt';
     kind = node->>'kind';
 
-    IF (kind = 'TRANS_STMT_BEGIN') THEN
-      -- TODO implement other options
-      output = array_append(output, 'BEGIN');
-    ELSIF (kind = 'TRANS_STMT_START') THEN
-      -- TODO implement other options
-      output = array_append(output, 'START TRANSACTION');
+    IF (kind IN ('TRANS_STMT_BEGIN', 'TRANS_STMT_START')) THEN
+      output = array_append(output, 
+        CASE kind
+          WHEN 'TRANS_STMT_BEGIN' THEN 'BEGIN'
+          WHEN 'TRANS_STMT_START' THEN 'START TRANSACTION' 
+        END
+      );
+      
+      FOR option IN
+      SELECT * FROM jsonb_array_elements(node->'options')
+      LOOP
+        IF (option->'DefElem' IS NOT NULL AND option->'DefElem'->'defname' IS NOT NULL) THEN
+            defname = option#>>'{DefElem, defname}';
+            
+            IF (defname = 'transaction_isolation') THEN 
+              defvalue = deparser.expression(
+                option->'DefElem'->'arg', 
+                jsonb_set(context, '{noquotes}', to_jsonb(TRUE))
+              );
+              output = array_append(output, 'ISOLATION LEVEL' );
+              output = array_append(output, upper(defvalue));
+            ELSIF (defname = 'transaction_read_write') THEN
+              output = array_append(output, 'READ WRITE');
+            ELSIF (defname = 'transaction_read_only') THEN
+              output = array_append(output, 'READ ONLY');
+            ELSEIF (defname = 'transaction_deferrable') THEN
+              IF (deparser.expression(option->'DefElem'->'arg')::int > 0) THEN
+                output = array_append(output, 'DEFERRABLE');
+              ELSE
+                output = array_append(output, 'NOT DEFERRABLE');
+              END IF;
+            END IF;
+        END IF;
+      END LOOP;
     ELSIF (kind = 'TRANS_STMT_COMMIT') THEN
       output = array_append(output, 'COMMIT');
     ELSIF (kind = 'TRANS_STMT_ROLLBACK') THEN
