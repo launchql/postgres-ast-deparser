@@ -7285,18 +7285,18 @@ BEGIN
         END IF;
 
         RETURN array_to_string(output, ' ');
+
+      ELSIF (node->'arg' IS NOT NULL) THEN
+        RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
       END IF;
-    END IF;
-
-    IF ((context->'option')::bool IS TRUE) THEN
+    ELSIF ((context->'foreignSchema')::bool IS TRUE) THEN
       RETURN format('%s ''%s''', defname, deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE))));
+
+    ELSE
+        RETURN defname || '=' || deparser.expression(node->'arg');
     END IF;
 
-    IF (node->'arg' IS NOT NULL) THEN
-      RETURN defname || '=' || deparser.expression(node->'arg');
-    ELSE
-      RETURN defname;
-    END IF;
+    RETURN defname;
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
@@ -10032,11 +10032,11 @@ BEGIN
 
     -- table filtering rules
     IF (node->'list_type' IS NOT NULL AND jsonb_array_length(node->'table_list') > 0) THEN
-      IF (node->>'list_type' = 'LIMIT_TO') THEN
+      IF (node->>'list_type' = 'FDW_IMPORT_SCHEMA_LIMIT_TO') THEN
         output = array_append(output, 'LIMIT TO');
-      ELSEIF (node->>'list_type' = 'EXCEPT') THEN
+      ELSEIF (node->>'list_type' = 'FDW_IMPORT_SCHEMA_EXCEPT') THEN
         output = array_append(output, 'EXCEPT');
-      ELSE
+      ELSEIF (node->>'list_type' <> 'FDW_IMPORT_SCHEMA_ALL') THEN
         RAISE EXCEPTION 'BAD_EXPRESSION %', 'ImportForeignSchemaStmt (ListType)';
       END IF;
 
@@ -10054,7 +10054,7 @@ BEGIN
     IF (node->'options') IS NOT NULL THEN
       output = array_append(output, 'OPTIONS');
       output = array_append(output, deparser.parens(
-        deparser.list(node->'options', ', ', jsonb_set(context, '{option}', to_jsonb(TRUE)))
+        deparser.list(node->'options', ', ', jsonb_set(context, '{foreignSchema}', to_jsonb(TRUE)))
       ));
     END IF;
 
