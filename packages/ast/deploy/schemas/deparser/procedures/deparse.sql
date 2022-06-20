@@ -5150,11 +5150,11 @@ BEGIN
 
     -- table filtering rules
     IF (node->'list_type' IS NOT NULL AND jsonb_array_length(node->'table_list') > 0) THEN
-      IF (node->>'list_type' = 'LIMIT_TO') THEN
+      IF (node->>'list_type' = 'FDW_IMPORT_SCHEMA_LIMIT_TO') THEN
         output = array_append(output, 'LIMIT TO');
-      ELSEIF (node->>'list_type' = 'EXCEPT') THEN
+      ELSEIF (node->>'list_type' = 'FDW_IMPORT_SCHEMA_EXCEPT') THEN
         output = array_append(output, 'EXCEPT');
-      ELSE
+      ELSEIF (node->>'list_type' <> 'FDW_IMPORT_SCHEMA_ALL') THEN
         RAISE EXCEPTION 'BAD_EXPRESSION %', 'ImportForeignSchemaStmt (ListType)';
       END IF;
 
