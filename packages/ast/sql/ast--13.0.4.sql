@@ -4215,6 +4215,59 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.raw_transaction ( v_stmts jsonb DEFAULT NULL, v_isolation_level text DEFAULT NULL, v_read_only bool DEFAULT NULL, v_deferrable bool DEFAULT NULL ) RETURNS jsonb AS $EOFCODE$
+DECLARE
+  result jsonb[];
+  options jsonb[];
+  r jsonb;
+BEGIN
+  IF lower(v_isolation_level) IN ('read committed', 'repeatable read', 'serializable')
+  THEN
+    options = array_append(options, ast.def_elem(
+      v_defname := 'transaction_isolation',
+      v_arg := ast.a_const(v_val := ast.string(lower(v_isolation_level)))
+    ));
+  END IF;
+
+  IF v_read_only THEN
+    options = array_append(options, ast.def_elem(
+      v_defname := 'transaction_read_only',
+      v_arg := ast.a_const(v_val := ast.integer(0))
+    ));
+  END IF;
+
+  IF v_deferrable THEN
+    options = array_append(options, ast.def_elem(
+      v_defname := 'transaction_deferrable',
+      v_arg := ast.a_const(v_val := ast.integer(1))
+    ));
+  END IF;
+
+  -- open a new transaction with options
+  result = array_append(result, ast.raw_stmt(
+    v_stmt := ast.transaction_stmt(
+      v_kind := 'TRANS_STMT_BEGIN',
+      v_options := to_jsonb(options)
+    ),
+    v_stmt_len := 1
+  ));
+
+  -- append statements in result
+  FOR r IN (select jsonb_array_elements(v_stmts))
+  LOOP
+    result = array_append(result, r);
+  END LOOP;
+
+  -- finalize transaction with commit
+  result = array_append(result, ast.raw_stmt(
+    v_stmt := ast.transaction_stmt(v_kind := 'TRANS_STMT_COMMIT'),
+    v_stmt_len := 1
+  ));
+  
+  RETURN to_jsonb(result);
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE FUNCTION ast_helpers.create_insert ( v_schema text, v_table text, v_cols text[], v_values jsonb ) RETURNS jsonb AS $EOFCODE$
 DECLARE
   ast_expr jsonb;
@@ -6382,7 +6435,7 @@ BEGIN
 
   txt = deparser.expression(node->'val', context);
 
-  IF (node->'val'->'String') IS NOT NULL THEN
+  IF (node->'val'->'String') IS NOT NULL AND ((context->'noquotes') IS NULL) THEN
     RETURN deparser.escape(txt);
   END IF;
 
@@ -8903,6 +8956,9 @@ CREATE FUNCTION deparser.transaction_stmt ( node jsonb, context jsonb DEFAULT '{
 DECLARE
   output text[];
   kind text;
+  option jsonb;
+  defname text;
+  defvalue text;
 BEGIN
     IF (node->'TransactionStmt') IS NULL THEN
       RAISE EXCEPTION 'BAD_EXPRESSION %', 'TransactionStmt';
@@ -8915,12 +8971,40 @@ BEGIN
     node = node->'TransactionStmt';
     kind = node->>'kind';
 
-    IF (kind = 'TRANS_STMT_BEGIN') THEN
-      -- TODO implement other options
-      output = array_append(output, 'BEGIN');
-    ELSIF (kind = 'TRANS_STMT_START') THEN
-      -- TODO implement other options
-      output = array_append(output, 'START TRANSACTION');
+    IF (kind IN ('TRANS_STMT_BEGIN', 'TRANS_STMT_START')) THEN
+      output = array_append(output, 
+        CASE kind
+          WHEN 'TRANS_STMT_BEGIN' THEN 'BEGIN'
+          WHEN 'TRANS_STMT_START' THEN 'START TRANSACTION' 
+        END
+      );
+      
+      FOR option IN
+      SELECT * FROM jsonb_array_elements(node->'options')
+      LOOP
+        IF (option->'DefElem' IS NOT NULL AND option->'DefElem'->'defname' IS NOT NULL) THEN
+            defname = option#>>'{DefElem, defname}';
+            
+            IF (defname = 'transaction_isolation') THEN 
+              defvalue = deparser.expression(
+                option->'DefElem'->'arg', 
+                jsonb_set(context, '{noquotes}', to_jsonb(TRUE))
+              );
+              output = array_append(output, 'ISOLATION LEVEL' );
+              output = array_append(output, upper(defvalue));
+            ELSIF (defname = 'transaction_read_write') THEN
+              output = array_append(output, 'READ WRITE');
+            ELSIF (defname = 'transaction_read_only') THEN
+              output = array_append(output, 'READ ONLY');
+            ELSEIF (defname = 'transaction_deferrable') THEN
+              IF (deparser.expression(option->'DefElem'->'arg')::int > 0) THEN
+                output = array_append(output, 'DEFERRABLE');
+              ELSE
+                output = array_append(output, 'NOT DEFERRABLE');
+              END IF;
+            END IF;
+        END IF;
+      END LOOP;
     ELSIF (kind = 'TRANS_STMT_COMMIT') THEN
       output = array_append(output, 'COMMIT');
     ELSIF (kind = 'TRANS_STMT_ROLLBACK') THEN
