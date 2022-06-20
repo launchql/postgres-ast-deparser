@@ -1683,4 +1683,66 @@ $$
 LANGUAGE 'plpgsql'
 IMMUTABLE;
 
+CREATE FUNCTION ast_helpers.raw_transaction (
+  v_stmts jsonb default null,
+  v_isolation_level text default null,
+  v_read_only bool default null,
+  v_deferrable bool default null
+)
+    RETURNS jsonb
+    AS $$
+DECLARE
+  result jsonb[];
+  options jsonb[];
+  r jsonb;
+BEGIN
+  IF lower(v_isolation_level) IN ('read committed', 'repeatable read', 'serializable')
+  THEN
+    options = array_append(options, ast.def_elem(
+      v_defname := 'transaction_isolation',
+      v_arg := ast.a_const(v_val := ast.string(lower(v_isolation_level)))
+    ));
+  END IF;
+
+  IF v_read_only THEN
+    options = array_append(options, ast.def_elem(
+      v_defname := 'transaction_read_only',
+      v_arg := ast.a_const(v_val := ast.integer(0))
+    ));
+  END IF;
+
+  IF v_deferrable THEN
+    options = array_append(options, ast.def_elem(
+      v_defname := 'transaction_deferrable',
+      v_arg := ast.a_const(v_val := ast.integer(1))
+    ));
+  END IF;
+
+  -- open a new transaction with options
+  result = array_append(result, ast.raw_stmt(
+    v_stmt := ast.transaction_stmt(
+      v_kind := 'TRANS_STMT_BEGIN',
+      v_options := to_jsonb(options)
+    ),
+    v_stmt_len := 1
+  ));
+
+  -- append statements in result
+  FOR r IN (select jsonb_array_elements(v_stmts))
+  LOOP
+    result = array_append(result, r);
+  END LOOP;
+
+  -- finalize transaction with commit
+  result = array_append(result, ast.raw_stmt(
+    v_stmt := ast.transaction_stmt(v_kind := 'TRANS_STMT_COMMIT'),
+    v_stmt_len := 1
+  ));
+  
+  RETURN to_jsonb(result);
+END;
+$$
+LANGUAGE 'plpgsql'
+IMMUTABLE;
+
 COMMIT;
