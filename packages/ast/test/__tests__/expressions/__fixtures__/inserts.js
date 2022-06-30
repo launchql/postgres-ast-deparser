@@ -229,6 +229,216 @@ export const inserts = [
         InsertStmt: {
           relation: {
             RangeVar: {
+              relname: 'object',
+              inh: true,
+              relpersistence: 'p'
+            }
+          },
+          cols: [
+            {
+              ResTarget: {
+                name: 'name'
+              }
+            },
+            {
+              ResTarget: {
+                name: 'val'
+              }
+            },
+            {
+              ResTarget: {
+                name: 'active'
+              }
+            },
+            {
+              ResTarget: {
+                name: 'hash'
+              }
+            }
+          ],
+          selectStmt: {
+            SelectStmt: {
+              valuesLists: [
+                [
+                  {
+                    A_Const: {
+                      val: {
+                        String: {
+                          str: 'name'
+                        }
+                      }
+                    }
+                  },
+                  {
+                    A_Const: {
+                      val: {
+                        String: {
+                          str: 'val'
+                        }
+                      }
+                    }
+                  },
+                  {
+                    TypeCast: {
+                      arg: {
+                        A_Const: {
+                          val: {
+                            String: {
+                              str: 't'
+                            }
+                          }
+                        }
+                      },
+                      typeName: {
+                        TypeName: {
+                          names: [
+                            {
+                              String: {
+                                str: 'pg_catalog'
+                              }
+                            },
+                            {
+                              String: {
+                                str: 'bool'
+                              }
+                            }
+                          ],
+                          typemod: -1
+                        }
+                      }
+                    }
+                  },
+                  {
+                    A_Const: {
+                      val: {
+                        String: {
+                          str: 'abcdefg'
+                        }
+                      }
+                    }
+                  }
+                ]
+              ],
+              op: 'SETOP_NONE'
+            }
+          },
+          override: 'OVERRIDING_USER_VALUE'
+        }
+      },
+      stmt_len: 180
+    }
+  },
+  {
+    RawStmt: {
+      stmt: {
+        InsertStmt: {
+          relation: {
+            RangeVar: {
+              relname: 'object',
+              inh: true,
+              relpersistence: 'p'
+            }
+          },
+          cols: [
+            {
+              ResTarget: {
+                name: 'name'
+              }
+            },
+            {
+              ResTarget: {
+                name: 'val'
+              }
+            },
+            {
+              ResTarget: {
+                name: 'active'
+              }
+            },
+            {
+              ResTarget: {
+                name: 'hash'
+              }
+            }
+          ],
+          selectStmt: {
+            SelectStmt: {
+              valuesLists: [
+                [
+                  {
+                    A_Const: {
+                      val: {
+                        String: {
+                          str: 'name'
+                        }
+                      }
+                    }
+                  },
+                  {
+                    A_Const: {
+                      val: {
+                        String: {
+                          str: 'val'
+                        }
+                      }
+                    }
+                  },
+                  {
+                    TypeCast: {
+                      arg: {
+                        A_Const: {
+                          val: {
+                            String: {
+                              str: 't'
+                            }
+                          }
+                        }
+                      },
+                      typeName: {
+                        TypeName: {
+                          names: [
+                            {
+                              String: {
+                                str: 'pg_catalog'
+                              }
+                            },
+                            {
+                              String: {
+                                str: 'bool'
+                              }
+                            }
+                          ],
+                          typemod: -1
+                        }
+                      }
+                    }
+                  },
+                  {
+                    A_Const: {
+                      val: {
+                        String: {
+                          str: 'abcdefg'
+                        }
+                      }
+                    }
+                  }
+                ]
+              ],
+              op: 'SETOP_NONE'
+            }
+          },
+          override: 'OVERRIDING_SYSTEM_VALUE'
+        }
+      },
+      stmt_len: 180
+    }
+  },
+  {
+    RawStmt: {
+      stmt: {
+        InsertStmt: {
+          relation: {
+            RangeVar: {
               schemaname: 'yo',
               relname: 'table',
               inh: true,
@@ -1305,6 +1515,133 @@ export const inserts = [
         }
       },
       stmt_len: 285
+    }
+  },
+  {
+    RawStmt: {
+      stmt: {
+        InsertStmt: {
+          relation: {
+            relname: 'copy',
+            inh: true,
+            relpersistence: 'p'
+          },
+          cols: [
+            {
+              ResTarget: {
+                name: 'name'
+              }
+            },
+            {
+              ResTarget: {
+                name: 'val'
+              }
+            }
+          ],
+          selectStmt: {
+            SelectStmt: {
+              targetList: [
+                {
+                  ResTarget: {
+                    val: {
+                      ColumnRef: {
+                        fields: [
+                          {
+                            String: {
+                              str: 'name'
+                            }
+                          }
+                        ],
+                      }
+                    }
+                  }
+                },
+                {
+                  ResTarget: {
+                    val: {
+                      ColumnRef: {
+                        fields: [
+                          {
+                            String: {
+                              str: 'val'
+                            }
+                          }
+                        ],
+                      }
+                    }
+                  }
+                }
+              ],
+              fromClause: [
+                {
+                  RangeVar: {
+                    relname: 'original',
+                    inh: true,
+                    relpersistence: 'p'
+                  }
+                }
+              ],
+              op: 'SETOP_NONE'
+            }
+          },
+          withClause: {
+            ctes: [
+              {
+                CommonTableExpr: {
+                  ctename: 'original',
+                  ctequery: {
+                    SelectStmt: {
+                      targetList: [
+                        {
+                          ResTarget: {
+                            val: {
+                              ColumnRef: {
+                                fields: [
+                                  {
+                                    String: {
+                                      str: 'name'
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        {
+                          ResTarget: {
+                            val: {
+                              ColumnRef: {
+                                fields: [
+                                  {
+                                    String: {
+                                      str: 'val'
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      fromClause: [
+                        {
+                          RangeVar: {
+                            relname: 'object',
+                            inh: true,
+                            relpersistence: 'p'
+                          }
+                        }
+                      ],
+                      op: 'SETOP_NONE'
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      stmt_len: 1
     }
   }
 ];

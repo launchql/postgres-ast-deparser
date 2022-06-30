@@ -1631,11 +1631,24 @@ BEGIN
 
     node = node->'InsertStmt';
 
+    IF (node->'withClause' IS NOT NULL) THEN
+      output = array_append(output, deparser.with_clause(node->'withClause'));
+    END IF;
+
     output = array_append(output, 'INSERT INTO');
     output = array_append(output, deparser.range_var(node->'relation'));
 
     IF (node->'cols' IS NOT NULL AND jsonb_array_length(node->'cols') > 0) THEN 
       output = array_append(output, deparser.parens(deparser.list(node->'cols')));
+    END IF;
+
+    IF (node->'override' IS NOT NULL AND node->>'override' <> 'OVERRIDING_NOT_SET') THEN
+      output = array_append(output, 
+        CASE node->>'override'
+          WHEN 'OVERRIDING_USER_VALUE' THEN 'OVERRIDING USER VALUE'
+          WHEN 'OVERRIDING_SYSTEM_VALUE' THEN 'OVERRIDING SYSTEM VALUE' 
+        END
+      );
     END IF;
 
     IF (node->'selectStmt') IS NOT NULL THEN
