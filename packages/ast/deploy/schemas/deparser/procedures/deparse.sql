@@ -2780,7 +2780,7 @@ BEGIN
     node = node->'IndexElem';
 
     IF (node->'name' IS NOT NULL) THEN
-      RETURN node->>'name';
+      RETURN quote_ident(node->>'name');
     END IF;
 
     IF (node->'expr' IS NOT NULL) THEN
@@ -3134,12 +3134,12 @@ BEGIN
     END IF;
 
     IF (node->'indexParams' IS NOT NULL AND jsonb_array_length(node->'indexParams') > 0) THEN 
-      output = array_append(output, deparser.parens(deparser.list_quotes(node->'indexParams')));
+      output = array_append(output, deparser.parens(deparser.list(node->'indexParams')));
     END IF; 
 
     IF (node->'indexIncludingParams' IS NOT NULL AND jsonb_array_length(node->'indexIncludingParams') > 0) THEN 
       output = array_append(output, 'INCLUDE');
-      output = array_append(output, deparser.parens(deparser.list_quotes(node->'indexIncludingParams')));
+      output = array_append(output, deparser.parens(deparser.list(node->'indexIncludingParams')));
     END IF; 
 
     IF (node->'whereClause' IS NOT NULL) THEN 
