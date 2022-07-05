@@ -2,8 +2,10 @@
 
 exports[`index_stmt 1`] = `"CREATE INDEX \\"idx_CaseSimple\\" ON \\"Table_CaseSimple\\" (\\"CaseSimple\\");"`;
 
-exports[`index_stmt 2`] = `"CREATE INDEX \\"idx_CaseExpression\\" ON \\"Table_CaseExperssion\\" (lower(\\"CaseSimple\\"));"`;
+exports[`index_stmt 2`] = `"CREATE INDEX idx_simple ON table_simple (\\"CaseSimple\\");"`;
 
-exports[`index_stmt 3`] = `"CREATE INDEX \\"idx_CaseInclude\\" ON table_caseinclude (simple) INCLUDE (\\"CaseInclude\\");"`;
+exports[`index_stmt 3`] = `"CREATE INDEX \\"idx_CaseExpression\\" ON \\"Table_CaseExperssion\\" (lower(\\"CaseSimple\\"));"`;
 
-exports[`index_stmt 4`] = `"CREATE INDEX \\"idx_CaseIncludeExpr\\" ON table_caseincludeexpr (simple) INCLUDE (lower(\\"CaseInclude\\"));"`;
+exports[`index_stmt 4`] = `"CREATE INDEX \\"idx_CaseInclude\\" ON table_caseinclude (simple) INCLUDE (\\"CaseInclude\\");"`;
+
+exports[`index_stmt 5`] = `"CREATE INDEX \\"idx_CaseIncludeExpr\\" ON table_caseincludeexpr (simple) INCLUDE (lower(\\"CaseInclude\\"));"`;
