@@ -7909,7 +7909,7 @@ BEGIN
     node = node->'IndexElem';
 
     IF (node->'name' IS NOT NULL) THEN
-      RETURN node->>'name';
+      RETURN quote_ident(node->>'name');
     END IF;
 
     IF (node->'expr' IS NOT NULL) THEN
@@ -8229,9 +8229,8 @@ BEGIN
       output = array_append(output, 'CONCURRENTLY');
     END IF;
     
-    IF (node->'idxname' IS NOT NULL) THEN 
-      -- TODO needs quote?
-      output = array_append(output, node->>'idxname');
+    IF (node->'idxname' IS NOT NULL) THEN
+      output = array_append(output, quote_ident(node->>'idxname'));
     END IF;
 
     output = array_append(output, 'ON');
