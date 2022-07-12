@@ -7355,7 +7355,7 @@ BEGIN
       ELSIF (node->'arg' IS NOT NULL) THEN
         RETURN defname || ' ' || deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE)));
       END IF;
-    ELSIF ((context->'foreignSchema')::bool IS TRUE) THEN
+    ELSIF ((context->'foreignOptions')::bool IS TRUE) THEN
       RETURN format('%s ''%s''', defname, deparser.expression(node->'arg', jsonb_set(context, '{simple}', to_jsonb(TRUE))));
 
     ELSE
@@ -8906,7 +8906,7 @@ BEGIN
 END;
 $EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
 
-CREATE FUNCTION deparser.create_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
+CREATE FUNCTION deparser.create_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb, is_foreign_table bool DEFAULT FALSE ) RETURNS text AS $EOFCODE$
 DECLARE
   output text[];
   relpersistence text;
@@ -8930,7 +8930,10 @@ BEGIN
       relpersistence = node#>>'{relation, relpersistence}';
     END IF;
 
-    IF (relpersistence = 't') THEN 
+    IF (is_foreign_table) THEN
+      -- foreign tables cannot be created as temporary
+      output = array_append(output, 'CREATE FOREIGN TABLE');
+    ELSEIF (relpersistence = 't') THEN 
       output = array_append(output, 'CREATE');
     ELSE
       output = array_append(output, 'CREATE TABLE');
@@ -10150,9 +10153,35 @@ BEGIN
     IF (node->'options') IS NOT NULL THEN
       output = array_append(output, 'OPTIONS');
       output = array_append(output, deparser.parens(
-        deparser.list(node->'options', ', ', jsonb_set(context, '{foreignSchema}', to_jsonb(TRUE)))
+        deparser.list(node->'options', ', ', jsonb_set(context, '{foreignOptions}', to_jsonb(TRUE)))
       ));
     END IF;
+
+  RETURN array_to_string(output, ' ');
+END;
+$EOFCODE$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE FUNCTION deparser.create_foreign_table_stmt ( node jsonb, context jsonb DEFAULT '{}'::jsonb ) RETURNS text AS $EOFCODE$
+DECLARE
+  output text[];
+BEGIN
+  IF (node->'CreateForeignTableStmt') IS NULL THEN
+    RAISE EXCEPTION 'BAD_EXPRESSION %', 'CreateForeignTableStmt';
+  END IF;
+
+  node = node->'CreateForeignTableStmt';
+
+  output = array_append(output, deparser.create_stmt(node->'base', context, is_foreign_table := true));
+  output = array_append(output, 'SERVER');
+  output = array_append(output, quote_ident(node->>'servername'));
+
+  -- options
+  IF (node->'options') IS NOT NULL THEN
+    output = array_append(output, 'OPTIONS');
+    output = array_append(output, deparser.parens(
+      deparser.list(node->'options', ', ', jsonb_set(context, '{foreignOptions}', to_jsonb(TRUE)))
+    ));
+  END IF;
 
   RETURN array_to_string(output, ' ');
 END;
@@ -10266,6 +10295,8 @@ BEGIN
     RETURN deparser.create_enum_stmt(expr, context);
   ELSEIF (expr->>'CreateExtensionStmt') IS NOT NULL THEN
     RETURN deparser.create_extension_stmt(expr, context);
+  ELSEIF (expr->>'CreateForeignTableStmt') IS NOT NULL THEN
+    RETURN deparser.create_foreign_table_stmt(expr, context);
   ELSEIF (expr->>'CreateFunctionStmt') IS NOT NULL THEN
     RETURN deparser.create_function_stmt(expr, context);
   ELSEIF (expr->>'CreatePolicyStmt') IS NOT NULL THEN
