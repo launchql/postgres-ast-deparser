@@ -45,6 +45,9 @@ jobs:
       - name: build
         run: yarn build
 
+      - name: install
+        run: make install
+
       - name: ast
         run: cd ./packages/ast && yarn test
         env:
