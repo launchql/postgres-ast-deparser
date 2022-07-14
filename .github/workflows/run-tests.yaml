@@ -42,7 +42,7 @@ jobs:
       #     node-version: 16.14.0
 
       - name: deps
-        run: apk update && add bash
+        run: apk update && apk add bash
 
       - name: deps
         run: yarn
