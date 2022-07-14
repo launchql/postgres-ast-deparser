@@ -42,6 +42,9 @@ jobs:
       #     node-version: 16.14.0
 
       - name: deps
+        run: apk update && add bash
+
+      - name: deps
         run: yarn
 
       - name: bootstrap
