@@ -29,10 +29,14 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
-          
+
     steps:
       - name: checkout
         uses: actions/checkout@v3
+      - name: python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.6.0
 
       - name: node
         uses: actions/setup-node@v3
