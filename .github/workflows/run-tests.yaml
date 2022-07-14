@@ -8,7 +8,8 @@ jobs:
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
-    container: node:latest
+    # container: node:latest
+    container: pyramation/node-gyp
 
     # Service containers to run with `container-job`
     services:
