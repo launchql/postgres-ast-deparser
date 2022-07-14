@@ -12,37 +12,36 @@ jobs:
     # container: pyramation/node-gyp
     container: mhart/alpine-node:12
 
-    # # Service containers to run with `container-job`
-    # services:
-    #   # Label used to access the service container
-    #   postgres:
-    #     # Docker Hub image
-    #     image: pyramation/postgis
-    #     # Provide the password for postgres
-    #     env:
-    #       POSTGRES_USER: postgres
-    #       POSTGRES_PASSWORD: password
-    #     # Set health checks to wait until postgres has started
-    #     options: >-
-    #       --health-cmd pg_isready
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
-    #     ports:
-    #       # Maps tcp port 5432 on service container to the host
-    #       - 5432:5432
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: pyramation/postgis
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+        volumes:
+          - ./bin:/sql-bin
+          - ./extensions:/sql-extensions
+          - ./packages:/sql-packages
 
     steps:
       - name: checkout
         uses: actions/checkout@v3
 
-      - name: docker
-        run: docker-compose up
-
-      # - name: node
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 16.14.0
+      - name: pwd
+        run: echo `pwd`
 
       - name: deps
         run: apk update && apk add bash git python3-dev make g++
@@ -57,7 +56,7 @@ jobs:
         run: yarn build
 
       - name: install
-        run: make install
+        run: /sql-bin/install.sh
 
       - name: ast
         run: cd ./packages/ast && yarn test
