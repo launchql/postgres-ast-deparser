@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
     # container: node:latest
-    container: pyramation/node-gyp
+    # container: pyramation/node-gyp
+    container: mhart/alpine-node:12
 
     # Service containers to run with `container-job`
     services:
