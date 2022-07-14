@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create foreign table stmt 1`] = `
+"CREATE FOREIGN TABLE public.foo (
+ bar pg_catalog.varchar(50) 
+) SERVER dummy OPTIONS (schema_name 'public', table_name 'foo')"
+`;
