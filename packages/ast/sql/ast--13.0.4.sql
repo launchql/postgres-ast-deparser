@@ -6989,8 +6989,7 @@ BEGIN
     IF (has_pk_attrs AND has_fk_attrs) THEN
       IF (node->'conname' IS NOT NULL) THEN
         output = array_append(output, 'CONSTRAINT');
-        -- TODO needs quote?
-        output = array_append(output, node->>'conname');
+        output = array_append(output, quote_ident(node->>'conname'));
       END IF;
       output = array_append(output, 'FOREIGN KEY');
       output = array_append(output, deparser.parens(deparser.list_quotes(node->'fk_attrs')));
@@ -7004,8 +7003,7 @@ BEGIN
     ELSIF (has_fk_attrs) THEN 
       IF (node->'conname' IS NOT NULL) THEN
         output = array_append(output, 'CONSTRAINT');
-        -- TODO needs quote?
-        output = array_append(output, node->>'conname');
+        output = array_append(output, quote_ident(node->>'conname'));
       END IF;
       output = array_append(output, 'FOREIGN KEY');
       output = array_append(output, deparser.parens(deparser.list_quotes(node->'fk_attrs')));
