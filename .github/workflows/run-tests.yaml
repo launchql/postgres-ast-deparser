@@ -32,10 +32,6 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
-        volumes:
-          - /__w/postgres-ast-deparser/postgres-ast-deparser/bin:/sql-bin
-          - /__w/postgres-ast-deparser/postgres-ast-deparser/extensions:/sql-extensions
-          - /__w/postgres-ast-deparser/postgres-ast-deparser/packages:/sql-packages
 
     steps:
       - name: checkout
@@ -55,9 +51,6 @@ jobs:
 
       - name: build
         run: yarn build
-
-      - name: install
-        run: /sql-bin/install.sh
 
       - name: ast
         run: cd ./packages/ast && yarn test
