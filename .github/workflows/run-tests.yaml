@@ -41,7 +41,7 @@ jobs:
         run: echo `pwd`
 
       - name: deps
-        run: apk update && apk add bash git python3-dev make g++
+        run: apk update && apk add bash git python3-dev make g++ postgresql
 
       - name: deps
         run: yarn
