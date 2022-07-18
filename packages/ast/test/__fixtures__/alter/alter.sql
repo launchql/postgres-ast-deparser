@@ -24,62 +24,66 @@ ALTER TABLE foo
     ALTER COLUMN foo_timestamp SET DEFAULT now();
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id);
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT "MyConstraintKey"
+  FOREIGN KEY (order_id) REFERENCES othr.orders (id);
+
+ALTER TABLE scha.foo 
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON DELETE CASCADE;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON DELETE RESTRICT;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON DELETE NO ACTION;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON DELETE SET NULL;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON UPDATE SET DEFAULT;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON UPDATE CASCADE;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON UPDATE RESTRICT;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON UPDATE NO ACTION;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON UPDATE SET NULL;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) ON UPDATE SET DEFAULT;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (order_id) REFERENCES othr.orders (id) 
     ON UPDATE SET DEFAULT
     ON DELETE SET NULL
     ;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (a,b) REFERENCES othr.orders (c,d) MATCH FULL;
 
 ALTER TABLE scha.foo 
-  ADD CONSTRAINT my_constraint_fey
+  ADD CONSTRAINT my_constraint_key
   FOREIGN KEY (a, b) REFERENCES othr.orders (c,d) MATCH SIMPLE;
 
 ALTER TABLE ONLY collections.mfield
@@ -92,7 +96,7 @@ ALTER TABLE collections.mfield
 -- TODO MATCH after upgrading to newer engine: https://github.com/lfittl/libpg_query/issues/66
 
 -- ALTER TABLE scha.foo 
---   ADD CONSTRAINT my_constraint_fey
+--   ADD CONSTRAINT my_constraint_key
 --   FOREIGN KEY (order_id) REFERENCES othr.orders (id) 
 --     MATCH FULL
 --     ON UPDATE SET DEFAULT
@@ -102,7 +106,7 @@ ALTER TABLE collections.mfield
 -- MATCH PARTIAL not yet implemented
 
 -- ALTER TABLE scha.foo 
---   ADD CONSTRAINT my_constraint_fey
+--   ADD CONSTRAINT my_constraint_key
 --   FOREIGN KEY (a,b) REFERENCES othr.orders (c,d) MATCH PARTIAL;
 
 ALTER TABLE schema_name.table_name ALTER COLUMN column_name SET DATA TYPE new_column_type USING column_name::new_column_type;
