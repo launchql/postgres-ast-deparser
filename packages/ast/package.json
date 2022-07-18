@@ -13,7 +13,8 @@
     "deparser"
   ],
   "scripts": {
-    "test": "FAST_TEST=1 launchql-templatedb && jest",
+    "test:template": "FAST_TEST=1 launchql-templatedb && jest",
+    "test": "FAST_TEST=0 jest",
     "test:watch": "FAST_TEST=1 jest --watch"
   },
   "devDependencies": {
